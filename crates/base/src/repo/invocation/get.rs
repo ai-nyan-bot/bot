@@ -21,7 +21,14 @@ impl InvocationRepo {
                 user: r.get::<UserId, _>("user_id"),
                 strategy: r.get::<StrategyId, _>("strategy_id"),
                 token_pair: r.get::<TokenPairId, _>("token_pair_id"),
-                sequence: r.get::<JsonValue, _>("sequence").into(),
+                next: {
+                    let value = r.get::<JsonValue, _>("next");
+                    if value == JsonValue::Null{
+                        None
+                    }else{
+                        Some(value.into())
+                    }
+                },
                 created_at: r.get::<CreatedAt, _>("created_at"),
             })?)
     }

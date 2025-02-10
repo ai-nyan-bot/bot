@@ -29,7 +29,7 @@ async fn test_create() {
                     user: user.id,
                     strategy: strategy.id,
                     token_pair: token_pair.id,
-                    sequence: Sequence {
+                    next: Some(Sequence {
                         condition: Compare {
                             fact: TokenCreationDuration,
                             operator: Exists,
@@ -37,7 +37,7 @@ async fn test_create() {
                             timeframe: None,
                         },
                         action: Action::Buy,
-                    },
+                    }),
                 },
             )
             .await
@@ -48,8 +48,9 @@ async fn test_create() {
         assert_eq!(result.strategy, 4);
         assert_eq!(result.token_pair, 3);
 
+        let next = result.next.unwrap();
         assert_eq!(
-            result.sequence.condition,
+            next.condition,
             Compare {
                 fact: TokenCreationDuration,
                 operator: Exists,
@@ -57,7 +58,7 @@ async fn test_create() {
                 timeframe: None,
             }
         );
-        assert_eq!(result.sequence.action, Action::Buy);
+        assert_eq!(next.action, Action::Buy);
 
         let count = count_all(&mut tx).await;
         assert_eq!(count, 1)
@@ -65,7 +66,39 @@ async fn test_create() {
     .await
 }
 
-// FIXME ensure strategy and tokenpair as well
+#[test_log::test(sqlx::test)]
+async fn test_next_is_none() {
+    run_test(|mut tx| async move {
+        let user = get_or_create_test_user(&mut tx).await;
+        let strategy = create_strategy_for_test_user(&mut tx, "MoneyMaker").await;
+        let token_pair = get_or_create_token_pair(&mut tx, TokenMint::usdc(), TokenMint::usdt()).await;
+
+        let test_instance = InvocationRepo::new();
+        let result = test_instance
+            .create(
+                &mut tx,
+                InvocationCreateCmd {
+                    user: user.id,
+                    strategy: strategy.id,
+                    token_pair: token_pair.id,
+                    next: None,
+                },
+            )
+            .await
+            .unwrap();
+
+        assert_eq!(result.id, 1);
+        assert_eq!(result.user, 1);
+        assert_eq!(result.strategy, 4);
+        assert_eq!(result.token_pair, 3);
+        assert_eq!(result.next, None);
+
+        let count = count_all(&mut tx).await;
+        assert_eq!(count, 1)
+    })
+    .await
+}
+
 #[test_log::test(sqlx::test)]
 async fn test_invocation_requires_existing_user() {
     run_test(|mut tx| async move {
@@ -81,7 +114,7 @@ async fn test_invocation_requires_existing_user() {
                     user: 1234567.into(),
                     strategy: strategy.id,
                     token_pair: token_pair.id,
-                    sequence: Sequence {
+                    next: Some(Sequence {
                         condition: Compare {
                             fact: TokenCreationDuration,
                             operator: Exists,
@@ -89,7 +122,7 @@ async fn test_invocation_requires_existing_user() {
                             timeframe: None,
                         },
                         action: Action::Buy,
-                    },
+                    }),
                 },
             )
             .await;
@@ -116,7 +149,7 @@ async fn test_invocation_requires_existing_strategy() {
                     user: user.id,
                     strategy: 12345678.into(),
                     token_pair: token_pair.id,
-                    sequence: Sequence {
+                    next: Some(Sequence {
                         condition: Compare {
                             fact: TokenCreationDuration,
                             operator: Exists,
@@ -124,7 +157,7 @@ async fn test_invocation_requires_existing_strategy() {
                             timeframe: None,
                         },
                         action: Action::Buy,
-                    },
+                    }),
                 },
             )
             .await;
@@ -151,7 +184,7 @@ async fn test_invocation_requires_existing_token_pair() {
                     user: user.id,
                     strategy: strategy.id,
                     token_pair: 12345679.into(),
-                    sequence: Sequence {
+                    next: Some(Sequence {
                         condition: Compare {
                             fact: TokenCreationDuration,
                             operator: Exists,
@@ -159,7 +192,7 @@ async fn test_invocation_requires_existing_token_pair() {
                             timeframe: None,
                         },
                         action: Action::Buy,
-                    },
+                    }),
                 },
             )
             .await;

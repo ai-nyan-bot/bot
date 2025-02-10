@@ -57,7 +57,7 @@ fn main() {
                                 user: strategy.user,
                                 strategy: strategy.id,
                                 token_pair: token_pair_id,
-                                sequence: strategy.sequence.clone(),
+                                next: None,
                             },
                         )
                         .await

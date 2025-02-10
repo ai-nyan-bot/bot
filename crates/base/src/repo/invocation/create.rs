@@ -13,16 +13,16 @@ pub struct InvocationCreateCmd {
     pub user: UserId,
     pub strategy: StrategyId,
     pub token_pair: TokenPairId,
-    pub sequence: Sequence,
+    pub next: Option<Sequence>,
 }
 
 impl InvocationRepo {
     pub async fn create<'a>(&self, tx: &mut Tx<'a>, cmd: InvocationCreateCmd) -> RepoResult<Invocation> {
-        let invocation_id = query("insert into solana.invocation (user_id, strategy_id, token_pair_id, sequence) values ($1, $2, $3, $4) returning id")
+        let invocation_id = query("insert into solana.invocation (user_id, strategy_id, token_pair_id, next) values ($1, $2, $3, $4) returning id")
             .bind(cmd.user)
             .bind(cmd.strategy)
             .bind(cmd.token_pair)
-            .bind::<JsonValue>(cmd.sequence.into())
+            .bind::<JsonValue>(cmd.next.into())
             .fetch_one(&mut **tx)
             .await
             .map(|r| r.get::<InvocationId, _>("id"))?;

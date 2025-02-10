@@ -7,7 +7,7 @@ create table solana.invocation
     user_id         int not null,
     strategy_id     int not null,
     token_pair_id   int not null,
-    sequence        json not null,
+    next            json,
     created_at      timestamptz default (timezone('utc', now())),
 
     primary key (strategy_id, token_pair_id),

@@ -13,6 +13,6 @@ pub struct Invocation {
     pub strategy: StrategyId,
     pub token_pair: TokenPairId,
     pub user: UserId,
-    pub sequence: Sequence,
+    pub next: Option<Sequence>,
     pub created_at: CreatedAt,
 }
