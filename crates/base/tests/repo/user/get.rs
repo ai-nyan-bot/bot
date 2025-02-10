@@ -1,0 +1,66 @@
+// Copyright (c) nyanbot.com 2025.
+// This file is licensed under the AGPL-3.0-or-later.
+
+mod get_by_id {
+	use common::repo::error::RepoError;
+	use base::repo::UserRepo;
+	use testing::base::user::create_telegram_user;
+	use testing::run_test_on_empty_db;
+
+	#[test_log::test(sqlx::test)]
+    async fn test_get() {
+        run_test_on_empty_db(|mut tx| async move {
+            let test_instance = UserRepo::default();
+
+            let _ = create_telegram_user(&mut tx, "ABC").await.unwrap();
+            let user = test_instance.get_by_id(&mut tx, 1).await.unwrap();
+            assert_eq!(user.id, 1);
+            assert_eq!(user.telegram_id.unwrap(), "ABC")
+        })
+        .await
+    }
+
+    #[test_log::test(sqlx::test)]
+    async fn test_does_not_exists() {
+        run_test_on_empty_db(|mut tx| async move {
+            let test_instance = UserRepo::default();
+
+            let _ = create_telegram_user(&mut tx, "ABC").await.unwrap();
+            let result = test_instance.get_by_id(&mut tx, 1337).await;
+            assert_eq!(result.err(), Some(RepoError::NotFound))
+        })
+        .await
+    }
+}
+
+mod get_by_telegram_id {
+	use common::repo::error::RepoError;
+	use base::repo::UserRepo;
+	use testing::base::user::create_telegram_user;
+	use testing::run_test_on_empty_db;
+
+	#[test_log::test(sqlx::test)]
+    async fn test_get() {
+        run_test_on_empty_db(|mut tx| async move {
+            let test_instance = UserRepo::default();
+
+            let _ = create_telegram_user(&mut tx, "ABC").await.unwrap();
+            let user = test_instance.get_by_telegram_id(&mut tx, "ABC").await.unwrap();
+            assert_eq!(user.id, 1);
+            assert_eq!(user.telegram_id.unwrap(), "ABC")
+        })
+        .await
+    }
+
+    #[test_log::test(sqlx::test)]
+    async fn test_does_not_exists() {
+        run_test_on_empty_db(|mut tx| async move {
+            let test_instance = UserRepo::default();
+
+            let _ = create_telegram_user(&mut tx, "ABC").await.unwrap();
+            let result = test_instance.get_by_telegram_id(&mut tx, "does not exists").await;
+            assert_eq!(result.err(), Some(RepoError::NotFound))
+        })
+        .await
+    }
+}

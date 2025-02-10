@@ -1,0 +1,67 @@
+[workspace.package]
+authors = ["Dev <dev@nyan.bot>"]
+homepage = "https://nyanbot.com"
+readme = "readme.md"
+license = "AGPL-3"
+
+version = "0.0.1"
+rust-version = "1.81.0"
+edition = "2021"
+
+[workspace]
+resolver = "2"
+members = [
+    "bin/aggregator",
+    "bin/api",
+    "bin/engine",
+    "bin/indexer",
+    "bin/telegram",
+    "crates/base",
+    "crates/common",
+    "crates/integration",
+    "crates/solana",
+    "crates/testing",
+]
+
+[workspace.dependencies]
+axum = { version = "0.8.1", features = ["form", "http1", "json"] }
+axum-extra = { version = "0.10.0" }
+axum-macros = { version = "0.5.0" }
+async-trait = { version = "0.1.85" }
+
+dotenv = { version = "0.15.0" }
+
+futures = { version = "0.3.31" }
+futures-util = { version = "0.3.31" }
+
+lazy_static = { version = "1.5.0" }
+log = { version = "0.4.25" }
+
+hyper = { version = "1.5.2" }
+
+rand = { version = "0.8.5", features = ["rand_chacha"] }
+reqwest = { version = "0.12.12" }
+
+serde = { version = "1.0.217" }
+serde_json = { version = "1.0.135" }
+solana-sdk = { version = "2.1.9", features = ["full", "rand"] }
+sqlx = { version = "0.8.3", features = ["macros", "migrate", "postgres", "runtime-tokio", "time"] }
+
+teloxide = { version = "0.13.0", features = ["macros"] }
+teloxide_tests = { version = "0.2.0" }
+
+test-log = { version = "0.2.17" }
+time = { version = "0.3.37" }
+tokio = { version = "1.42.0", features = ["signal", "macros"], default-features = true }
+tokio-tungstenite = { version = "0.26.1", features = ["connect", "default", "native-tls"] }
+toml = { version = "0.8.19", features = ["parse"] }
+tower = { version = "0.5.2" }
+tower-http = { version = "0.6.2", features = ["cors"] }
+tracing = { version = "0.1.41" }
+tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+uint = { version = "0.10.0" }
+url = { version = "2.5.4" }
+
+[profile.dev]
+lto = false
+opt-level = 0

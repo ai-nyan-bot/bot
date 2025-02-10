@@ -1,0 +1,22 @@
+[package]
+name = "testing"
+version.workspace = true
+rust-version.workspace = true
+edition.workspace = true
+
+[dependencies]
+base = { path = "../base" }
+common = { path = "../common" }
+solana = { path = "../solana" }
+
+futures-util = { workspace = true }
+lazy_static = { workspace = true }
+log = { workspace = true }
+rand = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sqlx = { workspace = true }
+tokio = { workspace = true }
+
+
+[dev-dependencies]

@@ -1,0 +1,23 @@
+[package]
+name = "aggregator"
+version.workspace = true
+rust-version.workspace = true
+edition.workspace = true
+
+[dependencies]
+common = { path = "../../crates/common" }
+solana = { path = "../../crates/solana" }
+
+log = { workspace = true }
+
+serde = { workspace = true }
+serde_json = { workspace = true }
+sqlx = { workspace = true }
+
+tokio = { workspace = true }
+toml = { workspace = true }
+
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+
+[dev-dependencies]

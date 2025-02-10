@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: no
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=tor
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - /opt/nyanbot/postgres:/var/lib/postgresql/data
+
+  api:
+    image: nyanbot/nyanbot
+    restart: no
+    ports:
+      - "127.0.0.1:8080:8080"
+    command:
+      - /app/api/api

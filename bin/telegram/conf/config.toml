@@ -1,0 +1,9 @@
+[telegram]
+token = '$TELEGRAM_TOKEN'
+webapp_url = '$WEBAPP_URL'
+
+[postgres]
+connection_string = '$POSTGRES_CONNECTION_STRING'
+pool_min = '$POSTGRES_POOL_MIN'
+pool_max = '$POSTGRES_POOL_MAX'
+timeout_acquire_ms = '$POSTGRES_TIMEOUT_ACQUIRE_MS'

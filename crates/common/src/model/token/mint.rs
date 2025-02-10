@@ -1,0 +1,166 @@
+// Copyright (c) nyanbot.com 2025.
+// This file is licensed under the AGPL-3.0-or-later.
+
+// This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
+// Original MIT License Copyright (c) blockworks-foundation 2024.
+
+use crate::model::PublicKey;
+use serde::{Deserialize, Serialize};
+use solana_sdk::pubkey::Pubkey;
+use std::fmt::{Display, Formatter};
+
+pub const USDC_MINT_STR: &'static str = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
+pub const USDT_MINT_STR: &'static str = "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB";
+pub const WSOL_MINT_STR: &'static str = "So11111111111111111111111111111111111111112";
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize, sqlx::Type)]
+#[sqlx(transparent)]
+pub struct TokenMint(pub PublicKey);
+
+impl Display for TokenMint {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        self.0.fmt(f)
+    }
+}
+
+impl PartialEq<&str> for TokenMint {
+    fn eq(&self, other: &&str) -> bool {
+        self.0 == *other
+    }
+}
+
+impl PartialEq<&TokenMint> for TokenMint {
+    fn eq(&self, other: &&TokenMint) -> bool {
+        self.0 == other.0
+    }
+}
+
+impl AsRef<TokenMint> for TokenMint {
+    fn as_ref(&self) -> &TokenMint {
+        &self
+    }
+}
+
+impl TokenMint {
+    pub fn new(value: impl Into<String>) -> Self {
+        Self(PublicKey(value.into()))
+    }
+}
+
+impl From<String> for TokenMint {
+    fn from(value: String) -> Self {
+        Self(PublicKey(value))
+    }
+}
+
+impl From<&str> for TokenMint {
+    fn from(value: &str) -> Self {
+        Self(PublicKey(value.to_string()))
+    }
+}
+
+impl From<Pubkey> for TokenMint {
+    fn from(value: Pubkey) -> Self {
+        Self(PublicKey(value.to_string()))
+    }
+}
+
+impl From<TokenMint> for Pubkey {
+    fn from(value: TokenMint) -> Self {
+        value.0.into()
+    }
+}
+
+impl From<&TokenMint> for TokenMint {
+    fn from(value: &TokenMint) -> Self {
+        value.clone()
+    }
+}
+
+impl TokenMint {
+    pub fn usdc() -> Self {
+        USDC_MINT_STR.to_string().into()
+    }
+
+    pub fn usdt() -> Self {
+        USDT_MINT_STR.to_string().into()
+    }
+
+    pub fn wsol() -> Self {
+        WSOL_MINT_STR.to_string().into()
+    }
+}
+
+pub type TokenPairMint = (TokenMint, TokenMint);
+
+pub fn determine_mints(a: impl Into<TokenMint>, b: impl Into<TokenMint>) -> Option<(TokenMint, TokenMint)> {
+    let a = a.into();
+    let b = b.into();
+    if a == USDC_MINT_STR {
+        Some((b, a))
+    } else if b == USDC_MINT_STR {
+        Some((a, b))
+    } else if a == USDT_MINT_STR {
+        Some((b, a))
+    } else if b == USDT_MINT_STR {
+        Some((a, b))
+    } else if a == WSOL_MINT_STR {
+        Some((b, a))
+    } else if b == WSOL_MINT_STR {
+        Some((a, b))
+    } else {
+        None
+    }
+}
+
+#[cfg(test)]
+mod tests {
+
+    mod determine_mints {
+        use crate::model::token::mint::{determine_mints, USDC_MINT_STR, USDT_MINT_STR, WSOL_MINT_STR};
+
+        #[test]
+        fn test_wsol_usdc() {
+            let Some((base, quote)) = determine_mints(USDC_MINT_STR, WSOL_MINT_STR) else {
+                panic!()
+            };
+            assert_eq!(base, WSOL_MINT_STR);
+            assert_eq!(quote, USDC_MINT_STR);
+        }
+
+        #[test]
+        fn test_usdc_wsol() {
+            let Some((base, quote)) = determine_mints(WSOL_MINT_STR, USDC_MINT_STR) else {
+                panic!()
+            };
+            assert_eq!(base, WSOL_MINT_STR);
+            assert_eq!(quote, USDC_MINT_STR);
+        }
+
+        #[test]
+        fn test_usdt_bonk() {
+            let Some((base, quote)) = determine_mints(USDT_MINT_STR, BONK_MINT_STR) else {
+                panic!()
+            };
+            assert_eq!(base, BONK_MINT_STR);
+            assert_eq!(quote, USDT_MINT_STR);
+        }
+
+        #[test]
+        fn test_bonk_wsol() {
+            let Some((base, quote)) = determine_mints(BONK_MINT_STR, WSOL_MINT_STR) else {
+                panic!()
+            };
+            assert_eq!(base, BONK_MINT_STR);
+            assert_eq!(quote, WSOL_MINT_STR);
+        }
+
+        #[test]
+        fn test_unsupported_quote() {
+            let result = determine_mints(BONK_MINT_STR, BONK_MINT_STR);
+            assert_eq!(result, None)
+        }
+
+        const BONK_MINT_STR: &'static str = "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263";
+    }
+}

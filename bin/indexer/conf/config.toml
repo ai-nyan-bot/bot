@@ -1,0 +1,15 @@
+[blockstream]
+url = '$BLOCKSTREAM_RPC_URL'
+concurrency = '$BLOCKSTREAM_CONCURRENCY'
+
+[slotstream]
+url = '$SLOTSTREAM_RPC_URL'
+
+[rpc]
+url = '$RPC_URL'
+
+[postgres]
+connection_string = '$POSTGRES_CONNECTION_STRING'
+pool_min = '$POSTGRES_POOL_MIN'
+pool_max = '$POSTGRES_POOL_MAX'
+timeout_acquire_ms = '$POSTGRES_TIMEOUT_ACQUIRE_MS'

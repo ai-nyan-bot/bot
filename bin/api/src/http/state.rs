@@ -1,0 +1,39 @@
+// Copyright (c) nyanbot.com 2025.
+// This file is licensed under the AGPL-3.0-or-later.
+
+use crate::config::Config;
+use base::service::StrategyService;
+use base::service::UserService;
+use std::ops::Deref;
+use std::sync::Arc;
+
+#[derive(Clone)]
+pub struct AppState(pub Arc<AppStateInner>);
+
+impl AppState {
+    pub fn strategy_service(&self) -> StrategyService {
+        self.service.strategy.clone()
+    }
+    pub fn user_service(&self) -> UserService {
+        self.service.user.clone()
+    }
+}
+
+impl Deref for AppState {
+    type Target = AppStateInner;
+    fn deref(&self) -> &Self::Target {
+        self.0.deref()
+    }
+}
+
+#[derive(Clone)]
+pub struct AppStateInner {
+    pub config: Config,
+    pub service: Service,
+}
+
+#[derive(Clone)]
+pub struct Service {
+    pub strategy: StrategyService,
+    pub user: UserService,
+}

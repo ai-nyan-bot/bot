@@ -1,0 +1,154 @@
+:root {
+    --bg-color: #1e1e2f;
+    --card-bg-color: #2b2b3d;
+    --text-color: #ffffff;
+    --secondary-text-color: #a1a1c1;
+    --positive-color: #4caf50;
+    --negative-color: #f44336;
+    --shadow-color: rgba(0, 0, 0, 0.5);
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: Arial, sans-serif;
+}
+
+.portfolio-details {
+    padding: 16px;
+}
+
+.page-title {
+    font-size: 24px;
+    margin-bottom: 16px;
+}
+
+.tokens-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.token-card {
+    background-color: var(--card-bg-color);
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 4px var(--shadow-color);
+    width: 280px;
+    display: flex;
+    flex-direction: column;
+}
+
+.token-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.token-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.token-name {
+    font-size: 18px;
+    margin: 0;
+}
+
+.token-info {
+    margin-top: 12px;
+}
+
+.token-amount,
+.token-amount-usd {
+    font-size: 14px;
+    margin: 4px 0;
+}
+
+.token-changes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.change {
+    display: flex;
+    justify-content: space-between;
+    width: 45%;
+    font-size: 12px;
+}
+
+.change span:last-child {
+    font-weight: bold;
+}
+
+.positive {
+    color: var(--positive-color);
+}
+
+.negative {
+    color: var(--negative-color);
+}
+
+/* orders */
+.pending-orders {
+    margin-top: 32px;
+}
+
+.section-title {
+    font-size: 20px;
+    margin-bottom: 16px;
+    color: var(--text-color);
+}
+
+.orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.order-card {
+    background-color: var(--card-bg-color);
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 4px var(--shadow-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.order-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.order-type {
+    font-weight: bold;
+    text-transform: uppercase;
+    color: var(--text-color);
+}
+
+.order-token,
+.order-amount,
+.order-price {
+    font-size: 14px;
+    color: var(--secondary-text-color);
+}
+
+.cancel-button {
+    background-color: var(--negative-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cancel-button:hover {
+    background-color: #d32f2f;
+}

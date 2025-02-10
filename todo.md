@@ -1,0 +1,2 @@
+1.) Ensure that blocks are ingested in order - otherwise the aggregator might just skip entire blocks
+Workaround: tell aggregation pipeline until which slot can be aggregated - this enables parallel ingestion of blocks

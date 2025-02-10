@@ -1,0 +1,25 @@
+[package]
+name = "telegram"
+version.workspace = true
+rust-version.workspace = true
+edition.workspace = true
+
+[dependencies]
+common = { path = "../../crates/common" }
+base = { path = "../../crates/base" }
+solana = { path = "../../crates/solana" }
+testing = { path = "../../crates/testing" }
+
+log = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sqlx = { workspace = true }
+teloxide = { workspace = true }
+tokio = { workspace = true }
+toml = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+url = { workspace = true }
+
+[dev-dependencies]
+teloxide_tests = { workspace = true }

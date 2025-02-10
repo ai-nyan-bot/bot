@@ -1,0 +1,47 @@
+
+progress {
+    box-sizing: border-box;
+    border: solid 0.15em #242b35;
+    width: 100%;
+    height: 0.75em;
+    border-radius: 0.5em;
+    background: linear-gradient(#191c23, #2d3341);
+    font: clamp(0.625em, 7.5vw, 5em) monospace;
+}
+
+progress::-webkit-progress-bar {
+    background: transparent;
+}
+
+progress::-webkit-progress-value {
+    border-radius: 0.35em;
+    box-shadow: inset 0 0.05em 0.05em rgba(255, 255, 255, .35);
+    background: var(--fill);
+}
+
+progress::-moz-progress-bar {
+    border-radius: 0.35em;
+    box-shadow: inset 0 0.05em 0.05em rgba(255, 255, 255, .35);
+    background: var(--fill);
+}
+
+.progress-1 {
+    --fill: repeating-linear-gradient(90deg, transparent 0 0.15em, #f1c00c 0 0.5em) 0.25em, linear-gradient(#f3c402, #ed7401);
+}
+
+.progress-2 {
+    --fill: linear-gradient(#ffec9d, transparent 85%), linear-gradient(90deg, #ffe94b, #f94745);
+}
+
+/*progress:nth-child(3) {*/
+/*    --fill: linear-gradient(rgba(226, 102, 76, .65), transparent), repeating-linear-gradient(135deg, #a22215 0 0.25em, #be2a20 0 0.5em);*/
+/*}*/
+/*progress:nth-child(4) {*/
+/*    --fill: linear-gradient(rgba(215, 131, 227, .5), transparent), conic-gradient(from -30deg at 25%, transparent 240deg, #8b42ab 0%) 0/ 0.7em, conic-gradient(from -30deg at 75%, #8b42ab 240deg, #9956b3 0%) 0/ 0.7em;*/
+/*}*/
+/*progress:nth-child(5) {*/
+/*    --fill: linear-gradient(#d0a9e2, transparent 85%), linear-gradient(90deg, #433485, #dd3c6e);*/
+/*}*/
+/*progress:nth-child(6) {*/
+/*    --fill: linear-gradient(rgba(90, 240, 255, .85), transparent), repeating-linear-gradient(90deg, #123c92 0 0.0625em, #1b5ec6 0 1em);*/
+/*}*/
