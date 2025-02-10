@@ -7,7 +7,7 @@ mod get_by_id {
     use common::repo::error::RepoError;
     use serde_json::Map;
     use sqlx::types::JsonValue;
-    use testing::base::notification::create_notification_for_test_user;
+    use testing::notification::create_notification_for_test_user;
     use testing::run_test;
 
     #[test_log::test(sqlx::test)]

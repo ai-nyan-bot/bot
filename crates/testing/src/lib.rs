@@ -1,9 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::base::strategy::create_strategy_for_another_user;
-use crate::base::user::{get_or_create_another_user, get_or_create_test_user};
-use crate::solana::token_pair::get_or_create_token_pair;
+use crate::user::{get_or_create_another_user, get_or_create_test_user};
 use ::base::model::TokenMint;
 use common::repo::Tx;
 use futures_util::FutureExt;
@@ -18,10 +16,19 @@ use std::ops::Deref;
 use std::panic;
 use std::path::Path;
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
+use strategy::create_strategy_for_another_user;
+use token_pair::get_or_create_token_pair;
 use tokio::sync::OnceCell;
 
-pub mod base;
-pub mod solana;
+pub mod address;
+pub mod auth;
+pub mod invocation;
+pub mod notification;
+pub mod strategy;
+pub mod token;
+pub mod token_pair;
+pub mod user;
+pub mod wallet;
 
 fn generate_db_name() -> String {
     let mut rng = thread_rng();

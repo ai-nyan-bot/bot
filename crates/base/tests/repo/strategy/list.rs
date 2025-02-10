@@ -4,7 +4,7 @@
 mod list_all {
     use base::repo::{StrategyQueryAll, StrategyRepo};
     use common::model::Limit;
-    use testing::base::strategy::create_strategy_for_test_user;
+    use testing::strategy::create_strategy_for_test_user;
     use testing::{run_test, run_test_on_empty_db};
 
     #[test_log::test(sqlx::test)]
@@ -83,7 +83,7 @@ mod list_user {
     use base::model::UserId;
     use base::repo::{StrategyQueryUser, StrategyRepo};
     use common::model::Limit;
-    use testing::base::strategy::create_strategy_for_test_user;
+    use testing::strategy::create_strategy_for_test_user;
     use testing::{run_test, run_test_on_empty_db};
 
     #[test_log::test(sqlx::test)]

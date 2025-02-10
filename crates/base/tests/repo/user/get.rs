@@ -4,7 +4,7 @@
 mod get_by_id {
 	use common::repo::error::RepoError;
 	use base::repo::UserRepo;
-	use testing::base::user::create_telegram_user;
+	use testing::user::create_telegram_user;
 	use testing::run_test_on_empty_db;
 
 	#[test_log::test(sqlx::test)]
@@ -36,7 +36,7 @@ mod get_by_id {
 mod get_by_telegram_id {
 	use common::repo::error::RepoError;
 	use base::repo::UserRepo;
-	use testing::base::user::create_telegram_user;
+	use testing::user::create_telegram_user;
 	use testing::run_test_on_empty_db;
 
 	#[test_log::test(sqlx::test)]

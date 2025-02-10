@@ -8,8 +8,8 @@ use base::model::{Action, Sequence, Value};
 use base::repo::{StrategyCreateCmd, StrategyRepo};
 use common::repo::error::RepoError;
 use sqlx::Acquire;
-use testing::base::strategy::create_strategy_for_test_user;
-use testing::base::user::get_or_create_test_user;
+use testing::strategy::create_strategy_for_test_user;
+use testing::user::get_or_create_test_user;
 use testing::run_test_on_empty_db;
 
 #[test_log::test(sqlx::test)]
@@ -51,7 +51,7 @@ async fn test_create() {
         );
         assert_eq!(result.sequence.action, Action::Buy);
 
-        let count = testing::base::strategy::count_all(&mut tx).await;
+        let count = testing::strategy::count_all(&mut tx).await;
         assert_eq!(count, 1)
     })
     .await
@@ -81,7 +81,7 @@ async fn test_strategy_requires_existing_user() {
             .await;
         assert_eq!(result.err(), Some(RepoError::ForeignKeyViolation));
 
-        let count = testing::base::strategy::count_all(&mut tx).await;
+        let count = testing::strategy::count_all(&mut tx).await;
         assert_eq!(count, 0)
     })
     .await
@@ -97,7 +97,7 @@ async fn test_strategy_name_is_not_unique() {
         assert_eq!(first.user, 1);
         assert_eq!(second.user, 1);
 
-        let count = testing::base::strategy::count_all(&mut tx).await;
+        let count = testing::strategy::count_all(&mut tx).await;
         assert_eq!(count, 2)
     })
     .await

@@ -5,7 +5,7 @@ mod get_by_id {
 	use base::model::AuthToken;
 	use base::repo::{AuthCreateCmd, AuthRepo};
 	use common::repo::error::RepoError;
-	use testing::base::user;
+	use testing::user;
 	use testing::run_test_on_empty_db;
 
 	#[test_log::test(sqlx::test)]
@@ -60,7 +60,7 @@ mod get_by_token {
 	use base::model::AuthToken;
 	use base::repo::{AuthCreateCmd, AuthRepo};
 	use common::repo::error::RepoError;
-	use testing::base::user;
+	use testing::user;
 	use testing::run_test_on_empty_db;
 
 	#[test_log::test(sqlx::test)]

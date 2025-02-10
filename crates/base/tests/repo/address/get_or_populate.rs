@@ -6,7 +6,7 @@
 
 use base::repo::AddressRepo;
 use testing::run_test_on_empty_db;
-use testing::solana::address::count_all;
+use testing::address::count_all;
 
 #[sqlx::test]
 async fn test_already_in_db() {

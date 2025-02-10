@@ -4,10 +4,9 @@
 use common::repo::error::RepoError;
 use base::repo::WalletRepo;
 use sqlx::Acquire;
-use testing::base::user::create_telegram_user;
-use testing::base::wallet::count_all;
-use testing::base::{user, wallet};
-use testing::{run_test_on_empty_db, run_test_with_pool_on_empty_db};
+use testing::user::create_telegram_user;
+use testing::wallet::count_all;
+use testing::{run_test_on_empty_db, run_test_with_pool_on_empty_db, user, wallet};
 
 use crate::repo::wallet::{create_wallet, PRIVATE_KEY, PUBLIC_KEY};
 

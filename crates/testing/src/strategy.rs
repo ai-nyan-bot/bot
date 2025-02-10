@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::base::user::{get_or_create_another_user, get_or_create_test_user};
+use crate::user::{get_or_create_another_user, get_or_create_test_user};
 use base::model::Action::Notify;
 use base::model::Condition::Compare;
 use base::model::Fact::TokenCreationDuration;

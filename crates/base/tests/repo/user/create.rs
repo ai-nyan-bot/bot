@@ -5,7 +5,7 @@ mod create_telegram_user {
     use base::model::UserId;
     use common::repo::error::RepoError;
     use sqlx::Acquire;
-    use testing::base::user::{count_all, create_telegram_user, list_all};
+    use testing::user::{count_all, create_telegram_user, list_all};
     use testing::run_test_on_empty_db;
 
     #[test_log::test(sqlx::test)]

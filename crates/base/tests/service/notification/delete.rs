@@ -9,7 +9,7 @@ use serde_json::Map;
 use sqlx::types::JsonValue;
 use std::fmt::{Display, Formatter};
 use JsonValue::Object;
-use testing::base::notification::{count_all, create_notification_for_another_user, create_notification_for_test_user};
+use testing::notification::{count_all, create_notification_for_another_user, create_notification_for_test_user};
 use testing::run_test_with_pool_on_empty_db;
 use NotificationChannel::Telegram;
 use NotificationKind::ConditionMet;

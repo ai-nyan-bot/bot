@@ -7,7 +7,7 @@ use common::repo::error::RepoError;
 use serde_json::Map;
 use sqlx::types::JsonValue;
 use sqlx::Acquire;
-use testing::base::user::get_or_create_test_user;
+use testing::user::get_or_create_test_user;
 use testing::run_test_on_empty_db;
 
 #[test_log::test(sqlx::test)]
@@ -38,7 +38,7 @@ async fn test_create() {
         assert_eq!(result.kind, NotificationKind::ConditionMet);
         assert_eq!(&result.payload.0.to_string(), "{\"answer\":\"42\"}");
 
-        let count = testing::base::notification::count_all(&mut tx).await;
+        let count = testing::notification::count_all(&mut tx).await;
         assert_eq!(count, 1)
     })
     .await
@@ -66,7 +66,7 @@ async fn test_notification_requires_existing_user() {
 
         assert_eq!(result.err(), Some(RepoError::ForeignKeyViolation));
 
-        let count = testing::base::strategy::count_all(&mut tx).await;
+        let count = testing::strategy::count_all(&mut tx).await;
         assert_eq!(count, 0)
     })
     .await

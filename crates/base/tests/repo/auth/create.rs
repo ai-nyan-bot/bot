@@ -6,8 +6,8 @@ mod create_telegram_user {
 	use base::repo::{AuthCreateCmd, AuthRepo};
 	use common::repo::error::RepoError;
 	use sqlx::Acquire;
-	use testing::base::auth::{count_all, list_all};
-	use testing::base::user;
+	use testing::auth::{count_all, list_all};
+	use testing::user;
 	use testing::run_test_on_empty_db;
 
 	#[test_log::test(sqlx::test)]

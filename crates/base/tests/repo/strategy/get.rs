@@ -8,7 +8,7 @@ mod get_by_id {
     use base::model::{Condition, Value};
     use base::repo::StrategyRepo;
     use common::repo::error::RepoError;
-    use testing::base::strategy::create_strategy_for_test_user;
+    use testing::strategy::create_strategy_for_test_user;
     use testing::run_test;
 
     #[test_log::test(sqlx::test)]

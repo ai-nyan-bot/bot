@@ -4,8 +4,8 @@
 mod condition_met {
     use base::repo::NotificationRepo;
     use base::service::{NotificationConditionMet, NotificationService};
-    use testing::base::notification::count_all;
-    use testing::base::user::get_or_create_test_user;
+    use testing::notification::count_all;
+    use testing::user::get_or_create_test_user;
     use testing::run_test_with_pool_on_empty_db;
 
     #[test_log::test(sqlx::test)]

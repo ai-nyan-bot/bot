@@ -5,7 +5,7 @@ use base::model::{NotificationChannel, NotificationKind, NotificationPayload};
 use base::repo::NotificationRepo;
 use serde_json::Map;
 use sqlx::types::JsonValue;
-use testing::base::notification::{count_all, create_notification_for_test_user};
+use testing::notification::{count_all, create_notification_for_test_user};
 use testing::run_test;
 
 #[test_log::test(sqlx::test)]

@@ -5,7 +5,7 @@ mod get_by_id {
 	use crate::repo::wallet::{create_wallet, PRIVATE_KEY, PUBLIC_KEY};
 	use common::repo::error::RepoError;
 	use base::repo::WalletRepo;
-	use testing::base::user::create_telegram_user;
+	use testing::user::create_telegram_user;
 	use testing::run_test_on_empty_db;
 
 	#[test_log::test(sqlx::test)]
@@ -15,7 +15,7 @@ mod get_by_id {
             let _ = create_telegram_user(&mut tx, "1").await.unwrap();
 
             let user = create_telegram_user(&mut tx, "2").await.unwrap();
-            let _ = testing::base::wallet::create_wallet(&mut tx, user.id).await;
+            let _ = testing::wallet::create_wallet(&mut tx, user.id).await;
 
             let user = create_telegram_user(&mut tx, "3").await.unwrap();
             let _ = create_wallet(&mut tx, user.id, PUBLIC_KEY.clone(), PRIVATE_KEY.clone()).await.unwrap();
@@ -34,7 +34,7 @@ mod get_by_id {
         run_test_on_empty_db(|mut tx| async move {
             let test_instance = WalletRepo::default();
             let user = create_telegram_user(&mut tx, "ABC").await.unwrap();
-            let _ = testing::base::wallet::create_wallet(&mut tx, user.id).await;
+            let _ = testing::wallet::create_wallet(&mut tx, user.id).await;
 
             let result = test_instance.get_by_id(&mut tx, 1337).await;
             assert_eq!(result.err(), Some(RepoError::NotFound))
@@ -47,8 +47,8 @@ mod get_by_user_id {
 	use crate::repo::wallet::{create_wallet, PRIVATE_KEY, PUBLIC_KEY};
 	use common::repo::error::RepoError;
 	use base::repo::WalletRepo;
-	use testing::base::user::create_telegram_user;
-	use testing::base::wallet;
+	use testing::user::create_telegram_user;
+	use testing::wallet;
 	use testing::run_test_on_empty_db;
 
 	#[test_log::test(sqlx::test)]
