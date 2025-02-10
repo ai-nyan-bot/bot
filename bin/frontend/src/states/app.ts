@@ -9,7 +9,7 @@ export type AuthState = {
         id: string;
     };
     token: string;
-    telegram: {
+    telegram?: {
         id: string;
     }
 }

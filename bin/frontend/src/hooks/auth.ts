@@ -84,7 +84,7 @@ export const useMetaMask = (): [MetaMaskAction, string | null, boolean, Error | 
 
                         appDispatch({
                             type: 'APP_LOGIN_METAMASK',
-                            userId: data.userId,
+                            user: data.user,
                             token: data.token,
                             wallet: data.wallet,
                         })

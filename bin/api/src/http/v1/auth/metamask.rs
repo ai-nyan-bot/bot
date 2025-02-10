@@ -20,7 +20,7 @@ pub struct TokenRequest {
 #[serde(rename_all = "camelCase")]
 pub struct TokenResponse {
     token: String,
-    user_id: String,
+    user: UserResponse,
     wallet: WalletResponse,
 }
 
@@ -29,10 +29,12 @@ pub struct WalletResponse {
     pub(crate) solana: String,
 }
 
-pub async fn metamask(
-    State(_state): State<AppState>,
-    JsonReq(req): JsonReq<TokenRequest>,
-) -> Result<Json<TokenResponse>, HttpError> {
+#[derive(Debug, Deserialize, Serialize)]
+pub struct UserResponse {
+    pub(crate) id: String,
+}
+
+pub async fn metamask(State(_state): State<AppState>, JsonReq(req): JsonReq<TokenRequest>) -> Result<Json<TokenResponse>, HttpError> {
     debug!("POST /v1/auth/metamask {:?}", req);
 
     // if user not exists yet
@@ -40,7 +42,7 @@ pub async fn metamask(
 
     Ok(Json(TokenResponse {
         token: "token".to_string(),
-        user_id: "user_id".to_string(),
+        user: UserResponse { id: "user_id".to_string() },
         wallet: WalletResponse {
             solana: "Bp65Vdx5o5THggj1ZHYsVwaKPhp999mRmAeKyFG9FVnT".to_string(),
         },
