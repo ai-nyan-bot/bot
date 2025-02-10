@@ -4,7 +4,8 @@
 use crate::config::Config;
 use crate::fact::FactService;
 use crate::state::{AppState, AppStateInner, Service};
-use base::repo::{NotificationRepo, StrategyRepo};
+use base::model::Action;
+use base::repo::{InvocationCreateCmd, InvocationRepo, NotificationRepo, StrategyRepo};
 use base::service::{NotificationConditionMet, NotificationService, StrategyService};
 use common::repo::pool::setup_pool;
 use solana::repo::pumpfun::ReadTradeRepo;
@@ -47,17 +48,47 @@ fn main() {
             for strategy in &strategies {
                 if strategy.sequence.condition.test(&facts) {
                     println!("met - {token_pair_id}");
+                    let mut tx = pool.begin().await.unwrap();
 
-                    let _ = state
-                        .service
-                        .notification
-                        .condition_met(NotificationConditionMet {
-                            user: strategy.user,
-                            token_pair: token_pair_id,
-                        })
-                        .await;
+                    match InvocationRepo::new()
+                        .create(
+                            &mut tx,
+                            InvocationCreateCmd {
+                                user: strategy.user,
+                                strategy: strategy.id,
+                                token_pair: token_pair_id,
+                                sequence: strategy.sequence.clone(),
+                            },
+                        )
+                        .await
+                    {
+                        Ok(_) => {
+                            match strategy.sequence.action {
+                                Action::AndThen(_, _) => {}
+                                Action::Buy => {}
+                                Action::Notify => {
+                                    let _ = state
+                                        .service
+                                        .notification
+                                        .create_condition_met_tx(
+                                            &mut tx,
+                                            NotificationConditionMet {
+                                                user: strategy.user,
+                                                token_pair: token_pair_id,
+                                            },
+                                        )
+                                        .await;
+                                }
+                                Action::Sell => {}
+                            }
 
-                    return;
+                            let _ = tx.commit().await.unwrap();
+                        }
+                        Err(_) => {
+                            // FIXME cache already invoked strategies - otherwise this might be heavy on the database
+                            let _ = tx.rollback().await.unwrap();
+                        }
+                    }
                 }
             }
         }

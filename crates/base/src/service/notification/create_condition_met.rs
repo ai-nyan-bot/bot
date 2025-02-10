@@ -5,6 +5,7 @@ use crate::model::TokenPairId;
 use crate::model::{NotificationChannel, NotificationKind, NotificationPayload, UserId};
 use crate::repo::NotificationCreateCmd;
 use crate::service::notification::NotificationService;
+use common::repo::Tx;
 use common::service::ServiceResult;
 use serde_json::Map;
 use sqlx::types::JsonValue;
@@ -15,11 +16,18 @@ pub struct NotificationConditionMet {
 }
 
 impl NotificationService {
-    pub async fn condition_met(&self, notification: NotificationConditionMet) -> ServiceResult<()> {
+
+    pub async fn create_condition_met(&self, notification: NotificationConditionMet) -> ServiceResult<()> {
         let mut tx = self.pool.begin().await?;
+        self.create_condition_met_tx(&mut tx, notification).await?;
+        tx.commit().await?;
+        Ok(())
+    }
+
+    pub async fn create_condition_met_tx<'a>(&self, tx: &mut Tx<'a>, notification: NotificationConditionMet) -> ServiceResult<()> {
         self.repo
             .create(
-                &mut tx,
+                tx,
                 NotificationCreateCmd {
                     user: notification.user,
                     kind: NotificationKind::ConditionMet,
@@ -32,7 +40,7 @@ impl NotificationService {
                 },
             )
             .await?;
-        tx.commit().await?;
         Ok(())
     }
+    
 }

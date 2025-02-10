@@ -6,6 +6,8 @@ use base::model::Fact::TokenCreationDuration;
 use base::model::Operator::Exists;
 use base::model::{Action, Sequence, TokenMint, Value};
 use base::repo::{InvocationCreateCmd, InvocationRepo};
+use common::repo::error::RepoError;
+use sqlx::Acquire;
 use testing::base::invocation::count_all;
 use testing::base::strategy::create_strategy_for_test_user;
 use testing::base::user::get_or_create_test_user;
@@ -17,7 +19,6 @@ async fn test_create() {
     run_test(|mut tx| async move {
         let user = get_or_create_test_user(&mut tx).await;
         let strategy = create_strategy_for_test_user(&mut tx, "MoneyMaker").await;
-
         let token_pair = get_or_create_token_pair(&mut tx, TokenMint::usdc(), TokenMint::usdt()).await;
 
         let test_instance = InvocationRepo::new();
@@ -64,35 +65,108 @@ async fn test_create() {
     .await
 }
 
+// FIXME ensure strategy and tokenpair as well
 #[test_log::test(sqlx::test)]
 async fn test_invocation_requires_existing_user() {
-    // FIXME ensure strategy and tokenpair as well
+    run_test(|mut tx| async move {
+        let test_instance = InvocationRepo::new();
 
-    todo!()
-    // run_test_on_empty_db(|mut tx| async move {
-    //     let test_instance = InvocationRepo::new();
-    //     let result = test_instance
-    //         .create(
-    //             &mut tx.begin().await.unwrap(),
-    //             InvocationCreateCmd {
-    //                 user: 123456789.into(), // does not exist
-    //                 name: "ChubakaStrat1337".into(),
-    //                 sequence: Sequence {
-    //                     condition: Compare {
-    //                         fact: TokenCreationDuration,
-    //                         operator: Exists,
-    //                         value: Value::Boolean(false),
-    //                         timeframe: None,
-    //                     },
-    //                     action: Action::Buy,
-    //                 },
-    //             },
-    //         )
-    //         .await;
-    //     assert_eq!(result.err(), Some(RepoError::ForeignKeyViolation));
-    //
-    //     let count = testing::base::invocation::count_all(&mut tx).await;
-    //     assert_eq!(count, 0)
-    // })
-    // .await
+        let strategy = create_strategy_for_test_user(&mut tx, "MoneyMaker").await;
+        let token_pair = get_or_create_token_pair(&mut tx, TokenMint::usdc(), TokenMint::usdt()).await;
+
+        let result = test_instance
+            .create(
+                &mut tx.begin().await.unwrap(),
+                InvocationCreateCmd {
+                    user: 1234567.into(),
+                    strategy: strategy.id,
+                    token_pair: token_pair.id,
+                    sequence: Sequence {
+                        condition: Compare {
+                            fact: TokenCreationDuration,
+                            operator: Exists,
+                            value: Value::Boolean(false),
+                            timeframe: None,
+                        },
+                        action: Action::Buy,
+                    },
+                },
+            )
+            .await;
+        assert_eq!(result.err(), Some(RepoError::ForeignKeyViolation));
+
+        let count = count_all(&mut tx).await;
+        assert_eq!(count, 0)
+    })
+    .await
+}
+
+#[test_log::test(sqlx::test)]
+async fn test_invocation_requires_existing_strategy() {
+    run_test(|mut tx| async move {
+        let test_instance = InvocationRepo::new();
+
+        let user = get_or_create_test_user(&mut tx).await;
+        let token_pair = get_or_create_token_pair(&mut tx, TokenMint::usdc(), TokenMint::usdt()).await;
+
+        let result = test_instance
+            .create(
+                &mut tx.begin().await.unwrap(),
+                InvocationCreateCmd {
+                    user: user.id,
+                    strategy: 12345678.into(),
+                    token_pair: token_pair.id,
+                    sequence: Sequence {
+                        condition: Compare {
+                            fact: TokenCreationDuration,
+                            operator: Exists,
+                            value: Value::Boolean(false),
+                            timeframe: None,
+                        },
+                        action: Action::Buy,
+                    },
+                },
+            )
+            .await;
+        assert_eq!(result.err(), Some(RepoError::ForeignKeyViolation));
+
+        let count = count_all(&mut tx).await;
+        assert_eq!(count, 0)
+    })
+    .await
+}
+
+#[test_log::test(sqlx::test)]
+async fn test_invocation_requires_existing_token_pair() {
+    run_test(|mut tx| async move {
+        let test_instance = InvocationRepo::new();
+
+        let user = get_or_create_test_user(&mut tx).await;
+        let strategy = create_strategy_for_test_user(&mut tx, "MoneyMaker").await;
+
+        let result = test_instance
+            .create(
+                &mut tx.begin().await.unwrap(),
+                InvocationCreateCmd {
+                    user: user.id,
+                    strategy: strategy.id,
+                    token_pair: 12345679.into(),
+                    sequence: Sequence {
+                        condition: Compare {
+                            fact: TokenCreationDuration,
+                            operator: Exists,
+                            value: Value::Boolean(false),
+                            timeframe: None,
+                        },
+                        action: Action::Buy,
+                    },
+                },
+            )
+            .await;
+        assert_eq!(result.err(), Some(RepoError::ForeignKeyViolation));
+
+        let count = count_all(&mut tx).await;
+        assert_eq!(count, 0)
+    })
+    .await
 }

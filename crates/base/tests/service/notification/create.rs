@@ -17,7 +17,7 @@ mod condition_met {
 
             let test_instance = NotificationService::new(pool.clone(), NotificationRepo::new());
             test_instance
-                .condition_met(NotificationConditionMet {
+                .create_condition_met(NotificationConditionMet {
                     user: test_user.id,
                     token_pair: 234.into(),
                 })

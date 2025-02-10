@@ -1,9 +1,9 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-pub use create::NotificationConditionMet;
+pub use create_condition_met::NotificationConditionMet;
 
-mod create;
+mod create_condition_met;
 mod delete;
 
 use crate::repo::NotificationRepo;
