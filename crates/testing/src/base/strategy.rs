@@ -9,9 +9,9 @@ use base::model::Operator::{Equal, Exists};
 use base::model::{Fact, Sequence, Strategy, StrategyName, Value};
 use base::repo::{StrategyCreateCmd, StrategyQueryAll, StrategyRepo};
 use common::model::{Count, Limit};
-use common::repo::{RepoResult, Tx};
+use common::repo::Tx;
 
-pub async fn create_strategy_for_test_user<'a>(tx: &mut Tx<'a>, name: impl Into<StrategyName>) -> RepoResult<Strategy> {
+pub async fn create_strategy_for_test_user<'a>(tx: &mut Tx<'a>, name: impl Into<StrategyName>) -> Strategy {
     let test_user = get_or_create_test_user(tx).await;
     StrategyRepo::new()
         .create(
@@ -31,9 +31,10 @@ pub async fn create_strategy_for_test_user<'a>(tx: &mut Tx<'a>, name: impl Into<
             },
         )
         .await
+        .unwrap()
 }
 
-pub async fn create_strategy_for_another_user<'a>(tx: &mut Tx<'a>, name: impl Into<StrategyName>) -> RepoResult<Strategy> {
+pub async fn create_strategy_for_another_user<'a>(tx: &mut Tx<'a>, name: impl Into<StrategyName>) -> Strategy {
     let another_user = get_or_create_another_user(tx).await;
     StrategyRepo::new()
         .create(
@@ -53,6 +54,7 @@ pub async fn create_strategy_for_another_user<'a>(tx: &mut Tx<'a>, name: impl In
             },
         )
         .await
+        .unwrap()
 }
 
 pub async fn count_all<'a>(tx: &mut Tx<'a>) -> Count {

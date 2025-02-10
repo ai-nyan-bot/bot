@@ -1,9 +1,9 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use solana::venue::pumpfun::{Pumpfun, Rpc};
 use solana_sdk::signature::Signer;
 use spl_associated_token_account::solana_program::pubkey;
-use web3::solana::venue::pumpfun::{Pumpfun, Rpc};
 
 #[tokio::main]
 async fn main() {

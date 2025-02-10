@@ -18,10 +18,12 @@ impl<L: LoadTokenInfo> TokenRepo<L> {
         result.extend(self.read.list_by_mints(tx, mints.clone()).await?);
 
         let to_insert = find_missing_mints(&mints, &result);
-        let mut inserted = self.insert_token(tx, &to_insert).await?;
+        if !to_insert.is_empty() {
+            let mut inserted = self.insert_token(tx, &to_insert).await?;
 
-        self.read.populate_cache(inserted.iter()).await;
-        result.append(&mut inserted);
+            self.read.populate_cache(inserted.iter()).await;
+            result.append(&mut inserted);
+        }
 
         result.sort_by(|l, r| l.id.cmp(&r.id));
         Ok(result)

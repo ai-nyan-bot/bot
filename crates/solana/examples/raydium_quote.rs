@@ -8,7 +8,7 @@ use tracing_subscriber::util::SubscriberInitExt;
 use tracing_subscriber::EnvFilter;
 
 use common::model::PublicKey;
-use web3::solana::venue::raydium::{Raydium, RaydiumSwap, SwapExecutionMode};
+use solana::venue::raydium::{Raydium, RaydiumSwap, SwapExecutionMode};
 
 #[tokio::main]
 async fn main() {

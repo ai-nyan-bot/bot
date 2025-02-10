@@ -12,7 +12,7 @@ mod list_all {
         run_test(|mut tx| async move {
             let test_instance = StrategyRepo::new();
 
-            let _ = create_strategy_for_test_user(&mut tx, "TheMoneyMaker").await.unwrap();
+            let _ = create_strategy_for_test_user(&mut tx, "TheMoneyMaker").await;
 
             let result = test_instance.list_all(&mut tx, StrategyQueryAll { limit: Limit::default() }).await.unwrap();
             assert_eq!(result.len(), 4);
@@ -52,7 +52,7 @@ mod list_all {
         run_test(|mut tx| async move {
             let test_instance = StrategyRepo::new();
 
-            let _ = create_strategy_for_test_user(&mut tx, "TheMoneyMaker").await.unwrap();
+            let _ = create_strategy_for_test_user(&mut tx, "TheMoneyMaker").await;
 
             let result = test_instance.list_all(&mut tx, StrategyQueryAll { limit: Limit(1) }).await.unwrap();
             assert_eq!(result.len(), 1);
@@ -91,8 +91,8 @@ mod list_user {
         run_test(|mut tx| async move {
             let test_instance = StrategyRepo::new();
 
-            let _ = create_strategy_for_test_user(&mut tx, "TheMoneyMaker").await.unwrap();
-            let _ = create_strategy_for_test_user(&mut tx, "WinningBig").await.unwrap();
+            let _ = create_strategy_for_test_user(&mut tx, "TheMoneyMaker").await;
+            let _ = create_strategy_for_test_user(&mut tx, "WinningBig").await;
 
             let result = test_instance
                 .list_user(
@@ -165,9 +165,9 @@ mod list_user {
         run_test(|mut tx| async move {
             let test_instance = StrategyRepo::new();
 
-            let _ = create_strategy_for_test_user(&mut tx, "A").await.unwrap();
-            let _ = create_strategy_for_test_user(&mut tx, "B").await.unwrap();
-            let _ = create_strategy_for_test_user(&mut tx, "C").await.unwrap();
+            let _ = create_strategy_for_test_user(&mut tx, "A").await;
+            let _ = create_strategy_for_test_user(&mut tx, "B").await;
+            let _ = create_strategy_for_test_user(&mut tx, "C").await;
 
             let result = test_instance
                 .list_user(

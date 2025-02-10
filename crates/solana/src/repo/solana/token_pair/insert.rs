@@ -13,6 +13,10 @@ use std::collections::HashMap;
 
 impl<L: LoadTokenInfo> TokenPairRepo<L> {
     pub async fn insert_token_pairs<'a>(&self, tx: &mut Tx<'a>, mints: &[TokenPairMint]) -> RepoResult<Vec<TokenPair>> {
+        if mints.is_empty() {
+            return Ok(vec![]);
+        }
+        
         let mut token_mints = Vec::with_capacity(mints.len() * 2);
         for (base, quote) in mints {
             if !token_mints.contains(base) {

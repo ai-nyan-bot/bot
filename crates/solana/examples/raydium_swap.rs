@@ -8,9 +8,9 @@ use tracing_subscriber::util::SubscriberInitExt;
 use tracing_subscriber::EnvFilter;
 
 use common::model::PublicKey;
-use web3::solana::venue::raydium::{
-    ComputeUnitLimits, PriorityFeeConfig, Raydium, RaydiumSwap, SwapConfigOverrides,
-    SwapExecutionMode,
+use solana::venue::raydium::{
+	ComputeUnitLimits, PriorityFeeConfig, Raydium, RaydiumSwap, SwapConfigOverrides,
+	SwapExecutionMode,
 };
 
 #[tokio::main]

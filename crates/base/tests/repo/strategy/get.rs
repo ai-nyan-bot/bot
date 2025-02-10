@@ -16,7 +16,7 @@ mod get_by_id {
         run_test(|mut tx| async move {
             let test_instance = StrategyRepo::new();
 
-            let strategy = create_strategy_for_test_user(&mut tx, "TheMoneyMaker").await.unwrap();
+            let strategy = create_strategy_for_test_user(&mut tx, "TheMoneyMaker").await;
 
             let result = test_instance.get_by_id(&mut tx, strategy.id).await.unwrap();
             assert_eq!(result.id, 4);

@@ -1,9 +1,9 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::{Sequence, StrategyId, UserId};
 use common::model::{CreatedAt, TokenPairId};
 
+use crate::model::{Sequence, StrategyId, UserId};
 pub use id::*;
 
 mod id;

@@ -2,10 +2,10 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use common::Signal;
+use solana::stream::{BlockStream, RpcBlockStream, RpcBlockStreamConfig, RpcSlotStream, SlotStream};
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
 use tracing_subscriber::EnvFilter;
-use web3::solana::stream::{BlockStream, RpcBlockStream, RpcBlockStreamConfig, RpcSlotStream, SlotStream};
 
 #[tokio::main]
 async fn main() {

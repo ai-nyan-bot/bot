@@ -3,6 +3,8 @@
 
 use crate::base::strategy::create_strategy_for_another_user;
 use crate::base::user::{get_or_create_another_user, get_or_create_test_user};
+use crate::solana::token_pair::get_or_create_token_pair;
+use common::model::TokenMint;
 use common::repo::Tx;
 use futures_util::FutureExt;
 use lazy_static::lazy_static;
@@ -75,9 +77,11 @@ where
         get_or_create_test_user(&mut tx).await;
         get_or_create_another_user(&mut tx).await;
 
-        create_strategy_for_another_user(&mut tx, "Strategy A").await.unwrap();
-        create_strategy_for_another_user(&mut tx, "Strategy B").await.unwrap();
-        create_strategy_for_another_user(&mut tx, "Strategy C").await.unwrap();
+        create_strategy_for_another_user(&mut tx, "Strategy A").await;
+        create_strategy_for_another_user(&mut tx, "Strategy B").await;
+        create_strategy_for_another_user(&mut tx, "Strategy C").await;
+
+        get_or_create_token_pair(&mut tx, TokenMint::usdc(), TokenMint::usdt()).await;
 
         test(tx).await;
     })

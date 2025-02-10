@@ -4724,6 +4724,8 @@ dependencies = [
  "test-log",
  "testing",
  "tokio",
+ "tracing",
+ "tracing-subscriber",
  "uint",
 ]
 

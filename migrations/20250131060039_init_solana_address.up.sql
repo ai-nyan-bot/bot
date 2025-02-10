@@ -7,4 +7,4 @@ create table solana.address
     address text not null
 );
 
-create unique index wallet_unique_address_idx on solana.address(address);
+create unique index address_unique_address_idx on solana.address(address);

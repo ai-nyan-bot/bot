@@ -91,8 +91,8 @@ async fn test_strategy_requires_existing_user() {
 async fn test_strategy_name_is_not_unique() {
     // Rational why wasting resources on a unique index for an edge case - if user does not want same name for the strategy it can be easily updated
     run_test_on_empty_db(|mut tx| async move {
-        let first = create_strategy_for_test_user(&mut tx, "A").await.unwrap();
-        let second = create_strategy_for_test_user(&mut tx, "A").await.unwrap();
+        let first = create_strategy_for_test_user(&mut tx, "A").await;
+        let second = create_strategy_for_test_user(&mut tx, "A").await;
 
         assert_eq!(first.user, 1);
         assert_eq!(second.user, 1);
