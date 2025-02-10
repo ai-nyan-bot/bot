@@ -4,9 +4,9 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original MIT License Copyright (c) blockworks-foundation 2024.
 
+use crate::model::PublicKey;
+use crate::model::{Address, AddressId};
 use crate::repo::AddressRepo;
-use common::model::PublicKey;
-use common::model::{Address, AddressId};
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 

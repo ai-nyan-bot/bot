@@ -1,10 +1,10 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use crate::model::TokenPairId;
 use crate::model::{NotificationChannel, NotificationKind, NotificationPayload, UserId};
 use crate::repo::NotificationCreateCmd;
 use crate::service::notification::NotificationService;
-use common::model::TokenPairId;
 use common::service::ServiceResult;
 use serde_json::Map;
 use sqlx::types::JsonValue;

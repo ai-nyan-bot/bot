@@ -1,8 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use base::model::{UserId, Wallet};
-use common::model::KeyPair;
+use base::model::{KeyPair, UserId, Wallet};
 use common::model::{Count, Limit};
 use common::repo::{RepoResult, Tx};
 

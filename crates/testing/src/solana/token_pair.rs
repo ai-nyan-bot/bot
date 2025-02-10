@@ -1,10 +1,11 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use base::model::{TokenMint, TokenPair};
 use base::repo::{ReadTokenPairRepo, ReadTokenRepo, TokenPairQuery, TokenPairRepo, TokenRepo};
-use common::model::{Count, Limit, TokenMint, TokenPair};
-use common::repo::Tx;
 use base::test::SuccessfulTokenInfoLoader;
+use common::model::{Count, Limit};
+use common::repo::Tx;
 
 pub async fn get_or_create_token_pair<'a>(tx: &mut Tx<'a>, base: impl Into<TokenMint> + Send, quote: impl Into<TokenMint> + Send) -> TokenPair {
     TokenPairRepo::new(

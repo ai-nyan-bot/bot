@@ -3,9 +3,9 @@
 
 use sqlx::Row;
 
-use crate::repo::wallet::{WalletQueryAll, WalletRepo};
+use crate::model::{PrivateKey, PublicKey};
 use crate::model::{UserId, Wallet, WalletId};
-use common::model::{PrivateKey, PublicKey};
+use crate::repo::wallet::{WalletQueryAll, WalletRepo};
 use common::model::{CreatedAt, UpdatedAt};
 use common::repo::{RepoResult, Tx};
 

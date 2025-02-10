@@ -4,7 +4,7 @@
 use crate::base::strategy::create_strategy_for_another_user;
 use crate::base::user::{get_or_create_another_user, get_or_create_test_user};
 use crate::solana::token_pair::get_or_create_token_pair;
-use common::model::TokenMint;
+use ::base::model::TokenMint;
 use common::repo::Tx;
 use futures_util::FutureExt;
 use lazy_static::lazy_static;

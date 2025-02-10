@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::Signature;
-use common::model::PublicKey;
+use base::model::PublicKey;
 
 #[derive(Debug, PartialEq)]
 pub enum TransactionStatus {

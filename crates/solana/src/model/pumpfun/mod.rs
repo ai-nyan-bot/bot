@@ -2,7 +2,8 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::Slot;
-use common::model::{AddressId, Amount, DecimalAmount, Price, PublicKey, Timestamp, TokenMint, TokenName, TokenPairId, TokenSymbol, TokenUri};
+use base::model::{AddressId, Amount, DecimalAmount, Price, PublicKey, TokenMint, TokenName, TokenPairId, TokenSymbol, TokenUri};
+use common::model::Timestamp;
 
 #[derive(Debug)]
 pub enum Instruction {

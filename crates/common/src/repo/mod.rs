@@ -3,7 +3,6 @@
 
 use sqlx::{Postgres, Transaction};
 
-pub mod cache;
 pub mod error;
 pub mod pool;
 

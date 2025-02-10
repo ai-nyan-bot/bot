@@ -4,7 +4,8 @@
 use crate::model::pumpfun::Trade;
 use crate::model::Slot;
 use crate::repo::pumpfun::ReadTradeRepo;
-use common::model::{AddressId, DecimalAmount, Price, Timestamp, TokenPairId};
+use base::model::{AddressId, DecimalAmount, Price, TokenPairId};
+use common::model::Timestamp;
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 

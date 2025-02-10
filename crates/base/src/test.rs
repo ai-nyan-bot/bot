@@ -1,9 +1,9 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use crate::model::{Decimals, TokenMint, TokenName, TokenSymbol};
 use crate::{LoadTokenInfo, TokenInfo};
 use async_trait::async_trait;
-use common::model::{Decimals, TokenMint, TokenName, TokenSymbol};
 use std::cell::UnsafeCell;
 use std::sync::{Arc, Mutex};
 

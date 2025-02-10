@@ -4,9 +4,9 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original MIT License Copyright (c) blockworks-foundation 2024.
 
+use crate::model::{TokenMint, TokenPair};
 use crate::repo::TokenPairRepo;
 use crate::LoadTokenInfo;
-use common::model::{TokenMint, TokenPair};
 use common::repo::error::RepoError;
 use common::repo::{RepoResult, Tx};
 

@@ -11,7 +11,7 @@ use crate::venue::raydium::math::{calc_total_without_take_pnl_no_orderbook, swap
 use crate::venue::raydium::{
     Error, ListPoolRequest, PoolSort, PoolSortOrder, Raydium, RaydiumQuote, RaydiumSwap, SwapDirection, RAYDIUM_LIQUIDITY_POOL_V4_PROGRAM_ID,
 };
-use common::model::PublicKey;
+use base::model::PublicKey;
 use log::debug;
 use solana_sdk::program_pack::Pack;
 use solana_sdk::pubkey::Pubkey;

@@ -10,7 +10,7 @@ use crate::http::v1::wallet::quote::QuoteResponse;
 use axum::extract::{Path, State};
 use axum::{Extension, Json};
 use base::model::AuthenticatedUser;
-use common::model::PublicKey;
+use base::model::PublicKey;
 use log::debug;
 use serde::{Deserialize, Serialize};
 use solana::venue::raydium::{ComputeUnitLimits, PriorityFeeConfig, Raydium, RaydiumSwap, SwapConfigOverrides, SwapExecutionMode};

@@ -1,8 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use base::model::{Fact, Facts};
-use common::model::TokenPairId;
+use base::model::{Fact, Facts, TokenPairId};
 use solana::repo::pumpfun::ReadTradeRepo;
 use sqlx::PgPool;
 

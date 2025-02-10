@@ -17,11 +17,11 @@ mod list;
 mod list_or_populate;
 mod shared;
 
+use crate::model::{TokenId, TokenPair, TokenPairId, TokenPairMint};
 use crate::repo::{ReadTokenRepo, TokenRepo};
 use crate::LoadTokenInfo;
 use common::model::Limit;
-use common::model::{TokenId, TokenPair, TokenPairId, TokenPairMint};
-use common::repo::cache::Cache;
+use crate::repo::cache::Cache;
 
 pub struct TokenPairQuery {
     pub limit: Limit,

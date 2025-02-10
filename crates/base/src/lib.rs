@@ -1,5 +1,5 @@
+use crate::model::{Decimals, TokenMint, TokenName, TokenSymbol};
 use async_trait::async_trait;
-use common::model::{Decimals, TokenMint, TokenName, TokenSymbol};
 
 pub mod model;
 pub mod repo;

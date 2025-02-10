@@ -1,9 +1,8 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use base::model::{UserId, Wallet};
+use base::model::{PrivateKey, PublicKey, UserId, Wallet};
 use base::repo::{WalletCreateCmd, WalletRepo};
-use common::model::{PrivateKey, PublicKey};
 use common::repo::{RepoResult, Tx};
 use lazy_static::lazy_static;
 use std::str::FromStr;

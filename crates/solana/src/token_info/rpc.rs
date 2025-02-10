@@ -2,9 +2,9 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use async_trait::async_trait;
+use base::model::{Decimals, TokenMint, TokenName, TokenSymbol};
 use base::{LoadTokenInfo, TokenInfo};
 use common::model::RpcUrl;
-use common::model::{Decimals, TokenMint, TokenName, TokenSymbol};
 use log::{debug, error, info};
 use mpl_token_metadata::accounts::Metadata;
 use serde::{Deserialize, Serialize};
@@ -157,9 +157,9 @@ fn sanitize_value(value: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-    use crate::token_info::rpc::sanitize_value;
+	use crate::token_info::rpc::sanitize_value;
 
-    #[test]
+	#[test]
     fn sanitize_value_success() {
         assert_eq!(sanitize_value(" BOMBO \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"), "BOMBO")
     }

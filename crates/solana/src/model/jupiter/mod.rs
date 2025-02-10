@@ -1,7 +1,8 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use common::model::{Amount, PublicKey, TokenMint};
+use base::model::PublicKey;
+use base::model::{Amount, TokenMint};
 
 #[derive(Debug)]
 pub enum Instruction {

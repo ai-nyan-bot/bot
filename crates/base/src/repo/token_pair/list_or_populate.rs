@@ -4,10 +4,10 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original MIT License Copyright (c) blockworks-foundation 2024.
 
+use crate::model::{TokenMint, TokenPair};
 use crate::repo::token_pair::shared::find_missing_mints;
 use crate::repo::TokenPairRepo;
 use crate::LoadTokenInfo;
-use common::model::{TokenMint, TokenPair};
 use common::repo::{RepoResult, Tx};
 
 impl<L: LoadTokenInfo> TokenPairRepo<L> {

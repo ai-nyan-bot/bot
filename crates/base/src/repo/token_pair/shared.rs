@@ -4,8 +4,8 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original MIT License Copyright (c) blockworks-foundation 2024.
 
+use crate::model::{Decimals, Token, TokenId, TokenMint, TokenName, TokenPair, TokenPairId, TokenPairMint, TokenSymbol};
 use crate::repo::ReadTokenPairRepo;
-use common::model::{Decimals, Token, TokenId, TokenMint, TokenName, TokenPair, TokenPairId, TokenPairMint, TokenSymbol};
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 use std::collections::{HashMap, HashSet};

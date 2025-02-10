@@ -3,7 +3,7 @@
 
 use std::fmt::{Display, Formatter, Write};
 
-use common::model::PublicKey;
+use base::model::PublicKey;
 
 use crate::venue::raydium::http::HttpError;
 

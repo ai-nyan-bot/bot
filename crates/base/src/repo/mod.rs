@@ -13,6 +13,7 @@ pub use crate::repo::wallet::{WalletCreateCmd, WalletQueryAll, WalletRepo};
 
 mod address;
 mod auth;
+pub(crate) mod cache;
 mod invocation;
 mod notification;
 mod strategy;

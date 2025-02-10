@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::{Account, Slot};
-use common::model::PublicKey;
+use base::model::PublicKey;
 use solana_client::rpc_response::SlotInfo as SdkSlotInfo;
 
 #[derive(Clone, Copy, Debug)]

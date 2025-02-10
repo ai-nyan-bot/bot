@@ -4,8 +4,8 @@
 use serde::{Deserialize, Serialize};
 
 use crate::model::UserId;
+use crate::model::{PrivateKey, PublicKey};
 use common::model::{CreatedAt, UpdatedAt};
-use common::model::{PrivateKey, PublicKey};
 
 #[derive(Eq, Hash, Copy, Clone, Debug, PartialEq, Deserialize, Serialize, sqlx::Type)]
 #[sqlx(transparent)]

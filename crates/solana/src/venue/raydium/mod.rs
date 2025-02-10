@@ -10,7 +10,7 @@
 use std::fmt::Display;
 use std::str::FromStr;
 
-use common::model::PublicKey;
+use base::model::PublicKey;
 use solana_sdk::pubkey;
 use solana_sdk::pubkey::Pubkey;
 

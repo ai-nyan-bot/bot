@@ -7,7 +7,7 @@ use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
 use tracing_subscriber::EnvFilter;
 
-use common::model::PublicKey;
+use base::model::PublicKey;
 use solana::venue::raydium::{Raydium, RaydiumSwap, SwapExecutionMode};
 
 #[tokio::main]

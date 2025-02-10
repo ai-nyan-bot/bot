@@ -3,7 +3,7 @@
 
 use crate::model::Account;
 use crate::rpc::{RpcClient, RpcResult};
-use common::model::PublicKey;
+use base::model::PublicKey;
 use solana_client::rpc_config::RpcAccountInfoConfig;
 use solana_sdk::commitment_config::CommitmentConfig;
 

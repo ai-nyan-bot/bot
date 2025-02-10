@@ -4,9 +4,9 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original MIT License Copyright (c) blockworks-foundation 2024.
 
+use base::model::TokenMint;
 use base::repo::TokenRepo;
 use base::test::{FailingTokenInfoLoader, SuccessfulTokenInfoLoader};
-use common::model::TokenMint;
 use common::repo::error::RepoError::NotFound;
 use testing::run_test_on_empty_db;
 use testing::solana::token::count_all;

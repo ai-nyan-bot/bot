@@ -1,8 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::Operator;
-use common::model::Price;
+use crate::model::{Operator, Price};
 use serde::{Deserialize, Serialize};
 use std::time::Duration;
 
@@ -75,12 +74,12 @@ pub(crate) fn compare(fact: &Value, operator: &Operator, rule: &Value) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use std::time::Duration;
-    use Operator::{Equal, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, NotEqual};
-    use Value::{Boolean, Number};
+	use super::*;
+	use std::time::Duration;
+	use Operator::{Equal, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, NotEqual};
+	use Value::{Boolean, Number};
 
-    #[test]
+	#[test]
     fn test_boolean_comparisons() {
         assert!(compare(&Boolean(true), &Equal, &Boolean(true)));
         assert!(!compare(&Boolean(true), &Equal, &Boolean(false)));

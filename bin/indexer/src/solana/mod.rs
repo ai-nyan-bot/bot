@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use common::model::{PublicKey, RpcUrl};
+use common::model::RpcUrl;
 use std::process::exit;
 use std::str::FromStr;
 use std::sync::Arc;
@@ -12,6 +12,7 @@ use crate::config::Config;
 use crate::solana::indexer::IndexerRepo;
 use crate::solana::pumpfun::index_trade;
 use crate::solana::state::{State, StateInner};
+use base::model::PublicKey;
 use base::repo::{AddressRepo, ReadTokenPairRepo, ReadTokenRepo, TokenPairRepo, TokenRepo};
 use common::repo::pool::setup_pool;
 use common::{model, ResolveOr, Signal};

@@ -4,9 +4,8 @@
 use base::model::Condition::Compare;
 use base::model::Fact::TokenCreationDuration;
 use base::model::Operator::Exists;
-use base::model::{Action, Sequence, Value};
+use base::model::{Action, Sequence, TokenMint, Value};
 use base::repo::{InvocationCreateCmd, InvocationRepo};
-use common::model::TokenMint;
 use testing::base::invocation::count_all;
 use testing::base::strategy::create_strategy_for_test_user;
 use testing::base::user::get_or_create_test_user;

@@ -1,10 +1,10 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use crate::model::KeyPair;
 use crate::model::{User, Wallet};
 use crate::repo::{UserCreateTelegramCmd, WalletCreateCmd};
 use crate::service::user::UserService;
-use common::model::KeyPair;
 use common::model::TelegramId;
 use common::repo::error::RepoError;
 use common::repo::Tx;

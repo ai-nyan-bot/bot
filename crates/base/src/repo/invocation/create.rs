@@ -1,10 +1,10 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use crate::model::TokenPairId;
 use crate::model::{Invocation, InvocationId, Sequence};
 use crate::model::{StrategyId, UserId};
 use crate::repo::invocation::InvocationRepo;
-use common::model::TokenPairId;
 use common::repo::{RepoResult, Tx};
 use sqlx::types::JsonValue;
 use sqlx::{query, Row};

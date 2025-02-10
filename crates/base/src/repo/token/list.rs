@@ -4,9 +4,9 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original MIT License Copyright (c) blockworks-foundation 2024.
 
+use crate::model::{Token, TokenId, TokenMint};
 use crate::repo::token::shared::{find_missing_ids, find_missing_mints};
 use crate::repo::ReadTokenRepo;
-use common::model::{Token, TokenId, TokenMint};
 use common::repo::{RepoResult, Tx};
 
 impl ReadTokenRepo {

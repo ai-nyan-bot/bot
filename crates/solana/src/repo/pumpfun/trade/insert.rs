@@ -6,8 +6,8 @@
 
 use crate::model::{Signature, Slot};
 use crate::repo::pumpfun::TradeRepo;
+use base::model::{Address, AddressId, Amount, DecimalAmount, Price, PublicKey, TokenMint, TokenPairId};
 use base::LoadTokenInfo;
-use common::model::{Address, AddressId, Amount, DecimalAmount, Price, PublicKey, TokenMint, TokenPairId};
 use common::model::{Count, Timestamp};
 use common::repo::{RepoResult, Tx};
 use log::trace;

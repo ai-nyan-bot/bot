@@ -9,7 +9,6 @@ lazy_static = { workspace = true }
 log = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
-solana-sdk = { workspace = true }
 sqlx = { workspace = true }
 time = { workspace = true }
 toml = { workspace = true }

@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use base::model::{AuthToken, UserId, WalletId};
-use common::model::PublicKey;
+use base::model::PublicKey;
 use common::model::TelegramId;
 use serde::{Deserialize, Serialize};
 

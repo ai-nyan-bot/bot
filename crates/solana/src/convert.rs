@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::{CompiledInstruction, InnerInstruction, InnerInstructions, Signature, Transaction, TransactionStatus};
-use common::model::PublicKey;
+use base::model::PublicKey;
 use solana_rpc_client::rpc_client::SerializableTransaction;
 use solana_sdk::bs58;
 use solana_transaction_status::option_serializer::OptionSerializer;
