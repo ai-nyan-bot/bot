@@ -3,6 +3,7 @@
 
 create table solana.invocation
 (
+    id              serial not null,
     user_id         int not null,
     strategy_id     int not null,
     token_pair_id   int not null,

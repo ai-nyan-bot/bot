@@ -9,6 +9,7 @@ pub use id::*;
 mod id;
 
 pub struct Invocation {
+    pub id: InvocationId,
     pub strategy: StrategyId,
     pub token_pair: TokenPairId,
     pub user: UserId,
