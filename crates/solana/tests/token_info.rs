@@ -1,9 +1,9 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use base::LoadTokenInfo;
 use dotenv::dotenv;
 use solana::token_info::rpc::RpcTokenInfoLoader;
-use solana::token_info::LoadTokenInfo;
 use std::env;
 
 #[test_log::test(tokio::test)]

@@ -11,7 +11,7 @@ use sqlx::{query, Row};
 
 impl StrategyRepo {
     pub async fn get_by_id<'a>(&self, tx: &mut Tx<'a>, id: impl Into<StrategyId> + Send) -> RepoResult<Strategy> {
-        Ok(query("select * from nyanbot.strategy where id = $1;")
+        Ok(query("select * from solana.strategy where id = $1;")
             .bind(id.into())
             .fetch_one(&mut **tx)
             .await

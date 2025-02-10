@@ -16,7 +16,7 @@ pub struct StrategyCreateCmd {
 
 impl StrategyRepo {
     pub async fn create<'a>(&self, tx: &mut Tx<'a>, cmd: StrategyCreateCmd) -> RepoResult<Strategy> {
-        let strategy_id = query("insert into nyanbot.strategy (version, name, sequence, user_id) values (1, $1, $2, $3) returning id")
+        let strategy_id = query("insert into solana.strategy (version, name, sequence, user_id) values (1, $1, $2, $3) returning id")
             .bind(cmd.name)
             .bind::<JsonValue>(cmd.sequence.into())
             .bind(cmd.user)

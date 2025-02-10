@@ -1,13 +1,12 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use base::repo::{AddressRepo, TokenPairRepo};
+use base::LoadTokenInfo;
 use common::model::Limit;
+pub use insert::{SlotTrade, SlotTrades};
 use std::ops::Deref;
 use std::sync::Arc;
-
-use crate::repo::solana::{AddressRepo, TokenPairRepo};
-use crate::token_info::LoadTokenInfo;
-pub use insert::{SlotTrade, SlotTrades};
 
 mod count;
 mod insert;

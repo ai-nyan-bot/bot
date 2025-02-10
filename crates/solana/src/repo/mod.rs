@@ -3,4 +3,3 @@
 
 pub mod jupiter;
 pub mod pumpfun;
-pub mod solana;

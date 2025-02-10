@@ -8,7 +8,7 @@ use sqlx::Row;
 
 impl StrategyRepo {
     pub async fn count_all<'a>(&self, tx: &mut Tx<'a>, query: StrategyQueryAll) -> RepoResult<Count> {
-        Ok(sqlx::query("select count(*) from nyanbot.strategy;")
+        Ok(sqlx::query("select count(*) from solana.strategy;")
             .fetch_one(&mut **tx)
             .await?
             .get::<Count, _>("count"))

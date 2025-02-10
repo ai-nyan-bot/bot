@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use solana::repo::solana::{AddressRepo, TokenPairRepo, TokenRepo};
+use base::repo::{AddressRepo, TokenPairRepo, TokenRepo};
 use solana::repo::{jupiter, pumpfun};
 use solana::token_info::rpc::RpcTokenInfoLoader;
 use sqlx::PgPool;

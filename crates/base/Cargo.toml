@@ -6,6 +6,7 @@ edition.workspace = true
 
 [dependencies]
 common = { path = "../common" }
+async-trait = { workspace = true }
 
 serde = { workspace = true }
 serde_json = { workspace = true }

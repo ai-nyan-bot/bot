@@ -337,6 +337,7 @@ dependencies = [
 name = "aggregator"
 version = "0.0.1"
 dependencies = [
+ "base",
  "common",
  "log",
  "serde",
@@ -868,6 +869,7 @@ dependencies = [
 name = "base"
 version = "0.0.1"
 dependencies = [
+ "async-trait",
  "common",
  "futures-util",
  "lazy_static",
@@ -2828,10 +2830,14 @@ dependencies = [
 name = "indexer"
 version = "0.0.1"
 dependencies = [
+ "base",
  "common",
+ "futures-util",
  "serde",
  "solana",
  "sqlx",
+ "test-log",
+ "testing",
  "tokio",
  "toml 0.8.19",
  "tracing",
@@ -4702,6 +4708,7 @@ name = "solana"
 version = "0.0.1"
 dependencies = [
  "async-trait",
+ "base",
  "common",
  "dotenv",
  "futures-util",

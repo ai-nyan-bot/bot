@@ -5,7 +5,7 @@
 // Original MIT License Copyright (c) blockworks-foundation 2024.
 
 use crate::repo::jupiter::{TradeQueryAll, TradeRepo};
-use crate::token_info::LoadTokenInfo;
+use base::LoadTokenInfo;
 use common::model::Count;
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;

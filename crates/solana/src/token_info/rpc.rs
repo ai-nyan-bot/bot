@@ -1,8 +1,8 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::token_info::{LoadTokenInfo, TokenInfo};
 use async_trait::async_trait;
+use base::{LoadTokenInfo, TokenInfo};
 use common::model::RpcUrl;
 use common::model::{Decimals, TokenMint, TokenName, TokenSymbol};
 use log::{debug, error, info};
@@ -157,9 +157,9 @@ fn sanitize_value(value: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-	use crate::token_info::rpc::sanitize_value;
+    use crate::token_info::rpc::sanitize_value;
 
-	#[test]
+    #[test]
     fn sanitize_value_success() {
         assert_eq!(sanitize_value(" BOMBO \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"), "BOMBO")
     }

@@ -5,8 +5,8 @@ use common::model::Limit;
 use std::ops::Deref;
 use std::sync::Arc;
 
+use base::repo::ReadTokenPairRepo;
 pub use calculate::*;
-use crate::repo::solana::ReadTokenPairRepo;
 
 mod calculate;
 mod count;

@@ -3,7 +3,7 @@
 
 use common::model::Partition;
 use solana::repo::pumpfun::CandleRepo;
-use solana::repo::solana::ReadTokenPairRepo;
+use base::repo::ReadTokenPairRepo;
 use sqlx::PgPool;
 use std::sync::Arc;
 use std::time::Duration;

@@ -1,5 +1,5 @@
 -- Copyright (c) nyanbot.com 2025.
 -- This file is licensed under the AGPL-3.0-or-later.
 
-drop trigger set_updated_at on nyanbot.strategy;
-drop table nyanbot.strategy cascade;
+drop trigger set_updated_at on solana.strategy;
+drop table solana.strategy cascade;

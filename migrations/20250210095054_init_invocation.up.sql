@@ -18,7 +18,7 @@ create table solana.invocation
 
     constraint fk_strategy
         foreign key (strategy_id)
-        references nyanbot.strategy(id),
+        references solana.strategy(id),
 
     constraint fk_token_pair
         foreign key (token_pair_id)

@@ -5,8 +5,8 @@ use common::model::Limit;
 use std::ops::Deref;
 use std::sync::Arc;
 
-use crate::repo::solana::{AddressRepo, TokenPairRepo};
-use crate::token_info::LoadTokenInfo;
+use base::repo::{AddressRepo, TokenPairRepo};
+use base::LoadTokenInfo;
 pub use insert::{SlotTrade, SlotTrades};
 
 mod count;

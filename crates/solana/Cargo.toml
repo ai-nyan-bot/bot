@@ -5,6 +5,7 @@ rust-version.workspace = true
 edition.workspace = true
 
 [dependencies]
+base = { path = "../base" }
 common = { path = "../common" }
 
 async-trait = { workspace = true }

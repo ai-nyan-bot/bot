@@ -1,7 +1,7 @@
 -- Copyright (c) nyanbot.com 2025.
 -- This file is licensed under the AGPL-3.0-or-later.
 
-create table nyanbot.strategy
+create table solana.strategy
 (
     id          serial primary key,
     version     smallint not null,
@@ -17,6 +17,6 @@ create table nyanbot.strategy
 );
 
 create trigger set_updated_at
-before update on nyanbot.strategy
+before update on solana.strategy
 for each row
 execute function update_updated_at_column();

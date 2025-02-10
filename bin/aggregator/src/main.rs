@@ -6,7 +6,7 @@ use crate::pumpfun::{RefreshCandles, RefreshSummary};
 use common::repo::pool::setup_pool;
 use common::ResolveOr;
 use log::{info, LevelFilter};
-use solana::repo::solana::{ReadTokenPairRepo, ReadTokenRepo};
+use base::repo::{ReadTokenPairRepo, ReadTokenRepo};
 use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
 use sqlx::{ConnectOptions, PgPool};
 use std::time::Duration;

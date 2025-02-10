@@ -11,7 +11,7 @@ use sqlx::Row;
 
 impl StrategyRepo {
     pub async fn list_all<'a>(&self, tx: &mut Tx<'a>, query: StrategyQueryAll) -> RepoResult<Box<[Strategy]>> {
-        Ok(sqlx::query("select * from nyanbot.strategy order by id desc limit $1;")
+        Ok(sqlx::query("select * from solana.strategy order by id desc limit $1;")
             .bind(query.limit)
             .fetch_all(&mut **tx)
             .await?
@@ -30,7 +30,7 @@ impl StrategyRepo {
     }
 
     pub async fn list_user<'a>(&self, tx: &mut Tx<'a>, query: StrategyQueryUser) -> RepoResult<Box<[Strategy]>> {
-        Ok(sqlx::query("select * from nyanbot.strategy where user_id = $1 order by id desc limit $2;")
+        Ok(sqlx::query("select * from solana.strategy where user_id = $1 order by id desc limit $2;")
             .bind(query.user)
             .bind(query.limit)
             .fetch_all(&mut **tx)

@@ -6,7 +6,7 @@
 
 use crate::model::{Signature, Slot};
 use crate::repo::jupiter::TradeRepo;
-use crate::token_info::LoadTokenInfo;
+use base::LoadTokenInfo;
 use common::model::{determine_mints, Address, AddressId, Amount, DecimalAmount, Price, PublicKey, Token, TokenMint, TokenPair, TokenPairMint};
 use common::model::{Count, Timestamp};
 use common::repo::{RepoResult, Tx};
