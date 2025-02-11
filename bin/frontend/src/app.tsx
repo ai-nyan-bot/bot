@@ -37,6 +37,7 @@ import {MetaMaskUIProvider} from "@metamask/sdk-react-ui";
 import {BrowserPage, HistoryPage, WalletPage} from "@pages/wallet";
 import {BalancePage} from "@pages/balance";
 import {SwapPage} from "@pages/wallet/pages/swap";
+import {StrategyCreatePage} from "@pages/strategy-create";
 
 const Authenticated: FC<{ children: ReactNode }> = ({children}) => {
     const {auth, connection} = useContext(ContextAppState);
@@ -69,6 +70,9 @@ const AppRouter = () => (
 
             <Route path={"/balance"} element={<Authenticated><BalancePage/></Authenticated>}/>
             {/*<Route path={"/home/portfolios"} element={<Authenticated><HomePage/></Authenticated>}/>*/}
+
+
+            <Route path={"/strategy/create"} element={<Authenticated><StrategyCreatePage/></Authenticated>}></Route>
 
             <Route path={"/wallet"} element={<Authenticated><WalletPage/></Authenticated>}/>
             <Route path={"/wallet/swap"} element={<Authenticated><SwapPage/></Authenticated>}/>
@@ -146,7 +150,7 @@ const App = () => {
         if (auth.type === "MetaMask") {
             setMetaMaskAuth(auth.user.id, auth.token);
         } else if (auth.type === "Telegram") {
-            setTelegramAuth(auth.user.id, auth.token, auth.telegram.id);
+            setTelegramAuth(auth.user.id, auth.token, auth.telegram!!.id);
         } else {
             setUnauthorized();
         }

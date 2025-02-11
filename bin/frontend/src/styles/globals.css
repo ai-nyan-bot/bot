@@ -177,41 +177,6 @@ svg {
     @apply transition duration-300 ease-out;
 }
 
-/* Type */
-
-h1 {
-    @apply text-shadow font-display text-3xl tracking-normal text-white;
-}
-
-h2 {
-    @apply text-shadow font-display text-2xl text-white;
-}
-
-h3 {
-    @apply text-shadow font-display text-lg text-white;
-}
-
-h4 {
-    @apply text-th-fgd-1;
-}
-
-p {
-    @apply text-th-fgd-3;
-}
-
-li {
-    @apply text-sm text-th-fgd-3;
-}
-
-a {
-    @apply default-transition cursor-pointer text-th-fgd-1 md:hover:text-th-fgd-3;
-}
-
-.font-mono {
-    @apply font-[500];
-    -webkit-font-feature-settings: 'zero' 1;
-    font-feature-settings: 'zero' 1;
-}
 
 /* Forms */
 

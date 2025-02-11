@@ -56,9 +56,9 @@ impl Condition {
 
 #[cfg(test)]
 mod tests {
-	use super::*;
+    use super::*;
 
-	fn facts() -> Facts {
+    fn facts() -> Facts {
         Facts::new()
             .with_value(Fact::TokenPriceQuote, Value::Number(1.0))
             .unwrap()
@@ -71,17 +71,17 @@ mod tests {
     }
 
     mod without_timeframe {
-		use crate::model::sequence::condition::tests::facts;
-		use crate::model::Condition::Not;
-		use crate::model::Fact::TokenTotalVolumeQuote;
-		use crate::model::{Condition, Fact, Operator, Value};
-		use std::time::Duration;
-		use Condition::{And, Compare, Or};
-		use Fact::TokenPriceQuote;
-		use Operator::{Equal, Exists};
-		use Value::Number;
+        use crate::model::sequence::condition::tests::facts;
+        use crate::model::Condition::Not;
+        use crate::model::Fact::TokenTotalVolumeQuote;
+        use crate::model::{Condition, Fact, Operator, Value};
+        use std::time::Duration;
+        use Condition::{And, Compare, Or};
+        use Fact::TokenPriceQuote;
+        use Operator::{Equal, Exists};
+        use Value::Number;
 
-		#[test]
+        #[test]
         fn test_equal_true() {
             assert_eq!(
                 Compare {
@@ -343,19 +343,19 @@ mod tests {
     }
 
     mod with_timeframe {
-		use crate::model::sequence::condition::tests::facts;
-		use crate::model::Condition::{And, Not, Or};
-		use crate::model::Fact::TokenVolumeQuote;
-		use crate::model::{Condition, Operator, Value};
-		use common::model::Timeframe;
-		use common::model::Timeframe::D1;
-		use std::time::Duration;
-		use Condition::Compare;
-		use Operator::{Equal, Exists};
-		use Timeframe::{M1, S1};
-		use Value::Number;
+        use crate::model::sequence::condition::tests::facts;
+        use crate::model::Condition::{And, Not, Or};
+        use crate::model::Fact::TokenVolumeQuote;
+        use crate::model::{Condition, Operator, Value};
+        use common::model::Timeframe;
+        use common::model::Timeframe::D1;
+        use std::time::Duration;
+        use Condition::Compare;
+        use Operator::{Equal, Exists};
+        use Timeframe::{M1, S1};
+        use Value::Number;
 
-		#[test]
+        #[test]
         fn test_equal_true() {
             assert_eq!(
                 Compare {
