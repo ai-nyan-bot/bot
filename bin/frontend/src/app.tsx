@@ -53,7 +53,7 @@ const AppRouter = () => (
             <Route path={"/home"} element={<Authenticated><HomePage/></Authenticated>}/>
             <Route path={"/rules"} element={<Authenticated><RuleListPage/></Authenticated>}></Route>
             <Route path={"/rules/:id"} element={<Authenticated><RuleDetailPage/></Authenticated>}></Route>
-            s <Route path='*' element={<NotFound/>}/>
+            <Route path='*' element={<NotFound/>}/>
         </Routes>
     </BrowserRouter>
 )
