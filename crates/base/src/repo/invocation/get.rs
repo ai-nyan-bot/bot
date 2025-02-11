@@ -3,7 +3,7 @@
 
 use crate::model::TokenPairId;
 use crate::model::{Invocation, InvocationId};
-use crate::model::{StrategyId, UserId};
+use crate::model::{RuleId, UserId};
 use crate::repo::invocation::InvocationRepo;
 use common::model::CreatedAt;
 use common::repo::{RepoResult, Tx};
@@ -19,7 +19,7 @@ impl InvocationRepo {
             .map(|r| Invocation {
                 id: r.get::<InvocationId, _>("id"),
                 user: r.get::<UserId, _>("user_id"),
-                strategy: r.get::<StrategyId, _>("strategy_id"),
+                rule: r.get::<RuleId, _>("rule_id"),
                 token_pair: r.get::<TokenPairId, _>("token_pair_id"),
                 next: {
                     let value = r.get::<JsonValue, _>("next");

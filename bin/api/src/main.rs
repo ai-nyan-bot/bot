@@ -10,8 +10,8 @@ use std::time::Duration;
 
 use crate::config::Config;
 use crate::http::state::{AppState, AppStateInner, Service};
-use base::repo::StrategyRepo;
-use base::service::StrategyService;
+use base::repo::RuleRepo;
+use base::service::RuleService;
 use base::service::UserService;
 use common::repo::pool::setup_pool;
 use common::ResolveOr;
@@ -57,7 +57,7 @@ fn main() {
         let router = router::setup_v1(AppState(Arc::new(AppStateInner {
             config,
             service: Service {
-                strategy: StrategyService::new(pool.clone(), StrategyRepo::new()),
+                rule: RuleService::new(pool.clone(), RuleRepo::new()),
                 user: UserService::new(pool.clone()),
             },
         })));

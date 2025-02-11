@@ -16,7 +16,7 @@ use std::ops::Deref;
 use std::panic;
 use std::path::Path;
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
-use strategy::create_strategy_for_another_user;
+use rule::create_rule_for_another_user;
 use token_pair::get_or_create_token_pair;
 use tokio::sync::OnceCell;
 
@@ -24,7 +24,7 @@ pub mod address;
 pub mod auth;
 pub mod invocation;
 pub mod notification;
-pub mod strategy;
+pub mod rule;
 pub mod token;
 pub mod token_pair;
 pub mod user;
@@ -84,9 +84,9 @@ where
         get_or_create_test_user(&mut tx).await;
         get_or_create_another_user(&mut tx).await;
 
-        create_strategy_for_another_user(&mut tx, "Strategy A").await;
-        create_strategy_for_another_user(&mut tx, "Strategy B").await;
-        create_strategy_for_another_user(&mut tx, "Strategy C").await;
+        create_rule_for_another_user(&mut tx, "Rule A").await;
+        create_rule_for_another_user(&mut tx, "Rule B").await;
+        create_rule_for_another_user(&mut tx, "Rule C").await;
 
         get_or_create_token_pair(&mut tx, TokenMint::usdc(), TokenMint::usdt()).await;
 

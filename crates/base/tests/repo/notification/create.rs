@@ -66,7 +66,7 @@ async fn test_notification_requires_existing_user() {
 
         assert_eq!(result.err(), Some(RepoError::ForeignKeyViolation));
 
-        let count = testing::strategy::count_all(&mut tx).await;
+        let count = testing::rule::count_all(&mut tx).await;
         assert_eq!(count, 0)
     })
     .await

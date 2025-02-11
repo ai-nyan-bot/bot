@@ -1,9 +1,9 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-pub use crate::model::strategy::id::StrategyId;
-pub use crate::model::strategy::name::StrategyName;
-pub use crate::model::strategy::version::StrategyVersion;
+pub use crate::model::rule::id::RuleId;
+pub use crate::model::rule::name::RuleName;
+pub use crate::model::rule::version::RuleVersion;
 use crate::model::{Sequence, UserId};
 use common::model::{CreatedAt, UpdatedAt};
 
@@ -12,10 +12,10 @@ mod name;
 mod version;
 
 #[derive(Debug)]
-pub struct Strategy {
-    pub id: StrategyId,
-    pub version: StrategyVersion,
-    pub name: StrategyName,
+pub struct Rule {
+    pub id: RuleId,
+    pub version: RuleVersion,
+    pub name: RuleName,
     pub sequence: Sequence,
     pub user: UserId,
     // active

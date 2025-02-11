@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::fact::FactService;
-use base::service::{NotificationService, StrategyService};
+use base::service::{NotificationService, RuleService};
 use std::ops::Deref;
 use std::sync::Arc;
 
@@ -25,5 +25,5 @@ pub struct AppStateInner {
 pub struct Service {
     pub fact: FactService,
     pub notification: NotificationService,
-    pub strategy: StrategyService,
+    pub rule: RuleService,
 }

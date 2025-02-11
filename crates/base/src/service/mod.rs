@@ -2,9 +2,9 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 pub use notification::{NotificationConditionMet, NotificationService};
-pub use strategy::StrategyService;
+pub use rule::RuleService;
 pub use user::{AuthenticateUserTelegramCmd, UserService};
 
 mod notification;
-mod strategy;
+mod rule;
 mod user;

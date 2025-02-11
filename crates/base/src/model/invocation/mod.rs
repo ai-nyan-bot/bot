@@ -3,14 +3,14 @@
 
 use common::model::CreatedAt;
 
-use crate::model::{Sequence, StrategyId, TokenPairId, UserId};
+use crate::model::{Sequence, RuleId, TokenPairId, UserId};
 pub use id::*;
 
 mod id;
 
 pub struct Invocation {
     pub id: InvocationId,
-    pub strategy: StrategyId,
+    pub rule: RuleId,
     pub token_pair: TokenPairId,
     pub user: UserId,
     pub next: Option<Sequence>,

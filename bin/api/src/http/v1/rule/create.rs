@@ -3,7 +3,7 @@
 
 use crate::http::error::HttpError;
 use crate::http::json::JsonReq;
-use crate::http::model::strategy::{StrategyCreateRequest, StrategyCreateResponse};
+use crate::http::model::rule::{RuleCreateRequest, RuleCreateResponse};
 use crate::http::state::AppState;
 use axum::extract::State;
 use axum::{Extension, Json};
@@ -14,11 +14,11 @@ use std::os::linux::raw::stat;
 pub async fn create(
     State(state): State<AppState>,
     Extension(user): Extension<AuthenticatedUser>,
-    JsonReq(req): JsonReq<StrategyCreateRequest>,
-) -> Result<Json<StrategyCreateResponse>, HttpError> {
-    debug!("POST /v1/strategies {:?}", req);
+    JsonReq(req): JsonReq<RuleCreateRequest>,
+) -> Result<Json<RuleCreateResponse>, HttpError> {
+    debug!("POST /v1/rules {:?}", req);
 
-    let result = state.strategy_service().create(user).await?;
+    let result = state.rule_service().create(user).await?;
 
-    Ok(Json(StrategyCreateResponse { id: result.id }))
+    Ok(Json(RuleCreateResponse { id: result.id }))
 }

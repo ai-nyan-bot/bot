@@ -5,21 +5,21 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Eq, Hash, Copy, Clone, Debug, PartialEq, PartialOrd, Ord, Deserialize, Serialize, sqlx::Type)]
 #[sqlx(transparent)]
-pub struct StrategyVersion(pub i16);
+pub struct RuleVersion(pub i16);
 
-impl AsRef<StrategyVersion> for StrategyVersion {
-    fn as_ref(&self) -> &StrategyVersion {
+impl AsRef<RuleVersion> for RuleVersion {
+    fn as_ref(&self) -> &RuleVersion {
         &self
     }
 }
 
-impl PartialEq<i16> for StrategyVersion {
+impl PartialEq<i16> for RuleVersion {
     fn eq(&self, other: &i16) -> bool {
         self.0 == *other
     }
 }
 
-impl From<i16> for StrategyVersion {
+impl From<i16> for RuleVersion {
     fn from(value: i16) -> Self {
         Self(value)
     }

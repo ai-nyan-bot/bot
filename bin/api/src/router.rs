@@ -26,7 +26,7 @@ pub fn setup_v1(app_state: AppState) -> Router {
         .nest(
             "/v1",
             Router::new()
-                .route("/strategies", post(v1::strategy::create))
+                .route("/strategies", post(v1::rule::create))
                 .route("/wallets", post(v1::wallet::create))
                 .route("/wallets/{id}", get(v1::wallet::get))
                 .route("/wallets/{id}/quote", post(v1::wallet::quote))

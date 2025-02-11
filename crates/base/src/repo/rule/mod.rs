@@ -19,30 +19,30 @@ mod get;
 mod list;
 mod update;
 
-pub struct StrategyQueryAll {
+pub struct RuleQueryAll {
     pub limit: Limit,
 }
 
-pub struct StrategyQueryUser {
+pub struct RuleQueryUser {
     pub user: UserId,
     pub limit: Limit,
 }
 
 #[derive(Debug, Clone)]
-pub struct StrategyRepo(pub Arc<StrategyRepoInner>);
+pub struct RuleRepo(pub Arc<RuleRepoInner>);
 
-impl Deref for StrategyRepo {
-    type Target = StrategyRepoInner;
+impl Deref for RuleRepo {
+    type Target = RuleRepoInner;
     fn deref(&self) -> &Self::Target {
         self.0.deref()
     }
 }
 
 #[derive(Debug)]
-pub struct StrategyRepoInner {}
+pub struct RuleRepoInner {}
 
-impl StrategyRepo {
+impl RuleRepo {
     pub fn new() -> Self {
-        Self(Arc::new(StrategyRepoInner {}))
+        Self(Arc::new(RuleRepoInner {}))
     }
 }

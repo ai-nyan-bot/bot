@@ -6,4 +6,4 @@ pub use health::health;
 pub mod auth;
 mod health;
 pub mod wallet;
-pub mod strategy;
+pub mod rule;

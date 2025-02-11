@@ -2,21 +2,21 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::AuthenticatedUser;
-use crate::model::{Action, Condition, Fact, Operator, Sequence, Strategy, Value};
-use crate::repo::StrategyCreateCmd;
-use crate::service::strategy::StrategyService;
+use crate::model::{Action, Condition, Fact, Operator, Sequence, Rule, Value};
+use crate::repo::RuleCreateCmd;
+use crate::service::rule::RuleService;
 use common::service::ServiceResult;
 
-impl StrategyService {
-    pub async fn create(&self, user: AuthenticatedUser) -> ServiceResult<Strategy> {
+impl RuleService {
+    pub async fn create(&self, user: AuthenticatedUser) -> ServiceResult<Rule> {
         let mut tx = self.pool.begin().await?;
         let result = self
             .repo
             .create(
                 &mut tx,
-                StrategyCreateCmd {
+                RuleCreateCmd {
                     user: user.id,
-                    name: "Some Strategy".into(),
+                    name: "Some Rule".into(),
                     sequence: Sequence {
                         condition: Condition::Compare {
                             fact: Fact::TokenPriceQuote,

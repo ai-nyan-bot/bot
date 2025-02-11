@@ -1,7 +1,7 @@
 -- Copyright (c) nyanbot.com 2025.
 -- This file is licensed under the AGPL-3.0-or-later.
 
-create table solana.strategy
+create table solana.rule
 (
     id          serial primary key,
     version     smallint not null,
@@ -17,6 +17,6 @@ create table solana.strategy
 );
 
 create trigger set_updated_at
-before update on solana.strategy
+before update on solana.rule
 for each row
 execute function update_updated_at_column();

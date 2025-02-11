@@ -11,8 +11,8 @@ use axum::body::{to_bytes, Body};
 use axum::http;
 use axum::response::Response;
 use axum::Router;
-use base::repo::StrategyRepo;
-use base::service::StrategyService;
+use base::repo::RuleRepo;
+use base::service::RuleService;
 use base::service::UserService;
 use common::ConfigValue;
 use serde::de::DeserializeOwned;
@@ -39,7 +39,7 @@ impl Test {
                     },
                 },
                 service: Service {
-                    strategy: StrategyService::new(pool.clone(), StrategyRepo::new()),
+                    rule: RuleService::new(pool.clone(), RuleRepo::new()),
                     user: UserService::new(pool.clone()),
                 },
             }))),

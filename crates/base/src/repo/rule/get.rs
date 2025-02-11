@@ -1,24 +1,24 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::{Strategy, StrategyId, StrategyName, StrategyVersion};
-use crate::repo::strategy::StrategyRepo;
+use crate::model::{Rule, RuleId, RuleName, RuleVersion};
+use crate::repo::rule::RuleRepo;
 use crate::model::UserId;
 use common::model::{CreatedAt, UpdatedAt};
 use common::repo::{RepoResult, Tx};
 use sqlx::types::JsonValue;
 use sqlx::{query, Row};
 
-impl StrategyRepo {
-    pub async fn get_by_id<'a>(&self, tx: &mut Tx<'a>, id: impl Into<StrategyId> + Send) -> RepoResult<Strategy> {
-        Ok(query("select * from solana.strategy where id = $1;")
+impl RuleRepo {
+    pub async fn get_by_id<'a>(&self, tx: &mut Tx<'a>, id: impl Into<RuleId> + Send) -> RepoResult<Rule> {
+        Ok(query("select * from solana.rule where id = $1;")
             .bind(id.into())
             .fetch_one(&mut **tx)
             .await
-            .map(|r| Strategy {
-                id: r.get::<StrategyId, _>("id"),
-                version: r.get::<StrategyVersion, _>("version"),
-                name: r.get::<StrategyName, _>("name"),
+            .map(|r| Rule {
+                id: r.get::<RuleId, _>("id"),
+                version: r.get::<RuleVersion, _>("version"),
+                name: r.get::<RuleName, _>("name"),
                 user: r.get::<UserId, _>("user_id"),
                 sequence: r.get::<JsonValue, _>("sequence").into(),
                 created_at: r.get::<CreatedAt, _>("created_at"),

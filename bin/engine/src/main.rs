@@ -5,8 +5,8 @@ use crate::config::Config;
 use crate::fact::FactService;
 use crate::state::{AppState, AppStateInner, Service};
 use base::model::Action;
-use base::repo::{InvocationCreateCmd, InvocationRepo, NotificationRepo, StrategyRepo};
-use base::service::{NotificationConditionMet, NotificationService, StrategyService};
+use base::repo::{InvocationCreateCmd, InvocationRepo, NotificationRepo, RuleRepo};
+use base::service::{NotificationConditionMet, NotificationService, RuleService};
 use common::repo::pool::setup_pool;
 use solana::repo::pumpfun::ReadTradeRepo;
 use std::sync::Arc;
@@ -38,15 +38,15 @@ fn main() {
             service: Service {
                 fact: FactService::new(pool.clone(), ReadTradeRepo::new()),
                 notification: NotificationService::new(pool.clone(), NotificationRepo::new()),
-                strategy: StrategyService::new(pool.clone(), StrategyRepo::new()),
+                rule: RuleService::new(pool.clone(), RuleRepo::new()),
             },
         }));
 
-        let strategies = state.service.strategy.list_active().await.unwrap();
+        let strategies = state.service.rule.list_active().await.unwrap();
 
         for (token_pair_id, facts) in state.service.fact.pumpfun_facts().await {
-            for strategy in &strategies {
-                if strategy.sequence.condition.test(&facts) {
+            for rule in &strategies {
+                if rule.sequence.condition.test(&facts) {
                     println!("met - {token_pair_id}");
                     let mut tx = pool.begin().await.unwrap();
 
@@ -54,8 +54,8 @@ fn main() {
                         .create(
                             &mut tx,
                             InvocationCreateCmd {
-                                user: strategy.user,
-                                strategy: strategy.id,
+                                user: rule.user,
+                                rule: rule.id,
                                 token_pair: token_pair_id,
                                 next: None,
                             },
@@ -63,7 +63,7 @@ fn main() {
                         .await
                     {
                         Ok(_) => {
-                            match strategy.sequence.action {
+                            match rule.sequence.action {
                                 Action::AndThen(_, _) => {}
                                 Action::Buy => {}
                                 Action::Notify => {
@@ -73,7 +73,7 @@ fn main() {
                                         .create_condition_met_tx(
                                             &mut tx,
                                             NotificationConditionMet {
-                                                user: strategy.user,
+                                                user: rule.user,
                                                 token_pair: token_pair_id,
                                             },
                                         )

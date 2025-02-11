@@ -5,20 +5,20 @@ create table solana.invocation
 (
     id              serial not null,
     user_id         int not null,
-    strategy_id     int not null,
+    rule_id     int not null,
     token_pair_id   int not null,
     next            json,
     created_at      timestamptz default (timezone('utc', now())),
 
-    primary key (strategy_id, token_pair_id),
+    primary key (rule_id, token_pair_id),
 
     constraint fk_user
         foreign key (user_id)
         references nyanbot.user(id),
 
-    constraint fk_strategy
-        foreign key (strategy_id)
-        references solana.strategy(id),
+    constraint fk_rule
+        foreign key (rule_id)
+        references solana.rule(id),
 
     constraint fk_token_pair
         foreign key (token_pair_id)

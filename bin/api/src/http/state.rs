@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::config::Config;
-use base::service::StrategyService;
+use base::service::RuleService;
 use base::service::UserService;
 use std::ops::Deref;
 use std::sync::Arc;
@@ -11,8 +11,8 @@ use std::sync::Arc;
 pub struct AppState(pub Arc<AppStateInner>);
 
 impl AppState {
-    pub fn strategy_service(&self) -> StrategyService {
-        self.service.strategy.clone()
+    pub fn rule_service(&self) -> RuleService {
+        self.service.rule.clone()
     }
     pub fn user_service(&self) -> UserService {
         self.service.user.clone()
@@ -34,6 +34,6 @@ pub struct AppStateInner {
 
 #[derive(Clone)]
 pub struct Service {
-    pub strategy: StrategyService,
+    pub rule: RuleService,
     pub user: UserService,
 }

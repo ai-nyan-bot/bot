@@ -5,7 +5,7 @@ mod address;
 mod auth;
 mod invocation;
 mod notification;
-mod strategy;
+mod rule;
 mod token;
 mod token_pair;
 mod user;
