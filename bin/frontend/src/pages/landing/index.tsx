@@ -9,7 +9,6 @@ const LandingPage = () => {
     const appState = useContext(ContextAppState);
     return (
         <div className={"w-full h-screen flex flex-col justify-evenly"}>
-            <img src={imageUrl("bot.png")} className={"w-full"}/>
             {appState.type === "Telegram" && <TelegramLanding/>}
             {appState.type === "WebApp" && <MetaMaskLanding/>}
         </div>
@@ -30,7 +29,7 @@ const TelegramLanding = () => {
 
         const auth = appState.auth;
         if (auth.type === "Telegram") {
-            navigate("/wallet");
+            navigate("/home");
         }
 
         if (auth.type === 'Unauthorized') {
@@ -57,7 +56,7 @@ const MetaMaskLanding = () => {
 
         const auth = appState.auth;
         if (auth.type === "MetaMask") {
-            navigate("/wallet");
+            navigate("/home");
         }
 
         return () => {

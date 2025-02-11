@@ -41,7 +41,7 @@ pub async fn metamask(State(_state): State<AppState>, JsonReq(req): JsonReq<Toke
     // create user
 
     Ok(Json(TokenResponse {
-        token: "token".to_string(),
+        token: "valid-token".to_string(),
         user: UserResponse { id: "user_id".to_string() },
         wallet: WalletResponse {
             solana: "Bp65Vdx5o5THggj1ZHYsVwaKPhp999mRmAeKyFG9FVnT".to_string(),

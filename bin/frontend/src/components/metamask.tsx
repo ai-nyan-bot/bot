@@ -1,7 +1,6 @@
 import {FC, useEffect, useState} from "react";
 import {useSDK} from "@metamask/sdk-react-ui";
 import {useMetaMask} from "@hooks/auth";
-import Button from "@components/forms/button.tsx";
 
 type MetaMaskButtonProps = {
     className?: string;
@@ -42,12 +41,12 @@ export const MetaMaskButton: FC<MetaMaskButtonProps> = ({className, code}) => {
 
     return (
         <>
-            <Button
+            <button
                 onClick={handleConnectAndSign}
                 // loading={connecting}
             >
                 Connect with MetaMask
-            </Button>
+            </button>
         </>
     )
 }

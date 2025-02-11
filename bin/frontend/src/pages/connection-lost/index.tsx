@@ -1,6 +1,6 @@
 import {useContext, useEffect} from "react";
-import {ContextAppState} from "@app/context";
 import {useNavigate} from "react-router-dom";
+import {ContextAppState} from "@app/context.ts";
 
 export const ConnectionLostPage = () => {
     const appState = useContext(ContextAppState);
@@ -13,7 +13,7 @@ export const ConnectionLostPage = () => {
             navigate("/");
         }
         if (status === "CONNECTED") {
-            navigate("/portfolios");
+            navigate("/home");
         }
     }, [authType, status, navigate]);
 

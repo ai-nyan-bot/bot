@@ -49,11 +49,11 @@ fn telegram_login(bot_token: String, req: TelegramAuthRequest) -> Result<Telegra
 
 #[cfg(test)]
 mod tests {
-	use crate::http::model::auth::TelegramAuthResponse;
-	use crate::http::testing::{extract, extract_error, Test};
-	use axum::http::StatusCode;
+    use crate::http::model::auth::TelegramAuthResponse;
+    use crate::http::testing::{extract, extract_error, Test};
+    use axum::http::StatusCode;
 
-	#[tokio::test]
+    #[tokio::test]
     async fn without_body_and_content_type() {
         let test = Test::new().await;
         let response = test.post_no_content("/v1/auth/telegram").await;

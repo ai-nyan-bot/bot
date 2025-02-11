@@ -1,5 +1,5 @@
 import {LocalStorage} from "@states/local";
-import {AppType, AuthType, PageType, TelegramWebApp} from "@types";
+import {AppType, AuthType, TelegramWebApp} from "@types";
 
 export type AppTheme = "LIGHT" | "DARK";
 
@@ -25,7 +25,6 @@ export type AppState = {
     type: AppType;
     theme: AppTheme;
     telegramData?: TelegramWebApp;
-    page: PageType;
     auth: AuthState;
     connection: {
         status: ConnectionStatus
@@ -37,7 +36,6 @@ export type AppState = {
 };
 
 export type AppAction =
-    | { type: 'APP_NAVIGATE_PAGE', page: PageType }
     | { type: 'APP_LOGIN_METAMASK', user: { id: string }, token: string, wallet: { solana: string } }
     | {
     type: 'APP_LOGIN_TELEGRAM',
@@ -52,12 +50,6 @@ export type AppAction =
 
 export const appReducer = (state: AppState, action: AppAction): AppState => {
     switch (action.type) {
-        case "APP_NAVIGATE_PAGE": {
-            return {
-                ...state,
-                page: action.page
-            }
-        }
         case "APP_CONNECTED": {
             return {
                 ...state,
@@ -143,7 +135,6 @@ export const appInitialState = (localStorage: LocalStorage): AppState => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         telegramData: window?.Telegram?.WebApp,
-        page: "Wallet",
         auth: {
             type: localStorage.auth.type,
             user: {

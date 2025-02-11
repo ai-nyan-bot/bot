@@ -66,27 +66,6 @@ export const useLocalStorage = () => {
     });
 }
 
-type SetAudioBackground = (active: boolean, volume: number) => void
-export const useSetAudioBackground = (): SetAudioBackground => {
-    const [, setLocalStorage] = useLocalStorage()
-
-    return useCallback((active, volume) => {
-        setLocalStorage(prev => {
-            return {
-                ...
-                    prev,
-                audio: {
-                    ...prev.audio,
-                    background: {
-                        active: active,
-                        volume: volume
-                    }
-                }
-            }
-        })
-    }, [setLocalStorage])
-}
-
 type SetMetamaskAuth = (userId: string, token: string) => void
 export const useSetMetaMaskAuth = (): SetMetamaskAuth => {
     const [, setLocalStorage] = useLocalStorage()

@@ -17,7 +17,7 @@ export const useSwap = (): [SwapAction, SwapResponse | null, boolean, Error | nu
     const [auth] = useAuth()
     const [post, response, loading, error] = usePost<SwapResponse>()
     const fn = useCallback(async (walletId: string, req: SwapRequest, abortController?: AbortController) =>
-        post(`/v1/wallets/${walletId}/swap`, req, abortController), [auth]
+        post(`/v1/wallet/${walletId}/swap`, req, abortController), [auth]
     )
     return [fn, response, loading, error]
 }

@@ -1,43 +1,26 @@
 import React, {FC, ReactNode, useContext, useEffect, useReducer} from "react";
 import {BrowserRouter, Route, Routes, useNavigate} from "react-router-dom";
 
-import {audioInitialState, audioReducer} from "@states/audio";
 import {modalInitialState, modalReducer} from "@states/modal";
-import {
-    ContextAppDispatch,
-    ContextAppState,
-    ContextAudioDispatch,
-    ContextAudioState,
-    ContextModalDispatch,
-    ContextModalState
-} from "./context.ts";
+import {ContextAppDispatch, ContextAppState, ContextModalDispatch, ContextModalState} from "./context.ts";
 
-import {
-    useLocalStorage,
-    useSetAudioBackground,
-    useSetMetaMaskAuth,
-    useSetTelegramAuth,
-    useSetUnauthorized,
-    useSetWallet
-} from "@states/local";
+import {useLocalStorage, useSetMetaMaskAuth, useSetTelegramAuth, useSetUnauthorized, useSetWallet} from "@states/local";
 import {appInitialState, appReducer} from "@states/app";
 import {Client} from "@components";
 
 import LandingPage from "@pages/landing";
+import {ConnectionLostPage} from "@pages/connection-lost";
 
 import {Modal} from "./modal.tsx";
 
-import {ConnectionLostPage} from "@pages/connection-lost";
 import Layout from "@app/layout.tsx";
 import NotFound from "@app/not-found.tsx";
 
 import './styles/globals.css'
 import {MetaMaskUIProvider} from "@metamask/sdk-react-ui";
-
-import {BrowserPage, HistoryPage, WalletPage} from "@pages/wallet";
-import {BalancePage} from "@pages/balance";
-import {SwapPage} from "@pages/wallet/pages/swap";
-import {StrategyCreatePage} from "@pages/strategy-create";
+import {RuleListPage} from "@pages/rule-list";
+import {RuleDetailPage} from "@pages/rule-detail";
+import {HomePage} from "@pages/home";
 
 const Authenticated: FC<{ children: ReactNode }> = ({children}) => {
     const {auth, connection} = useContext(ContextAppState);
@@ -67,24 +50,10 @@ const AppRouter = () => (
         <Routes>
             <Route path={"/"} element={<LandingPage/>}/>
             <Route path={"/connection-lost"} element={<ConnectionLostPage/>}/>
-
-            <Route path={"/balance"} element={<Authenticated><BalancePage/></Authenticated>}/>
-            {/*<Route path={"/home/portfolios"} element={<Authenticated><HomePage/></Authenticated>}/>*/}
-
-
-            <Route path={"/strategy/create"} element={<StrategyCreatePage/>}></Route>
-            {/*<Route path={"/strategy/create"} element={<Authenticated><StrategyCreatePage/></Authenticated>}></Route>*/}
-
-            <Route path={"/wallet"} element={<Authenticated><WalletPage/></Authenticated>}/>
-            <Route path={"/wallet/swap"} element={<Authenticated><SwapPage/></Authenticated>}/>
-            <Route path={"/wallet/history"} element={<Authenticated><HistoryPage/></Authenticated>}/>
-            <Route path={"/wallet/browser"} element={<Authenticated><BrowserPage/></Authenticated>}/>
-
-            {/*<Route path={"/portfolio/:id"} element={<Authenticated><PortfolioPage/></Authenticated>}/>*/}
-            {/*<Route path={"/friends"} element={<Authenticated><FriendsPage/></Authenticated>}/>*/}
-
-            {/*<Route path={"/privacy-policy"} element={<PrivacyPolicyPage/>}/>*/}
-            <Route path='*' element={<NotFound/>}/>
+            <Route path={"/home"} element={<Authenticated><HomePage/></Authenticated>}/>
+            <Route path={"/rules"} element={<Authenticated><RuleListPage/></Authenticated>}></Route>
+            <Route path={"/rules/:id"} element={<Authenticated><RuleDetailPage/></Authenticated>}></Route>
+            s <Route path='*' element={<NotFound/>}/>
         </Routes>
     </BrowserRouter>
 )
@@ -116,14 +85,12 @@ const TelegramApp = () => {
 const App = () => {
     const [localStorage] = useLocalStorage();
 
-    const setAudioBackground = useSetAudioBackground();
     const setMetaMaskAuth = useSetMetaMaskAuth();
     const setTelegramAuth = useSetTelegramAuth();
     const setUnauthorized = useSetUnauthorized();
     const setWallet = useSetWallet();
 
     const [appState, appDispatch] = useReducer(appReducer, appInitialState(localStorage));
-    const [audioState, audioDispatch] = useReducer(audioReducer, audioInitialState(localStorage));
     const [modalState, modalDispatch] = useReducer(modalReducer, modalInitialState());
 
     useEffect(() => {
@@ -141,10 +108,6 @@ const App = () => {
             }
         }
     }, [appState]);
-
-    useEffect(() => {
-        setAudioBackground(audioState.background.active, audioState.background.volume);
-    }, [audioState.background, setAudioBackground]);
 
     useEffect(() => {
         const auth = appState.auth;
@@ -167,21 +130,17 @@ const App = () => {
         <>
             <ContextAppState.Provider value={appState}>
                 <ContextAppDispatch.Provider value={appDispatch}>
-                    <ContextAudioState.Provider value={audioState}>
-                        <ContextAudioDispatch.Provider value={audioDispatch}>
-                            <ContextModalState.Provider value={modalState}>
-                                <ContextModalDispatch.Provider value={modalDispatch}>
-                                    <Client>
-                                        <Modal/>
-                                        <Layout>
-                                            {app}
-                                        </Layout>
-                                        {/*<AudioPlayer/>*/}
-                                    </Client>
-                                </ContextModalDispatch.Provider>
-                            </ContextModalState.Provider>
-                        </ContextAudioDispatch.Provider>
-                    </ContextAudioState.Provider>
+                    <ContextModalState.Provider value={modalState}>
+                        <ContextModalDispatch.Provider value={modalDispatch}>
+                            <Client>
+                                <Modal/>
+                                <Layout>
+                                    {app}
+                                </Layout>
+                                {/*<AudioPlayer/>*/}
+                            </Client>
+                        </ContextModalDispatch.Provider>
+                    </ContextModalState.Provider>
                 </ContextAppDispatch.Provider>
             </ContextAppState.Provider>
         </>
