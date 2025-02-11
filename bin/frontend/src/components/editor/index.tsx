@@ -2,23 +2,70 @@ import React, {useState} from "react";
 import {Card} from "@components/ui/card.tsx";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@components/ui/select.tsx";
 import {Button} from "@components/ui/button.tsx";
+import {Decimal} from "decimal.js";
 
 const conditionTypes = ["Compare", "And", "Or"];
-const eventOptions = ["Best performing coin on the market"];
-const operatorOptions = ["Increase by", "Decrease by"];
-const timeframeOptions = ["Current Price", "1m", "5m", "15m"];
+
+const fieldOptions: Array<SelectItem> = [
+    {value: 'Price', label: 'Price'}
+];
+
+const operatorOptions: Array<SelectItem> = [
+    {value: 'GreaterThan', label: 'greater than'},
+    {value: 'IncreaseBy', label: 'increase by'}
+];
+
+const timeframeOptions: Array<SelectItem> = [
+    {value: "M1", label: "1 minute"},
+    {value: "M5", label: "5 minutes"},
+    {value: "M15", label: "15 minutes"},
+];
 
 export type ConditionType = "Compare" | "And" | "Or"
 
 export type Condition = {
     type: ConditionType;
     event?: string;
+    field?: string;
     operator?: string;
-    value?: any;
+    value?: Value;
     timeframe?: string;
     conditions?: Condition[];
 };
 
+export type SelectItem = {
+    value: string;
+    label: string
+}
+
+export type ValueType = 'Boolean' | 'MoneyQuote' | 'MoneyUSD' | 'Percent' | 'String';
+
+export type Value = ValueBoolean | ValueMoneyQuote | ValueMoneyUSD | ValueString;
+
+export type ValueBoolean = {
+    type: 'Boolean';
+    value: boolean;
+}
+
+export type ValueMoneyQuote = {
+    type: 'MoneyQuote';
+    value: Decimal;
+}
+
+export type ValueMoneyUSD = {
+    type: 'MoneyUSD';
+    value: Decimal;
+}
+
+export type ValuePercent = {
+    type: 'Percent';
+    value: number;
+}
+
+export type ValueString = {
+    type: 'String';
+    value: string;
+}
 
 const createCondition = (type: ConditionType): Condition => {
     switch (type) {
@@ -51,6 +98,7 @@ export const Editor: React.FC = () => {
     };
 
     const removeCondition = (path: number[]) => {
+        // @ts-ignore
         setRootCondition((prev) => updateNestedConditions({...prev}, path, (parent, index) => parent.conditions?.splice(index, 1)));
     };
 
@@ -87,46 +135,51 @@ export const Editor: React.FC = () => {
                 <div className="flex flex-col space-y-2">
                     {/* Condition Type Selector */}
                     {/*{path.length > 0 && (*/}
-                    <Select onValueChange={(value) => updateCondition(path, "type", value)}>
-                        <SelectTrigger className="w-full">
-                            <SelectValue placeholder={condition.type}/>
-                        </SelectTrigger>
-                        <SelectContent>
-                            {conditionTypes
-                                .filter((type) => (path.length === 0 ? type === "And" : true)) // Root must always be "And"
-                                .map((type) => (
-                                    <SelectItem key={type} value={type}>
-                                        {type}
-                                    </SelectItem>
-                                ))}
-                        </SelectContent>
-                    </Select>
+
                     {/*)}*/}
 
                     {/* Compare Condition */}
+                    {condition.type !== "Compare" && (
+                        <>
+                            <Select onValueChange={(value) => updateCondition(path, "type", value)}>
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder={condition.type}/>
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {conditionTypes
+                                        .filter((type) => (path.length === 0 ? type === "And" : true)) // Root must always be "And"
+                                        .map((type) => (
+                                            <SelectItem key={type} value={type}>
+                                                {type}
+                                            </SelectItem>
+                                        ))}
+                                </SelectContent>
+                            </Select>
+                        </>
+                    )}
                     {condition.type === "Compare" && (
                         <>
-                            {/*<Select onValueChange={(value) => updateCondition(path, "event", value)}>*/}
-                            {/*    <SelectTrigger className="w-full">*/}
-                            {/*        <SelectValue placeholder={condition.event || "Select Event"}/>*/}
-                            {/*    </SelectTrigger>*/}
-                            {/*    <SelectContent>*/}
-                            {/*        {eventOptions.map((ev) => (*/}
-                            {/*            <SelectItem key={ev} value={ev}>*/}
-                            {/*                {ev}*/}
-                            {/*            </SelectItem>*/}
-                            {/*        ))}*/}
-                            {/*    </SelectContent>*/}
-                            {/*</Select>*/}
+                            <Select onValueChange={(value) => updateCondition(path, "field", value)}>
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder={condition.field || "What?"}/>
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {fieldOptions.map(({value, label}) => (
+                                        <SelectItem key={value} value={value}>
+                                            {label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
 
                             <Select onValueChange={(value) => updateCondition(path, "operator", value)}>
                                 <SelectTrigger className="w-full">
-                                    <SelectValue placeholder={condition.operator || "Operator"}/>
+                                    <SelectValue placeholder={condition.operator || "How?"}/>
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {operatorOptions.map((op) => (
-                                        <SelectItem key={op} value={op}>
-                                            {op}
+                                    {operatorOptions.map(({value, label}) => (
+                                        <SelectItem key={value} value={value}>
+                                            {label}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
@@ -134,19 +187,23 @@ export const Editor: React.FC = () => {
 
                             <input
                                 type="number"
-                                value={condition.value}
-                                onChange={(e) => updateCondition(path, "value", parseInt(e.target.value))}
+                                value={((condition?.value || {type: "Percent", value: 0}) as ValuePercent)?.value}
+                                onChange={(e) => updateCondition(path, "value", {
+                                    type: "Percent",
+                                    value: parseFloat(e.target.value)
+                                })}
                                 className="border p-2 w-full rounded"
                             />
 
-                            <Select onValueChange={(value) => updateCondition(path, "timeframe", value)}>
+                            <Select defaultValue={'M15'}
+                                    onValueChange={(value) => updateCondition(path, "timeframe", value)}>
                                 <SelectTrigger className="w-full">
-                                    <SelectValue placeholder={condition.timeframe || "Select Timeframe"}/>
+                                    <SelectValue/>
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {timeframeOptions.map((time) => (
-                                        <SelectItem key={time} value={time}>
-                                            {time}
+                                    {timeframeOptions.map(({value, label}) => (
+                                        <SelectItem key={value} value={value}>
+                                            {label}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
@@ -154,7 +211,6 @@ export const Editor: React.FC = () => {
                         </>
                     )}
 
-                    {/* Nested Conditions for "And" and "Or" */}
                     {(condition.type === "And") && (
                         <div className="ml-4 mt-2 border-l-2 pl-4 border-gray-400 space-y-2">
                             {condition.conditions?.map((nestedCondition, index) => renderConditions(nestedCondition, [...path, index]))}
