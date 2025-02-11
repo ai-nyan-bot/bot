@@ -8,7 +8,8 @@ export const StrategyCreatePage: React.FC = () => {
         <div className="relative">
             <div className="mb-4">
             </div>
-            <div className="mx-auto max-w-[1440px] px-4 pb-64 pt-4 md:px-6">
+            {/*<div className="mx-auto max-w-[1440px] px-4 pb-64 pt-4 md:px-6">*/}
+            <div className="mx-auto">
                 <Editor/>
             </div>
 

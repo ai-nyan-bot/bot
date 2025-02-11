@@ -72,7 +72,8 @@ const AppRouter = () => (
             {/*<Route path={"/home/portfolios"} element={<Authenticated><HomePage/></Authenticated>}/>*/}
 
 
-            <Route path={"/strategy/create"} element={<Authenticated><StrategyCreatePage/></Authenticated>}></Route>
+            <Route path={"/strategy/create"} element={<StrategyCreatePage/>}></Route>
+            {/*<Route path={"/strategy/create"} element={<Authenticated><StrategyCreatePage/></Authenticated>}></Route>*/}
 
             <Route path={"/wallet"} element={<Authenticated><WalletPage/></Authenticated>}/>
             <Route path={"/wallet/swap"} element={<Authenticated><SwapPage/></Authenticated>}/>

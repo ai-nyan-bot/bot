@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {ConditionComponent} from "@components/editor/condition.tsx";
 import {ActionComponent} from "@components/editor/action.tsx";
 import {EventComponent} from "@components/editor/event.tsx";
+import {ChevronDownIcon, ChevronRightIcon} from "@heroicons/react/20/solid";
 
 const optionsEvent = [{value: "best_coin", label: "Best performing coin on the market"}];
 const optionsCondition = [{value: "price_open", label: "Price Open"}];
@@ -25,6 +26,29 @@ const createCondition = () => ({
     logic: "AND",
     nested: [],
 });
+
+
+const AccordionItem = ({title, children}) => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    return (
+        <div className="border-b border-gray-300">
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="w-full flex justify-between items-center transition"
+            >
+                {isOpen ? (<ChevronDownIcon className={`h-8 w-8`}/>) : (<ChevronRightIcon className={`h-8 w-8`}/>)}
+                {title}
+            </button>
+            <div
+                className={`overflow-hidden transition-max-h duration-300 ease-in-out ${isOpen ? "max-h-96" : "max-h-0"}`}
+            >
+                <div className="p-4 bg-white">{children}</div>
+            </div>
+        </div>
+    );
+};
+
 
 export const Editor = () => {
     const [conditions, setConditions] = useState([createCondition()]);
@@ -138,24 +162,62 @@ export const Editor = () => {
                     <span className="mr-2">IF</span>
                 </h3>
                 <EventComponent/>
-                <h3 className="font-semibold text-yellow-600 flex items-center">
-                    <span className="mr-2">IF</span>
-                </h3>
-                <ConditionComponent condition={
-                    {
-                        type: 'Compare',
-                        fact: undefined,
-                        operator: undefined,
-                        value: undefined,
-                        timeframe: undefined
-                    }
-                }/>
+                {/*<h3 className="font-semibold text-yellow-600 flex items-center">*/}
+                {/*    <span className="mr-2">IF</span>*/}
+                {/*</h3>*/}
+
+                <div className="w-full max-w-md mx-auto">
+                    {/*<AccordionItem title="price increases by 14% within 1 minute">*/}
+                        <ConditionComponent condition={
+                            {
+                                type: 'Compare',
+                                fact: undefined,
+                                operator: undefined,
+                                value: undefined,
+                                timeframe: undefined
+                            }
+                        }/>
+                    And
+                    <ConditionComponent condition={
+                        {
+                            type: 'Compare',
+                            fact: undefined,
+                            operator: undefined,
+                            value: undefined,
+                            timeframe: undefined
+                        }
+                    }/>
+                    {/*</AccordionItem>*/}
+                    {/*<AccordionItem title="and market cap is greater than 500K USD">*/}
+                    {/*    <ConditionComponent condition={*/}
+                    {/*        {*/}
+                    {/*            type: 'Compare',*/}
+                    {/*            fact: undefined,*/}
+                    {/*            operator: undefined,*/}
+                    {/*            value: undefined,*/}
+                    {/*            timeframe: undefined*/}
+                    {/*        }*/}
+                    {/*    }/>*/}
+                    {/*</AccordionItem>*/}
+
+                    {/*<AccordionItem title="Section 2">This is the content for section 2.</AccordionItem>*/}
+                    {/*<AccordionItem title="Section 3">This is the content for section 3.</AccordionItem>*/}
+                </div>
+
+                <div className="flex justify-between">
+                    <button className="bg-red-500 text-white px-4 py-2 rounded">+</button>
+                </div>
+
             </div>
 
-            <ActionComponent action={'Notify'}/>
+            {/*<ActionComponent action={'Notify'}/>*/}
 
-            <div className="flex justify-between">
-                <button className="bg-red-500 text-white px-4 py-2 rounded">Save</button>
+            {/*<div className="flex justify-between">*/}
+            {/*    <button className="bg-red-500 text-white px-4 py-2 rounded">Save</button>*/}
+            {/*</div>*/}
+
+            <div className="flex right-0">
+                <button className="bg-red-500 text-white px-4 py-2 rounded">Then</button>
             </div>
         </div>
     );
