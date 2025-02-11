@@ -2,70 +2,27 @@ import React, {useState} from "react";
 import {Card} from "@components/ui/card.tsx";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@components/ui/select.tsx";
 import {Button} from "@components/ui/button.tsx";
-import {Decimal} from "decimal.js";
+import {Condition, ConditionType, Timeframe, ValuePercent} from "@types";
+import {SelectTimeframe} from "@components/editor/timeframe.tsx";
 
 const conditionTypes = ["Compare", "And", "Or"];
 
-const fieldOptions: Array<SelectItem> = [
+
+const fieldOptions: Array<{ value: string, label: string }> = [
     {value: 'Price', label: 'Price'}
 ];
 
-const operatorOptions: Array<SelectItem> = [
+const operatorOptions: Array<{ value: string, label: string }> = [
     {value: 'GreaterThan', label: 'greater than'},
     {value: 'IncreaseBy', label: 'increase by'}
 ];
 
-const timeframeOptions: Array<SelectItem> = [
-    {value: "M1", label: "1 minute"},
-    {value: "M5", label: "5 minutes"},
-    {value: "M15", label: "15 minutes"},
-];
+// const timeframeOptions: Array<{ value: string, label: string }> = [
+//     {value: "M1", label: "1 minute"},
+//     {value: "M5", label: "5 minutes"},
+//     {value: "M15", label: "15 minutes"},
+// ];
 
-export type ConditionType = "Compare" | "And" | "Or"
-
-export type Condition = {
-    type: ConditionType;
-    event?: string;
-    field?: string;
-    operator?: string;
-    value?: Value;
-    timeframe?: string;
-    conditions?: Condition[];
-};
-
-export type SelectItem = {
-    value: string;
-    label: string
-}
-
-export type ValueType = 'Boolean' | 'MoneyQuote' | 'MoneyUSD' | 'Percent' | 'String';
-
-export type Value = ValueBoolean | ValueMoneyQuote | ValueMoneyUSD | ValueString;
-
-export type ValueBoolean = {
-    type: 'Boolean';
-    value: boolean;
-}
-
-export type ValueMoneyQuote = {
-    type: 'MoneyQuote';
-    value: Decimal;
-}
-
-export type ValueMoneyUSD = {
-    type: 'MoneyUSD';
-    value: Decimal;
-}
-
-export type ValuePercent = {
-    type: 'Percent';
-    value: number;
-}
-
-export type ValueString = {
-    type: 'String';
-    value: string;
-}
 
 const createCondition = (type: ConditionType): Condition => {
     switch (type) {
@@ -118,6 +75,13 @@ export const Editor: React.FC = () => {
         updateFn(parent.conditions![path[path.length - 1]], path[path.length - 1], parent);
         return condition;
     };
+
+    // const timeframeOptions = useTimeframeOptions([
+    //     Timeframe.M1,
+    //     Timeframe.M5,
+    // ]);
+    //
+    // console.log(timeframeOptions);
 
     const renderConditions = (condition: Condition, path: number[] = []) => {
         return (
@@ -195,19 +159,29 @@ export const Editor: React.FC = () => {
                                 className="border p-2 w-full rounded"
                             />
 
-                            <Select defaultValue={'M15'}
-                                    onValueChange={(value) => updateCondition(path, "timeframe", value)}>
-                                <SelectTrigger className="w-full">
-                                    <SelectValue/>
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {timeframeOptions.map(({value, label}) => (
-                                        <SelectItem key={value} value={value}>
-                                            {label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            {/*<Select defaultValue={Timeframe.M5}*/}
+                            {/*        onValueChange={(value) => updateCondition(path, "timeframe", value)}>*/}
+                            {/*    <SelectTrigger className="w-full">*/}
+                            {/*        <SelectValue/>*/}
+                            {/*    </SelectTrigger>*/}
+                            {/*    <SelectContent>*/}
+                            {/*        {timeframeOptions.map(({value, label}) => (*/}
+                            {/*            <SelectItem key={value} value={value}>*/}
+                            {/*                {label}*/}
+                            {/*            </SelectItem>*/}
+                            {/*        ))}*/}
+                            {/*    </SelectContent>*/}
+                            {/*</Select>*/}
+
+                            <SelectTimeframe
+                                supported={[
+                                    Timeframe.M1,
+                                    Timeframe.M5,
+                                    Timeframe.M15
+                                ]}
+                                onChange={(value) => updateCondition(path, "timeframe", value)}
+                            >
+                            </SelectTimeframe>
                         </>
                     )}
 
