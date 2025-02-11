@@ -1,16 +1,15 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use base::model::Condition::Compare;
+use base::model::Condition::Exists;
 use base::model::Fact::TokenCreationDuration;
-use base::model::Operator::Exists;
-use base::model::{Action, Sequence, Value};
+use base::model::{Action, Sequence};
 use base::repo::{StrategyCreateCmd, StrategyRepo};
 use common::repo::error::RepoError;
 use sqlx::Acquire;
+use testing::run_test_on_empty_db;
 use testing::strategy::create_strategy_for_test_user;
 use testing::user::get_or_create_test_user;
-use testing::run_test_on_empty_db;
 
 #[test_log::test(sqlx::test)]
 async fn test_create() {
@@ -24,10 +23,8 @@ async fn test_create() {
                     user: user.id,
                     name: "ChubakaStrat1337".into(),
                     sequence: Sequence {
-                        condition: Compare {
+                        condition: Exists {
                             fact: TokenCreationDuration,
-                            operator: Exists,
-                            value: Value::Boolean(false),
                             timeframe: None,
                         },
                         action: Action::Buy,
@@ -42,10 +39,8 @@ async fn test_create() {
         assert_eq!(result.version, 1);
         assert_eq!(
             result.sequence.condition,
-            Compare {
+            Exists {
                 fact: TokenCreationDuration,
-                operator: Exists,
-                value: Value::Boolean(false),
                 timeframe: None,
             }
         );
@@ -68,10 +63,8 @@ async fn test_strategy_requires_existing_user() {
                     user: 123456789.into(), // does not exist
                     name: "ChubakaStrat1337".into(),
                     sequence: Sequence {
-                        condition: Compare {
+                        condition: Exists {
                             fact: TokenCreationDuration,
-                            operator: Exists,
-                            value: Value::Boolean(false),
                             timeframe: None,
                         },
                         action: Action::Buy,

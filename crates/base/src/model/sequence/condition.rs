@@ -13,14 +13,13 @@ pub enum Condition {
         value: Value,
         timeframe: Option<Timeframe>,
     },
-    // FIXME replace Exists operator with Exists condition
-    // Exists {
-    //     fact: Fact,
-    //     timeframe: Option<Timeframe>,
-    // },
-    And(Box<Condition>, Box<Condition>),
-    Or(Box<Condition>, Box<Condition>),
-    Not(Box<Condition>),
+    Exists {
+        fact: Fact,
+        timeframe: Option<Timeframe>,
+    },
+    And(Box<[Condition]>),
+    Or(Box<[Condition]>),
+    AndNot(Box<[Condition]>),
 }
 
 impl Condition {
@@ -37,19 +36,41 @@ impl Condition {
                     Some(timeframe) => facts.get_with_timeframe(fact, timeframe),
                 };
 
-                if *operator == Operator::Exists {
-                    return result.is_some();
-                }
-
                 if let Some(fact_value) = result {
                     compare(fact_value, operator, value)
                 } else {
                     false
                 }
             }
-            Condition::And(left, right) => left.test(facts) && right.test(facts),
-            Condition::Or(left, right) => left.test(facts) || right.test(facts),
-            Condition::Not(inner) => !inner.test(facts),
+            Condition::Exists { fact, timeframe } => match timeframe {
+                None => facts.get(fact),
+                Some(timeframe) => facts.get_with_timeframe(fact, timeframe),
+            }
+            .is_some(),
+            Condition::And(conditions) => {
+                for condition in conditions {
+                    if !condition.test(facts) {
+                        return false;
+                    }
+                }
+                true
+            }
+            Condition::Or(conditions) => {
+                for condition in conditions {
+                    if condition.test(facts) {
+                        return true;
+                    }
+                }
+                false
+            }
+            Condition::AndNot(conditions) => {
+                for condition in conditions {
+                    if condition.test(facts) {
+                        return false;
+                    }
+                }
+                true
+            }
         }
     }
 }
@@ -72,13 +93,12 @@ mod tests {
 
     mod without_timeframe {
         use crate::model::sequence::condition::tests::facts;
-        use crate::model::Condition::Not;
+        use crate::model::Condition::Exists;
         use crate::model::Fact::TokenTotalVolumeQuote;
         use crate::model::{Condition, Fact, Operator, Value};
-        use std::time::Duration;
-        use Condition::{And, Compare, Or};
-        use Fact::TokenPriceQuote;
-        use Operator::{Equal, Exists};
+        use Condition::{And, AndNot, Compare, Or};
+        use Fact::{TokenCreationDuration, TokenPriceQuote};
+        use Operator::Equal;
         use Value::Number;
 
         #[test]
@@ -112,10 +132,8 @@ mod tests {
         #[test]
         fn test_exists() {
             assert_eq!(
-                Compare {
+                Exists {
                     fact: TokenPriceQuote,
-                    operator: Exists,
-                    value: Number(0.0),
                     timeframe: None,
                 }
                 .test(&facts()),
@@ -126,10 +144,8 @@ mod tests {
         #[test]
         fn test_exists_false() {
             assert_eq!(
-                Compare {
-                    fact: Fact::TokenCreationDuration,
-                    operator: Exists,
-                    value: Value::Duration(Duration::from_secs(23)),
+                Exists {
+                    fact: TokenCreationDuration,
                     timeframe: None,
                 }
                 .test(&facts()),
@@ -140,20 +156,20 @@ mod tests {
         #[test]
         fn test_and_both_true() {
             assert_eq!(
-                And(
-                    Box::new(Compare {
+                And(Box::new([
+                    Compare {
                         fact: TokenPriceQuote,
                         operator: Equal,
                         value: Number(1.0),
                         timeframe: None,
-                    }),
-                    Box::new(Compare {
+                    },
+                    Compare {
                         fact: TokenTotalVolumeQuote,
                         operator: Equal,
                         value: Number(2.0),
                         timeframe: None,
-                    })
-                )
+                    }
+                ]))
                 .test(&facts()),
                 true
             )
@@ -162,20 +178,20 @@ mod tests {
         #[test]
         fn test_and_left_true() {
             assert_eq!(
-                And(
-                    Box::new(Compare {
+                And(Box::new([
+                    Compare {
                         fact: TokenPriceQuote,
                         operator: Equal,
                         value: Number(1.0),
-                        timeframe: None,
-                    }),
-                    Box::new(Compare {
+                        timeframe: None
+                    },
+                    Compare {
                         fact: TokenTotalVolumeQuote,
                         operator: Equal,
                         value: Number(22222.0),
                         timeframe: None,
-                    })
-                )
+                    }
+                ]))
                 .test(&facts()),
                 false
             )
@@ -184,20 +200,20 @@ mod tests {
         #[test]
         fn test_and_right_true() {
             assert_eq!(
-                And(
-                    Box::new(Compare {
+                And(Box::new([
+                    Compare {
                         fact: TokenPriceQuote,
                         operator: Equal,
                         value: Number(111111.0),
                         timeframe: None,
-                    }),
-                    Box::new(Compare {
+                    },
+                    Compare {
                         fact: TokenTotalVolumeQuote,
                         operator: Equal,
                         value: Number(2.0),
                         timeframe: None,
-                    })
-                )
+                    }
+                ]))
                 .test(&facts()),
                 false
             )
@@ -206,20 +222,20 @@ mod tests {
         #[test]
         fn test_and_both_false() {
             assert_eq!(
-                And(
-                    Box::new(Compare {
+                And(Box::new([
+                    Compare {
                         fact: TokenPriceQuote,
                         operator: Equal,
                         value: Number(111111.0),
                         timeframe: None,
-                    }),
-                    Box::new(Compare {
+                    },
+                    Compare {
                         fact: TokenTotalVolumeQuote,
                         operator: Equal,
                         value: Number(22222.0),
                         timeframe: None,
-                    })
-                )
+                    }
+                ]))
                 .test(&facts()),
                 false
             )
@@ -228,20 +244,20 @@ mod tests {
         #[test]
         fn test_or_both_true() {
             assert_eq!(
-                Or(
-                    Box::new(Compare {
+                Or(Box::new([
+                    Compare {
                         fact: TokenPriceQuote,
                         operator: Equal,
                         value: Number(1.0),
                         timeframe: None,
-                    }),
-                    Box::new(Compare {
+                    },
+                    Compare {
                         fact: TokenTotalVolumeQuote,
                         operator: Equal,
                         value: Number(2.0),
                         timeframe: None,
-                    })
-                )
+                    }
+                ]))
                 .test(&facts()),
                 true
             )
@@ -250,20 +266,20 @@ mod tests {
         #[test]
         fn test_or_left_true() {
             assert_eq!(
-                Or(
-                    Box::new(Compare {
+                Or(Box::new([
+                    Compare {
                         fact: TokenPriceQuote,
                         operator: Equal,
                         value: Number(1.0),
                         timeframe: None,
-                    }),
-                    Box::new(Compare {
+                    },
+                    Compare {
                         fact: TokenTotalVolumeQuote,
                         operator: Equal,
                         value: Number(22222.0),
                         timeframe: None,
-                    })
-                )
+                    }
+                ]))
                 .test(&facts()),
                 true
             )
@@ -272,20 +288,20 @@ mod tests {
         #[test]
         fn test_or_right_true() {
             assert_eq!(
-                Or(
-                    Box::new(Compare {
+                Or(Box::new([
+                    Compare {
                         fact: TokenPriceQuote,
                         operator: Equal,
                         value: Number(111111.0),
                         timeframe: None,
-                    }),
-                    Box::new(Compare {
+                    },
+                    Compare {
                         fact: TokenTotalVolumeQuote,
                         operator: Equal,
                         value: Number(2.0),
                         timeframe: None,
-                    })
-                )
+                    }
+                ]))
                 .test(&facts()),
                 true
             )
@@ -294,64 +310,123 @@ mod tests {
         #[test]
         fn test_or_both_false() {
             assert_eq!(
-                Or(
-                    Box::new(Compare {
+                Or(Box::new([
+                    Compare {
                         fact: TokenPriceQuote,
                         operator: Equal,
                         value: Number(111111.0),
                         timeframe: None,
-                    }),
-                    Box::new(Compare {
+                    },
+                    Compare {
                         fact: TokenTotalVolumeQuote,
                         operator: Equal,
                         value: Number(22222.0),
                         timeframe: None,
-                    })
-                )
+                    }
+                ]))
                 .test(&facts()),
                 false
             )
         }
 
         #[test]
-        fn test_not_true() {
+        fn test_and_not_both_true() {
             assert_eq!(
-                Not(Box::new(Compare {
-                    fact: TokenPriceQuote,
-                    operator: Equal,
-                    value: Number(11111.0),
-                    timeframe: None,
-                }),)
+                AndNot(Box::new([
+                    Compare {
+                        fact: TokenPriceQuote,
+                        operator: Equal,
+                        value: Number(1.0),
+                        timeframe: None,
+                    },
+                    Compare {
+                        fact: TokenTotalVolumeQuote,
+                        operator: Equal,
+                        value: Number(2.0),
+                        timeframe: None,
+                    }
+                ]))
+                .test(&facts()),
+                false
+            )
+        }
+
+        #[test]
+        fn test_and_not_left_true() {
+            assert_eq!(
+                AndNot(Box::new([
+                    Compare {
+                        fact: TokenPriceQuote,
+                        operator: Equal,
+                        value: Number(1.0),
+                        timeframe: None
+                    },
+                    Compare {
+                        fact: TokenTotalVolumeQuote,
+                        operator: Equal,
+                        value: Number(22222.0),
+                        timeframe: None,
+                    }
+                ]))
+                .test(&facts()),
+                false
+            )
+        }
+
+        #[test]
+        fn test_and_not_right_true() {
+            assert_eq!(
+                AndNot(Box::new([
+                    Compare {
+                        fact: TokenPriceQuote,
+                        operator: Equal,
+                        value: Number(111111.0),
+                        timeframe: None,
+                    },
+                    Compare {
+                        fact: TokenTotalVolumeQuote,
+                        operator: Equal,
+                        value: Number(2.0),
+                        timeframe: None,
+                    }
+                ]))
+                .test(&facts()),
+                false
+            )
+        }
+
+        #[test]
+        fn test_and_not_both_false() {
+            assert_eq!(
+                AndNot(Box::new([
+                    Compare {
+                        fact: TokenPriceQuote,
+                        operator: Equal,
+                        value: Number(111111.0),
+                        timeframe: None,
+                    },
+                    Compare {
+                        fact: TokenTotalVolumeQuote,
+                        operator: Equal,
+                        value: Number(22222.0),
+                        timeframe: None,
+                    }
+                ]))
                 .test(&facts()),
                 true
-            )
-        }
-
-        #[test]
-        fn test_not_false() {
-            assert_eq!(
-                Not(Box::new(Compare {
-                    fact: TokenPriceQuote,
-                    operator: Equal,
-                    value: Number(1.0),
-                    timeframe: None,
-                }),)
-                .test(&facts()),
-                false
             )
         }
     }
 
     mod with_timeframe {
         use crate::model::sequence::condition::tests::facts;
-        use crate::model::Condition::{And, Not, Or};
+        use crate::model::Condition::{And, AndNot, Exists, Or};
         use crate::model::Fact::TokenVolumeQuote;
         use crate::model::{Condition, Operator, Value};
         use common::model::Timeframe;
         use common::model::Timeframe::D1;
-        use std::time::Duration;
         use Condition::Compare;
-        use Operator::{Equal, Exists};
+        use Operator::Equal;
         use Timeframe::{M1, S1};
         use Value::Number;
 
@@ -386,10 +461,8 @@ mod tests {
         #[test]
         fn test_exists() {
             assert_eq!(
-                Compare {
+                Exists {
                     fact: TokenVolumeQuote,
-                    operator: Exists,
-                    value: Number(0.0),
                     timeframe: Some(S1),
                 }
                 .test(&facts()),
@@ -400,10 +473,8 @@ mod tests {
         #[test]
         fn test_exists_false() {
             assert_eq!(
-                Compare {
+                Exists {
                     fact: TokenVolumeQuote,
-                    operator: Exists,
-                    value: Value::Duration(Duration::from_secs(23)),
                     timeframe: Some(D1),
                 }
                 .test(&facts()),
@@ -414,20 +485,20 @@ mod tests {
         #[test]
         fn test_and_both_true() {
             assert_eq!(
-                And(
-                    Box::new(Compare {
+                And(Box::new([
+                    Compare {
                         fact: TokenVolumeQuote,
                         operator: Equal,
                         value: Number(3.0),
                         timeframe: Some(S1),
-                    }),
-                    Box::new(Compare {
+                    },
+                    Compare {
                         fact: TokenVolumeQuote,
                         operator: Equal,
                         value: Number(4.0),
                         timeframe: Some(M1),
-                    })
-                )
+                    }
+                ]))
                 .test(&facts()),
                 true
             )
@@ -436,20 +507,20 @@ mod tests {
         #[test]
         fn test_and_left_true() {
             assert_eq!(
-                And(
-                    Box::new(Compare {
+                And(Box::new([
+                    Compare {
                         fact: TokenVolumeQuote,
                         operator: Equal,
                         value: Number(3.0),
                         timeframe: Some(S1),
-                    }),
-                    Box::new(Compare {
+                    },
+                    Compare {
                         fact: TokenVolumeQuote,
                         operator: Equal,
                         value: Number(444444.0),
                         timeframe: Some(M1),
-                    })
-                )
+                    }
+                ]))
                 .test(&facts()),
                 false
             )
@@ -458,20 +529,20 @@ mod tests {
         #[test]
         fn test_and_right_true() {
             assert_eq!(
-                And(
-                    Box::new(Compare {
+                And(Box::new([
+                    Compare {
                         fact: TokenVolumeQuote,
                         operator: Equal,
                         value: Number(33333.0),
                         timeframe: Some(S1),
-                    }),
-                    Box::new(Compare {
+                    },
+                    Compare {
                         fact: TokenVolumeQuote,
                         operator: Equal,
                         value: Number(4.0),
                         timeframe: Some(M1),
-                    })
-                )
+                    }
+                ]))
                 .test(&facts()),
                 false
             )
@@ -480,20 +551,20 @@ mod tests {
         #[test]
         fn test_and_both_false() {
             assert_eq!(
-                And(
-                    Box::new(Compare {
+                And(Box::new([
+                    Compare {
                         fact: TokenVolumeQuote,
                         operator: Equal,
                         value: Number(33333.0),
                         timeframe: Some(S1),
-                    }),
-                    Box::new(Compare {
+                    },
+                    Compare {
                         fact: TokenVolumeQuote,
                         operator: Equal,
                         value: Number(44444.0),
                         timeframe: Some(M1),
-                    })
-                )
+                    }
+                ]))
                 .test(&facts()),
                 false
             )
@@ -502,20 +573,20 @@ mod tests {
         #[test]
         fn test_or_both_true() {
             assert_eq!(
-                Or(
-                    Box::new(Compare {
+                Or(Box::new([
+                    Compare {
                         fact: TokenVolumeQuote,
                         operator: Equal,
                         value: Number(3.0),
                         timeframe: Some(S1),
-                    }),
-                    Box::new(Compare {
+                    },
+                    Compare {
                         fact: TokenVolumeQuote,
                         operator: Equal,
                         value: Number(4.0),
                         timeframe: Some(M1),
-                    })
-                )
+                    }
+                ]))
                 .test(&facts()),
                 true
             )
@@ -524,20 +595,20 @@ mod tests {
         #[test]
         fn test_or_left_true() {
             assert_eq!(
-                Or(
-                    Box::new(Compare {
+                Or(Box::new([
+                    Compare {
                         fact: TokenVolumeQuote,
                         operator: Equal,
                         value: Number(3.0),
                         timeframe: Some(S1),
-                    }),
-                    Box::new(Compare {
+                    },
+                    Compare {
                         fact: TokenVolumeQuote,
                         operator: Equal,
                         value: Number(444444.0),
                         timeframe: Some(M1),
-                    })
-                )
+                    }
+                ]))
                 .test(&facts()),
                 true
             )
@@ -546,20 +617,20 @@ mod tests {
         #[test]
         fn test_or_right_true() {
             assert_eq!(
-                Or(
-                    Box::new(Compare {
+                Or(Box::new([
+                    Compare {
                         fact: TokenVolumeQuote,
                         operator: Equal,
                         value: Number(33333.0),
                         timeframe: Some(S1),
-                    }),
-                    Box::new(Compare {
+                    },
+                    Compare {
                         fact: TokenVolumeQuote,
                         operator: Equal,
                         value: Number(4.0),
                         timeframe: Some(M1),
-                    })
-                )
+                    }
+                ]))
                 .test(&facts()),
                 true
             )
@@ -568,50 +639,110 @@ mod tests {
         #[test]
         fn test_or_both_false() {
             assert_eq!(
-                Or(
-                    Box::new(Compare {
+                Or(Box::new([
+                    Compare {
                         fact: TokenVolumeQuote,
                         operator: Equal,
                         value: Number(33333.0),
                         timeframe: Some(S1),
-                    }),
-                    Box::new(Compare {
+                    },
+                    Compare {
                         fact: TokenVolumeQuote,
                         operator: Equal,
                         value: Number(44444.0),
                         timeframe: Some(M1),
-                    })
-                )
+                    }
+                ]))
                 .test(&facts()),
                 false
             )
         }
 
         #[test]
-        fn test_not_true() {
+        fn test_and_not_both_true() {
             assert_eq!(
-                Not(Box::new(Compare {
-                    fact: TokenVolumeQuote,
-                    operator: Equal,
-                    value: Number(33333.0),
-                    timeframe: Some(S1),
-                }),)
+                AndNot(Box::new([
+                    Compare {
+                        fact: TokenVolumeQuote,
+                        operator: Equal,
+                        value: Number(3.0),
+                        timeframe: Some(S1),
+                    },
+                    Compare {
+                        fact: TokenVolumeQuote,
+                        operator: Equal,
+                        value: Number(4.0),
+                        timeframe: Some(M1),
+                    }
+                ]))
+                .test(&facts()),
+                false
+            )
+        }
+
+        #[test]
+        fn test_and_not_left_true() {
+            assert_eq!(
+                AndNot(Box::new([
+                    Compare {
+                        fact: TokenVolumeQuote,
+                        operator: Equal,
+                        value: Number(3.0),
+                        timeframe: Some(S1),
+                    },
+                    Compare {
+                        fact: TokenVolumeQuote,
+                        operator: Equal,
+                        value: Number(444444.0),
+                        timeframe: Some(M1),
+                    }
+                ]))
+                .test(&facts()),
+                false
+            )
+        }
+
+        #[test]
+        fn test_and_not_right_true() {
+            assert_eq!(
+                AndNot(Box::new([
+                    Compare {
+                        fact: TokenVolumeQuote,
+                        operator: Equal,
+                        value: Number(33333.0),
+                        timeframe: Some(S1),
+                    },
+                    Compare {
+                        fact: TokenVolumeQuote,
+                        operator: Equal,
+                        value: Number(4.0),
+                        timeframe: Some(M1),
+                    }
+                ]))
+                .test(&facts()),
+                false
+            )
+        }
+
+        #[test]
+        fn test_and_not_both_false() {
+            assert_eq!(
+                AndNot(Box::new([
+                    Compare {
+                        fact: TokenVolumeQuote,
+                        operator: Equal,
+                        value: Number(33333.0),
+                        timeframe: Some(S1),
+                    },
+                    Compare {
+                        fact: TokenVolumeQuote,
+                        operator: Equal,
+                        value: Number(44444.0),
+                        timeframe: Some(M1),
+                    }
+                ]))
                 .test(&facts()),
                 true
-            )
-        }
-
-        #[test]
-        fn test_not_false() {
-            assert_eq!(
-                Not(Box::new(Compare {
-                    fact: TokenVolumeQuote,
-                    operator: Equal,
-                    value: Number(3.0),
-                    timeframe: Some(S1),
-                }),)
-                .test(&facts()),
-                false
             )
         }
     }

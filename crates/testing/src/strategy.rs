@@ -3,9 +3,9 @@
 
 use crate::user::{get_or_create_another_user, get_or_create_test_user};
 use base::model::Action::Notify;
-use base::model::Condition::Compare;
+use base::model::Condition::{Compare, Exists};
 use base::model::Fact::TokenCreationDuration;
-use base::model::Operator::{Equal, Exists};
+use base::model::Operator::Equal;
 use base::model::{Fact, Sequence, Strategy, StrategyName, Value};
 use base::repo::{StrategyCreateCmd, StrategyQueryAll, StrategyRepo};
 use common::model::{Count, Limit};
@@ -20,10 +20,8 @@ pub async fn create_strategy_for_test_user<'a>(tx: &mut Tx<'a>, name: impl Into<
                 user: test_user.id,
                 name: name.into(),
                 sequence: Sequence {
-                    condition: Compare {
+                    condition: Exists {
                         fact: TokenCreationDuration,
-                        operator: Exists,
-                        value: Value::Boolean(false),
                         timeframe: None,
                     },
                     action: Notify,

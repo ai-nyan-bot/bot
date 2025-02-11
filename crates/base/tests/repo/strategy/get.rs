@@ -3,13 +3,12 @@
 
 mod get_by_id {
     use base::model::Action::Notify;
+    use base::model::Condition;
     use base::model::Fact::TokenCreationDuration;
-    use base::model::Operator::Exists;
-    use base::model::{Condition, Value};
     use base::repo::StrategyRepo;
     use common::repo::error::RepoError;
-    use testing::strategy::create_strategy_for_test_user;
     use testing::run_test;
+    use testing::strategy::create_strategy_for_test_user;
 
     #[test_log::test(sqlx::test)]
     async fn test_ok() {
@@ -25,10 +24,8 @@ mod get_by_id {
             assert_eq!(result.name, "TheMoneyMaker");
             assert_eq!(
                 result.sequence.condition,
-                Condition::Compare {
+                Condition::Exists {
                     fact: TokenCreationDuration,
-                    operator: Exists,
-                    value: Value::Boolean(false),
                     timeframe: None,
                 }
             );

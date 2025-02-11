@@ -1,18 +1,17 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use base::model::Condition::Compare;
+use base::model::Condition::Exists;
 use base::model::Fact::TokenCreationDuration;
-use base::model::Operator::Exists;
-use base::model::{Action, Sequence, TokenMint, Value};
+use base::model::{Action, Sequence, TokenMint};
 use base::repo::{InvocationCreateCmd, InvocationRepo};
 use common::repo::error::RepoError;
 use sqlx::Acquire;
 use testing::invocation::count_all;
-use testing::strategy::create_strategy_for_test_user;
-use testing::user::get_or_create_test_user;
 use testing::run_test;
+use testing::strategy::create_strategy_for_test_user;
 use testing::token_pair::get_or_create_token_pair;
+use testing::user::get_or_create_test_user;
 
 #[test_log::test(sqlx::test)]
 async fn test_create() {
@@ -30,10 +29,8 @@ async fn test_create() {
                     strategy: strategy.id,
                     token_pair: token_pair.id,
                     next: Some(Sequence {
-                        condition: Compare {
+                        condition: Exists {
                             fact: TokenCreationDuration,
-                            operator: Exists,
-                            value: Value::Boolean(false),
                             timeframe: None,
                         },
                         action: Action::Buy,
@@ -51,10 +48,8 @@ async fn test_create() {
         let next = result.next.unwrap();
         assert_eq!(
             next.condition,
-            Compare {
+            Exists {
                 fact: TokenCreationDuration,
-                operator: Exists,
-                value: Value::Boolean(false),
                 timeframe: None,
             }
         );
@@ -115,10 +110,8 @@ async fn test_invocation_requires_existing_user() {
                     strategy: strategy.id,
                     token_pair: token_pair.id,
                     next: Some(Sequence {
-                        condition: Compare {
+                        condition: Exists {
                             fact: TokenCreationDuration,
-                            operator: Exists,
-                            value: Value::Boolean(false),
                             timeframe: None,
                         },
                         action: Action::Buy,
@@ -150,10 +143,8 @@ async fn test_invocation_requires_existing_strategy() {
                     strategy: 12345678.into(),
                     token_pair: token_pair.id,
                     next: Some(Sequence {
-                        condition: Compare {
+                        condition: Exists {
                             fact: TokenCreationDuration,
-                            operator: Exists,
-                            value: Value::Boolean(false),
                             timeframe: None,
                         },
                         action: Action::Buy,
@@ -185,10 +176,8 @@ async fn test_invocation_requires_existing_token_pair() {
                     strategy: strategy.id,
                     token_pair: 12345679.into(),
                     next: Some(Sequence {
-                        condition: Compare {
+                        condition: Exists {
                             fact: TokenCreationDuration,
-                            operator: Exists,
-                            value: Value::Boolean(false),
                             timeframe: None,
                         },
                         action: Action::Buy,
