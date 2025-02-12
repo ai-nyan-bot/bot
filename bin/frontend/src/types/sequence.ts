@@ -16,6 +16,7 @@ export type Field = {
 export type ConditionType = "Compare" | "And" | "Or"
 
 export type Condition = {
+    id: string;
     type: ConditionType;
     field?: FieldType;
     operator?: Operator;
@@ -30,7 +31,7 @@ export enum Operator {
     INCREASED_BY = 'INCREASED_BY',
 }
 
-export type Value = ValueBoolean | ValueMoney | ValueString;
+export type Value = ValueBoolean | ValueMoney | ValuePercent | ValueString;
 
 export type ValueType = 'Boolean' | 'Money' | 'Percent' | 'String';
 
