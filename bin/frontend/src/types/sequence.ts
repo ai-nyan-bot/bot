@@ -1,13 +1,26 @@
 import {Decimal} from "decimal.js";
+import {Timeframe} from "@app/types/index.ts";
+
+export type FieldType =
+    | 'TokenPriceQuote'
+    | 'TokenPriceUsd'
+    | 'TokenTrades'
+    | 'TokenVolumeQuote'
+
+export type Field = {
+    type: FieldType;
+    operator_values: Map<Operator, ValueType>;
+    operator_timeframes: Map<Operator, Array<Timeframe>>
+}
 
 export type ConditionType = "Compare" | "And" | "Or"
 
 export type Condition = {
     type: ConditionType;
-    field?: string;
-    operator?: string;
+    field?: FieldType;
+    operator?: Operator;
     value?: Value;
-    timeframe?: string;
+    timeframe?: Timeframe;
     conditions?: Condition[];
 };
 
@@ -19,7 +32,7 @@ export enum Operator {
 
 export type Value = ValueBoolean | ValueMoney | ValueString;
 
-export type ValueTyp = 'Boolean' | 'Money' | 'Percent' | 'String';
+export type ValueType = 'Boolean' | 'Money' | 'Percent' | 'String';
 
 
 export type ValueBoolean = {

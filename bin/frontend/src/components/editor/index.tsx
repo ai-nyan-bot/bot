@@ -2,10 +2,10 @@ import React, {useState} from "react";
 import {Card} from "@components/ui/card.tsx";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@components/ui/select.tsx";
 import {Button} from "@components/ui/button.tsx";
-import {Condition, ConditionType, Operator, Timeframe, ValuePercent} from "@types";
+import {Condition, ConditionType, Operator, Timeframe} from "@types";
 import {SelectTimeframe} from "@components/editor/timeframe.tsx";
 import {SelectOperator} from "@components/editor/operator.tsx";
-import {Decimal} from "decimal.js";
+import {ValuePercentInput} from "@components/editor/value.tsx";
 
 const conditionTypes = ["Compare", "And", "Or"];
 
@@ -146,32 +146,9 @@ export const Editor: React.FC = () => {
                                 onChange={(value) => updateCondition(path, "operator", value)}
                             />
 
-                            <input
-                                type="number"
-                                value={((condition?.value || {
-                                    type: "Percent",
-                                    value: new Decimal(0)
-                                }) as ValuePercent)?.value.toString()}
-                                onChange={(e) => updateCondition(path, "value", {
-                                    type: "Percent",
-                                    value: parseFloat(e.target.value)
-                                })}
-                                className="border p-2 w-full rounded"
+                            <ValuePercentInput
+                                onChange={(value) => updateCondition(path, "value", value)}
                             />
-
-                            {/*<Select defaultValue={Timeframe.M5}*/}
-                            {/*        onValueChange={(value) => updateCondition(path, "timeframe", value)}>*/}
-                            {/*    <SelectTrigger className="w-full">*/}
-                            {/*        <SelectValue/>*/}
-                            {/*    </SelectTrigger>*/}
-                            {/*    <SelectContent>*/}
-                            {/*        {timeframeOptions.map(({value, label}) => (*/}
-                            {/*            <SelectItem key={value} value={value}>*/}
-                            {/*                {label}*/}
-                            {/*            </SelectItem>*/}
-                            {/*        ))}*/}
-                            {/*    </SelectContent>*/}
-                            {/*</Select>*/}
 
                             <SelectTimeframe
                                 supported={[
