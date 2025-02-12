@@ -11,26 +11,30 @@ export type Condition = {
     conditions?: Condition[];
 };
 
-export type Value = ValueBoolean | ValueMoneyQuote | ValueMoneyUSD | ValueString;
+export enum Operator {
+    EQUAL = "EQUAL",
+    GREATER_THAN = 'GREATER_THAN',
+    INCREASED_BY = 'INCREASED_BY',
+}
+
+export type Value = ValueBoolean | ValueMoney | ValueString;
+
+export type ValueTyp = 'Boolean' | 'Money' | 'Percent' | 'String';
+
 
 export type ValueBoolean = {
     type: 'Boolean';
     value: boolean;
 }
 
-export type ValueMoneyQuote = {
+export type ValueMoney = {
     type: 'MoneyQuote';
-    value: Decimal;
-}
-
-export type ValueMoneyUSD = {
-    type: 'MoneyUSD';
     value: Decimal;
 }
 
 export type ValuePercent = {
     type: 'Percent';
-    value: number;
+    value: Decimal;
 }
 
 export type ValueString = {

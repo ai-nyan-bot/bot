@@ -2,8 +2,10 @@ import React, {useState} from "react";
 import {Card} from "@components/ui/card.tsx";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@components/ui/select.tsx";
 import {Button} from "@components/ui/button.tsx";
-import {Condition, ConditionType, Timeframe, ValuePercent} from "@types";
+import {Condition, ConditionType, Operator, Timeframe, ValuePercent} from "@types";
 import {SelectTimeframe} from "@components/editor/timeframe.tsx";
+import {SelectOperator} from "@components/editor/operator.tsx";
+import {Decimal} from "decimal.js";
 
 const conditionTypes = ["Compare", "And", "Or"];
 
@@ -136,22 +138,20 @@ export const Editor: React.FC = () => {
                                 </SelectContent>
                             </Select>
 
-                            <Select onValueChange={(value) => updateCondition(path, "operator", value)}>
-                                <SelectTrigger className="w-full">
-                                    <SelectValue placeholder={condition.operator || "How?"}/>
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {operatorOptions.map(({value, label}) => (
-                                        <SelectItem key={value} value={value}>
-                                            {label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            <SelectOperator
+                                supported={[
+                                    Operator.INCREASED_BY,
+                                    Operator.GREATER_THAN
+                                ]}
+                                onChange={(value) => updateCondition(path, "operator", value)}
+                            />
 
                             <input
                                 type="number"
-                                value={((condition?.value || {type: "Percent", value: 0}) as ValuePercent)?.value}
+                                value={((condition?.value || {
+                                    type: "Percent",
+                                    value: new Decimal(0)
+                                }) as ValuePercent)?.value.toString()}
                                 onChange={(e) => updateCondition(path, "value", {
                                     type: "Percent",
                                     value: parseFloat(e.target.value)
