@@ -14,18 +14,18 @@ export const useOperatorOptions = (supported: Array<Operator>): Array<{
 }
 
 export type SelectOperatorProps = {
-    defaultValue?: Operator;
+    defaultOperator?: Operator;
     supported: Array<Operator>
     onChange?: (value: Operator) => void
 }
 
-export const SelectOperator: FC<SelectOperatorProps> = ({defaultValue, supported, onChange}) => {
+export const SelectOperator: FC<SelectOperatorProps> = ({defaultOperator, supported, onChange}) => {
     const operatorOptions = useOperatorOptions(supported);
     if (supported.length === 0) {
         return null;
     }
     return (
-        <Select defaultValue={defaultValue ?? supported[0]}
+        <Select defaultValue={defaultOperator ?? supported[0]}
                 onValueChange={(value) => {
                     if (onChange) {
                         onChange(value as Operator);

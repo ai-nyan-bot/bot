@@ -5,7 +5,7 @@ use std::str::FromStr;
 
 use axum::http::HeaderName;
 use axum::middleware::from_fn_with_state;
-use axum::routing::{any, get, post};
+use axum::routing::{any, get, patch, post};
 use axum::Router;
 use tower_http::cors::{AllowHeaders, Any, CorsLayer};
 
@@ -28,6 +28,7 @@ pub fn setup_v1(app_state: AppState) -> Router {
             Router::new()
                 .route("/rules", get(v1::rule::list))
                 .route("/rules/{id}", get(v1::rule::get))
+                .route("/rules/{id}", patch(v1::rule::update))
                 .route("/rules", post(v1::rule::create))
                 .route("/wallets", post(v1::wallet::create))
                 .route("/wallets/{id}", get(v1::wallet::get))

@@ -13,18 +13,18 @@ export const useTimeframeOptions = (supported: Array<Timeframe>): Array<{ value:
 }
 
 export type SelectTimeframeProps = {
-    defaultValue?: Timeframe;
+    defaultTimeframe?: Timeframe;
     supported: Array<Timeframe>
     onChange?: (value: Timeframe) => void
 }
 
-export const SelectTimeframe: FC<SelectTimeframeProps> = ({defaultValue, supported, onChange}) => {
+export const SelectTimeframe: FC<SelectTimeframeProps> = ({defaultTimeframe, supported, onChange}) => {
     const timeframeOptions = useTimeframeOptions(supported);
     if (supported.length === 0) {
         return null;
     }
     return (
-        <Select defaultValue={defaultValue ?? supported[0]}
+        <Select defaultValue={defaultTimeframe ?? supported[0]}
                 onValueChange={(value) => {
                     if (onChange) {
                         onChange(value as Timeframe);

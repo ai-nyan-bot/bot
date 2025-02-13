@@ -1,37 +1,35 @@
-import {Condition, Operator, Timeframe, Value} from "@types";
+import {Condition, Field, Operator, Timeframe, Value} from "@types";
 import React, {FC} from "react";
 import {SelectOperator} from "@components/editor/operator.tsx";
 import {ValuePercentInput} from "@components/editor/value.tsx";
 import {SelectTimeframe} from "@components/editor/timeframe.tsx";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@components/ui/select.tsx";
+import {SelectField} from "@components/editor/field.tsx";
 
 type CompareProps = {
     condition: Condition,
+    onFieldChange: (id: string, value: Field) => void;
     onOperatorChange: (id: string, value: Operator) => void;
     onTimeframeChange: (id: string, value: Timeframe) => void;
     onValueChange: (id: string, value: Value) => void;
 }
 
-const fieldOptions = [
-    {value: "TOKEN_PRICE", label: "Price"},
-    {value: "TOKEN_TRADES", label: "Trades"},
-]
-
-export const Compare: FC<CompareProps> = ({condition, onOperatorChange, onTimeframeChange, onValueChange}) => {
+export const Compare: FC<CompareProps> = ({
+                                              condition,
+                                              onFieldChange,
+                                              onOperatorChange,
+                                              onTimeframeChange,
+                                              onValueChange
+                                          }) => {
     return (
         <div key={condition.id}>
-            <Select>
-                <SelectTrigger className="w-full">
-                    <SelectValue placeholder={condition.field || "What?"}/>
-                </SelectTrigger>
-                <SelectContent>
-                    {fieldOptions.map(({value, label}) => (
-                        <SelectItem key={value} value={value}>
-                            {label}
-                        </SelectItem>
-                    ))}
-                </SelectContent>
-            </Select>
+            <SelectField
+                supported={[
+                    Field.PRICE,
+                    Field.TRADES,
+                    Field.VOLUME,
+                ]}
+                onChange={(value) => onFieldChange(condition.id, value)}
+            />
 
             <SelectOperator
                 supported={[

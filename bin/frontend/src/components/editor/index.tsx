@@ -3,25 +3,26 @@ import {Button} from "@components/ui/button.tsx";
 import {Condition, ConditionType} from "@types";
 import {ConditionList} from "@components/editor/condition.tsx";
 import {v4 as uuidv4} from "uuid";
+import {useRuleUpdate} from "@hooks/rule.ts";
 
 const createCondition = (type: ConditionType): Condition => {
     switch (type) {
-        case "And":
+        case 'AND':
             return {
                 id: uuidv4(),
-                type: "And",
+                type: 'AND',
                 conditions: []
             }
-        case "Or":
+        case'OR':
             return {
                 id: uuidv4(),
-                type: "Or",
+                type:'OR',
                 conditions: []
             }
-        case "Compare":
+        case 'COMPARE':
             return {
                 id: uuidv4(),
-                type: "Compare",
+                type: 'COMPARE',
             }
     }
 }
@@ -35,7 +36,7 @@ const update = (
     return conditions.map((cond) => {
         if (cond.id === id) {
             return updateFunc(cond);
-        } else if (cond.type === "And") {
+        } else if (cond.type === 'AND') {
             return {...cond, conditions: update(id, updateFunc, cond.conditions || [])};
         }
         return cond;
@@ -47,7 +48,7 @@ const filter = (id: string, conditions: Condition[] | undefined): Condition[] =>
     return conditions
         .filter((cond) => cond.id !== id)
         .map((cond) =>
-            cond.type !== "Compare" ? {
+            cond.type !== 'COMPARE' ? {
                 ...cond,
                 conditions: filter(id, cond.conditions || [])
             } : cond
@@ -56,7 +57,7 @@ const filter = (id: string, conditions: Condition[] | undefined): Condition[] =>
 
 
 export const Editor: React.FC = () => {
-    const [rootCondition, setRootCondition] = useState<Condition>(createCondition("And"));
+    const [rootCondition, setRootCondition] = useState<Condition>(createCondition('AND'));
 
     const updateCondition = (id: string, key: keyof Condition, value: any) => {
         setRootCondition((prev) => ({
@@ -93,6 +94,8 @@ export const Editor: React.FC = () => {
         }));
     };
 
+    const [updateRule] = useRuleUpdate();
+
     return (
         <div className="max-w-4xl mx-auto space-y-6">
             <div className="border-l-4 border-yellow-500 pl-4">
@@ -104,6 +107,9 @@ export const Editor: React.FC = () => {
                     isRoot={true}
                     onAdd={addCondition}
                     onRemove={removeCondition}
+                    onFieldChange={(id, value) => {
+                        updateCondition(id, "field", value)
+                    }}
                     onOperatorChange={(id, value) => {
                         updateCondition(id, "operator", value)
                     }}
@@ -119,6 +125,10 @@ export const Editor: React.FC = () => {
             {/* Execute Section */}
             <Button className="w-full bg-green-500 text-white" onClick={() => {
                 console.log(JSON.stringify(rootCondition))
+                updateRule("1", {
+                    name: "updated-name",
+                    sequence: {condition: rootCondition}
+                })
 
             }}>Launch Rule</Button>
         </div>

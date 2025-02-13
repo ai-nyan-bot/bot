@@ -1,5 +1,5 @@
 import {Card} from "@components/ui/card.tsx";
-import {Condition, ConditionType, Operator, Timeframe, Value} from "@types";
+import {Condition, ConditionType, Field, Operator, Timeframe, Value} from "@types";
 import React, {FC} from "react";
 import {Button} from "@components/ui/button.tsx";
 import {Compare} from "@components/editor/condition-compare.tsx";
@@ -10,6 +10,7 @@ export type ConditionListProps = {
 
     onAdd: (parentId: string, type: ConditionType) => void;
     onRemove: (id: string) => void;
+    onFieldChange: (id: string, value: Field) => void;
     onOperatorChange: (id: string, value: Operator) => void;
     onTimeframeChange: (id: string, value: Timeframe) => void;
     onValueChange: (id: string, value: Value) => void;
@@ -21,6 +22,7 @@ export const ConditionList: FC<ConditionListProps> = ({
                                                           isRoot,
                                                           onAdd,
                                                           onRemove,
+                                                          onFieldChange,
                                                           onOperatorChange,
                                                           onTimeframeChange,
                                                           onValueChange
@@ -37,19 +39,27 @@ export const ConditionList: FC<ConditionListProps> = ({
                     </button>
                 )}
 
-            {condition.type === "Compare" && (
+            {condition.type === 'COMPARE' && (
                 <Compare
                     condition={condition}
+                    onFieldChange={onFieldChange}
                     onValueChange={onValueChange}
                     onTimeframeChange={onTimeframeChange}
                     onOperatorChange={onOperatorChange}
                 />
             )}
 
-            {(condition.type === "And") && (
-                <Group condition={condition} isRoot={isRoot} onAdd={onAdd} onRemove={onRemove}
-                       onOperatorChange={onOperatorChange} onTimeframeChange={onTimeframeChange}
-                       onValueChange={onValueChange}/>
+            {(condition.type === 'AND') && (
+                <Group
+                    condition={condition}
+                    isRoot={isRoot}
+                    onAdd={onAdd}
+                    onRemove={onRemove}
+                    onFieldChange={onFieldChange}
+                    onOperatorChange={onOperatorChange}
+                    onTimeframeChange={onTimeframeChange}
+                    onValueChange={onValueChange}
+                />
 
             )}
         </Card>
@@ -62,6 +72,7 @@ type GroupProps = {
     isRoot: boolean
     onAdd: (parentId: string, type: ConditionType) => void;
     onRemove: (id: string) => void;
+    onFieldChange: (id: string, value: Field) => void;
     onOperatorChange: (id: string, value: Operator) => void;
     onTimeframeChange: (id: string, value: Timeframe) => void;
     onValueChange: (id: string, value: Value) => void;
@@ -72,6 +83,7 @@ const Group: FC<GroupProps> = ({
                                    isRoot,
                                    onAdd,
                                    onRemove,
+                                   onFieldChange,
                                    onOperatorChange,
                                    onTimeframeChange,
                                    onValueChange
@@ -89,15 +101,16 @@ const Group: FC<GroupProps> = ({
                         isRoot={isRoot}
                         onAdd={onAdd}
                         onRemove={onRemove}
+                        onFieldChange={onFieldChange}
                         onOperatorChange={onOperatorChange}
                         onTimeframeChange={onTimeframeChange}
                         onValueChange={onValueChange}
                     />
                 )}
-                <Button variant="outline" onClick={() => onAdd(condition.id, "Compare")}>
+                <Button variant="outline" onClick={() => onAdd(condition.id, 'COMPARE')}>
                     + Condition
                 </Button>
-                <Button variant="outline" onClick={() => onAdd(condition.id, "And")}>
+                <Button variant="outline" onClick={() => onAdd(condition.id, 'AND')}>
                     + Group
                 </Button>
             </div>

@@ -24,7 +24,7 @@ const CreateRuleButton = () => {
         }
         const newAbortController = new AbortController();
         abortControllerRef.current = newAbortController;
-        createRule({}, newAbortController);
+        // createRule({}, newAbortController);
     };
 
     useEffect(() => {

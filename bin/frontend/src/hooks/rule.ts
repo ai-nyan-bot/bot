@@ -1,9 +1,15 @@
 import {useAuth} from "@hooks/auth.ts";
-import {useGet, usePost} from "@hooks/http.ts";
+import {useGet, usePatch, usePost} from "@hooks/http.ts";
 import {useCallback} from "react";
+import {Condition} from "@types";
 
 
-export type RuleCreateRequest = {};
+export type RuleCreateRequest = {
+    name: string,
+    sequence: {
+        condition: Condition
+    }
+};
 
 export type RuleCreateResponse = {};
 
@@ -17,6 +23,25 @@ export const useRuleCreate = (): [RuleCreateAction, RuleCreateResponse | null, b
     return [fn, response, loading, error]
 }
 
+
+export type RuleUpdateRequest = {
+    name: string,
+    sequence: {
+        condition: Condition
+    }
+};
+
+export type RuleUpdateResponse = {};
+
+type RuleUpdateAction = (id: string, req: RuleUpdateRequest, abortController?: AbortController) => void
+export const useRuleUpdate = (): [RuleUpdateAction, RuleUpdateResponse | null, boolean, Error | null] => {
+    const [auth] = useAuth()
+    const [patch, response, loading, error] = usePatch<RuleUpdateResponse>()
+    const fn = useCallback(async (id: string, req: RuleUpdateRequest, abortController?: AbortController) =>
+        patch(`/v1/rules/${id}`, req, abortController), [auth]
+    )
+    return [fn, response, loading, error]
+}
 
 export type RuleListResponse = {
     rules: Array<{

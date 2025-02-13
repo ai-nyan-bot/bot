@@ -7,6 +7,7 @@ use crate::repo::RuleCreateCmd;
 use crate::service::rule::RuleService;
 use common::service::ServiceResult;
 
+
 impl RuleService {
     pub async fn create(&self, user: AuthenticatedUser) -> ServiceResult<Rule> {
         let mut tx = self.pool.begin().await?;
