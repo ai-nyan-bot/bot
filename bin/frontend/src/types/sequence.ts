@@ -2,10 +2,9 @@ import {Decimal} from "decimal.js";
 import {Timeframe} from "@app/types/index.ts";
 
 export type FieldType =
-    | 'TokenPriceQuote'
-    | 'TokenPriceUsd'
-    | 'TokenTrades'
-    | 'TokenVolumeQuote'
+    | 'Price'
+    | 'Trades'
+    | 'Volume'
 
 export type Field = {
     type: FieldType;
@@ -42,13 +41,13 @@ export type ValueBoolean = {
 }
 
 export type ValueMoney = {
-    type: 'MoneyQuote';
+    type: 'Money';
     value: Decimal;
 }
 
 export type ValuePercent = {
     type: 'Percent';
-    value: Decimal;
+    value?: Decimal;
 }
 
 export type ValueString = {
