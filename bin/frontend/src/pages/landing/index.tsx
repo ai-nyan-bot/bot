@@ -30,7 +30,7 @@ const TelegramLanding = () => {
         }
 
         if (auth.type === 'Unauthorized') {
-            telegramLogin(appState.telegramData!.initData!, abortController);
+            // telegramLogin(appState.telegramData!.initData!, abortController);
         }
         return () => {
             abortController.abort();
