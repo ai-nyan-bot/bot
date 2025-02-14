@@ -8,11 +8,7 @@ use common::model::Timestamp;
 use log::{error, info, trace, warn};
 use solana_client::rpc_config::RpcBlockConfig;
 use solana_client::rpc_request::RpcError;
-use solana_rpc_client::rpc_client::SerializableTransaction;
-use solana_sdk::bs58;
 use solana_sdk::commitment_config::CommitmentConfig;
-use solana_transaction_status::option_serializer::OptionSerializer;
-use solana_transaction_status::UiInstruction::{Compiled, Parsed};
 use solana_transaction_status::{TransactionDetails, UiTransactionEncoding};
 
 impl RpcClient {

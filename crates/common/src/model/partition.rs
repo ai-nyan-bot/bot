@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use serde::{Deserialize, Serialize};
-use std::fmt::{Debug, Display, Formatter, Octal};
+use std::fmt::{Debug, Display, Formatter};
 
 #[derive(Eq, Hash, Copy, Clone, Debug, PartialEq, PartialOrd, Ord, Deserialize, Serialize)]
 pub struct Partition(pub i32);

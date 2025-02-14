@@ -7,8 +7,6 @@
 // This file includes portions of code from https://github.com/raydium-io/raydium-amm (Apache 2.0 License).
 // Original Apache 2.0 License Copyright (c) raydium.io 2024.
 
-use std::fmt::Display;
-use std::str::FromStr;
 
 use base::model::PublicKey;
 use solana_sdk::pubkey;

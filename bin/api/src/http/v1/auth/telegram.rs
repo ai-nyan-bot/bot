@@ -4,7 +4,6 @@
 use axum::extract::State;
 use axum::Json;
 use base::service::AuthenticateUserTelegramCmd;
-use common::service::ServiceError;
 use http::json::JsonReq;
 use integration::telegram::{verify_telegram_user, TelegramLogin};
 use log::{debug, error};

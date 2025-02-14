@@ -2,14 +2,12 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::http::error::HttpError;
-use crate::http::json::JsonReq;
-use crate::http::model::rule::{HttpRuleList, HttpRuleListResponse, RuleCreateRequest, RuleCreateResponse};
+use crate::http::model::rule::{HttpRuleList, HttpRuleListResponse};
 use crate::http::state::AppState;
 use axum::extract::State;
 use axum::{Extension, Json};
 use base::model::AuthenticatedUser;
 use log::debug;
-use std::os::linux::raw::stat;
 
 pub async fn list(State(state): State<AppState>, Extension(user): Extension<AuthenticatedUser>) -> Result<Json<HttpRuleListResponse>, HttpError> {
     debug!("GET /v1/rules");

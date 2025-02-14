@@ -4,12 +4,7 @@
 use crate::config::Config;
 use crate::pumpfun::{RefreshCandles, RefreshSummary};
 use common::repo::pool::setup_pool;
-use common::ResolveOr;
-use log::{info, LevelFilter};
 use base::repo::{ReadTokenPairRepo, ReadTokenRepo};
-use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
-use sqlx::{ConnectOptions, PgPool};
-use std::time::Duration;
 use tokio::runtime::Builder;
 use tokio::try_join;
 use tracing::error;

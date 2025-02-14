@@ -7,7 +7,6 @@ use common::model::Limit;
 use common::service::{ServiceError, ServiceResult};
 use log::error;
 use std::error::Error;
-use std::fmt::Debug;
 use std::future::Future;
 
 impl NotificationService {

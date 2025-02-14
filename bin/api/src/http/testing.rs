@@ -1,22 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use std::sync::Arc;
 
-use crate::config::{Config, TelegramConfig};
-use crate::http::error::HttpErrorResponse;
-use crate::http::state::{AppState, AppStateInner, Service};
-use crate::router;
-use axum::body::{to_bytes, Body};
-use axum::http;
-use axum::response::Response;
-use axum::Router;
-use base::repo::RuleRepo;
-use base::service::RuleService;
-use base::service::UserService;
-use common::ConfigValue;
-use serde::de::DeserializeOwned;
-use testing::get_test_pool;
 #[cfg(test)]
 use tower::ServiceExt;
 

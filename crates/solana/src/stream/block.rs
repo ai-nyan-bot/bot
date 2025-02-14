@@ -9,12 +9,10 @@ use common::model::RpcUrl;
 use common::{Signal, SignalKind};
 use log::{debug, error, warn};
 use std::sync::Arc;
-use std::time::Duration;
 use tokio::select;
 use tokio::sync::mpsc::{Receiver, Sender};
 use tokio::sync::Semaphore;
 use tokio::task::JoinHandle;
-use tokio::time::sleep;
 
 #[async_trait]
 pub trait BlockStream: Send {

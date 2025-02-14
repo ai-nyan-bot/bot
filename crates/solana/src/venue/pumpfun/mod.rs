@@ -8,7 +8,6 @@ use common::ByteReader;
 pub use parse::PumpFunParser;
 pub use rpc::Rpc;
 use solana_sdk::pubkey::Pubkey;
-use spl_token_metadata_interface::borsh::{BorshDeserialize, BorshSerialize};
 use std::fmt::{Debug, Display, Formatter};
 
 mod buy;

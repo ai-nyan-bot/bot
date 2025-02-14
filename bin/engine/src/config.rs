@@ -9,7 +9,6 @@ use log::info;
 use serde::Deserialize;
 
 use common::repo::pool::PostgresConfig;
-use common::ConfigValue;
 
 #[derive(Debug, Deserialize)]
 pub struct Config {

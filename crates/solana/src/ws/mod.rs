@@ -9,7 +9,6 @@ mod slot;
 use crate::ws::error::WsClientError;
 use common::model::WsUrl;
 use futures_util::future::BoxFuture;
-use futures_util::StreamExt;
 use solana_client::nonblocking::pubsub_client::PubsubClient;
 use std::sync::Arc;
 use tokio::sync::oneshot::Sender;

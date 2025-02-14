@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use serde::{Deserialize, Serialize};
-use std::fmt::{Binary, Display, Formatter};
+use std::fmt::{Display, Formatter};
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, sqlx::Type)]
 #[sqlx(transparent, no_pg_array)]

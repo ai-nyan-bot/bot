@@ -1,8 +1,6 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use common::model::RpcUrl;
-use std::process::exit;
 use std::str::FromStr;
 use std::sync::Arc;
 use tokio::runtime::Runtime;
@@ -10,12 +8,11 @@ use tokio::{join, select};
 
 use crate::config::Config;
 use crate::solana::indexer::IndexerRepo;
-use crate::solana::pumpfun::index_trade;
 use crate::solana::state::{State, StateInner};
 use base::model::PublicKey;
 use base::repo::{AddressRepo, ReadTokenPairRepo, ReadTokenRepo, TokenPairRepo, TokenRepo};
 use common::repo::pool::setup_pool;
-use common::{model, ResolveOr, Signal};
+use common::{ResolveOr, Signal};
 use solana::model::TransactionStatus;
 use solana::repo;
 use solana::stream::{BlockStream, RpcBlockStream, RpcBlockStreamConfig, RpcSlotStream};
@@ -23,13 +20,8 @@ use solana::token_info::rpc::RpcTokenInfoLoader;
 use solana::venue::jupiter::JupiterParser;
 use solana::venue::pumpfun::PumpFunParser;
 use solana::venue::Parser;
-use sqlx::postgres::PgConnectOptions;
-use sqlx::postgres::PgPoolOptions;
-use sqlx::{Acquire, ConnectOptions, PgPool};
-use std::time::Duration;
-use tokio::signal::unix::{signal, SignalKind};
-use tokio::sync::broadcast;
-use tracing::log::LevelFilter;
+use sqlx::Acquire;
+use tokio::signal::unix::SignalKind;
 use tracing::{debug, info};
 
 pub mod indexer;

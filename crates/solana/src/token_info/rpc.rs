@@ -16,7 +16,6 @@ use spl_token::solana_program::program_pack::Pack;
 use spl_token::state::Mint;
 use spl_token_2022::extension::{BaseStateWithExtensions, StateWithExtensions};
 use spl_type_length_value::variable_len_pack::VariableLenPack;
-use std::cmp::min;
 use std::fmt::{Debug, Formatter};
 use std::sync::Arc;
 

@@ -10,7 +10,6 @@ use axum::{Extension, Json};
 use base::model::AuthenticatedUser;
 use base::service::RuleUpdateCmd;
 use log::debug;
-use std::os::linux::raw::stat;
 
 pub async fn update(
     Path(id): Path<String>,

@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use axum::extract::State;
-use axum::{Form, Json};
+use axum::Json;
 use log::debug;
 use serde::{Deserialize, Serialize};
 

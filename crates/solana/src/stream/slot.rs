@@ -46,7 +46,7 @@ impl SlotStream for RpcSlotStream {
         (
             self.rx,
             tokio::spawn(async move {
-                let mut max = Slot::from(0);
+                let max = Slot::from(0);
                 loop {
                     select! {
                         signal = signal.recv() => {

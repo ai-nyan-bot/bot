@@ -6,7 +6,6 @@ use std::str::FromStr;
 use crate::http::error::HttpError;
 use crate::http::json::JsonReq;
 use crate::http::state::AppState;
-use crate::http::v1::wallet::quote::QuoteResponse;
 use axum::extract::{Path, State};
 use axum::{Extension, Json};
 use base::model::AuthenticatedUser;

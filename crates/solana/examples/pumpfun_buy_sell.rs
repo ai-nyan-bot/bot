@@ -2,7 +2,6 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use solana::venue::pumpfun::{Pumpfun, Rpc};
-use solana_sdk::signature::Signer;
 use spl_associated_token_account::solana_program::pubkey;
 
 #[tokio::main]

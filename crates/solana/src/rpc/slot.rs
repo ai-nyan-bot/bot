@@ -3,7 +3,7 @@
 
 use crate::model::Slot;
 use crate::rpc::{RpcClient, RpcResult};
-use log::{debug, trace};
+use log::trace;
 
 impl RpcClient {
     pub async fn slot(&self) -> RpcResult<Slot> {
