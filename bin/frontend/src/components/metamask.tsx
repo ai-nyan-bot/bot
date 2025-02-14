@@ -4,10 +4,9 @@ import {useMetaMask} from "@hooks/auth";
 
 type MetaMaskButtonProps = {
     className?: string;
-    code: string | null;
 }
 
-export const MetaMaskButton: FC<MetaMaskButtonProps> = ({className, code}) => {
+export const MetaMaskButton: FC<MetaMaskButtonProps> = ({className}) => {
     const [connecting, setConnecting] = useState(false)
     const {sdk, account} = useSDK();
 
@@ -26,11 +25,11 @@ export const MetaMaskButton: FC<MetaMaskButtonProps> = ({className, code}) => {
     useEffect(() => {
         if (account && signedMessage) {
             const invoke = async () => {
-                requestToken(account!, signedMessage, code)
+                requestToken(account!, signedMessage)
             }
             invoke()
         }
-    }, [account, code, requestToken, signedMessage]);
+    }, [account, requestToken, signedMessage]);
 
 
     if (e) {

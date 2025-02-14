@@ -45,17 +45,16 @@ const TelegramLanding = () => {
 
     if (response == null || loading) {
         return (
-            <h1 className={"text-center text-blue-800 text-xl"}>Starting your terminal</h1>
+            <h1 className={"text-center text-blue-800 text-xl"}>Starting your telegram terminal</h1>
         )
     }
 
-    return (<h1>Computer says no</h1>);
+    return (<h1>Telegram terminal says no</h1>);
 }
 
 const MetaMaskLanding = () => {
     const appState = useContext(ContextAppState);
     const navigate = useNavigate();
-    const friendCode = new URLSearchParams(location.search).get('friend_code') || null;
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -74,13 +73,13 @@ const MetaMaskLanding = () => {
     if (appState.auth.type == 'Unauthorized') {
         return (
             <div className={"w-full flex flex-row justify-center"}>
-                <MetaMaskButton code={friendCode}/>
+                <MetaMaskButton/>
             </div>
         )
     }
     return (
         <div className={"page"}>
-            <h1 className={"text-center text-blue-800 text-xl"}>Starting your terminal</h1>
+            <h1 className={"text-center text-blue-800 text-xl"}>Starting your web terminal</h1>
         </div>
     )
 }

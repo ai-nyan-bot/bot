@@ -56,15 +56,32 @@ const AppRouter = () => (
             <Route path={"/"} element={<LandingPage/>}/>
             <Route path={"/connection-lost"} element={<ConnectionLostPage/>}/>
 
-            <Route path={"/telegram/home"} element={<Authenticated><TelegramHomePage/></Authenticated>}/>
-            <Route path={"/telegram/web/rules"}
-                   element={<Authenticated><TelegramRuleListPage/></Authenticated>}></Route>
-            <Route path={"/telegram/web/rules/:id"}
-                   element={<Authenticated><TelegramRuleDetailPage/></Authenticated>}></Route>
+            <Route
+                path={"/telegram/home"}
+                element={<Authenticated><TelegramHomePage/></Authenticated>}
+            />
+            <Route
+                path={"/telegram/web/rules"}
+                element={<Authenticated><TelegramRuleListPage/></Authenticated>}
+            />
+            <Route
+                path={"/telegram/web/rules/:id"}
+                element={<Authenticated><TelegramRuleDetailPage/></Authenticated>}
+            />
 
-            <Route path={"/web/home"} element={<Authenticated><WebHomePage/></Authenticated>}/>
-            <Route path={"/web/rules"} element={<Authenticated><WebRuleListPage/></Authenticated>}></Route>
-            <Route path={"/web/rules/:id"} element={<Authenticated><WebRuleDetailPage/></Authenticated>}></Route>
+            <Route
+                path={"/web/home"}
+                element={<Authenticated><WebHomePage/></Authenticated>}
+            />
+            <Route
+                path={"/web/rules"}
+                element={<Authenticated><WebRuleListPage/></Authenticated>}
+            />
+            <Route
+                path={"/web/rules/:id"}
+                element={<Authenticated><WebRuleDetailPage/></Authenticated>}
+            />
+
             <Route path='*' element={<NotFound/>}/>
         </Routes>
     </BrowserRouter>

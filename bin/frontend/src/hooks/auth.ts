@@ -51,7 +51,7 @@ export const useLogout = (): [LogoutAction, boolean, Error | null] => {
     return [fn, loading, error]
 }
 
-type MetaMaskAction = (address: string, signature: string, code: string | null, abortController?: AbortController) => void
+type MetaMaskAction = (address: string, signature: string, abortController?: AbortController) => void
 export const useMetaMask = (): [MetaMaskAction, string | null, boolean, Error | null] => {
     const navigate = useNavigate()
     const appDispatch = useContext(ContextAppDispatch);
@@ -59,7 +59,7 @@ export const useMetaMask = (): [MetaMaskAction, string | null, boolean, Error | 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
-    const fn = useCallback((address: string, signature: string, code: string | null, abortController?: AbortController) => {
+    const fn = useCallback((address: string, signature: string, abortController?: AbortController) => {
         fetch(`${import.meta.env.VITE_BASE_URL}/v1/auth/metamask`, {
             method: "POST",
             headers: {
@@ -69,7 +69,6 @@ export const useMetaMask = (): [MetaMaskAction, string | null, boolean, Error | 
             body: JSON.stringify({
                 address,
                 signature,
-                code
             }),
             signal: abortController?.signal,
         })
