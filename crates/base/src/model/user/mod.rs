@@ -2,6 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use serde::{Deserialize, Serialize};
+use std::fmt::{Display, Formatter};
 
 use common::model::{CreatedAt, TelegramId, UpdatedAt};
 
@@ -18,6 +19,12 @@ impl PartialEq<i32> for UserId {
 impl From<i32> for UserId {
     fn from(value: i32) -> Self {
         Self(value)
+    }
+}
+
+impl Display for UserId{
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        Display::fmt(&self.0, f)
     }
 }
 

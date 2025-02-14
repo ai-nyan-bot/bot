@@ -7,7 +7,7 @@ use base::service::AuthenticateUserTelegramCmd;
 use common::service::ServiceError;
 use http::json::JsonReq;
 use integration::telegram::{verify_telegram_user, TelegramLogin};
-use log::debug;
+use log::{debug, error};
 
 use crate::http;
 use crate::http::error::HttpError;
@@ -27,6 +27,8 @@ pub async fn telegram(State(state): State<AppState>, JsonReq(req): JsonReq<Teleg
         })
         .await?;
 
+    debug!("user {} authenticated via telegram", user.id);
+
     Ok(Json(TelegramAuthResponse {
         token: auth.token,
         user: User { id: user.id },
@@ -44,16 +46,19 @@ fn telegram_login(bot_token: String, req: TelegramAuthRequest) -> Result<Telegra
             verify_telegram_user(bot_token.as_str(), login.clone())?;
             Ok(login)
         })
-        .map_err(|_| HttpError::unprocessable("Invalid query string"))
+        .map_err(|err| {
+            error!("failed to authenticate telegram user: {err}");
+            HttpError::unprocessable("Invalid query string")
+        })
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::http::model::auth::TelegramAuthResponse;
-    use crate::http::testing::{extract, extract_error, Test};
-    use axum::http::StatusCode;
+	use crate::http::model::auth::TelegramAuthResponse;
+	use crate::http::testing::{extract, extract_error, Test};
+	use axum::http::StatusCode;
 
-    #[tokio::test]
+	#[tokio::test]
     async fn without_body_and_content_type() {
         let test = Test::new().await;
         let response = test.post_no_content("/v1/auth/telegram").await;

@@ -39,15 +39,15 @@ const TelegramLanding = () => {
         }
     }, [appState.auth, appState.telegramData, navigate, telegramLogin, code]);
 
-    if (response == null || loading) {
-        return (
-            <h1 className={"text-center text-blue-800 text-xl"}>Starting your terminal</h1>
-        )
-    }
-
     if (e) {
         return (
             <h1> Login failed with {JSON.stringify(e)}</h1>
+        )
+    }
+
+    if (response == null || loading) {
+        return (
+            <h1 className={"text-center text-blue-800 text-xl"}>Starting your terminal</h1>
         )
     }
 
