@@ -5,7 +5,7 @@ use crate::user::{get_or_create_another_user, get_or_create_test_user};
 use base::model::Action::Notify;
 use base::model::Condition::Compare;
 use base::model::Operator::GreaterThan;
-use base::model::{Field, Rule, RuleName, Sequence, Value};
+use base::model::{Field, Rule, RuleId, RuleName, Sequence, Value};
 use base::repo::{RuleCreateCmd, RuleQueryAll, RuleRepo};
 use common::model::{Count, Limit, Timeframe};
 use common::repo::Tx;
@@ -54,6 +54,10 @@ pub async fn create_rule_for_another_user<'a>(tx: &mut Tx<'a>, name: impl Into<R
         )
         .await
         .unwrap()
+}
+
+pub async fn get_rule_by_id<'a>(tx: &mut Tx<'a>, id: impl Into<RuleId> + Send) -> Rule {
+    RuleRepo::new().get_by_id(tx, id).await.unwrap()
 }
 
 pub async fn count_all<'a>(tx: &mut Tx<'a>) -> Count {

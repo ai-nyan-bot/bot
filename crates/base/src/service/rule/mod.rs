@@ -3,6 +3,7 @@
 
 mod list;
 mod create;
+mod update;
 
 use crate::repo::RuleRepo;
 use sqlx::PgPool;
