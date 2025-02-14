@@ -30,6 +30,7 @@ COPY --from=build /build/bin/api/conf/config.toml           /app/api/config.toml
 COPY --from=build /build/bin/engine/conf/config.toml        /app/engine/config.toml
 COPY --from=build /build/bin/indexer/conf/config.toml       /app/indexer/config.toml
 COPY --from=build /build/bin/telegram/conf/config.toml      /app/telegram/config.toml
+COPY --from=build /build/bin/telegram/i18n                  /app/telegram/i18n
 
 RUN adduser --system --group --no-create-home nyan
 USER nyan

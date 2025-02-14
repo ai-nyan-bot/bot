@@ -33,7 +33,7 @@ push: check
 migrate: check
 	@echo "Migrating database of $(SERVER_HOST)..."
 	ssh $(SERVER_HOST) 'cd $(REMOTE_DIR)/repo && \
-		git pull && \
+		git pull --rebase && \
 		~/.cargo/bin/sqlx migrate run'
 	@echo "Migration completed"
 

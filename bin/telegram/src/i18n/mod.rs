@@ -34,11 +34,15 @@ pub struct I18N {
 impl I18N {
     pub async fn load(language: Language) -> Self {
         // FIXME wrap in once
-        let crate_path = std::env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR not set");
-
-        let content = fs::read_to_string(format!("{crate_path}/i18n/{language}.json"))
+        let content = match fs::read_to_string(format!("/app/telegram/i18n/{language}.json")).await {
+            Ok(content) => content,
+            Err(_) => fs::read_to_string(format!(
+                "{}/i18n/{language}.json",
+                std::env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR not set")
+            ))
             .await
-            .expect("Failed to read translations file");
+            .expect("Failed to read translations file"),
+        };
 
         serde_json::from_str(&content).expect("Failed to parse translations")
     }
