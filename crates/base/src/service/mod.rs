@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 pub use notification::{NotificationConditionMet, NotificationService};
-pub use rule::RuleService;
+pub use rule::{RuleCreateCmd, RuleService, RuleUpdateCmd};
 pub use user::{AuthenticateUserTelegramCmd, UserService};
 
 mod notification;

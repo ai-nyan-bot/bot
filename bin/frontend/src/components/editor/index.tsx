@@ -127,7 +127,12 @@ export const Editor: React.FC = () => {
                 console.log(JSON.stringify(rootCondition))
                 updateRule("1", {
                     name: "updated-name",
-                    sequence: {condition: rootCondition}
+                    sequence: {
+                        condition: rootCondition,
+                        action: {
+                            type: 'NOTIFY'
+                        }
+                    }
                 })
 
             }}>Launch Rule</Button>

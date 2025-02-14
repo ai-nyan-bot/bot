@@ -1,34 +1,40 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::{AuthenticatedUser, Rule};
+use crate::model::{AuthenticatedUser, Rule, RuleId, RuleName, Sequence};
+use crate::repo;
 use crate::service::RuleService;
-use common::service::ServiceResult;
+use common::service::{ServiceError, ServiceResult};
+
+pub struct RuleUpdateCmd {
+    pub name: Option<RuleName>,
+    pub sequence: Option<Sequence>,
+}
 
 impl RuleService {
-    pub async fn update(&self, user: AuthenticatedUser) -> ServiceResult<Rule> {
-        // let mut tx = self.pool.begin().await?;
-        // let result = self
-        //     .repo
-        //     .create(
-        //         &mut tx,
-        //         RuleUpdateCmd {
-        //             user: user.id,
-        //             name: "Some Rule".into(),
-        //             sequence: Sequence {
-        //                 condition: Condition::Compare {
-        //                     field: Field::Price,
-        //                     operator: Operator::GreaterThan,
-        //                     value: Value::Percent(0.00000037974844403108274),
-        //                     timeframe: None,
-        //                 },
-        //                 action: Action::Notify,
-        //             },
-        //         },
-        //     )
-        //     .await?;
-        // tx.commit().await?;
-        // Ok(result)
-        unimplemented!()
+    pub async fn update(&self, id: impl Into<RuleId>, cmd: RuleUpdateCmd, user: AuthenticatedUser) -> ServiceResult<Rule> {
+        let mut tx = self.pool.begin().await?;
+        let id = id.into();
+
+        let rule = self.repo.get_by_id(&mut tx, id).await?;
+        if rule.user != user.id {
+            return Err(ServiceError::not_found("Rule not found"));
+        }
+
+        let result = self
+            .repo
+            .update(
+                &mut tx,
+                repo::RuleUpdateCmd {
+                    id: id.into(),
+                    user: user.id,
+                    name: cmd.name.unwrap_or(rule.name),
+                    sequence: cmd.sequence.unwrap_or(rule.sequence),
+                },
+            )
+            .await?;
+
+        tx.commit().await?;
+        Ok(result)
     }
 }

@@ -5,8 +5,9 @@ use crate::model::Sequence;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "type", rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum Action {
-    AndThen(Box<Action>, Box<Sequence>),
+    AndThen { action: Box<Action>, sequence: Box<Sequence> },
     Buy,
     Notify,
     Sell,

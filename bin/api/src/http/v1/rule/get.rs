@@ -27,5 +27,9 @@ pub async fn get(
         .find(|r| r.id == RuleId(id.parse::<i32>().unwrap()))
         .unwrap();
 
-    Ok(Json(HttpRulGetResponse { id: r.id, name: r.name }))
+    Ok(Json(HttpRulGetResponse {
+        id: r.id,
+        name: r.name,
+        sequence: r.sequence,
+    }))
 }

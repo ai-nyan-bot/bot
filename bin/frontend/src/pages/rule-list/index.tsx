@@ -24,7 +24,20 @@ const CreateRuleButton = () => {
         }
         const newAbortController = new AbortController();
         abortControllerRef.current = newAbortController;
-        // createRule({}, newAbortController);
+        createRule({
+            name: 'test',
+            sequence: {
+                condition: {
+                    id: 'root',
+                    type: 'AND',
+                    conditions: []
+                },
+                action: {
+                    type: 'NOTIFY',
+                }
+            }
+
+        }, newAbortController);
     };
 
     useEffect(() => {

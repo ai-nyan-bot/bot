@@ -64,7 +64,7 @@ fn main() {
                     {
                         Ok(_) => {
                             match rule.sequence.action {
-                                Action::AndThen(_, _) => {}
+                                Action::AndThen { .. } => {}
                                 Action::Buy => {}
                                 Action::Notify => {
                                     let _ = state

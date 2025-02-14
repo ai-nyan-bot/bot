@@ -1,5 +1,16 @@
 import {Timeframe} from "@app/types/index.ts";
 
+export type Sequence = {
+    condition: Condition,
+    action: Action
+}
+
+export type Action = ActionNotify;
+
+export type ActionNotify = {
+    type: 'NOTIFY'
+}
+
 export enum Field {
     PRICE = 'PRICE',
     TRADES = 'TRADES',

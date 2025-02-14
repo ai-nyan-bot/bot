@@ -24,3 +24,9 @@ impl From<i32> for RuleId {
         Self(value)
     }
 }
+
+impl From<String> for RuleId {
+    fn from(value: String) -> Self {
+        Self(value.parse::<i32>().unwrap_or(0))
+    }
+}

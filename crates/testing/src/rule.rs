@@ -25,7 +25,7 @@ pub async fn create_rule_for_test_user<'a>(tx: &mut Tx<'a>, name: impl Into<Rule
                         value: Value::Percent(2.0),
                         timeframe: Some(Timeframe::M15),
                     },
-                    action: Notify,
+                    action: Notify {},
                 },
             },
         )
@@ -48,7 +48,7 @@ pub async fn create_rule_for_another_user<'a>(tx: &mut Tx<'a>, name: impl Into<R
                         value: Value::Percent(2.0),
                         timeframe: Some(Timeframe::D1),
                     },
-                    action: Notify,
+                    action: Notify {},
                 },
             },
         )

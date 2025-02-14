@@ -8,6 +8,7 @@ use crate::http::state::AppState;
 use axum::extract::{Path, State};
 use axum::{Extension, Json};
 use base::model::AuthenticatedUser;
+use base::service::RuleUpdateCmd;
 use log::debug;
 use std::os::linux::raw::stat;
 
@@ -17,7 +18,19 @@ pub async fn update(
     Extension(user): Extension<AuthenticatedUser>,
     JsonReq(req): JsonReq<RuleUpdateRequest>,
 ) -> Result<Json<RuleUpdateResponse>, HttpError> {
-    debug!("PUT /v1/rules/{id} {:?}", req);
+    debug!("PATCH /v1/rules/{id} {:?}", req);
+
+    let result = state
+        .rule_service()
+        .update(
+            id,
+            RuleUpdateCmd {
+                name: req.name,
+                sequence: req.sequence,
+            },
+            user,
+        )
+        .await?;
 
     Ok(Json(RuleUpdateResponse { id: 1.into() }))
 }
