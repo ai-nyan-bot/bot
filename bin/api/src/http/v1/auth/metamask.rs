@@ -40,6 +40,8 @@ pub async fn metamask(State(_state): State<AppState>, JsonReq(req): JsonReq<Toke
     // if user not exists yet
     // create user
 
+    // debug!("user {} authenticated via metamask", user.id);
+
     Ok(Json(TokenResponse {
         token: "valid-token".to_string(),
         user: UserResponse { id: "user_id".to_string() },

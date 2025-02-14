@@ -19,25 +19,23 @@ export default LandingPage
 const TelegramLanding = () => {
     const navigate = useNavigate();
     const appState = useContext(ContextAppState);
-    const code = appState.telegramData?.initDataUnsafe?.start_param || null;
-
     const [telegramLogin, response, loading, e] = useTelegram();
 
     useEffect(() => {
         const abortController = new AbortController();
 
         const auth = appState.auth;
-        if (auth.type === "Telegram") {
+        if (auth.type === 'Telegram') {
             navigate("/telegram/home");
         }
 
         if (auth.type === 'Unauthorized') {
-            telegramLogin(appState.telegramData!.initData!, code, abortController);
+            telegramLogin(appState.telegramData!.initData!, abortController);
         }
         return () => {
             abortController.abort();
         }
-    }, [appState.auth, appState.telegramData, navigate, telegramLogin, code]);
+    }, [appState.auth, appState.telegramData, navigate, telegramLogin]);
 
     if (e) {
         return (
@@ -51,7 +49,7 @@ const TelegramLanding = () => {
         )
     }
 
-    return null;
+    return (<h1>Computer says no</h1>);
 }
 
 const MetaMaskLanding = () => {

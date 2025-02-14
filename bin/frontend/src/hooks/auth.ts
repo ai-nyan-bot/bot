@@ -112,7 +112,7 @@ export const useMetaMask = (): [MetaMaskAction, string | null, boolean, Error | 
     return [fn, token, loading, error]
 }
 
-type TelegramAction = (query: string, code: string | null, abortController?: AbortController) => void
+type TelegramAction = (query: string, abortController?: AbortController) => void
 export const useTelegram = (): [TelegramAction, string | null, boolean, Error | null] => {
     const navigate = useNavigate()
     const appDispatch = useContext(ContextAppDispatch);
@@ -120,14 +120,14 @@ export const useTelegram = (): [TelegramAction, string | null, boolean, Error | 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
-    const fn = useCallback((query: string, code: string | null, abortController?: AbortController) => {
+    const fn = useCallback((query: string, abortController?: AbortController) => {
         fetch(`${import.meta.env.VITE_BASE_URL}/v1/auth/telegram`, {
             method: "POST",
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({query, friendCode: code}),
+            body: JSON.stringify({query}),
             signal: abortController?.signal,
         })
             .then(response => {
