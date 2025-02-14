@@ -61,11 +61,11 @@ const AppRouter = () => (
                 element={<Authenticated><TelegramHomePage/></Authenticated>}
             />
             <Route
-                path={"/telegram/web/rules"}
+                path={"/telegram/rules"}
                 element={<Authenticated><TelegramRuleListPage/></Authenticated>}
             />
             <Route
-                path={"/telegram/web/rules/:id"}
+                path={"/telegram/rules/:id"}
                 element={<Authenticated><TelegramRuleDetailPage/></Authenticated>}
             />
 

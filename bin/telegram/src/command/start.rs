@@ -16,29 +16,29 @@ pub(crate) async fn start(bot: Bot, msg: Message, state: AppState) -> HandlerRes
 
     let options = InlineKeyboardMarkup::new(vec![
         vec![InlineKeyboardButton::web_app(
-            "Test",
+            "Rules",
             WebAppInfo {
-                url: Url::parse("https://telegram.nyan.bot").unwrap(),
+                url: Url::parse("https://telegram.nyan.bot/telegram/rules").unwrap(),
             },
         )],
-        vec![
-            InlineKeyboardButton::callback(format!("↑ {}", i18n.button_text_send), "send"),
-            InlineKeyboardButton::callback(format!("↓ {}", i18n.button_text_receive), "receive"),
-            InlineKeyboardButton::web_app(
-                "↑↓ Swap",
-                WebAppInfo {
-                    url: Url::parse("https://nyanbot.com/wallet/swap").unwrap(),
-                },
-            ),
-        ],
-        vec![
-            InlineKeyboardButton::callback(i18n.start, "send"),
-            InlineKeyboardButton::callback(i18n.help, "receive"),
-        ],
-        vec![
-            InlineKeyboardButton::callback(format!("📊 {}", i18n.button_text_balance), "balance"),
-            InlineKeyboardButton::callback(format!("🏦 {}", i18n.button_text_wallet), "wallet"),
-        ],
+        // vec![
+        //     InlineKeyboardButton::callback(format!("↑ {}", i18n.button_text_send), "send"),
+        //     InlineKeyboardButton::callback(format!("↓ {}", i18n.button_text_receive), "receive"),
+        //     InlineKeyboardButton::web_app(
+        //         "↑↓ Swap",
+        //         WebAppInfo {
+        //             url: Url::parse("https://nyanbot.com/wallet/swap").unwrap(),
+        //         },
+        //     ),
+        // ],
+        // vec![
+        //     InlineKeyboardButton::callback(i18n.start, "send"),
+        //     InlineKeyboardButton::callback(i18n.help, "receive"),
+        // ],
+        // vec![
+        //     InlineKeyboardButton::callback(format!("📊 {}", i18n.button_text_balance), "balance"),
+        //     InlineKeyboardButton::callback(format!("🏦 {}", i18n.button_text_wallet), "wallet"),
+        // ],
     ]);
 
     if let Some(user) = msg.from {

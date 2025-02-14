@@ -1,16 +1,18 @@
 import {useRuleCreate, useRuleList} from "@hooks/rule.ts";
 import {useEffect, useRef} from "react";
 import {useNavigate} from "react-router-dom";
+import {Button} from "@components/ui/button.tsx";
+import {Card} from "@app/components/ui/card";
 
 
 const Rule = ({id, name}: { id: number, name: string }) => {
     const navigate = useNavigate();
     return (
-        <div onClick={(_) => {
-            navigate(`/rules/${id}`);
+        <Card className="p-4 border bg-gray-50 relative" onClick={(_) => {
+            navigate(`/telegram/rules/${id}`);
         }}>
-            {id} - {name}
-        </div>
+            {name}
+        </Card>
     )
 }
 
@@ -49,9 +51,10 @@ const CreateRuleButton = () => {
     }, []);
 
     return (
-        <button onClick={handleClick} disabled={loading}>
-            Create Rule
-        </button>
+        <Button className="w-full bg-green-500 text-white" onClick={handleClick} disabled={loading}>+ Rule</Button>
+        // <button onClick={handleClick} disabled={loading}>
+        //     Create Rule
+        // </button>
     )
 }
 
@@ -73,10 +76,10 @@ export const RuleListPage = () => {
     let rules = response.rules.map(r => <Rule key={r.id} id={r.id} name={r.name}/>);
 
     return (
-        <>
+        <div className="max-w-4xl mx-auto space-y-6">
             <h1> Rules </h1>
             {rules}
             <CreateRuleButton/>
-        </>
+        </div>
     )
 }
