@@ -6,6 +6,7 @@ use common::model::Timeframe;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "type", rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum Condition {
     Compare {
         field: Field,

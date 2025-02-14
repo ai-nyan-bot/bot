@@ -1,8 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use base::model::{Field, Operator, RuleId, RuleName, Value};
-use common::model::Timeframe;
+use base::model::{Condition, RuleId, RuleName};
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Debug)]
@@ -47,20 +46,6 @@ pub struct HttpRulGetResponse {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-#[serde(tag = "type", rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum ApiCondition {
-    And {
-        conditions: Vec<ApiCondition>,
-    },
-    Compare {
-        field: Field,
-        operator: Operator,
-        value: Value,
-        timeframe: Option<Timeframe>,
-    },
-}
-
-#[derive(Debug, Serialize, Deserialize)]
 pub struct ApiSequence {
-    pub condition: ApiCondition,
+    pub condition: Condition,
 }
