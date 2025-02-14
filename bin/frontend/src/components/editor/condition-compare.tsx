@@ -1,4 +1,4 @@
-import {Condition, Field, Operator, Timeframe, Value} from "@types";
+import {Condition, Field, Operator, Timeframe, Value, ValuePercent} from "@types";
 import React, {FC} from "react";
 import {SelectOperator} from "@components/editor/operator.tsx";
 import {ValuePercentInput} from "@components/editor/value.tsx";
@@ -23,6 +23,7 @@ export const Compare: FC<CompareProps> = ({
     return (
         <div key={condition.id}>
             <SelectField
+                defaultField={condition.field}
                 supported={[
                     Field.PRICE,
                     Field.TRADES,
@@ -32,18 +33,20 @@ export const Compare: FC<CompareProps> = ({
             />
 
             <SelectOperator
+                defaultOperator={condition.operator}
                 supported={[
-                    Operator.INCREASED_BY,
                     Operator.GREATER_THAN
                 ]}
                 onChange={(value) => onOperatorChange(condition.id, value)}
             />
 
             <ValuePercentInput
+                defaultValue={(condition.value as ValuePercent)?.value}
                 onChange={(value) => onValueChange(condition.id, value)}
             />
 
             <SelectTimeframe
+                defaultTimeframe={condition.timeframe}
                 supported={[
                     Timeframe.M1,
                     Timeframe.M5,

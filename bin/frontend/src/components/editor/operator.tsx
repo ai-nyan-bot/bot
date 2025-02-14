@@ -9,7 +9,6 @@ export const useOperatorOptions = (supported: Array<Operator>): Array<{
     // FIXME i18n
     return [
         {value: Operator.GREATER_THAN, label: "greater than"},
-        {value: Operator.INCREASED_BY, label: "increased by"},
     ].filter(opt => supported.find(v => v === opt.value));
 }
 

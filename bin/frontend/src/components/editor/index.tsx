@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
-import {Action, Condition, ConditionType, Sequence} from "@types";
+import {Action, Condition, ConditionType, Field, Operator, Sequence, Timeframe} from "@types";
 import {ConditionList} from "@components/editor/condition.tsx";
-import {v4 as uuidv4} from "uuid";
+import {uuidv4} from "@app/utils/id.ts";
 
 const createCondition = (type: ConditionType): Condition => {
     switch (type) {
@@ -21,6 +21,13 @@ const createCondition = (type: ConditionType): Condition => {
             return {
                 id: uuidv4(),
                 type: 'COMPARE',
+                field: Field.PRICE,
+                operator: Operator.GREATER_THAN,
+                value: {
+                    type: 'PERCENT',
+                    value: 15
+                },
+                timeframe: Timeframe.M15
             }
     }
 }
@@ -100,6 +107,7 @@ export const Editor: React.FC<EditorProps> = ({sequence, onChange}) => {
     useEffect(() => {
         if (condition) {
             if (onChange) {
+                console.log(condition)
                 onChange({action, condition})
             }
         }

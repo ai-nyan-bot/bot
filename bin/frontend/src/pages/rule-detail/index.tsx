@@ -4,6 +4,7 @@ import {useRuleGet, useRuleUpdate} from "@hooks/rule.ts";
 import {useParams} from "react-router-dom";
 import {Button} from "@components/ui/button.tsx";
 import {Sequence} from "@types";
+import {injectId, uuidv4} from "@utils";
 
 
 export const RuleDetailPage: React.FC = () => {
@@ -23,7 +24,9 @@ export const RuleDetailPage: React.FC = () => {
     }, [id, getRule]);
 
     useEffect(() => {
-        setSequence(rule?.sequence)
+        let injectedSequence = injectId(rule?.sequence, uuidv4) as Sequence;
+        console.log("after injection", injectedSequence);
+        setSequence(injectedSequence)
     }, [rule]);
 
     if (!id) {
@@ -37,13 +40,10 @@ export const RuleDetailPage: React.FC = () => {
     return (
         <div className="max-w-4xl mx-auto space-y-6">
             <Editor
-                sequence={rule.sequence}
-                onChange={(sequence) => {
-                    console.log("update sequence", sequence);
-                    setSequence(sequence)
-                }}
+                sequence={sequence}
+                onChange={(sequence) => setSequence(sequence)}
             />
-            {JSON.stringify(sequence, null, 2)}
+            {JSON.stringify(sequence, null, '\t')}
             <Button className="w-full bg-green-500 text-white" onClick={() => {
                 updateRule(id, {
                     name: rule?.name,

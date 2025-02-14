@@ -1,10 +1,9 @@
 import React, {FC} from "react";
-import {Decimal} from "decimal.js";
 import {ValuePercent} from "@types";
 
 export type ValuePercentInputProps = {
-    defaultValue?: Decimal;
-    value?: Decimal;
+    defaultValue?: number;
+    value?: number;
     onChange?: (value: ValuePercent) => void;
 }
 

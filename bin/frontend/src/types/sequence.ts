@@ -26,7 +26,7 @@ export enum Field {
 export type ConditionType = 'COMPARE' | 'AND' | 'OR'
 
 export type Condition = {
-    id: string;
+    id?: string;
     type: ConditionType;
     field?: Field;
     operator?: Operator;
@@ -38,7 +38,6 @@ export type Condition = {
 export enum Operator {
     EQUAL = "EQUAL",
     GREATER_THAN = 'GREATER_THAN',
-    INCREASED_BY = 'INCREASED_BY',
 }
 
 export type Value = ValueBoolean | ValuePercent | ValueQuote | ValueString | ValueUsd;

@@ -1,4 +1,4 @@
-export const uuidv4 = () => { // Public Domain/MIT
+export const uuidv4 = (): string => { // Public Domain/MIT
     let d = new Date().getTime();//Timestamp
     let d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now() * 1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -12,4 +12,22 @@ export const uuidv4 = () => { // Public Domain/MIT
         }
         return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
     });
+}
+
+
+export const injectId = (obj: unknown, generateId: () => string = uuidv4): unknown => {
+    if (Array.isArray(obj)) {
+        return obj.map(item => injectId(item, generateId));
+    } else if (typeof obj === 'object' && obj !== null) {
+        return {
+            id: generateId(),
+            ...Object.fromEntries(
+                Object.entries(obj).map(([key, value]) => [
+                    key,
+                    injectId(value, generateId),
+                ])
+            ),
+        };
+    }
+    return obj;
 }
