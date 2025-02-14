@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use base::model::{Field, RuleId, RuleName, Value};
+use base::model::{Field, Operator, RuleId, RuleName, Value};
 use common::model::Timeframe;
 use serde::{Deserialize, Serialize};
 
@@ -46,18 +46,6 @@ pub struct HttpRulGetResponse {
     pub name: RuleName,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum ApiOperator {
-    Equal,
-    GreaterThan,
-    GreaterThanEqual,
-    IncreasedBy,
-    LessThan,
-    LessThanEqual,
-    NotEqual,
-}
-
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum ApiCondition {
@@ -66,7 +54,7 @@ pub enum ApiCondition {
     },
     Compare {
         field: Field,
-        operator: ApiOperator,
+        operator: Operator,
         value: Value,
         timeframe: Option<Timeframe>,
     },

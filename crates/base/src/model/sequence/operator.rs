@@ -4,12 +4,11 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum Operator {
     Equal,
-    DecreasedBy,
     GreaterThan,
     GreaterThanEqual,
-
     LessThan,
     LessThanEqual,
     NotEqual,
