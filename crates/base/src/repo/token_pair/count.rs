@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
-// Original MIT License Copyright (c) blockworks-foundation 2024.
+// Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
 use crate::repo::{ReadTokenPairRepo, TokenPairQuery};
 use common::model::Count;

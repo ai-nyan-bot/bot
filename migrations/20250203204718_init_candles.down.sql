@@ -2,7 +2,7 @@
 -- This file is licensed under the AGPL-3.0-or-later.
 
 -- This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
--- Original MIT License Copyright (c) blockworks-foundation 2024.
+-- Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
 drop table pumpfun.candle_1s_most_recent cascade;
 drop function pumpfun.candle_1s_update_most_recent cascade;
