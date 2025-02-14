@@ -2,8 +2,8 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::Fact::{
-    TokenPriceChangePercent, TokenPriceChangeQuote, TokenPriceChangeUsd, TokenPriceQuote, TokenPriceUsd, TokenVolumeChangePercent, TokenVolumeChangeUsd,
-    TokenVolumeUsd,
+	TokenPriceChangePercent, TokenPriceChangeQuote, TokenPriceChangeUsd, TokenPriceQuote, TokenPriceUsd, TokenVolumeChangePercent, TokenVolumeChangeUsd,
+	TokenVolumeUsd,
 };
 use crate::model::FactError::UnableToDeriveFact;
 use crate::model::ValueType::{Percent, Quote};
@@ -89,7 +89,7 @@ impl TryFrom<&Condition> for Fact {
             Condition::Compare { field, value, timeframe, .. } => {
                 Fact::from_comparison(field, value, timeframe.is_some()).ok_or(UnableToDeriveFact(condition.clone()))
             }
-            Condition::And(_) | Condition::Or(_) | Condition::AndNot(_) => Err(UnableToDeriveFact(condition.clone())),
+            Condition::And{..} | Condition::Or{..} | Condition::AndNot{..} => Err(UnableToDeriveFact(condition.clone())),
         }
     }
 }
@@ -117,17 +117,17 @@ impl Fact {
 
 #[cfg(test)]
 mod test {
-    use crate::model::Fact::{TokenPriceChangePercent, TokenPriceChangeQuote, TokenPriceChangeUsd, TokenPriceQuote, TokenPriceUsd};
-    use crate::model::Field::Price;
-    use crate::model::Operator::GreaterThan;
-    use crate::model::Value::{Percent, Usd};
-    use crate::model::{Condition, Fact, Value};
-    use common::model::Timeframe;
-    use Condition::Compare;
-    use Timeframe::H1;
-    use Value::Quote;
+	use crate::model::Fact::{TokenPriceChangePercent, TokenPriceChangeQuote, TokenPriceChangeUsd, TokenPriceQuote, TokenPriceUsd};
+	use crate::model::Field::Price;
+	use crate::model::Operator::GreaterThan;
+	use crate::model::Value::{Percent, Usd};
+	use crate::model::{Condition, Fact, Value};
+	use common::model::Timeframe;
+	use Condition::Compare;
+	use Timeframe::H1;
+	use Value::Quote;
 
-    #[test]
+	#[test]
     fn token_price_quote() {
         assert_eq!(
             Fact::try_from(&Compare {
