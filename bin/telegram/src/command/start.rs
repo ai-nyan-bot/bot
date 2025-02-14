@@ -15,6 +15,12 @@ pub(crate) async fn start(bot: Bot, msg: Message, state: AppState) -> HandlerRes
     let i18n = I18N::load(Language::En).await;
 
     let options = InlineKeyboardMarkup::new(vec![
+        vec![InlineKeyboardButton::web_app(
+            "Test",
+            WebAppInfo {
+                url: Url::parse("https://telegram.nyan.bot").unwrap(),
+            },
+        )],
         vec![
             InlineKeyboardButton::callback(format!("↑ {}", i18n.button_text_send), "send"),
             InlineKeyboardButton::callback(format!("↓ {}", i18n.button_text_receive), "receive"),
@@ -39,16 +45,10 @@ pub(crate) async fn start(bot: Bot, msg: Message, state: AppState) -> HandlerRes
         if !user.is_bot {
             // println!("User {user:#?} started");
             // println!("{:#?}", state.config);
-            let (user, wallet, created) = state
-                .user_service()
-                .get_or_create_telegram_user(user.id.0)
-                .await
-                .unwrap();
+            let (user, wallet, created) = state.user_service().get_or_create_telegram_user(user.id.0).await.unwrap();
         }
     }
 
-    bot.send_message(msg.chat.id, "Nyanbot")
-        .reply_markup(options)
-        .await?;
+    bot.send_message(msg.chat.id, "Nyanbot").reply_markup(options).await?;
     Ok(())
 }

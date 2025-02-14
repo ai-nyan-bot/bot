@@ -21,7 +21,7 @@ const TelegramLanding = () => {
     const appState = useContext(ContextAppState);
     const code = appState.telegramData?.initDataUnsafe?.start_param || null;
 
-    const [telegramLogin, , , e] = useTelegram();
+    const [telegramLogin, response, loading, e] = useTelegram();
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -39,10 +39,19 @@ const TelegramLanding = () => {
         }
     }, [appState.auth, appState.telegramData, navigate, telegramLogin, code]);
 
-    return (
-        <h1 className={"text-center text-blue-800 text-xl"}>Starting your terminal</h1>
-    )
+    if (response == null || loading) {
+        return (
+            <h1 className={"text-center text-blue-800 text-xl"}>Starting your terminal</h1>
+        )
+    }
 
+    if (e) {
+        return (
+            <h1> Login failed with {JSON.stringify(e)}</h1>
+        )
+    }
+
+    return null;
 }
 
 const MetaMaskLanding = () => {

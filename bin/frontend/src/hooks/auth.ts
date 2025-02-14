@@ -89,7 +89,7 @@ export const useMetaMask = (): [MetaMaskAction, string | null, boolean, Error | 
                             wallet: data.wallet,
                         })
 
-                        navigate('/home')
+                        navigate('/web/home')
 
                     })
                     setLoading(false)
@@ -147,7 +147,7 @@ export const useTelegram = (): [TelegramAction, string | null, boolean, Error | 
                             wallet: data.wallet,
                         })
 
-                        navigate('/home')
+                        navigate('/telegram/home')
 
                     })
                     setLoading(false)

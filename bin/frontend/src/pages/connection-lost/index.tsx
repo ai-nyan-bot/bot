@@ -13,7 +13,13 @@ export const ConnectionLostPage = () => {
             navigate("/");
         }
         if (status === "CONNECTED") {
-            navigate("/home");
+            if (appState.type === 'Telegram') {
+                navigate("/telegram/home");
+            }
+
+            if (appState.type === 'WebApp') {
+                navigate("/web/home");
+            }
         }
     }, [authType, status, navigate]);
 
