@@ -3,12 +3,11 @@
 
 use crate::user::{get_or_create_another_user, get_or_create_test_user};
 use base::model::Action::Notify;
-use base::model::Condition::{Compare, Exists};
-use base::model::Fact::TokenCreationDuration;
-use base::model::Operator::Equal;
-use base::model::{Fact, Sequence, Rule, RuleName, Value};
+use base::model::Condition::Compare;
+use base::model::Operator::GreaterThan;
+use base::model::{Field, Rule, RuleName, Sequence, Value};
 use base::repo::{RuleCreateCmd, RuleQueryAll, RuleRepo};
-use common::model::{Count, Limit};
+use common::model::{Count, Limit, Timeframe};
 use common::repo::Tx;
 
 pub async fn create_rule_for_test_user<'a>(tx: &mut Tx<'a>, name: impl Into<RuleName>) -> Rule {
@@ -20,9 +19,11 @@ pub async fn create_rule_for_test_user<'a>(tx: &mut Tx<'a>, name: impl Into<Rule
                 user: test_user.id,
                 name: name.into(),
                 sequence: Sequence {
-                    condition: Exists {
-                        fact: TokenCreationDuration,
-                        timeframe: None,
+                    condition: Compare {
+                        field: Field::Price,
+                        operator: GreaterThan,
+                        value: Value::Percent(2.0),
+                        timeframe: Some(Timeframe::M15),
                     },
                     action: Notify,
                 },
@@ -42,10 +43,10 @@ pub async fn create_rule_for_another_user<'a>(tx: &mut Tx<'a>, name: impl Into<R
                 name: name.into(),
                 sequence: Sequence {
                     condition: Compare {
-                        fact: Fact::TelegramGroupName,
-                        operator: Equal,
-                        value: Value::String("ANOTHER_TELEGRAM_GROUP_NAME".to_string()),
-                        timeframe: None,
+                        field: Field::Volume,
+                        operator: GreaterThan,
+                        value: Value::Percent(2.0),
+                        timeframe: Some(Timeframe::D1),
                     },
                     action: Notify,
                 },

@@ -1,25 +1,33 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::{Value, ValueKind};
-use common::model::Timeframe;
+use crate::model::Fact::{
+    TokenPriceChangePercent, TokenPriceChangeQuote, TokenPriceChangeUsd, TokenPriceQuote, TokenPriceUsd, TokenVolumeChangePercent, TokenVolumeChangeUsd,
+    TokenVolumeUsd,
+};
+use crate::model::FactError::UnableToDeriveFact;
+use crate::model::ValueType::{Percent, Quote};
+use crate::model::{Condition, FactError, Field, Value, ValueType};
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use Fact::{TelegramGroup, TelegramGroupName, TokenCreationDuration, TokenVolumeChangeQuote, TokenVolumeQuote, TwitterAccount, TwitterAccountName};
+use Field::{Price, Volume};
+use ValueType::{Boolean, Duration, Usd};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Fact {
     TokenCreationDuration,
 
     TokenPriceQuote,
-    TokenPriceQuoteChange,
-
     TokenPriceUsd,
-    TokenPriceUsdChange,
+    TokenPriceChangePercent,
+    TokenPriceChangeQuote,
+    TokenPriceChangeUsd,
 
     TokenVolumeQuote,
-    TokenVolumeQuoteChange,
-
-    TokenTotalVolumeQuote,
+    TokenVolumeUsd,
+    TokenVolumeChangePercent,
+    TokenVolumeChangeQuote,
+    TokenVolumeChangeUsd,
 
     TelegramGroup,
     TelegramGroupName,
@@ -31,319 +39,167 @@ pub enum Fact {
 impl Fact {
     pub fn has_timeframe(&self) -> bool {
         match self {
-            Fact::TokenCreationDuration => false,
+            TokenCreationDuration => false,
 
-            Fact::TokenPriceQuote => false,
-            Fact::TokenPriceQuoteChange => true,
+            TokenPriceQuote => false,
+            TokenPriceUsd => false,
 
-            Fact::TokenPriceUsd => false,
-            Fact::TokenPriceUsdChange => true,
+            TokenPriceChangeQuote => true,
+            TokenPriceChangePercent => true,
+            TokenPriceChangeUsd => true,
 
-            Fact::TokenVolumeQuote => true,
-            Fact::TokenVolumeQuoteChange => true,
+            TokenVolumeQuote => false,
+            TokenVolumeUsd => false,
+            TokenVolumeChangeQuote => true,
+            TokenVolumeChangePercent => true,
+            TokenVolumeChangeUsd => true,
 
-            Fact::TokenTotalVolumeQuote => false,
+            TelegramGroup => false,
+            TelegramGroupName => false,
 
-            Fact::TelegramGroup => false,
-            Fact::TelegramGroupName => false,
-
-            Fact::TwitterAccount => false,
-            Fact::TwitterAccountName => false,
+            TwitterAccount => false,
+            TwitterAccountName => false,
         }
     }
 
-    pub fn value_kind(&self) -> ValueKind {
+    pub fn value_type(&self) -> ValueType {
         match self {
-            Fact::TokenCreationDuration => ValueKind::Duration,
-            Fact::TokenPriceQuote => ValueKind::Number,
-            Fact::TokenPriceQuoteChange => ValueKind::Number,
-            Fact::TokenPriceUsd => ValueKind::Number,
-            Fact::TokenPriceUsdChange => ValueKind::Number,
-            Fact::TokenVolumeQuote => ValueKind::Number,
-            Fact::TokenVolumeQuoteChange => ValueKind::Number,
-            Fact::TokenTotalVolumeQuote => ValueKind::Number,
-            Fact::TelegramGroup => ValueKind::Boolean,
-            Fact::TelegramGroupName => ValueKind::String,
-            Fact::TwitterAccount => ValueKind::Boolean,
-            Fact::TwitterAccountName => ValueKind::String,
+            TokenCreationDuration => Duration,
+
+            TokenPriceQuote => Quote,
+            TokenPriceUsd => Usd,
+
+            TokenPriceChangeQuote => Quote,
+            TokenPriceChangeUsd => Usd,
+            TokenPriceChangePercent => Percent,
+
+            TokenVolumeQuote => Quote,
+            TokenVolumeUsd => Usd,
+            TokenVolumeChangeQuote => Quote,
+            TokenVolumeChangePercent => Percent,
+            TokenVolumeChangeUsd => Usd,
+
+            TelegramGroup => Boolean,
+            TelegramGroupName => ValueType::String,
+            TwitterAccount => Boolean,
+            TwitterAccountName => ValueType::String,
         }
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
-pub enum FactError {
-    ValueTypeMismatch { expected: ValueKind, got: ValueKind },
-    TimeframeRequired(Fact),
-    TimeframeNotAllowed(Fact),
-}
+impl TryFrom<&Condition> for Fact {
+    type Error = FactError;
 
-impl std::fmt::Display for FactError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            FactError::ValueTypeMismatch { expected, got: found } => {
-                write!(f, "Value type mismatch: expected {:?}, found {:?}", expected, found)
+    fn try_from(condition: &Condition) -> Result<Self, Self::Error> {
+        match condition {
+            Condition::Compare { field, value, timeframe, .. } => {
+                Fact::from_comparison(field, value, timeframe.is_some()).ok_or(UnableToDeriveFact(condition.clone()))
             }
-            FactError::TimeframeRequired(fact) => {
-                write!(f, "{:?} requires a timeframe, but none was provided", fact)
-            }
-            FactError::TimeframeNotAllowed(fact) => {
-                write!(f, "{:?} does not support a timeframe, but one was provided", fact)
-            }
+            Condition::And(_) | Condition::Or(_) | Condition::AndNot(_) => Err(UnableToDeriveFact(condition.clone())),
         }
     }
 }
 
-impl std::error::Error for FactError {}
+impl Fact {
+    fn from_comparison(field: &Field, value: &Value, has_timeframe: bool) -> Option<Self> {
+        let fact = match (field, value.value_type(), has_timeframe) {
+            (Price, Quote, false) => TokenPriceQuote,
+            (Price, Usd, false) => TokenPriceUsd,
+            (Price, Quote, true) => TokenPriceChangeQuote,
+            (Price, Usd, true) => TokenPriceChangeUsd,
+            (Price, Percent, true) => TokenPriceChangePercent,
 
-#[derive(Debug)]
-pub struct Facts {
-    values: HashMap<Fact, Value>,
-    timeframe_values: HashMap<Fact, HashMap<Timeframe, Value>>,
-}
+            (Volume, Quote, false) => TokenVolumeQuote,
+            (Volume, Usd, false) => TokenVolumeUsd,
+            (Volume, Quote, true) => TokenVolumeChangeQuote,
+            (Volume, Usd, true) => TokenVolumeChangeUsd,
+            (Volume, Percent, true) => TokenVolumeChangePercent,
+            _ => return None,
+        };
 
-impl Facts {
-    pub fn new() -> Self {
-        Self {
-            values: HashMap::new(),
-            timeframe_values: HashMap::new(),
-        }
-    }
-
-    pub fn with_value(mut self, fact: Fact, value: impl Into<Value>) -> Result<Self, FactError> {
-        self.set(fact, value.into(), None)?;
-        Ok(self)
-    }
-
-    pub fn with_timeframe_value(mut self, fact: Fact, value: impl Into<Value>, timeframe: Timeframe) -> Result<Self, FactError> {
-        self.set(fact, value.into(), Some(timeframe))?;
-        Ok(self)
-    }
-
-    pub fn get(&self, fact: &Fact) -> Option<&Value> {
-        self.values.get(fact)
-    }
-
-    pub fn get_with_timeframe(&self, fact: &Fact, timeframe: &Timeframe) -> Option<&Value> {
-        self.timeframe_values.get(fact).and_then(|map| map.get(timeframe))
-    }
-
-    pub fn exists(&self, fact: &Fact, timeframe: Option<&Timeframe>) -> bool {
-        match timeframe {
-            None => self.values.contains_key(fact),
-            Some(timeframe) => self.timeframe_values.get(fact).map_or(false, |map| map.contains_key(timeframe)),
-        }
-    }
-
-    pub fn set(&mut self, fact: Fact, value: Value, timeframe: Option<Timeframe>) -> Result<(), FactError> {
-        if value.kind() != fact.value_kind() {
-            return Err(FactError::ValueTypeMismatch {
-                expected: fact.value_kind(),
-                got: value.kind(),
-            });
-        }
-
-        if fact.has_timeframe() {
-            if let Some(timeframe) = timeframe {
-                self.timeframe_values.entry(fact).or_insert_with(HashMap::new).insert(timeframe, value);
-            } else {
-                return Err(FactError::TimeframeRequired(fact));
-            }
-        } else {
-            if timeframe.is_some() {
-                return Err(FactError::TimeframeNotAllowed(fact));
-            }
-            self.values.insert(fact, value);
-        }
-
-        Ok(())
+        Some(fact)
     }
 }
 
 #[cfg(test)]
-mod tests {
-	use crate::model::{Fact, FactError, Facts, Value, ValueKind};
-	use common::model::Timeframe;
-
-	#[test]
-    fn test_set_and_get_fact_without_timeframe() {
-        let mut test_instance = Facts::new();
-        let fact = Fact::TokenPriceQuote;
-        let value = Value::Number(123.45);
-
-        assert!(test_instance.set(fact, value.clone(), None).is_ok());
-        assert_eq!(test_instance.get(&fact), Some(&value));
-    }
+mod test {
+    use crate::model::Fact::{TokenPriceChangePercent, TokenPriceChangeQuote, TokenPriceChangeUsd, TokenPriceQuote, TokenPriceUsd};
+    use crate::model::Field::Price;
+    use crate::model::Operator::GreaterThan;
+    use crate::model::Value::{Percent, Usd};
+    use crate::model::{Condition, Fact, Value};
+    use common::model::Timeframe;
+    use Condition::Compare;
+    use Timeframe::H1;
+    use Value::Quote;
 
     #[test]
-    fn test_set_and_get_fact_with_timeframe() {
-        let mut test_instance = Facts::new();
-        let fact = Fact::TokenPriceQuoteChange;
-        let timeframe = Timeframe::D1;
-        let value = Value::Number(-2.5);
-
-        assert!(test_instance.set(fact, value.clone(), Some(timeframe)).is_ok());
-        assert_eq!(test_instance.get_with_timeframe(&fact, &timeframe), Some(&value));
-    }
-
-    #[test]
-    fn test_set_fact_with_timeframe_when_not_allowed() {
-        let mut test_instance = Facts::new();
-        let fact = Fact::TokenPriceQuote;
-        let timeframe = Timeframe::D1;
-        let value = Value::Number(50.0);
-
-        let result = test_instance.set(fact, value.clone(), Some(timeframe));
-        assert!(matches!(result, Err(FactError::TimeframeNotAllowed(_))));
-    }
-
-    #[test]
-    fn test_set_fact_without_timeframe_when_required() {
-        let mut test_instance = Facts::new();
-        let fact = Fact::TokenPriceQuoteChange;
-        let value = Value::Number(-3.0);
-
-        let result = test_instance.set(fact, value.clone(), None);
-        assert!(matches!(result, Err(FactError::TimeframeRequired(_))));
-    }
-
-    #[test]
-    fn test_set_fact_with_invalid_value_kind() {
-        let mut test_instance = Facts::new();
-        let fact = Fact::TokenPriceQuote;
-        let invalid_value = Value::Boolean(true);
-
-        let result = test_instance.set(fact, invalid_value.clone(), None);
-        assert!(matches!(
-            result,
-            Err(FactError::ValueTypeMismatch {
-                expected: ValueKind::Number,
-                got: ValueKind::Boolean
+    fn token_price_quote() {
+        assert_eq!(
+            Fact::try_from(&Compare {
+                field: Price,
+                operator: GreaterThan,
+                value: Quote(2.0),
+                timeframe: None
             })
-        ));
+            .unwrap(),
+            TokenPriceQuote
+        );
     }
 
     #[test]
-    fn test_exists_fact_without_timeframe() {
-        let mut test_instance = Facts::new();
-        let fact = Fact::TokenPriceUsd;
-        let value = Value::Number(200.0);
-
-        assert!(!test_instance.exists(&fact, None));
-        test_instance.set(fact, value, None).unwrap();
-        assert!(test_instance.exists(&fact, None));
+    fn token_price_usd() {
+        assert_eq!(
+            Fact::try_from(&Compare {
+                field: Price,
+                operator: GreaterThan,
+                value: Usd(2.0),
+                timeframe: None
+            })
+            .unwrap(),
+            TokenPriceUsd
+        );
     }
 
     #[test]
-    fn test_exists_fact_with_timeframe() {
-        let mut test_instance = Facts::new();
-        let fact = Fact::TokenVolumeQuoteChange;
-        let timeframe = Timeframe::D1;
-        let value = Value::Number(500.0);
-
-        assert!(!test_instance.exists(&fact, Some(&timeframe)));
-        test_instance.set(fact, value, Some(timeframe)).unwrap();
-        assert!(test_instance.exists(&fact, Some(&timeframe)));
+    fn token_price_change_percent() {
+        assert_eq!(
+            Fact::try_from(&Compare {
+                field: Price,
+                operator: GreaterThan,
+                value: Percent(2.0),
+                timeframe: Some(H1)
+            })
+            .unwrap(),
+            TokenPriceChangePercent
+        );
     }
 
     #[test]
-    fn test_overwrite_existing_fact_without_timeframe() {
-        let mut test_instance = Facts::new();
-        let fact = Fact::TokenPriceQuote;
-        let value1 = Value::Number(100.0);
-        let value2 = Value::Number(200.0);
-
-        test_instance.set(fact, value1.clone(), None).unwrap();
-        assert_eq!(test_instance.get(&fact), Some(&value1));
-
-        test_instance.set(fact, value2.clone(), None).unwrap();
-        assert_eq!(test_instance.get(&fact), Some(&value2));
+    fn token_price_change_quote() {
+        assert_eq!(
+            Fact::try_from(&Compare {
+                field: Price,
+                operator: GreaterThan,
+                value: Quote(2.0),
+                timeframe: Some(H1)
+            })
+            .unwrap(),
+            TokenPriceChangeQuote
+        );
     }
 
     #[test]
-    fn test_overwrite_existing_fact_with_timeframe() {
-        let mut test_instance = Facts::new();
-        let fact = Fact::TokenVolumeQuoteChange;
-        let timeframe = Timeframe::D1;
-        let value1 = Value::Number(300.0);
-        let value2 = Value::Number(500.0);
-
-        test_instance.set(fact, value1.clone(), Some(timeframe)).unwrap();
-        assert_eq!(test_instance.get_with_timeframe(&fact, &timeframe), Some(&value1));
-
-        test_instance.set(fact, value2.clone(), Some(timeframe)).unwrap();
-        assert_eq!(test_instance.get_with_timeframe(&fact, &timeframe), Some(&value2));
-    }
-
-    #[test]
-    fn test_get_nonexistent_fact() {
-        let test_instance = Facts::new();
-        assert!(test_instance.get(&Fact::TokenTotalVolumeQuote).is_none());
-        assert!(test_instance.get_with_timeframe(&Fact::TokenPriceQuoteChange, &Timeframe::W1).is_none());
-    }
-
-    #[test]
-    fn test_set_fact_with_different_timeframes() {
-        let mut test_instance = Facts::new();
-        let fact = Fact::TokenPriceQuoteChange;
-
-        let value1 = Value::Number(1.2);
-        let value2 = Value::Number(2.4);
-        let value3 = Value::Number(3.6);
-
-        let timeframe1 = Timeframe::H1;
-        let timeframe2 = Timeframe::D1;
-        let timeframe3 = Timeframe::W1;
-
-        assert!(test_instance.set(fact, value1.clone(), Some(timeframe1)).is_ok());
-        assert!(test_instance.set(fact, value2.clone(), Some(timeframe2)).is_ok());
-        assert!(test_instance.set(fact, value3.clone(), Some(timeframe3)).is_ok());
-
-        assert_eq!(test_instance.get_with_timeframe(&fact, &timeframe1), Some(&value1));
-        assert_eq!(test_instance.get_with_timeframe(&fact, &timeframe2), Some(&value2));
-        assert_eq!(test_instance.get_with_timeframe(&fact, &timeframe3), Some(&value3));
-    }
-
-    #[test]
-    fn test_exists_for_different_timeframes() {
-        let mut test_instance = Facts::new();
-        let fact = Fact::TokenPriceUsdChange;
-
-        let timeframe1 = Timeframe::H1;
-        let timeframe2 = Timeframe::D1;
-
-        let value1 = Value::Number(-2.0);
-        let value2 = Value::Number(-5.5);
-
-        assert!(test_instance.set(fact, value1.clone(), Some(timeframe1)).is_ok());
-        assert!(test_instance.set(fact, value2.clone(), Some(timeframe2)).is_ok());
-
-        assert!(test_instance.exists(&fact, Some(&timeframe1)));
-        assert!(test_instance.exists(&fact, Some(&timeframe2)));
-        assert!(!test_instance.exists(&fact, Some(&Timeframe::W1)));
-    }
-
-    #[test]
-    fn test_update_multiple_timeframes_independently() {
-        let mut test_instance = Facts::new();
-        let fact = Fact::TokenPriceQuoteChange;
-
-        let timeframe1 = Timeframe::H1;
-        let timeframe2 = Timeframe::D1;
-        let timeframe3 = Timeframe::W1;
-
-        let value1 = Value::Number(1.5);
-        let value2 = Value::Number(3.0);
-        let value3 = Value::Number(4.5);
-
-        assert!(test_instance.set(fact, value1.clone(), Some(timeframe1)).is_ok());
-        assert!(test_instance.set(fact, value2.clone(), Some(timeframe2)).is_ok());
-        assert!(test_instance.set(fact, value3.clone(), Some(timeframe3)).is_ok());
-
-        let new_value2 = Value::Number(6.0);
-        assert!(test_instance.set(fact, new_value2.clone(), Some(timeframe2)).is_ok());
-
-        assert_eq!(test_instance.get_with_timeframe(&fact, &timeframe1), Some(&value1));
-        assert_eq!(test_instance.get_with_timeframe(&fact, &timeframe2), Some(&new_value2));
-        assert_eq!(test_instance.get_with_timeframe(&fact, &timeframe3), Some(&value3));
+    fn token_price_change_usd() {
+        assert_eq!(
+            Fact::try_from(&Compare {
+                field: Price,
+                operator: GreaterThan,
+                value: Usd(2.0),
+                timeframe: Some(H1)
+            })
+            .unwrap(),
+            TokenPriceChangeUsd
+        );
     }
 }

@@ -3,15 +3,10 @@
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Copy, Clone, Eq, Hash, PartialEq, PartialOrd, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum Timeframe {
-    S1,
-    M1,
-    M5,
-    M15,
-    H1,
-    H4,
-    D1,
-    W1,
+pub enum Field {
+    Price,
+    Trades,
+    Volume,
 }

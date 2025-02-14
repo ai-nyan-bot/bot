@@ -1,4 +1,3 @@
-import {Decimal} from "decimal.js";
 import {Timeframe} from "@app/types/index.ts";
 
 export enum Field {
@@ -31,17 +30,11 @@ export enum Operator {
     INCREASED_BY = 'INCREASED_BY',
 }
 
-export type Value = ValueBoolean | ValueMoney | ValuePercent | ValueString;
-
+export type Value = ValueBoolean | ValuePercent | ValueQuote | ValueString | ValueUsd;
 
 export type ValueBoolean = {
     type: 'BOOLEAN';
     value: boolean;
-}
-
-export type ValueMoney = {
-    type: 'MONEY';
-    value: Decimal;
 }
 
 export type ValuePercent = {
@@ -49,7 +42,17 @@ export type ValuePercent = {
     value: number;
 }
 
+export type ValueQuote = {
+    type: 'QUOTE';
+    value: number;
+}
+
 export type ValueString = {
     type: 'STRING';
     value: string;
+}
+
+export type ValueUsd = {
+    type: 'USD';
+    value: number;
 }

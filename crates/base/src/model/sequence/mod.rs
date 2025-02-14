@@ -3,7 +3,10 @@
 
 pub use action::*;
 pub use condition::*;
+pub use error::*;
 pub use fact::*;
+pub use facts::*;
+pub use field::*;
 pub use operator::*;
 use serde::{Deserialize, Serialize};
 use sqlx::types::JsonValue;
@@ -11,7 +14,10 @@ pub use value::*;
 
 mod action;
 mod condition;
+mod error;
 mod fact;
+mod facts;
+mod field;
 mod operator;
 mod value;
 

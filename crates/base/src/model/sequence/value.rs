@@ -6,34 +6,40 @@ use serde::{Deserialize, Serialize};
 use std::time::Duration;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
-pub enum ValueKind {
+pub enum ValueType {
     Boolean,
     Duration,
-    Number,
+    Quote,
+    Percent,
     String,
+    Usd,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum Value {
     Boolean(bool),
     Duration(Duration),
-    Number(f64),
+    Percent(f64),
+    Quote(f64),
     String(String),
+    Usd(f64),
 }
 
 impl From<Price> for Value {
     fn from(value: Price) -> Self {
-        Self::Number(value.0)
+        Self::Percent(value.0)
     }
 }
 
 impl Value {
-    pub fn kind(&self) -> ValueKind {
+    pub fn value_type(&self) -> ValueType {
         match self {
-            Value::Boolean(_) => ValueKind::Boolean,
-            Value::Duration(_) => ValueKind::Duration,
-            Value::Number(_) => ValueKind::Number,
-            Value::String(_) => ValueKind::String,
+            Value::Boolean(_) => ValueType::Boolean,
+            Value::Duration(_) => ValueType::Duration,
+            Value::Percent(_) => ValueType::Percent,
+            Value::Quote(_) => ValueType::Quote,
+            Value::String(_) => ValueType::String,
+            Value::Usd(_) => ValueType::Usd,
         }
     }
 }
@@ -54,7 +60,16 @@ pub(crate) fn compare(fact: &Value, operator: &Operator, rule: &Value) -> bool {
             Operator::NotEqual => fact != rule,
             _ => false,
         },
-        (Value::Number(fact), Value::Number(rule)) => match operator {
+        (Value::Percent(fact), Value::Percent(rule)) => match operator {
+            Operator::Equal => fact == rule,
+            Operator::GreaterThan => fact > rule,
+            Operator::GreaterThanEqual => fact >= rule,
+            Operator::LessThan => fact < rule,
+            Operator::LessThanEqual => fact <= rule,
+            Operator::NotEqual => fact != rule,
+            _ => false,
+        },
+        (Value::Quote(fact), Value::Quote(rule)) => match operator {
             Operator::Equal => fact == rule,
             Operator::GreaterThan => fact > rule,
             Operator::GreaterThanEqual => fact >= rule,
@@ -68,18 +83,28 @@ pub(crate) fn compare(fact: &Value, operator: &Operator, rule: &Value) -> bool {
             Operator::NotEqual => fact != rule,
             _ => false,
         },
+        (Value::Usd(fact), Value::Usd(rule)) => match operator {
+            Operator::Equal => fact == rule,
+            Operator::GreaterThan => fact > rule,
+            Operator::GreaterThanEqual => fact >= rule,
+            Operator::LessThan => fact < rule,
+            Operator::LessThanEqual => fact <= rule,
+            Operator::NotEqual => fact != rule,
+            _ => false,
+        },
         _ => false,
     }
 }
 
 #[cfg(test)]
 mod tests {
-	use super::*;
-	use std::time::Duration;
-	use Operator::{Equal, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, NotEqual};
-	use Value::{Boolean, Number};
+    use super::*;
+    use crate::model::Value::{Quote, Usd};
+    use std::time::Duration;
+    use Operator::{Equal, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, NotEqual};
+    use Value::{Boolean, Percent};
 
-	#[test]
+    #[test]
     fn test_boolean_comparisons() {
         assert!(compare(&Boolean(true), &Equal, &Boolean(true)));
         assert!(!compare(&Boolean(true), &Equal, &Boolean(false)));
@@ -122,13 +147,23 @@ mod tests {
     }
 
     #[test]
-    fn test_number_comparisons() {
-        assert!(compare(&Number(5.0), &Equal, &Number(5.0)));
-        assert!(compare(&Number(5.0), &GreaterThan, &Number(3.0)));
-        assert!(compare(&Number(5.0), &GreaterThanEqual, &Number(5.0)));
-        assert!(compare(&Number(3.0), &LessThan, &Number(5.0)));
-        assert!(compare(&Number(3.0), &LessThanEqual, &Number(3.0)));
-        assert!(compare(&Number(3.0), &NotEqual, &Number(5.0)));
+    fn test_percent_comparisons() {
+        assert!(compare(&Percent(5.0), &Equal, &Percent(5.0)));
+        assert!(compare(&Percent(5.0), &GreaterThan, &Percent(3.0)));
+        assert!(compare(&Percent(5.0), &GreaterThanEqual, &Percent(5.0)));
+        assert!(compare(&Percent(3.0), &LessThan, &Percent(5.0)));
+        assert!(compare(&Percent(3.0), &LessThanEqual, &Percent(3.0)));
+        assert!(compare(&Percent(3.0), &NotEqual, &Percent(5.0)));
+    }
+
+    #[test]
+    fn test_quote_comparisons() {
+        assert!(compare(&Quote(5.0), &Equal, &Quote(5.0)));
+        assert!(compare(&Quote(5.0), &GreaterThan, &Quote(3.0)));
+        assert!(compare(&Quote(5.0), &GreaterThanEqual, &Quote(5.0)));
+        assert!(compare(&Quote(3.0), &LessThan, &Quote(5.0)));
+        assert!(compare(&Quote(3.0), &LessThanEqual, &Quote(3.0)));
+        assert!(compare(&Quote(3.0), &NotEqual, &Quote(5.0)));
     }
 
     #[test]
@@ -136,5 +171,15 @@ mod tests {
         assert!(compare(&Value::String("hello".to_string()), &Equal, &Value::String("hello".to_string())));
         assert!(!compare(&Value::String("hello".to_string()), &Equal, &Value::String("world".to_string())));
         assert!(compare(&Value::String("hello".to_string()), &NotEqual, &Value::String("world".to_string())));
+    }
+
+    #[test]
+    fn test_usd_comparisons() {
+        assert!(compare(&Usd(5.0), &Equal, &Usd(5.0)));
+        assert!(compare(&Usd(5.0), &GreaterThan, &Usd(3.0)));
+        assert!(compare(&Usd(5.0), &GreaterThanEqual, &Usd(5.0)));
+        assert!(compare(&Usd(3.0), &LessThan, &Usd(5.0)));
+        assert!(compare(&Usd(3.0), &LessThanEqual, &Usd(3.0)));
+        assert!(compare(&Usd(3.0), &NotEqual, &Usd(5.0)));
     }
 }

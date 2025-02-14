@@ -1,15 +1,16 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use base::model::Condition::Exists;
-use base::model::Fact::TokenCreationDuration;
-use base::model::{Action, Sequence};
+use base::model::Condition::Compare;
+use base::model::Field::Price;
+use base::model::{Action, Operator, Sequence, Value};
 use base::repo::{RuleCreateCmd, RuleRepo};
 use common::repo::error::RepoError;
 use sqlx::Acquire;
-use testing::run_test_on_empty_db;
 use testing::rule::create_rule_for_test_user;
+use testing::run_test_on_empty_db;
 use testing::user::get_or_create_test_user;
+use Operator::GreaterThan;
 
 #[test_log::test(sqlx::test)]
 async fn test_create() {
@@ -23,8 +24,10 @@ async fn test_create() {
                     user: user.id,
                     name: "ChubakaStrat1337".into(),
                     sequence: Sequence {
-                        condition: Exists {
-                            fact: TokenCreationDuration,
+                        condition: Compare {
+                            field: Price,
+                            operator: GreaterThan,
+                            value: Value::Percent(23.0),
                             timeframe: None,
                         },
                         action: Action::Buy,
@@ -39,8 +42,10 @@ async fn test_create() {
         assert_eq!(result.version, 1);
         assert_eq!(
             result.sequence.condition,
-            Exists {
-                fact: TokenCreationDuration,
+            Compare {
+                field: Price,
+                operator: GreaterThan,
+                value: Value::Percent(23.0),
                 timeframe: None,
             }
         );
@@ -63,8 +68,10 @@ async fn test_rule_requires_existing_user() {
                     user: 123456789.into(), // does not exist
                     name: "ChubakaStrat1337".into(),
                     sequence: Sequence {
-                        condition: Exists {
-                            fact: TokenCreationDuration,
+                        condition: Compare {
+                            field: Price,
+                            operator: GreaterThan,
+                            value: Value::Percent(23.0),
                             timeframe: None,
                         },
                         action: Action::Buy,

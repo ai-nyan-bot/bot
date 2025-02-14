@@ -1,7 +1,8 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use base::model::{RuleId, RuleName};
+use base::model::{Field, RuleId, RuleName};
+use common::model::Timeframe;
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Debug)]
@@ -46,68 +47,40 @@ pub struct HttpRulGetResponse {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum ApiConditionType {
-    And,
-    Compare,
-    Or,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum ApiField {
-    Price,
-    Trades,
-    Volume,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum ApiOperator {
-    GreaterThan,
-    IncreasedBy,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum ApiTimeframe {
-    M1,
-    M5,
-    M15,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum ApiValue {
     Boolean { value: bool },
-    Money { value: f64 },
     Percent { value: f64 },
+    Quote { value: f64 },
     String { value: String },
+    Usd { value: f64 },
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum ApiOperator {
+    Equal,
+    GreaterThan,
+    GreaterThanEqual,
+    IncreasedBy,
+    LessThan,
+    LessThanEqual,
+    NotEqual,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum ApiCondition {
     And {
-        conditions: Option<Vec<ApiCondition>>,
+        conditions: Vec<ApiCondition>,
     },
     Compare {
-        field: ApiField,
+        field: Field,
         operator: ApiOperator,
         value: ApiValue,
-        timeframe: Option<ApiTimeframe>,
+        timeframe: Option<Timeframe>,
     },
 }
-
-// #[derive(Debug, Serialize, Deserialize)]
-// pub struct ApiCondition {
-//     pub r#type: ApiConditionType,
-//     pub field: Option<ApiField>,
-//     pub operator: Option<ApiOperator>,
-//     pub value: Option<ApiValue>,
-//     pub timeframe: Option<ApiTimeframe>,
-//     pub conditions: Option<Vec<ApiCondition>>,
-// }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ApiSequence {

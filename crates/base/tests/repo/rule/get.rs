@@ -2,15 +2,18 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 mod get_by_id {
-    use base::model::Action::Notify;
-    use base::model::Condition;
-    use base::model::Fact::TokenCreationDuration;
-    use base::repo::RuleRepo;
-    use common::repo::error::RepoError;
-    use testing::run_test;
-    use testing::rule::create_rule_for_test_user;
+	use base::model::Action::Notify;
+	use base::model::Field::Price;
+	use base::model::Operator::GreaterThan;
+	use base::model::{Condition, Value};
+	use base::repo::RuleRepo;
+	use common::model::Timeframe::M15;
+	use common::repo::error::RepoError;
+	use testing::rule::create_rule_for_test_user;
+	use testing::run_test;
+	use Value::Percent;
 
-    #[test_log::test(sqlx::test)]
+	#[test_log::test(sqlx::test)]
     async fn test_ok() {
         run_test(|mut tx| async move {
             let test_instance = RuleRepo::new();
@@ -24,9 +27,11 @@ mod get_by_id {
             assert_eq!(result.name, "TheMoneyMaker");
             assert_eq!(
                 result.sequence.condition,
-                Condition::Exists {
-                    fact: TokenCreationDuration,
-                    timeframe: None,
+                Condition::Compare {
+                    field: Price,
+                    operator: GreaterThan,
+                    value: Percent(2.0),
+                    timeframe: Some(M15),
                 }
             );
             assert_eq!(result.sequence.action, Notify);

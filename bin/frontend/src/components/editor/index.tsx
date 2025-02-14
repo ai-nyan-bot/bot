@@ -16,7 +16,7 @@ const createCondition = (type: ConditionType): Condition => {
         case'OR':
             return {
                 id: uuidv4(),
-                type:'OR',
+                type: 'OR',
                 conditions: []
             }
         case 'COMPARE':

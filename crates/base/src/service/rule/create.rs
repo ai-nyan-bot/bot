@@ -1,8 +1,8 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::AuthenticatedUser;
-use crate::model::{Action, Condition, Fact, Operator, Sequence, Rule, Value};
+use crate::model::{Action, Condition, Operator, Rule, Sequence, Value};
+use crate::model::{AuthenticatedUser, Field};
 use crate::repo::RuleCreateCmd;
 use crate::service::rule::RuleService;
 use common::service::ServiceResult;
@@ -20,9 +20,9 @@ impl RuleService {
                     name: "Some Rule".into(),
                     sequence: Sequence {
                         condition: Condition::Compare {
-                            fact: Fact::TokenPriceQuote,
+                            field: Field::Price,
                             operator: Operator::GreaterThan,
-                            value: Value::Number(0.00000037974844403108274),
+                            value: Value::Percent(0.00000037974844403108274),
                             timeframe: None,
                         },
                         action: Action::Notify,
