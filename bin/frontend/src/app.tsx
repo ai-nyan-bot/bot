@@ -95,7 +95,7 @@ const WebApp = () => {
             sdkOptions={{
                 checkInstallationImmediately: false,
                 dappMetadata: {
-                    name: "NyanBot",
+                    name: "Nyanbot",
                     url: "https://nyan.bot",
                 }
             }}>
@@ -166,7 +166,6 @@ const App = () => {
                                 <Layout>
                                     {app}
                                 </Layout>
-                                {/*<AudioPlayer/>*/}
                             </Client>
                         </ContextModalDispatch.Provider>
                     </ContextModalState.Provider>

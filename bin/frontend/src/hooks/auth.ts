@@ -146,8 +146,6 @@ export const useTelegram = (): [TelegramAction, string | null, boolean, Error | 
                             wallet: data.wallet,
                         })
 
-                        navigate('/telegram/home')
-
                     })
                     setLoading(false)
                 }

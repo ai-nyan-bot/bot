@@ -15,24 +15,12 @@ export type Auth = {
     }
 }
 
-export type Audio = {
-    gfx: {
-        active: boolean;
-        volume: number;
-    }
-    background: {
-        active: boolean;
-        volume: number;
-    }
-}
-
 export type Wallet = {
     solana: string;
 }
 
 export type LocalStorage = {
     auth: Auth;
-    audio: Audio;
     wallet: Wallet;
 };
 
@@ -43,16 +31,6 @@ const LOCAL_STORAGE_DEFAULT = {
         token: '',
         telegram: {
             id: '',
-        }
-    },
-    audio: {
-        gfx: {
-            active: true,
-            volume: 0.4
-        },
-        background: {
-            active: true,
-            volume: 0.4
         }
     },
     wallet: {

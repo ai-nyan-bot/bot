@@ -26,7 +26,7 @@ const TelegramLanding = () => {
 
         const auth = appState.auth;
         if (auth.type === 'Telegram') {
-            navigate("/telegram/home");
+            // navigate("/telegram/home");
         }
 
         if (auth.type === 'Unauthorized') {
