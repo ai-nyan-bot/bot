@@ -41,7 +41,7 @@ export type AppAction =
     type: 'APP_LOGIN_TELEGRAM',
     user: { id: string },
     token: string,
-    telegram: { id: string, username: string },
+    telegram: { id: string },
     wallet: { solana: string }
 }
     | { type: 'APP_CONNECTED' }
@@ -56,7 +56,7 @@ export const appReducer = (state: AppState, action: AppAction): AppState => {
                 connection: {
                     status: "CONNECTED"
                 }
-            }
+            } satisfies AppState
         }
         case "APP_DISCONNECTED": {
             return {
@@ -64,7 +64,7 @@ export const appReducer = (state: AppState, action: AppAction): AppState => {
                 connection: {
                     status: "DISCONNECTED"
                 }
-            }
+            } satisfies AppState
         }
         case "APP_LOGIN_METAMASK": {
             return {
@@ -72,7 +72,7 @@ export const appReducer = (state: AppState, action: AppAction): AppState => {
                 auth: {
                     type: 'MetaMask',
                     user: {
-                        id: action.user.id
+                        ...action.user
                     },
                     token: action.token,
                     telegram: {
@@ -89,13 +89,15 @@ export const appReducer = (state: AppState, action: AppAction): AppState => {
                 auth: {
                     type: 'Telegram',
                     user: {
-                        id: action.user.id
+                        ...action.user
                     },
                     token: action.token,
-                    telegram: action.telegram,
+                    telegram: {
+                        ...action.telegram
+                    },
                 },
                 wallet: action.wallet,
-            }
+            } satisfies AppState
         }
         case "APP_LOGOUT": {
             return {

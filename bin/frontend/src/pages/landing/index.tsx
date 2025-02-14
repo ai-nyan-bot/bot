@@ -19,23 +19,22 @@ export default LandingPage
 const TelegramLanding = () => {
     const navigate = useNavigate();
     const appState = useContext(ContextAppState);
-    const [telegramLogin, response, loading, e] = useTelegram();
+    const [telegramLogin, token, loading, e] = useTelegram();
 
     useEffect(() => {
         const abortController = new AbortController();
-
         const auth = appState.auth;
         if (auth.type === 'Telegram') {
-            // navigate("/telegram/home");
+            navigate("/telegram/home");
         }
 
         if (auth.type === 'Unauthorized') {
-            // telegramLogin(appState.telegramData!.initData!, abortController);
+            telegramLogin(appState.telegramData!.initData!, abortController);
         }
         return () => {
             abortController.abort();
         }
-    }, [appState.auth, appState.telegramData, navigate, telegramLogin]);
+    }, [appState, navigate, telegramLogin]);
 
     if (e) {
         return (
@@ -43,13 +42,13 @@ const TelegramLanding = () => {
         )
     }
 
-    if (response == null || loading) {
+    if (token == null || loading) {
         return (
-            <h1 className={"text-center text-blue-800 text-xl"}>Starting your telegram terminal</h1>
+            <h1 className={"text-center text-blue-800 text-xl"}>Starting your telegram terminal </h1>
         )
     }
 
-    return (<h1>Telegram terminal says no</h1>);
+    return (<h1>Telegram terminal says no </h1>);
 }
 
 const MetaMaskLanding = () => {

@@ -73,26 +73,25 @@ export const useMetaMask = (): [MetaMaskAction, string | null, boolean, Error | 
             signal: abortController?.signal,
         })
             .then(response => {
-                if (response.status > 201) {
-                    // FIXME
-                    setError(Error("Login failed"));
-                    setLoading(false)
-                } else {
-                    response.json().then(data => {
-                        setToken(data.token)
-
-                        appDispatch({
-                            type: 'APP_LOGIN_METAMASK',
-                            user: data.user,
-                            token: data.token,
-                            wallet: data.wallet,
-                        })
-
-                        navigate('/web/home')
-
-                    })
+                if (!response.ok) {
+                    setError(Error(`Request submission failed: ${response.status} - ${response.statusText}`))
                     setLoading(false)
                 }
+
+                response.json().then(data => {
+                    setToken(data.token)
+
+                    appDispatch({
+                        type: 'APP_LOGIN_METAMASK',
+                        user: data.user,
+                        token: data.token,
+                        wallet: data.wallet,
+                    })
+
+                    navigate('/web/home')
+
+                })
+                setLoading(false)
             })
             .catch(error => {
                 if (error.name !== 'AbortError') {
@@ -113,8 +112,8 @@ export const useMetaMask = (): [MetaMaskAction, string | null, boolean, Error | 
 
 type TelegramAction = (query: string, abortController?: AbortController) => void
 export const useTelegram = (): [TelegramAction, string | null, boolean, Error | null] => {
-    const navigate = useNavigate()
-    const appDispatch = useContext(ContextAppDispatch);
+
+    const dispatch = useContext(ContextAppDispatch);
     const [token, setToken] = useState<string | null>(null)
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
@@ -130,25 +129,27 @@ export const useTelegram = (): [TelegramAction, string | null, boolean, Error | 
             signal: abortController?.signal,
         })
             .then(response => {
-                if (response.status > 201) {
-                    // FIXME
-                    setError(Error("Login failed"));
+                if (!response.ok) {
+                    setError(Error(`Request submission failed: ${response.status} - ${response.statusText}`))
                     setLoading(false)
-                } else {
-                    response.json().then(data => {
+                }
+
+                response
+                    .json()
+                    .then(data => {
                         setToken(data.token)
 
-                        appDispatch({
+                        dispatch({
                             type: 'APP_LOGIN_TELEGRAM',
-                            userId: data.userId,
+                            user: data.user,
                             token: data.token,
                             telegram: data.telegram,
                             wallet: data.wallet,
                         })
 
+                        setLoading(false)
                     })
-                    setLoading(false)
-                }
+
             })
             .catch(error => {
                 if (error.name !== 'AbortError') {
@@ -158,11 +159,11 @@ export const useTelegram = (): [TelegramAction, string | null, boolean, Error | 
                 }
 
                 if (error.message === 'NetworkError when attempting to fetch resource.') {
-                    appDispatch({type: 'APP_LOGOUT'})
+                    dispatch({type: 'APP_LOGOUT'})
                     window.location.href = '/'
                 }
             })
-    }, [appDispatch, navigate])
+    }, [dispatch])
 
     return [fn, token, loading, error]
 }
