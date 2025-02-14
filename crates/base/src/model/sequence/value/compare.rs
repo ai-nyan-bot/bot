@@ -1,62 +1,12 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::{Operator, Price};
-use serde::{Deserialize, Serialize};
-use std::time::Duration;
-
-#[derive(Debug, Copy, Clone, PartialEq)]
-pub enum ValueType {
-    Boolean,
-    Duration,
-    Quote,
-    Percent,
-    String,
-    Usd,
-}
-
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub enum Value {
-    Boolean(bool),
-    Duration(Duration),
-    Percent(f64),
-    Quote(f64),
-    String(String),
-    Usd(f64),
-}
-
-impl From<Price> for Value {
-    fn from(value: Price) -> Self {
-        Self::Percent(value.0)
-    }
-}
-
-impl Value {
-    pub fn value_type(&self) -> ValueType {
-        match self {
-            Value::Boolean(_) => ValueType::Boolean,
-            Value::Duration(_) => ValueType::Duration,
-            Value::Percent(_) => ValueType::Percent,
-            Value::Quote(_) => ValueType::Quote,
-            Value::String(_) => ValueType::String,
-            Value::Usd(_) => ValueType::Usd,
-        }
-    }
-}
+use crate::model::{Operator, Value};
 
 pub(crate) fn compare(fact: &Value, operator: &Operator, rule: &Value) -> bool {
     match (fact, rule) {
         (Value::Boolean(fact), Value::Boolean(rule)) => match operator {
             Operator::Equal => fact == rule,
-            Operator::NotEqual => fact != rule,
-            _ => false,
-        },
-        (Value::Duration(fact), Value::Duration(rule)) => match operator {
-            Operator::Equal => fact == rule,
-            Operator::GreaterThan => fact > rule,
-            Operator::GreaterThanEqual => fact >= rule,
-            Operator::LessThan => fact < rule,
-            Operator::LessThanEqual => fact <= rule,
             Operator::NotEqual => fact != rule,
             _ => false,
         },
@@ -98,52 +48,17 @@ pub(crate) fn compare(fact: &Value, operator: &Operator, rule: &Value) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use crate::model::Value::{Quote, Usd};
-    use std::time::Duration;
-    use Operator::{Equal, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, NotEqual};
-    use Value::{Boolean, Percent};
+	use super::*;
+	use crate::model::Value::{Quote, Usd};
+	use Operator::{Equal, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, NotEqual};
+	use Value::{Boolean, Percent};
 
-    #[test]
+	#[test]
     fn test_boolean_comparisons() {
         assert!(compare(&Boolean(true), &Equal, &Boolean(true)));
         assert!(!compare(&Boolean(true), &Equal, &Boolean(false)));
         assert!(compare(&Boolean(true), &NotEqual, &Boolean(false)));
         assert!(!compare(&Boolean(true), &NotEqual, &Boolean(true)));
-    }
-
-    #[test]
-    fn test_duration_comparisons() {
-        assert!(compare(
-            &Value::Duration(Duration::from_secs(10)),
-            &Equal,
-            &Value::Duration(Duration::from_secs(10))
-        ));
-        assert!(compare(
-            &Value::Duration(Duration::from_secs(10)),
-            &GreaterThan,
-            &Value::Duration(Duration::from_secs(5))
-        ));
-        assert!(compare(
-            &Value::Duration(Duration::from_secs(10)),
-            &GreaterThanEqual,
-            &Value::Duration(Duration::from_secs(10))
-        ));
-        assert!(compare(
-            &Value::Duration(Duration::from_secs(5)),
-            &LessThan,
-            &Value::Duration(Duration::from_secs(10))
-        ));
-        assert!(compare(
-            &Value::Duration(Duration::from_secs(5)),
-            &LessThanEqual,
-            &Value::Duration(Duration::from_secs(5))
-        ));
-        assert!(compare(
-            &Value::Duration(Duration::from_secs(5)),
-            &NotEqual,
-            &Value::Duration(Duration::from_secs(10))
-        ));
     }
 
     #[test]

@@ -9,14 +9,12 @@ use crate::model::FactError::UnableToDeriveFact;
 use crate::model::ValueType::{Percent, Quote};
 use crate::model::{Condition, FactError, Field, Value, ValueType};
 use serde::{Deserialize, Serialize};
-use Fact::{TelegramGroup, TelegramGroupName, TokenCreationDuration, TokenVolumeChangeQuote, TokenVolumeQuote, TwitterAccount, TwitterAccountName};
+use Fact::{TelegramGroup, TelegramGroupName, TokenVolumeChangeQuote, TokenVolumeQuote, TwitterAccount, TwitterAccountName};
 use Field::{Price, Volume};
-use ValueType::{Boolean, Duration, Usd};
+use ValueType::{Boolean, Usd};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Fact {
-    TokenCreationDuration,
-
     TokenPriceQuote,
     TokenPriceUsd,
     TokenPriceChangePercent,
@@ -39,8 +37,6 @@ pub enum Fact {
 impl Fact {
     pub fn has_timeframe(&self) -> bool {
         match self {
-            TokenCreationDuration => false,
-
             TokenPriceQuote => false,
             TokenPriceUsd => false,
 
@@ -64,8 +60,6 @@ impl Fact {
 
     pub fn value_type(&self) -> ValueType {
         match self {
-            TokenCreationDuration => Duration,
-
             TokenPriceQuote => Quote,
             TokenPriceUsd => Usd,
 
