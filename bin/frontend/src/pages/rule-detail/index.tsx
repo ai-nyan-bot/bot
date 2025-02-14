@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import {Editor} from "@components/editor";
 import {useRuleGet, useRuleUpdate} from "@hooks/rule.ts";
 import {useParams} from "react-router-dom";
-import {Button} from "@components/ui/button.tsx";
 import {Sequence} from "@types";
 import {injectId, uuidv4} from "@utils";
 
@@ -41,15 +40,14 @@ export const RuleDetailPage: React.FC = () => {
         <div className="max-w-4xl mx-auto space-y-6">
             <Editor
                 sequence={sequence}
-                onChange={(sequence) => setSequence(sequence)}
+                onChange={(sequence) => {
+                    updateRule(id, {
+                        name: rule?.name,
+                        sequence
+                    })
+                }}
             />
             {JSON.stringify(sequence, null, '\t')}
-            <Button className="w-full bg-green-500 text-white" onClick={() => {
-                updateRule(id, {
-                    name: rule?.name,
-                    sequence
-                })
-            }}>Update Rule</Button>
         </div>
     );
 };

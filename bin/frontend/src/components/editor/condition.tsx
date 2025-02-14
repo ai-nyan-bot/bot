@@ -28,15 +28,17 @@ export const ConditionList: FC<ConditionListProps> = ({
                                                           onValueChange
                                                       }) => {
     return (
-        <Card className="p-4 border bg-gray-50 mt-2 relative">
+        <Card className="border bg-gray-50 relative">
             {
                 !isRoot && (
-                    <button
-                        onClick={() => onRemove(condition.id)}
-                        className="absolute top-2 right-2 text-gray-500 hover:text-red-500"
-                    >
-                        ✖
-                    </button>
+                    <div className={"flex flex-row justify-end m-2"}>
+                        <button
+                            onClick={() => onRemove(condition.id)}
+                            className="text-gray-500 hover:text-red-500"
+                        >
+                            ✖
+                        </button>
+                    </div>
                 )}
 
             {condition.type === 'COMPARE' && (
@@ -98,7 +100,7 @@ const Group: FC<GroupProps> = ({
                     <ConditionList
                         key={child.id}
                         condition={child}
-                        isRoot={isRoot}
+                        isRoot={false}
                         onAdd={onAdd}
                         onRemove={onRemove}
                         onFieldChange={onFieldChange}

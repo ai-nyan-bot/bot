@@ -26,7 +26,7 @@ export enum Field {
 export type ConditionType = 'COMPARE' | 'AND' | 'OR'
 
 export type Condition = {
-    id?: string;
+    id: string;
     type: ConditionType;
     field?: Field;
     operator?: Operator;
