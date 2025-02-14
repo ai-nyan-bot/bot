@@ -18,9 +18,14 @@ import NotFound from "@app/not-found.tsx";
 
 import './styles/globals.css'
 import {MetaMaskUIProvider} from "@metamask/sdk-react-ui";
-import {RuleListPage} from "@pages/rule-list";
-import {RuleDetailPage} from "@pages/rule-detail";
-import {HomePage} from "@pages/home";
+import {HomePage as TelegramHomePage} from "@pages/telegram/home";
+import {RuleDetailPage as TelegramRuleDetailPage} from "@pages/telegram/rule-detail";
+import {RuleListPage as TelegramRuleListPage} from "@pages/telegram/rule-list";
+
+import {HomePage as WebHomePage} from "@pages/web/home";
+import {RuleDetailPage as WebRuleDetailPage} from "@pages/web/rule-detail";
+import {RuleListPage as WebRuleListPage} from "@pages/web/rule-list";
+
 
 const Authenticated: FC<{ children: ReactNode }> = ({children}) => {
     const {auth, connection} = useContext(ContextAppState);
@@ -50,9 +55,16 @@ const AppRouter = () => (
         <Routes>
             <Route path={"/"} element={<LandingPage/>}/>
             <Route path={"/connection-lost"} element={<ConnectionLostPage/>}/>
-            <Route path={"/home"} element={<Authenticated><HomePage/></Authenticated>}/>
-            <Route path={"/rules"} element={<Authenticated><RuleListPage/></Authenticated>}></Route>
-            <Route path={"/rules/:id"} element={<Authenticated><RuleDetailPage/></Authenticated>}></Route>
+
+            <Route path={"/telegram/home"} element={<Authenticated><TelegramHomePage/></Authenticated>}/>
+            <Route path={"/telegram/web/rules"}
+                   element={<Authenticated><TelegramRuleListPage/></Authenticated>}></Route>
+            <Route path={"/telegram/web/rules/:id"}
+                   element={<Authenticated><TelegramRuleDetailPage/></Authenticated>}></Route>
+
+            <Route path={"/web/home"} element={<Authenticated><WebHomePage/></Authenticated>}/>
+            <Route path={"/web/rules"} element={<Authenticated><WebRuleListPage/></Authenticated>}></Route>
+            <Route path={"/web/rules/:id"} element={<Authenticated><WebRuleDetailPage/></Authenticated>}></Route>
             <Route path='*' element={<NotFound/>}/>
         </Routes>
     </BrowserRouter>
@@ -67,7 +79,7 @@ const WebApp = () => {
                 checkInstallationImmediately: false,
                 dappMetadata: {
                     name: "NyanBot",
-                    url: "https://nyanbot.com",
+                    url: "https://nyan.bot",
                 }
             }}>
             <AppRouter/>

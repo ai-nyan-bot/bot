@@ -3,7 +3,6 @@ import {MetaMaskButton} from "@components/metamask";
 import {useContext, useEffect} from "react";
 import {ContextAppState} from "@app/context";
 import {useTelegram} from "@hooks/auth";
-import {imageUrl} from "@utils";
 
 const LandingPage = () => {
     const appState = useContext(ContextAppState);
@@ -29,7 +28,7 @@ const TelegramLanding = () => {
 
         const auth = appState.auth;
         if (auth.type === "Telegram") {
-            navigate("/home");
+            navigate("/telegram/home");
         }
 
         if (auth.type === 'Unauthorized') {
@@ -56,7 +55,7 @@ const MetaMaskLanding = () => {
 
         const auth = appState.auth;
         if (auth.type === "MetaMask") {
-            navigate("/home");
+            navigate("/web/home");
         }
 
         return () => {
