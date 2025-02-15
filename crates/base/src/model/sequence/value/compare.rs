@@ -10,6 +10,15 @@ pub(crate) fn compare(fact: &Value, operator: &Operator, rule: &Value) -> bool {
             Operator::NotEqual => fact != rule,
             _ => false,
         },
+        (Value::Count(fact), Value::Count(rule)) => match operator {
+            Operator::Equal => fact == rule,
+            Operator::GreaterThan => fact > rule,
+            Operator::GreaterThanEqual => fact >= rule,
+            Operator::LessThan => fact < rule,
+            Operator::LessThanEqual => fact <= rule,
+            Operator::NotEqual => fact != rule,
+            _ => false,
+        },
         (Value::Percent(fact), Value::Percent(rule)) => match operator {
             Operator::Equal => fact == rule,
             Operator::GreaterThan => fact > rule,
@@ -48,17 +57,27 @@ pub(crate) fn compare(fact: &Value, operator: &Operator, rule: &Value) -> bool {
 
 #[cfg(test)]
 mod tests {
-	use super::*;
-	use crate::model::Value::{Quote, Usd};
-	use Operator::{Equal, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, NotEqual};
-	use Value::{Boolean, Percent};
+    use super::*;
+    use crate::model::Value::{Count, Quote, Usd};
+    use Operator::{Equal, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, NotEqual};
+    use Value::{Boolean, Percent};
 
-	#[test]
+    #[test]
     fn test_boolean_comparisons() {
         assert!(compare(&Boolean(true), &Equal, &Boolean(true)));
         assert!(!compare(&Boolean(true), &Equal, &Boolean(false)));
         assert!(compare(&Boolean(true), &NotEqual, &Boolean(false)));
         assert!(!compare(&Boolean(true), &NotEqual, &Boolean(true)));
+    }
+
+    #[test]
+    fn test_count_comparisons() {
+        assert!(compare(&Count(5), &Equal, &Count(5)));
+        assert!(compare(&Count(5), &GreaterThan, &Count(3)));
+        assert!(compare(&Count(5), &GreaterThanEqual, &Count(5)));
+        assert!(compare(&Count(3), &LessThan, &Count(5)));
+        assert!(compare(&Count(3), &LessThanEqual, &Count(3)));
+        assert!(compare(&Count(3), &NotEqual, &Count(5)));
     }
 
     #[test]
