@@ -45,8 +45,13 @@ fn main() {
         loop {
             let strategies = state.service.rule.list_active().await.unwrap();
 
-            for (token_pair_id, facts) in state.service.fact.pumpfun_facts().await {
-                for rule in &strategies {
+            let pumpfun_facts = state.service.fact.pumpfun_facts().await;
+            println!("{} pumpfun facts", pumpfun_facts.len());
+
+            for rule in &strategies {
+                println!("test rule - {}", rule.id.0);
+
+                for (token_pair_id, facts) in &pumpfun_facts {
                     if rule.sequence.condition.test(&facts) {
                         let mut tx = pool.begin().await.unwrap();
 
@@ -56,7 +61,7 @@ fn main() {
                                 InvocationCreateCmd {
                                     user: rule.user,
                                     rule: rule.id,
-                                    token_pair: token_pair_id,
+                                    token_pair: token_pair_id.clone(),
                                     next: None,
                                 },
                             )
@@ -76,7 +81,7 @@ fn main() {
                                                 &mut tx,
                                                 NotificationConditionMet {
                                                     user: rule.user,
-                                                    token_pair: token_pair_id,
+                                                    token_pair: token_pair_id.clone(),
                                                 },
                                             )
                                             .await;
