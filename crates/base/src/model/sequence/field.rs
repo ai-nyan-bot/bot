@@ -8,5 +8,7 @@ use serde::{Deserialize, Serialize};
 pub enum Field {
     Price,
     Trades,
+    TradesBuy,
+    TradesSell,
     Volume,
 }

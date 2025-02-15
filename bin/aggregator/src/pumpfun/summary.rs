@@ -3,7 +3,6 @@
 
 use common::model::Partition;
 use solana::repo::pumpfun::SummaryRepo;
-use base::repo::ReadTokenPairRepo;
 use sqlx::PgPool;
 use std::sync::Arc;
 use std::time::Duration;
@@ -15,10 +14,10 @@ pub struct RefreshSummary {
 }
 
 impl RefreshSummary {
-    pub fn new(pool: PgPool, read_token_pair_repo: ReadTokenPairRepo) -> Self {
+    pub fn new(pool: PgPool) -> Self {
         Self {
             pool,
-            repo: Arc::new(SummaryRepo::new(read_token_pair_repo)),
+            repo: Arc::new(SummaryRepo::new()),
         }
     }
 

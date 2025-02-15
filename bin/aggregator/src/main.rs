@@ -32,7 +32,7 @@ fn main() {
         let token_pair_repo = ReadTokenPairRepo::new(ReadTokenRepo::new());
 
         let refresh_candles = RefreshCandles::new(pg_pool.clone(), token_pair_repo.clone());
-        let refresh_summary = RefreshSummary::new(pg_pool.clone(), token_pair_repo.clone());
+        let refresh_summary = RefreshSummary::new(pg_pool.clone());
 
         let _ = try_join!(
             async { refresh_candles.s1().await },

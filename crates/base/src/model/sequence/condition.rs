@@ -78,13 +78,13 @@ mod tests {
 
     fn facts() -> Facts {
         Facts::new()
-            .with_value(Fact::TokenPriceQuote, Value::Quote(1.0))
+            .with_value(Fact::PriceQuote, Value::Quote(1.0))
             .unwrap()
-            .with_value(Fact::TokenPriceUsd, Value::Usd(2.0))
+            .with_value(Fact::PriceUsd, Value::Usd(2.0))
             .unwrap()
-            .with_timeframe_value(Fact::TokenVolumeChangeQuote, Value::Quote(3.0), Timeframe::S1)
+            .with_timeframe_value(Fact::VolumeChangeQuote, Value::Quote(3.0), Timeframe::S1)
             .unwrap()
-            .with_timeframe_value(Fact::TokenVolumeChangeQuote, Value::Quote(4.0), Timeframe::M1)
+            .with_timeframe_value(Fact::VolumeChangeQuote, Value::Quote(4.0), Timeframe::M1)
             .unwrap()
     }
 

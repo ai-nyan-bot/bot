@@ -1,31 +1,34 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::Fact::{
-	TokenPriceChangePercent, TokenPriceChangeQuote, TokenPriceChangeUsd, TokenPriceQuote, TokenPriceUsd, TokenVolumeChangePercent, TokenVolumeChangeUsd,
-	TokenVolumeUsd,
-};
+use crate::model::Fact::{PriceChangePercent, PriceChangeQuote, PriceChangeUsd, PriceQuote, PriceUsd, VolumeChangePercent, VolumeChangeUsd, VolumeUsd};
 use crate::model::FactError::UnableToDeriveFact;
-use crate::model::ValueType::{Percent, Quote};
+use crate::model::ValueType::{Count, Percent, Quote};
 use crate::model::{Condition, FactError, Field, Value, ValueType};
 use serde::{Deserialize, Serialize};
-use Fact::{TelegramGroup, TelegramGroupName, TokenVolumeChangeQuote, TokenVolumeQuote, TwitterAccount, TwitterAccountName};
-use Field::{Price, Volume};
+use Fact::{
+    TelegramGroup, TelegramGroupName, TradesBuyCount, TradesCount, TradesSellCount, TwitterAccount, TwitterAccountName, VolumeChangeQuote, VolumeQuote,
+};
+use Field::{Price, Trades, TradesBuy, TradesSell, Volume};
 use ValueType::{Boolean, Usd};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Fact {
-    TokenPriceQuote,
-    TokenPriceUsd,
-    TokenPriceChangePercent,
-    TokenPriceChangeQuote,
-    TokenPriceChangeUsd,
+    PriceQuote,
+    PriceUsd,
+    PriceChangePercent,
+    PriceChangeQuote,
+    PriceChangeUsd,
 
-    TokenVolumeQuote,
-    TokenVolumeUsd,
-    TokenVolumeChangePercent,
-    TokenVolumeChangeQuote,
-    TokenVolumeChangeUsd,
+    TradesCount,
+    TradesBuyCount,
+    TradesSellCount,
+
+    VolumeQuote,
+    VolumeUsd,
+    VolumeChangePercent,
+    VolumeChangeQuote,
+    VolumeChangeUsd,
 
     TelegramGroup,
     TelegramGroupName,
@@ -37,18 +40,22 @@ pub enum Fact {
 impl Fact {
     pub fn has_timeframe(&self) -> bool {
         match self {
-            TokenPriceQuote => false,
-            TokenPriceUsd => false,
+            PriceQuote => false,
+            PriceUsd => false,
 
-            TokenPriceChangeQuote => true,
-            TokenPriceChangePercent => true,
-            TokenPriceChangeUsd => true,
+            PriceChangeQuote => true,
+            PriceChangePercent => true,
+            PriceChangeUsd => true,
 
-            TokenVolumeQuote => false,
-            TokenVolumeUsd => false,
-            TokenVolumeChangeQuote => true,
-            TokenVolumeChangePercent => true,
-            TokenVolumeChangeUsd => true,
+            TradesCount => true,
+            TradesBuyCount => true,
+            TradesSellCount => true,
+
+            VolumeQuote => false,
+            VolumeUsd => false,
+            VolumeChangeQuote => true,
+            VolumeChangePercent => true,
+            VolumeChangeUsd => true,
 
             TelegramGroup => false,
             TelegramGroupName => false,
@@ -60,18 +67,22 @@ impl Fact {
 
     pub fn value_type(&self) -> ValueType {
         match self {
-            TokenPriceQuote => Quote,
-            TokenPriceUsd => Usd,
+            PriceQuote => Quote,
+            PriceUsd => Usd,
 
-            TokenPriceChangeQuote => Quote,
-            TokenPriceChangeUsd => Usd,
-            TokenPriceChangePercent => Percent,
+            PriceChangeQuote => Quote,
+            PriceChangeUsd => Usd,
+            PriceChangePercent => Percent,
 
-            TokenVolumeQuote => Quote,
-            TokenVolumeUsd => Usd,
-            TokenVolumeChangeQuote => Quote,
-            TokenVolumeChangePercent => Percent,
-            TokenVolumeChangeUsd => Usd,
+            TradesCount => Count,
+            TradesBuyCount => Count,
+            TradesSellCount => Count,
+
+            VolumeQuote => Quote,
+            VolumeUsd => Usd,
+            VolumeChangeQuote => Quote,
+            VolumeChangePercent => Percent,
+            VolumeChangeUsd => Usd,
 
             TelegramGroup => Boolean,
             TelegramGroupName => ValueType::String,
@@ -89,7 +100,7 @@ impl TryFrom<&Condition> for Fact {
             Condition::Compare { field, value, timeframe, .. } => {
                 Fact::from_comparison(field, value, timeframe.is_some()).ok_or(UnableToDeriveFact(condition.clone()))
             }
-            Condition::And{..} | Condition::Or{..} | Condition::AndNot{..} => Err(UnableToDeriveFact(condition.clone())),
+            Condition::And { .. } | Condition::Or { .. } | Condition::AndNot { .. } => Err(UnableToDeriveFact(condition.clone())),
         }
     }
 }
@@ -97,17 +108,21 @@ impl TryFrom<&Condition> for Fact {
 impl Fact {
     fn from_comparison(field: &Field, value: &Value, has_timeframe: bool) -> Option<Self> {
         let fact = match (field, value.value_type(), has_timeframe) {
-            (Price, Quote, false) => TokenPriceQuote,
-            (Price, Usd, false) => TokenPriceUsd,
-            (Price, Quote, true) => TokenPriceChangeQuote,
-            (Price, Usd, true) => TokenPriceChangeUsd,
-            (Price, Percent, true) => TokenPriceChangePercent,
+            (Price, Quote, false) => PriceQuote,
+            (Price, Usd, false) => PriceUsd,
+            (Price, Quote, true) => PriceChangeQuote,
+            (Price, Usd, true) => PriceChangeUsd,
+            (Price, Percent, true) => PriceChangePercent,
 
-            (Volume, Quote, false) => TokenVolumeQuote,
-            (Volume, Usd, false) => TokenVolumeUsd,
-            (Volume, Quote, true) => TokenVolumeChangeQuote,
-            (Volume, Usd, true) => TokenVolumeChangeUsd,
-            (Volume, Percent, true) => TokenVolumeChangePercent,
+            (Trades, Count, true) => TradesCount,
+            (TradesBuy, Count, true) => TradesBuyCount,
+            (TradesSell, Count, true) => TradesSellCount,
+
+            (Volume, Quote, false) => VolumeQuote,
+            (Volume, Usd, false) => VolumeUsd,
+            (Volume, Quote, true) => VolumeChangeQuote,
+            (Volume, Usd, true) => VolumeChangeUsd,
+            (Volume, Percent, true) => VolumeChangePercent,
             _ => return None,
         };
 
@@ -117,18 +132,20 @@ impl Fact {
 
 #[cfg(test)]
 mod test {
-	use crate::model::Fact::{TokenPriceChangePercent, TokenPriceChangeQuote, TokenPriceChangeUsd, TokenPriceQuote, TokenPriceUsd};
-	use crate::model::Field::Price;
-	use crate::model::Operator::GreaterThan;
-	use crate::model::Value::{Percent, Usd};
-	use crate::model::{Condition, Fact, Value};
-	use common::model::Timeframe;
-	use Condition::Compare;
-	use Timeframe::H1;
-	use Value::Quote;
+    use crate::model::Fact::{PriceChangePercent, PriceChangeQuote, PriceChangeUsd, PriceQuote, PriceUsd, TradesSellCount};
+    use crate::model::Field::{Price, Trades, TradesBuy, TradesSell};
+    use crate::model::Operator::GreaterThan;
+    use crate::model::Value::{Count, Percent, Usd};
+    use crate::model::{Condition, Fact, Value};
+    use common::model::Timeframe;
+    use common::model::Timeframe::M15;
+    use Condition::Compare;
+    use Fact::{TradesBuyCount, TradesCount};
+    use Timeframe::H1;
+    use Value::Quote;
 
-	#[test]
-    fn token_price_quote() {
+    #[test]
+    fn price_quote() {
         assert_eq!(
             Fact::try_from(&Compare {
                 field: Price,
@@ -137,12 +154,12 @@ mod test {
                 timeframe: None
             })
             .unwrap(),
-            TokenPriceQuote
+            PriceQuote
         );
     }
 
     #[test]
-    fn token_price_usd() {
+    fn price_usd() {
         assert_eq!(
             Fact::try_from(&Compare {
                 field: Price,
@@ -151,12 +168,12 @@ mod test {
                 timeframe: None
             })
             .unwrap(),
-            TokenPriceUsd
+            PriceUsd
         );
     }
 
     #[test]
-    fn token_price_change_percent() {
+    fn price_change_percent() {
         assert_eq!(
             Fact::try_from(&Compare {
                 field: Price,
@@ -165,12 +182,12 @@ mod test {
                 timeframe: Some(H1)
             })
             .unwrap(),
-            TokenPriceChangePercent
+            PriceChangePercent
         );
     }
 
     #[test]
-    fn token_price_change_quote() {
+    fn price_change_quote() {
         assert_eq!(
             Fact::try_from(&Compare {
                 field: Price,
@@ -179,12 +196,12 @@ mod test {
                 timeframe: Some(H1)
             })
             .unwrap(),
-            TokenPriceChangeQuote
+            PriceChangeQuote
         );
     }
 
     #[test]
-    fn token_price_change_usd() {
+    fn price_change_usd() {
         assert_eq!(
             Fact::try_from(&Compare {
                 field: Price,
@@ -193,7 +210,49 @@ mod test {
                 timeframe: Some(H1)
             })
             .unwrap(),
-            TokenPriceChangeUsd
+            PriceChangeUsd
+        );
+    }
+
+    #[test]
+    fn trades_count() {
+        assert_eq!(
+            Fact::try_from(&Compare {
+                field: Trades,
+                operator: GreaterThan,
+                value: Count(2),
+                timeframe: Some(M15)
+            })
+            .unwrap(),
+            TradesCount
+        );
+    }
+
+    #[test]
+    fn trades_buy_count() {
+        assert_eq!(
+            Fact::try_from(&Compare {
+                field: TradesBuy,
+                operator: GreaterThan,
+                value: Count(2),
+                timeframe: Some(M15)
+            })
+            .unwrap(),
+            TradesBuyCount
+        );
+    }
+
+    #[test]
+    fn trades_sell_count() {
+        assert_eq!(
+            Fact::try_from(&Compare {
+                field: TradesSell,
+                operator: GreaterThan,
+                value: Count(2),
+                timeframe: Some(M15)
+            })
+            .unwrap(),
+            TradesSellCount
         );
     }
 }

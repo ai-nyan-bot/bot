@@ -5,22 +5,22 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize, sqlx::Type)]
 #[sqlx(transparent)]
-pub struct Trades(pub i64);
+pub struct Trades(pub i32);
 
-impl From<i64> for Trades {
-    fn from(value: i64) -> Self {
+impl From<i32> for Trades {
+    fn from(value: i32) -> Self {
         Self(value)
     }
 }
 
 impl From<u64> for Trades {
     fn from(value: u64) -> Self {
-        Self(value as i64)
+        Self(value as i32)
     }
 }
 
-impl PartialEq<i64> for Trades {
-    fn eq(&self, other: &i64) -> bool {
+impl PartialEq<i32> for Trades {
+    fn eq(&self, other: &i32) -> bool {
         self.0 == *other
     }
 }

@@ -15,3 +15,18 @@ pub enum Timeframe {
     D1,
     W1,
 }
+
+impl Timeframe {
+    pub fn table(&self) -> &'static str {
+        match self {
+            Timeframe::S1 => "1s",
+            Timeframe::M1 => "1m",
+            Timeframe::M5 => "5m",
+            Timeframe::M15 => "15m",
+            Timeframe::H1 => "1h",
+            Timeframe::H4 => "4h",
+            Timeframe::D1 => "1d",
+            Timeframe::W1 => "1w",
+        }
+    }
+}

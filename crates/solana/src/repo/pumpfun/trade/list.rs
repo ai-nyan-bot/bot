@@ -4,7 +4,7 @@
 use crate::model::pumpfun::Trade;
 use crate::model::Slot;
 use crate::repo::pumpfun::ReadTradeRepo;
-use base::model::{AddressId, DecimalAmount, Price, TokenPairId};
+use base::model::{AddressId, DecimalAmount, PriceQuote, TokenPairId};
 use common::model::Timestamp;
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
@@ -21,7 +21,7 @@ impl ReadTradeRepo {
                 token_pair: r.get::<TokenPairId, _>("token_pair_id"),
                 base_amount: r.get::<DecimalAmount, _>("base_amount"),
                 quote_amount: r.get::<DecimalAmount, _>("quote_amount"),
-                price: r.get::<Price, _>("price"),
+                price: r.get::<PriceQuote, _>("price"),
                 is_buy: r.get::<bool, _>("is_buy"),
                 timestamp: r.get::<Timestamp, _>("timestamp"),
             })

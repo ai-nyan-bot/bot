@@ -8,7 +8,7 @@ use base::model::Action;
 use base::repo::{InvocationCreateCmd, InvocationRepo, NotificationRepo, RuleRepo};
 use base::service::{NotificationConditionMet, NotificationService, RuleService};
 use common::repo::pool::setup_pool;
-use solana::repo::pumpfun::ReadTradeRepo;
+use solana::repo::pumpfun::{ReadTradeRepo, SummaryRepo};
 use std::sync::Arc;
 use std::time::Duration;
 use tokio::runtime::Builder;
@@ -36,7 +36,7 @@ fn main() {
 
         let state = AppState(Arc::new(AppStateInner {
             service: Service {
-                fact: FactService::new(pool.clone(), ReadTradeRepo::new()),
+                fact: FactService::new(pool.clone(), ReadTradeRepo::new(), SummaryRepo::new()),
                 notification: NotificationService::new(pool.clone(), NotificationRepo::new()),
                 rule: RuleService::new(pool.clone(), RuleRepo::new()),
             },
@@ -48,7 +48,6 @@ fn main() {
             for (token_pair_id, facts) in state.service.fact.pumpfun_facts().await {
                 for rule in &strategies {
                     if rule.sequence.condition.test(&facts) {
-                        println!("met - {token_pair_id}");
                         let mut tx = pool.begin().await.unwrap();
 
                         match InvocationRepo::new()
@@ -64,6 +63,8 @@ fn main() {
                             .await
                         {
                             Ok(_) => {
+                                println!("met - {token_pair_id}");
+
                                 match rule.sequence.action {
                                     Action::AndThen { .. } => {}
                                     Action::Buy => {}

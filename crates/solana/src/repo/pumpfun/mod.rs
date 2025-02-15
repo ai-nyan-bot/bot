@@ -3,7 +3,7 @@
 
 pub use candle::{CandleQuery, CandleRepo};
 
-pub use summary::{SummaryQueryAll, SummaryRepo};
+pub use summary::{SummaryQuery, SummaryRepo};
 pub use trade::{ReadTradeRepo, SlotTrade, SlotTrades, TradeQuery, TradeRepo};
 
 mod candle;

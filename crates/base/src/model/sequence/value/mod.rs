@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::Price;
+use crate::model::{PriceQuote, Trades};
 pub(crate) use compare::*;
 pub(crate) use serde::*;
 use ::serde::{Deserialize, Serialize};
@@ -36,9 +36,15 @@ pub enum Value {
     Usd(f64),
 }
 
-impl From<Price> for Value {
-    fn from(value: Price) -> Self {
-        Self::Percent(value.0)
+impl From<PriceQuote> for Value {
+    fn from(value: PriceQuote) -> Self {
+        Self::Quote(value.0)
+    }
+}
+
+impl From<Trades> for Value {
+    fn from(value: Trades) -> Self {
+        Self::Count(value.0 as u64)
     }
 }
 

@@ -77,7 +77,7 @@ mod tests {
 	#[test]
     fn test_set_and_get_fact_without_timeframe() {
         let mut test_instance = Facts::new();
-        let fact = Fact::TokenPriceQuote;
+        let fact = Fact::PriceQuote;
         let value = Value::Quote(123.45);
 
         assert!(test_instance.set(fact, value.clone(), None).is_ok());
@@ -87,7 +87,7 @@ mod tests {
     #[test]
     fn test_set_and_get_fact_with_timeframe() {
         let mut test_instance = Facts::new();
-        let fact = Fact::TokenPriceChangeQuote;
+        let fact = Fact::PriceChangeQuote;
         let timeframe = Timeframe::D1;
         let value = Value::Quote(-2.5);
 
@@ -98,7 +98,7 @@ mod tests {
     #[test]
     fn test_set_fact_with_timeframe_when_not_allowed() {
         let mut test_instance = Facts::new();
-        let fact = Fact::TokenPriceQuote;
+        let fact = Fact::PriceQuote;
         let timeframe = Timeframe::D1;
         let value = Value::Quote(50.0);
 
@@ -109,7 +109,7 @@ mod tests {
     #[test]
     fn test_set_fact_without_timeframe_when_required() {
         let mut test_instance = Facts::new();
-        let fact = Fact::TokenPriceChangeQuote;
+        let fact = Fact::PriceChangeQuote;
         let value = Value::Quote(-3.0);
 
         let result = test_instance.set(fact, value.clone(), None);
@@ -119,7 +119,7 @@ mod tests {
     #[test]
     fn test_set_fact_with_invalid_value_kind() {
         let mut test_instance = Facts::new();
-        let fact = Fact::TokenPriceChangePercent;
+        let fact = Fact::PriceChangePercent;
         let invalid_value = Value::Boolean(true);
 
         let result = test_instance.set(fact, invalid_value.clone(), Some(Timeframe::H1));
@@ -135,7 +135,7 @@ mod tests {
     #[test]
     fn test_exists_fact_without_timeframe() {
         let mut test_instance = Facts::new();
-        let fact = Fact::TokenPriceUsd;
+        let fact = Fact::PriceUsd;
         let value = Value::Usd(200.0);
 
         assert!(!test_instance.exists(&fact, None));
@@ -146,7 +146,7 @@ mod tests {
     #[test]
     fn test_exists_fact_with_timeframe() {
         let mut test_instance = Facts::new();
-        let fact = Fact::TokenVolumeChangeQuote;
+        let fact = Fact::VolumeChangeQuote;
         let timeframe = Timeframe::D1;
         let value = Value::Quote(500.0);
 
@@ -158,7 +158,7 @@ mod tests {
     #[test]
     fn test_overwrite_existing_fact_without_timeframe() {
         let mut test_instance = Facts::new();
-        let fact = Fact::TokenPriceQuote;
+        let fact = Fact::PriceQuote;
         let value1 = Value::Quote(100.0);
         let value2 = Value::Quote(200.0);
 
@@ -172,7 +172,7 @@ mod tests {
     #[test]
     fn test_overwrite_existing_fact_with_timeframe() {
         let mut test_instance = Facts::new();
-        let fact = Fact::TokenVolumeChangeQuote;
+        let fact = Fact::VolumeChangeQuote;
         let timeframe = Timeframe::D1;
         let value1 = Value::Quote(300.0);
         let value2 = Value::Quote(500.0);
@@ -187,14 +187,14 @@ mod tests {
     #[test]
     fn test_get_nonexistent_fact() {
         let test_instance = Facts::new();
-        assert!(test_instance.get(&Fact::TokenPriceChangePercent).is_none());
-        assert!(test_instance.get_with_timeframe(&Fact::TokenPriceChangeQuote, &Timeframe::W1).is_none());
+        assert!(test_instance.get(&Fact::PriceChangePercent).is_none());
+        assert!(test_instance.get_with_timeframe(&Fact::PriceChangeQuote, &Timeframe::W1).is_none());
     }
 
     #[test]
     fn test_set_fact_with_different_timeframes() {
         let mut test_instance = Facts::new();
-        let fact = Fact::TokenPriceChangePercent;
+        let fact = Fact::PriceChangePercent;
 
         let value1 = Value::Percent(1.2);
         let value2 = Value::Percent(2.4);
@@ -216,7 +216,7 @@ mod tests {
     #[test]
     fn test_exists_for_different_timeframes() {
         let mut test_instance = Facts::new();
-        let fact = Fact::TokenPriceChangePercent;
+        let fact = Fact::PriceChangePercent;
 
         let timeframe1 = Timeframe::H1;
         let timeframe2 = Timeframe::D1;
@@ -235,7 +235,7 @@ mod tests {
     #[test]
     fn test_update_multiple_timeframes_independently() {
         let mut test_instance = Facts::new();
-        let fact = Fact::TokenPriceChangePercent;
+        let fact = Fact::PriceChangePercent;
 
         let timeframe1 = Timeframe::H1;
         let timeframe2 = Timeframe::D1;

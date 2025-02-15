@@ -1,17 +1,17 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use base::model::Notification;
+use base::model::{Notification, TokenPairId};
 use log::{info, trace};
 use std::fmt::{Display, Formatter};
 use std::time::Duration;
 use telegram::{schema, AppState, Config, HandlerResult, MessageState, MyDialog};
 use teloxide::types::Recipient;
 use teloxide::{
-    dispatching::dialogue::InMemStorage,
-    prelude::*,
-    types::{InlineKeyboardButton, InlineKeyboardMarkup},
-    utils::command::BotCommands,
+	dispatching::dialogue::InMemStorage,
+	prelude::*,
+	types::{InlineKeyboardButton, InlineKeyboardMarkup},
+	utils::command::BotCommands,
 };
 use tokio::runtime::Builder;
 use tokio::signal;
@@ -58,7 +58,7 @@ fn main() {
                 let result = notification_state
                     .service
                     .notification
-                    .delete(10, |notification| async move { Ok::<Notification, NotificationError>(notification) })
+                    .delete(1, |notification| async move { Ok::<Notification, NotificationError>(notification) })
                     .await
                     .unwrap();
 
@@ -67,8 +67,13 @@ fn main() {
                     let user = notification_state.service.user.get_by_id(notification.user).await.unwrap();
 
                     if let Some(telegram_id) = user.telegram_id {
+                        let token_pair_id = notification.payload.0.get("token_pair_id").unwrap().as_str().unwrap();
+
                         let x = notifier
-                            .send_message(Recipient::Id(ChatId(telegram_id.0.parse::<i64>().unwrap())), "Condition met")
+                            .send_message(
+                                Recipient::Id(ChatId(telegram_id.0.parse::<i64>().unwrap())),
+                                format!("Condition met {token_pair_id}"),
+                            )
                             .await;
                     }
                 }

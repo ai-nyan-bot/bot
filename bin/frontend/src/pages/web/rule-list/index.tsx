@@ -7,7 +7,7 @@ const Rule = ({id, name}: { id: number, name: string }) => {
     const navigate = useNavigate();
     return (
         <div onClick={(_) => {
-            navigate(`/rules/${id}`);
+            navigate(`/web/rules/${id}`);
         }}>
             {id} - {name}
         </div>
