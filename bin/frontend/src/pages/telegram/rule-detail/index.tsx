@@ -47,7 +47,6 @@ export const RuleDetailPage: React.FC = () => {
                     })
                 }}
             />
-            {JSON.stringify(sequence, null, '\t')}
         </div>
     );
 };

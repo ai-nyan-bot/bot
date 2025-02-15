@@ -42,56 +42,58 @@ fn main() {
             },
         }));
 
-        let strategies = state.service.rule.list_active().await.unwrap();
+        loop {
+            let strategies = state.service.rule.list_active().await.unwrap();
 
-        for (token_pair_id, facts) in state.service.fact.pumpfun_facts().await {
-            for rule in &strategies {
-                if rule.sequence.condition.test(&facts) {
-                    println!("met - {token_pair_id}");
-                    let mut tx = pool.begin().await.unwrap();
+            for (token_pair_id, facts) in state.service.fact.pumpfun_facts().await {
+                for rule in &strategies {
+                    if rule.sequence.condition.test(&facts) {
+                        println!("met - {token_pair_id}");
+                        let mut tx = pool.begin().await.unwrap();
 
-                    match InvocationRepo::new()
-                        .create(
-                            &mut tx,
-                            InvocationCreateCmd {
-                                user: rule.user,
-                                rule: rule.id,
-                                token_pair: token_pair_id,
-                                next: None,
-                            },
-                        )
-                        .await
-                    {
-                        Ok(_) => {
-                            match rule.sequence.action {
-                                Action::AndThen { .. } => {}
-                                Action::Buy => {}
-                                Action::Notify => {
-                                    let _ = state
-                                        .service
-                                        .notification
-                                        .create_condition_met_tx(
-                                            &mut tx,
-                                            NotificationConditionMet {
-                                                user: rule.user,
-                                                token_pair: token_pair_id,
-                                            },
-                                        )
-                                        .await;
+                        match InvocationRepo::new()
+                            .create(
+                                &mut tx,
+                                InvocationCreateCmd {
+                                    user: rule.user,
+                                    rule: rule.id,
+                                    token_pair: token_pair_id,
+                                    next: None,
+                                },
+                            )
+                            .await
+                        {
+                            Ok(_) => {
+                                match rule.sequence.action {
+                                    Action::AndThen { .. } => {}
+                                    Action::Buy => {}
+                                    Action::Notify => {
+                                        let _ = state
+                                            .service
+                                            .notification
+                                            .create_condition_met_tx(
+                                                &mut tx,
+                                                NotificationConditionMet {
+                                                    user: rule.user,
+                                                    token_pair: token_pair_id,
+                                                },
+                                            )
+                                            .await;
+                                    }
+                                    Action::Sell => {}
                                 }
-                                Action::Sell => {}
-                            }
 
-                            let _ = tx.commit().await.unwrap();
-                        }
-                        Err(_) => {
-                            // FIXME cache already invoked strategies - otherwise this might be heavy on the database
-                            let _ = tx.rollback().await.unwrap();
+                                let _ = tx.commit().await.unwrap();
+                            }
+                            Err(_) => {
+                                // FIXME cache already invoked strategies - otherwise this might be heavy on the database
+                                let _ = tx.rollback().await.unwrap();
+                            }
                         }
                     }
                 }
             }
+            sleep(Duration::from_millis(1000)).await;
         }
-        sleep(Duration::from_millis(1000)).await;
     })
 }
