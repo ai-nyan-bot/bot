@@ -13,6 +13,23 @@ const TelegramRuleDetailPage: React.FC = () => {
     const [sequence, setSequence] = useState<Sequence>();
 
     useEffect(() => {
+        // @ts-ignore
+        const tg = window.Telegram.WebApp;
+        tg.BackButton.show();
+        
+        const handleBackClick = () => {
+            alert('test');
+            window.history.back();
+        };
+        tg.BackButton.onClick(handleBackClick);
+
+        return () => {
+            tg.BackButton.hide();
+            tg.BackButton.offClick(handleBackClick);
+        };
+    }, []);
+
+    useEffect(() => {
         if (!id) return;
 
         const abortController = new AbortController();
