@@ -29,17 +29,15 @@ export const RuleDetailForm: FC<RuleDetailFormProps> = ({id, name}) => {
                 <CardTitle>Rule {ruleName}</CardTitle>
             </CardHeader>
             <CardContent>
-                <div className="space-y-2">
-                    <Label htmlFor="rule-name">Name of your rule</Label>
-                    <Input
-                        key={id}
-                        id="rule-name"
-                        type="text"
-                        placeholder="Enter rule name"
-                        value={ruleName}
-                        onChange={(e) => setRuleName(e.target.value)}
-                    />
-                </div>
+                <Label htmlFor="rule-name">Name of your rule</Label>
+                <Input
+                    key={id}
+                    id="rule-name"
+                    type="text"
+                    placeholder="Enter rule name"
+                    value={ruleName}
+                    onChange={(e) => setRuleName(e.target.value)}
+                />
             </CardContent>
         </Card>
     );

@@ -37,7 +37,7 @@ const WebRuleDetailPage: React.FC = () => {
     }
 
     return (
-        <div className="w-full flex flex-col space-y-6 bg-zinc-50 p-2">
+        <div className="w-full flex flex-col space-y-2 bg-zinc-50 p-2">
             <RuleDetailForm
                 id={id}
                 name={rule.name}
