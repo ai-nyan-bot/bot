@@ -106,14 +106,16 @@ export const Editor: React.FC<EditorProps> = ({sequence, onChange}) => {
     };
 
     useEffect(() => {
-        if (condition) {
-            if (onChange) {
-                console.log(condition)
-                onChange({action, condition})
+        const handler = setTimeout(() => {
+            if (condition) {
+                if (onChange) {
+                    onChange({action, condition})
+                }
             }
-        }
-    }, [condition]);
+        }, 1_000);
 
+        return () => clearTimeout(handler);
+    }, [condition]);
 
     return (
         <Card className="w-full">

@@ -15,10 +15,12 @@ export const MetaMaskButton: FC<MetaMaskButtonProps> = ({className}) => {
 
     const handleConnectAndSign = async () => {
         try {
+            setConnecting(true);
             const signature = await sdk?.connectAndSign({msg: "Please sign this message to login"});
             setSignedMessage(signature);
         } catch (error) {
             console.error("Error in signing:", error);
+            setConnecting(false);
         }
     };
 
@@ -42,7 +44,7 @@ export const MetaMaskButton: FC<MetaMaskButtonProps> = ({className}) => {
         <>
             <button
                 onClick={handleConnectAndSign}
-                // loading={connecting}
+                disabled={connecting}
             >
                 Connect with MetaMask
             </button>
