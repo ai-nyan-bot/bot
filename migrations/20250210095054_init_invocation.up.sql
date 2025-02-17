@@ -14,13 +14,16 @@ create table solana.invocation
 
     constraint fk_user
         foreign key (user_id)
-        references nyanbot.user(id),
+        references nyanbot.user(id)
+        on delete cascade,
 
     constraint fk_rule
         foreign key (rule_id)
-        references solana.rule(id),
+        references solana.rule(id)
+        on delete cascade,
 
     constraint fk_token_pair
         foreign key (token_pair_id)
         references solana.token_pair(id)
+        on delete cascade
 );

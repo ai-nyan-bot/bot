@@ -6,7 +6,7 @@ import {ContextAppDispatch, ContextAppState, ContextModalDispatch, ContextModalS
 
 import {useLocalStorage, useSetMetaMaskAuth, useSetTelegramAuth, useSetUnauthorized, useSetWallet} from "@states/local";
 import {appInitialState, appReducer} from "@states/app";
-import {Client} from "@components";
+import {Client} from "./client";
 
 import {ConnectionLostPage} from "@pages/connection-lost";
 

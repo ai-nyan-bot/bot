@@ -16,9 +16,8 @@ const TelegramRuleDetailPage: React.FC = () => {
         // @ts-ignore
         const tg = window.Telegram.WebApp;
         tg.BackButton.show();
-        
+
         const handleBackClick = () => {
-            alert('test');
             window.history.back();
         };
         tg.BackButton.onClick(handleBackClick);

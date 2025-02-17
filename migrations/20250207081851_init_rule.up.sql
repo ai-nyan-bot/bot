@@ -14,6 +14,7 @@ create table solana.rule
     constraint fk_user
         foreign key (user_id)
         references nyanbot.user(id)
+        on delete cascade
 );
 
 create or replace function solana.increment_rule_version()

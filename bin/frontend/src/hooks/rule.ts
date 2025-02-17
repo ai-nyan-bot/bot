@@ -12,7 +12,9 @@ export type RuleCreateRequest = {
     }
 };
 
-export type RuleCreateResponse = {};
+export type RuleCreateResponse = {
+    id: string
+};
 
 type RuleCreateAction = (req: RuleCreateRequest, abortController?: AbortController) => void
 export const useRuleCreate = (): [RuleCreateAction, RuleCreateResponse | null, boolean, Error | null] => {

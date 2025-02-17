@@ -1,8 +1,8 @@
-import {useRuleCreate, useRuleList} from "@hooks/rule.ts";
-import {useEffect, useRef} from "react";
+import {useRuleList} from "@hooks/rule.ts";
+import {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
-import {Button} from "@components/ui/button.tsx";
 import {Card} from "@app/components/ui/card";
+import {RuleCreateButton} from "@components/button";
 
 
 const Rule = ({id, name}: { id: number, name: string }) => {
@@ -13,48 +13,6 @@ const Rule = ({id, name}: { id: number, name: string }) => {
         }}>
             {name}
         </Card>
-    )
-}
-
-const CreateRuleButton = () => {
-    const [createRule, response, loading, error] = useRuleCreate();
-    const abortControllerRef = useRef<AbortController | null>(null);
-
-    const handleClick = () => {
-        if (abortControllerRef.current) {
-            abortControllerRef.current.abort();
-        }
-        const newAbortController = new AbortController();
-        abortControllerRef.current = newAbortController;
-        createRule({
-            name: 'test',
-            sequence: {
-                condition: {
-                    id: 'root',
-                    type: 'AND',
-                    conditions: []
-                },
-                action: {
-                    type: 'NOTIFY',
-                }
-            }
-
-        }, newAbortController);
-    };
-
-    useEffect(() => {
-        return () => {
-            if (abortControllerRef.current) {
-                abortControllerRef.current.abort();
-            }
-        };
-    }, []);
-
-    return (
-        <Button className="w-full bg-green-500 text-white" onClick={handleClick} disabled={loading}>+ Rule</Button>
-        // <button onClick={handleClick} disabled={loading}>
-        //     Create Rule
-        // </button>
     )
 }
 
@@ -79,7 +37,7 @@ const TelegramRuleListPage = () => {
         <div className="max-w-4xl mx-auto space-y-6">
             <h1> Rules </h1>
             {rules}
-            <CreateRuleButton/>
+            <RuleCreateButton/>
         </div>
     )
 }
