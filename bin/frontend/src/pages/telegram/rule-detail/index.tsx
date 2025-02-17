@@ -24,7 +24,6 @@ const TelegramRuleDetailPage: React.FC = () => {
 
     useEffect(() => {
         let injectedSequence = injectId(rule?.sequence, uuidv4) as Sequence;
-        console.log("after injection", injectedSequence);
         setSequence(injectedSequence)
     }, [rule]);
 
