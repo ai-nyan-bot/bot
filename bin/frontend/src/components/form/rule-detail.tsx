@@ -1,4 +1,4 @@
-import {FC, useEffect, useRef, useState} from "react";
+import {FC, useEffect, useState} from "react";
 import {Input} from "@components/ui/input";
 import {Label} from "@components/ui/label";
 import {Card, CardContent, CardHeader, CardTitle} from "@components/ui/card";
@@ -10,9 +10,8 @@ export type RuleDetailFormProps = {
 };
 
 export const RuleDetailForm: FC<RuleDetailFormProps> = ({id, name}) => {
-    const [updateRule, updatedRule, loading, error] = useRuleUpdate();
+    const [updateRule, , ,] = useRuleUpdate();
     const [ruleName, setRuleName] = useState(name);
-    const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -22,15 +21,7 @@ export const RuleDetailForm: FC<RuleDetailFormProps> = ({id, name}) => {
         }, 1_000);
 
         return () => clearTimeout(handler);
-    }, [ruleName, name]);
-
-    useEffect(() => {
-        if (updatedRule) {
-            if (inputRef.current && document.activeElement !== inputRef.current) {
-                inputRef.current.focus();
-            }
-        }
-    }, [updatedRule]);
+    }, [id, ruleName, name]);
 
     return (
         <Card className="w-full">
@@ -41,13 +32,12 @@ export const RuleDetailForm: FC<RuleDetailFormProps> = ({id, name}) => {
                 <div className="space-y-2">
                     <Label htmlFor="rule-name">Name of your rule</Label>
                     <Input
-                        ref={inputRef}
+                        key={id}
                         id="rule-name"
                         type="text"
                         placeholder="Enter rule name"
                         value={ruleName}
                         onChange={(e) => setRuleName(e.target.value)}
-                        disabled={loading}
                     />
                 </div>
             </CardContent>
