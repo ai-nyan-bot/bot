@@ -18,3 +18,32 @@ pub async fn list(State(state): State<AppState>, Extension(user): Extension<Auth
         rules: rules.into_iter().map(|r| HttpRuleList { id: r.id, name: r.name }).collect(),
     }))
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::http::model::rule::HttpRuleListResponse;
+    use crate::http::testing::{extract, extract_error, Test};
+    use axum::http::StatusCode;
+
+    #[tokio::test]
+    async fn no_rules() {
+        let test = Test::new().await;
+        let response = test.get_as_test_user("/v1/rules").await;
+        assert_eq!(response.status(), StatusCode::OK);
+
+        let response = extract::<HttpRuleListResponse>(response).await.unwrap();
+        assert_eq!(response.rules.len(), 0);
+    }
+
+    #[tokio::test]
+    async fn requires_authentication() {
+        let test = Test::new_empty_db().await;
+        let response = test.get_unauthenticated("/v1/rules").await;
+
+        assert_eq!(response.status(), StatusCode::NOT_FOUND);
+
+        let error = extract_error(response).await;
+        assert_eq!(error.code, StatusCode::NOT_FOUND);
+        assert_eq!(error.message, "User not found");
+    }
+}

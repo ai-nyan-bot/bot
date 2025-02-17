@@ -31,6 +31,12 @@ impl From<&str> for AuthToken {
     }
 }
 
+impl From<String> for AuthToken {
+    fn from(value: String) -> Self {
+        AuthToken(value)
+    }
+}
+
 impl PartialEq<&str> for AuthToken {
     fn eq(&self, other: &&str) -> bool {
         self.0.as_str() == *other

@@ -8,14 +8,14 @@ use crate::repo::AuthRepo;
 use common::repo::{RepoResult, Tx};
 
 pub struct AuthCreateCmd {
-    pub user_id: UserId,
+    pub user: UserId,
     pub token: AuthToken,
 }
 
 impl AuthRepo {
     pub async fn create<'a>(&self, tx: &mut Tx<'a>, cmd: AuthCreateCmd) -> RepoResult<Auth> {
         let auth_id = query("insert into nyanbot.auth (user_id, token) values ($1, $2) returning id")
-            .bind(cmd.user_id)
+            .bind(cmd.user)
             .bind(cmd.token)
             .fetch_one(&mut **tx)
             .await

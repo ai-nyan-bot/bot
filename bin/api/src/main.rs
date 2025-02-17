@@ -9,9 +9,9 @@ use std::sync::Arc;
 
 use crate::config::Config;
 use crate::http::state::{AppState, AppStateInner, Service};
-use base::repo::RuleRepo;
-use base::service::RuleService;
+use base::repo::{AuthRepo, RuleRepo};
 use base::service::UserService;
+use base::service::{AuthService, RuleService};
 use common::repo::pool::setup_pool;
 use common::ResolveOr;
 use log::info;
@@ -54,6 +54,7 @@ fn main() {
         let router = router::setup_v1(AppState(Arc::new(AppStateInner {
             config,
             service: Service {
+                auth: AuthService::new(pool.clone(), AuthRepo::new()),
                 rule: RuleService::new(pool.clone(), RuleRepo::new()),
                 user: UserService::new(pool.clone()),
             },

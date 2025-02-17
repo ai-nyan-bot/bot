@@ -16,8 +16,14 @@ pub struct AuthQueryAll {
 #[derive(Clone)]
 pub struct AuthRepo {}
 
-impl Default for AuthRepo{
+impl AuthRepo {
+    pub fn new() -> Self {
+        Self {}
+    }
+}
+
+impl Default for AuthRepo {
     fn default() -> Self {
-        Self{}
+        Self {}
     }
 }

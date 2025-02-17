@@ -1,52 +1,33 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use crate::http::error::HttpError;
+use crate::http::json::JsonReq;
+use crate::http::model::auth::{MetamaskAuthRequest, MetamaskAuthResponse, Telegram, TelegramAuthResponse, User, Wallet};
+use crate::http::state::AppState;
 use axum::extract::State;
 use axum::Json;
+use base::service::AuthenticateUserTelegramCmd;
 use log::debug;
 use serde::{Deserialize, Serialize};
 
-use crate::http::error::HttpError;
-use crate::http::json::JsonReq;
-use crate::http::state::AppState;
-
-#[derive(Deserialize, Debug)]
-pub struct TokenRequest {
-    address: String,
-    signature: String,
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct TokenResponse {
-    token: String,
-    user: UserResponse,
-    wallet: WalletResponse,
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-pub struct WalletResponse {
-    pub(crate) solana: String,
-}
-
-#[derive(Debug, Deserialize, Serialize)]
-pub struct UserResponse {
-    pub(crate) id: String,
-}
-
-pub async fn metamask(State(_state): State<AppState>, JsonReq(req): JsonReq<TokenRequest>) -> Result<Json<TokenResponse>, HttpError> {
+pub async fn metamask(State(state): State<AppState>, JsonReq(req): JsonReq<MetamaskAuthRequest>) -> Result<Json<MetamaskAuthResponse>, HttpError> {
     debug!("POST /v1/auth/metamask {:?}", req);
 
-    // if user not exists yet
-    // create user
+    // FIXME
+    let (user, auth, wallet) = state
+        .user_service()
+        .authenticate_and_create_telegram_user_if_not_exists(AuthenticateUserTelegramCmd { telegram_id: "0".into() })
+        .await?;
 
-    // debug!("user {} authenticated via metamask", user.id);
+    debug!("user {} authenticated via metamask", user.id);
 
-    Ok(Json(TokenResponse {
-        token: "valid-token".to_string(),
-        user: UserResponse { id: "user_id".to_string() },
-        wallet: WalletResponse {
-            solana: "Bp65Vdx5o5THggj1ZHYsVwaKPhp999mRmAeKyFG9FVnT".to_string(),
+    Ok(Json(MetamaskAuthResponse {
+        token: auth.token,
+        user: User { id: user.id },
+        wallet: Wallet {
+            id: wallet.id,
+            solana: wallet.solana_public_key,
         },
     }))
 }

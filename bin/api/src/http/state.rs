@@ -2,8 +2,8 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::config::Config;
-use base::service::RuleService;
 use base::service::UserService;
+use base::service::{AuthService, RuleService};
 use std::ops::Deref;
 use std::sync::Arc;
 
@@ -11,6 +11,7 @@ use std::sync::Arc;
 pub struct AppState(pub Arc<AppStateInner>);
 
 impl AppState {
+    pub fn auth_service(&self) -> AuthService{ self.service.auth.clone()}
     pub fn rule_service(&self) -> RuleService {
         self.service.rule.clone()
     }
@@ -34,6 +35,7 @@ pub struct AppStateInner {
 
 #[derive(Clone)]
 pub struct Service {
+    pub auth: AuthService,
     pub rule: RuleService,
     pub user: UserService,
 }

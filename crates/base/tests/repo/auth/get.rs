@@ -18,7 +18,7 @@ mod get_by_id {
                 .create(
                     &mut tx,
                     AuthCreateCmd {
-                        user_id: user.id,
+                        user: user.id,
                         token: AuthToken::from("token"),
                     },
                 )
@@ -42,7 +42,7 @@ mod get_by_id {
                 .create(
                     &mut tx,
                     AuthCreateCmd {
-                        user_id: user.id,
+                        user: user.id,
                         token: AuthToken::from("token"),
                     },
                 )
@@ -73,7 +73,7 @@ mod get_by_token {
                 .create(
                     &mut tx,
                     AuthCreateCmd {
-                        user_id: user.id,
+                        user: user.id,
                         token: AuthToken::from("token"),
                     },
                 )
@@ -98,7 +98,7 @@ mod get_by_token {
                 .create(
                     &mut tx,
                     AuthCreateCmd {
-                        user_id: user.id,
+                        user: user.id,
                         token: AuthToken::from("token"),
                     },
                 )

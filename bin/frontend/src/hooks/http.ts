@@ -79,8 +79,7 @@ export const usePost = <T>(): [PostAction, T | null, boolean, Error | null] => {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    // 'Authorization': `Bearer ${auth.token}` // FIXME
-                    'Authorization': `Bearer valid-token` // FIXME
+                    'Authorization': `Bearer ${auth.token}`
                 },
                 body: JSON.stringify(body),
                 signal: abortController?.signal
@@ -142,8 +141,7 @@ export const usePatch = <T>(): [PutAction, T | null, boolean, Error | null] => {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
-                    // 'Authorization': `Bearer ${auth.token}` // FIXME
-                    'Authorization': `Bearer valid-token` // FIXME
+                    'Authorization': `Bearer ${auth.token}`
                 },
                 body: JSON.stringify(body),
                 signal: abortController?.signal

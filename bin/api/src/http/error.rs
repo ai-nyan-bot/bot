@@ -8,7 +8,7 @@ use common::service::ServiceError;
 use serde::{Deserialize, Deserializer};
 use serde_json::json;
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize, PartialEq)]
 pub enum HttpError {
     BadRequest(String),
     Conflict(String),

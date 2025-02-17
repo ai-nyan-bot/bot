@@ -5,9 +5,9 @@ use sqlx::{query, Row};
 
 use common::model::{CreatedAt, UpdatedAt};
 
+use crate::model::{Auth, AuthId, AuthToken, AuthenticatedUser, UserId};
 use crate::repo::AuthRepo;
 use common::repo::{RepoResult, Tx};
-use crate::model::{Auth, AuthId, AuthToken, AuthenticatedUser, UserId};
 
 impl AuthRepo {
     pub async fn get_by_id<'a>(&self, tx: &mut Tx<'a>, auth_id: impl Into<AuthId> + Send) -> RepoResult<Auth> {

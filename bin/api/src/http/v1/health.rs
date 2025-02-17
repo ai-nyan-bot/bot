@@ -28,8 +28,8 @@ mod tests {
 
     #[tokio::test]
     async fn ok() {
-        let test = Test::new().await;
-        let response = test.get("/health").await;
+        let test = Test::new_empty_db().await;
+        let response = test.get_unauthenticated("/health").await;
 
         assert_eq!(response.status(), StatusCode::OK);
 

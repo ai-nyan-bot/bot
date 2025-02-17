@@ -31,7 +31,7 @@ impl UserService {
             .create(
                 tx,
                 AuthCreateCmd {
-                    user_id: user.id,
+                    user: user.id,
                     token: (self.token_generator)(),
                 },
             )

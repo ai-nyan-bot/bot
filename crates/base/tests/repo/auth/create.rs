@@ -22,7 +22,7 @@ mod create_telegram_user {
                 .create(
                     &mut tx,
                     AuthCreateCmd {
-                        user_id: user.id,
+                        user: user.id,
                         token: AuthToken::from("token-1"),
                     },
                 )
@@ -51,7 +51,7 @@ mod create_telegram_user {
                 .create(
                     &mut tx.begin().await.unwrap(),
                     AuthCreateCmd {
-                        user_id: UserId::from(1337),
+                        user: UserId::from(1337),
                         token: AuthToken::from("token-1"),
                     },
                 )
@@ -74,7 +74,7 @@ mod create_telegram_user {
                 .create(
                     &mut tx,
                     AuthCreateCmd {
-                        user_id: user.id,
+                        user: user.id,
                         token: AuthToken::from("token"),
                     },
                 )
@@ -87,7 +87,7 @@ mod create_telegram_user {
                 .create(
                     &mut tx.begin().await.unwrap(),
                     AuthCreateCmd {
-                        user_id: user.id,
+                        user: user.id,
                         token: AuthToken::from("token"),
                     },
                 )
@@ -115,7 +115,7 @@ mod create_telegram_user {
                 .create(
                     &mut tx,
                     AuthCreateCmd {
-                        user_id: user.id,
+                        user: user.id,
                         token: AuthToken::from("token-1"),
                     },
                 )
@@ -126,7 +126,7 @@ mod create_telegram_user {
                 .create(
                     &mut tx,
                     AuthCreateCmd {
-                        user_id: user.id,
+                        user: user.id,
                         token: AuthToken::from("token-2"),
                     },
                 )
@@ -137,7 +137,7 @@ mod create_telegram_user {
                 .create(
                     &mut tx,
                     AuthCreateCmd {
-                        user_id: user.id,
+                        user: user.id,
                         token: AuthToken::from("token-3"),
                     },
                 )
@@ -173,7 +173,7 @@ mod create_telegram_user {
                 .create(
                     &mut tx,
                     AuthCreateCmd {
-                        user_id: user.id,
+                        user: user.id,
                         token: AuthToken::from("token-1-1"),
                     },
                 )
@@ -184,7 +184,7 @@ mod create_telegram_user {
                 .create(
                     &mut tx,
                     AuthCreateCmd {
-                        user_id: user.id,
+                        user: user.id,
                         token: AuthToken::from("token-1-2"),
                     },
                 )
@@ -196,7 +196,7 @@ mod create_telegram_user {
                 .create(
                     &mut tx,
                     AuthCreateCmd {
-                        user_id: user.id,
+                        user: user.id,
                         token: AuthToken::from("token-2-1"),
                     },
                 )
@@ -207,7 +207,7 @@ mod create_telegram_user {
                 .create(
                     &mut tx,
                     AuthCreateCmd {
-                        user_id: user.id,
+                        user: user.id,
                         token: AuthToken::from("token-2-2"),
                     },
                 )

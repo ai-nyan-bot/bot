@@ -23,7 +23,7 @@ pub async fn get(
         .await?
         .into_iter()
         .find(|r| r.id == RuleId(id.parse::<i32>().unwrap()))
-        .unwrap();
+        .ok_or(HttpError::not_found("Rule not found"))?;
 
     Ok(Json(HttpRulGetResponse {
         id: r.id,

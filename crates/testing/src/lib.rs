@@ -7,11 +7,11 @@ use common::repo::Tx;
 use futures_util::FutureExt;
 use log::info;
 use rand::{thread_rng, Rng};
+use rule::create_rule_for_another_user;
 use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
 use sqlx::{Executor, PgPool};
 use std::future::Future;
 use std::panic;
-use rule::create_rule_for_another_user;
 use token_pair::get_or_create_token_pair;
 
 pub mod address;
@@ -74,16 +74,10 @@ where
     let result = panic::AssertUnwindSafe(async move {
         let pool = get_test_pool().await;
         let mut tx = pool.begin().await.unwrap();
+        initialise_database(&mut tx).await;
+        let _ = tx.commit().await;
 
-        get_or_create_test_user(&mut tx).await;
-        get_or_create_another_user(&mut tx).await;
-
-        create_rule_for_another_user(&mut tx, "Rule A").await;
-        create_rule_for_another_user(&mut tx, "Rule B").await;
-        create_rule_for_another_user(&mut tx, "Rule C").await;
-
-        get_or_create_token_pair(&mut tx, TokenMint::usdc(), TokenMint::usdt()).await;
-
+        let tx = pool.begin().await.unwrap();
         test(tx).await;
     })
     .catch_unwind()
@@ -94,6 +88,17 @@ where
     if let Some(err) = result {
         panic::resume_unwind(err)
     }
+}
+
+pub async fn initialise_database<'a>(tx: &mut Tx<'a>) {
+    get_or_create_test_user(tx).await;
+    get_or_create_another_user(tx).await;
+
+    create_rule_for_another_user(tx, "Rule A").await;
+    create_rule_for_another_user(tx, "Rule B").await;
+    create_rule_for_another_user(tx, "Rule C").await;
+
+    get_or_create_token_pair(tx, TokenMint::usdc(), TokenMint::usdt()).await;
 }
 
 pub async fn run_test_on_empty_db<'a, T, TFut>(test: T)

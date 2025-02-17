@@ -29,8 +29,7 @@ pub async fn telegram(State(state): State<AppState>, JsonReq(req): JsonReq<Teleg
     debug!("user {} authenticated via telegram", user.id);
 
     Ok(Json(TelegramAuthResponse {
-        // token: auth.token,
-        token: "valid-token".into(),
+        token: auth.token,
         user: User { id: user.id },
         telegram: Telegram { id: user.telegram_id.unwrap() },
         wallet: Wallet {
@@ -54,14 +53,14 @@ fn telegram_login(bot_token: String, req: TelegramAuthRequest) -> Result<Telegra
 
 #[cfg(test)]
 mod tests {
-    use crate::http::model::auth::TelegramAuthResponse;
-    use crate::http::testing::{extract, extract_error, Test};
-    use axum::http::StatusCode;
+	use crate::http::model::auth::TelegramAuthResponse;
+	use crate::http::testing::{extract, extract_error, Test};
+	use axum::http::StatusCode;
 
-    #[tokio::test]
+	#[tokio::test]
     async fn without_body_and_content_type() {
-        let test = Test::new().await;
-        let response = test.post_no_content("/v1/auth/telegram").await;
+        let test = Test::new_empty_db().await;
+        let response = test.post_unauthenticated_no_content("/v1/auth/telegram").await;
 
         assert_eq!(response.status(), StatusCode::BAD_REQUEST);
 
@@ -72,8 +71,8 @@ mod tests {
 
     #[tokio::test]
     async fn malformed_json() {
-        let test = Test::new().await;
-        let response = test.post_json("/v1/auth/telegram", "{,}").await;
+        let test = Test::new_empty_db().await;
+        let response = test.post_unauthenticated_json("/v1/auth/telegram", "{,}").await;
 
         assert_eq!(response.status(), StatusCode::BAD_REQUEST);
 
@@ -87,8 +86,8 @@ mod tests {
 
     #[tokio::test]
     async fn empty_json_object() {
-        let test = Test::new().await;
-        let response = test.post_json("/v1/auth/telegram", "{}").await;
+        let test = Test::new_empty_db().await;
+        let response = test.post_unauthenticated_json("/v1/auth/telegram", "{}").await;
 
         assert_eq!(response.status(), StatusCode::UNPROCESSABLE_ENTITY);
 
@@ -102,9 +101,9 @@ mod tests {
 
     #[tokio::test]
     async fn invalid_query() {
-        let test = Test::new().await;
+        let test = Test::new_empty_db().await;
         let response = test
-            .post_json(
+            .post_unauthenticated_json(
                 "/v1/auth/telegram",
                 r#"{
             "query": "invalid"
@@ -121,8 +120,8 @@ mod tests {
 
     #[tokio::test]
     async fn invalid_signature() {
-        let test = Test::new().await;
-        let response = test.post_json("/v1/auth/telegram", r#"{
+        let test = Test::new_empty_db().await;
+        let response = test.post_unauthenticated_json("/v1/auth/telegram", r#"{
             "query": "query_id=AAGqmHAaAwAAAKqYcBo0s6pa&user=%7B%22id%22%3A6886037674%2C%22first_name%22%3A%22Dee%22%2C%22last_name%22%3A%22Dee%22%2C%22username%22%3A%22deedee1337%22%2C%22language_code%22%3A%22en%22%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FETDX5qwxULtIfWuOA5pSNI9hzRzil7XA4Tnx5NqNypDqBM6OTFA_li21aEd-wI4r.svg%22%7D&auth_date=1738054894&hash=aa7bdf3fff1121862c7a118ba15ddeca6d7299a9f9e882ad824010edceb67e6a"
         }"#).await;
 
@@ -134,10 +133,9 @@ mod tests {
     }
 
     #[tokio::test]
-    #[ignore]
     async fn ok() {
-        let test = Test::new().await;
-        let response = test.post_json("/v1/auth/telegram", r#"{
+        let test = Test::new_empty_db().await;
+        let response = test.post_unauthenticated_json("/v1/auth/telegram", r#"{
             "query": "query_id=AAGqmHAaAwAAAKqYcBo0s6pa&user=%7B%22id%22%3A6886037674%2C%22first_name%22%3A%22Dee%22%2C%22last_name%22%3A%22Dee%22%2C%22username%22%3A%22deedee1337%22%2C%22language_code%22%3A%22en%22%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FETDX5qwxULtIfWuOA5pSNI9hzRzil7XA4Tnx5NqNypDqBM6OTFA_li21aEd-wI4r.svg%22%7D&auth_date=1738054894&signature=HkX8UoSMG7njc50r3GDQ95XNHNqc6E0E95GGVsYbqMDObyIUL6omfTa_gkBFhXzbg8Z6KSX07Fzzd9R4WwAPAg&hash=aa7bdf3fff1121862c7a118ba15ddeca6d7299a9f9e882ad824010edceb67e6a"
         }"#).await;
 
@@ -152,10 +150,9 @@ mod tests {
     }
 
     #[tokio::test]
-    #[ignore]
     async fn multiple_logins() {
-        let test = Test::new().await;
-        let previous_response = test.post_json("/v1/auth/telegram", r#"{
+        let test = Test::new_empty_db().await;
+        let previous_response = test.post_unauthenticated_json("/v1/auth/telegram", r#"{
             "query": "query_id=AAGqmHAaAwAAAKqYcBo0s6pa&user=%7B%22id%22%3A6886037674%2C%22first_name%22%3A%22Dee%22%2C%22last_name%22%3A%22Dee%22%2C%22username%22%3A%22deedee1337%22%2C%22language_code%22%3A%22en%22%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FETDX5qwxULtIfWuOA5pSNI9hzRzil7XA4Tnx5NqNypDqBM6OTFA_li21aEd-wI4r.svg%22%7D&auth_date=1738054894&signature=HkX8UoSMG7njc50r3GDQ95XNHNqc6E0E95GGVsYbqMDObyIUL6omfTa_gkBFhXzbg8Z6KSX07Fzzd9R4WwAPAg&hash=aa7bdf3fff1121862c7a118ba15ddeca6d7299a9f9e882ad824010edceb67e6a"
         }"#).await;
 
@@ -165,7 +162,7 @@ mod tests {
         let previous_token = response.token;
         let previous_wallet = response.wallet;
 
-        let current_response = test.post_json("/v1/auth/telegram", r#"{
+        let current_response = test.post_unauthenticated_json("/v1/auth/telegram", r#"{
             "query": "query_id=AAGqmHAaAwAAAKqYcBo0s6pa&user=%7B%22id%22%3A6886037674%2C%22first_name%22%3A%22Dee%22%2C%22last_name%22%3A%22Dee%22%2C%22username%22%3A%22deedee1337%22%2C%22language_code%22%3A%22en%22%2C%22allows_write_to_pm%22%3Atrue%2C%22photo_url%22%3A%22https%3A%5C%2F%5C%2Ft.me%5C%2Fi%5C%2Fuserpic%5C%2F320%5C%2FETDX5qwxULtIfWuOA5pSNI9hzRzil7XA4Tnx5NqNypDqBM6OTFA_li21aEd-wI4r.svg%22%7D&auth_date=1738054894&signature=HkX8UoSMG7njc50r3GDQ95XNHNqc6E0E95GGVsYbqMDObyIUL6omfTa_gkBFhXzbg8Z6KSX07Fzzd9R4WwAPAg&hash=aa7bdf3fff1121862c7a118ba15ddeca6d7299a9f9e882ad824010edceb67e6a"
         }"#).await;
 

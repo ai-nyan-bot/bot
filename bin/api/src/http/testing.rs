@@ -15,29 +15,37 @@ use axum::body::{to_bytes, Body};
 use axum::response::Response;
 #[cfg(test)]
 use axum::{http, Router};
+use base::repo::AuthRepo;
 #[cfg(test)]
 use base::repo::RuleRepo;
+use base::service::AuthService;
 #[cfg(test)]
 use base::service::{RuleService, UserService};
+use common::repo::Tx;
 #[cfg(test)]
 use common::ConfigValue;
 #[cfg(test)]
 use serde::de::DeserializeOwned;
 #[cfg(test)]
+use sqlx::PgPool;
+use std::future::Future;
+#[cfg(test)]
 use std::sync::Arc;
 #[cfg(test)]
 use testing::get_test_pool;
+use testing::initialise_database;
 #[cfg(test)]
 use tower::ServiceExt;
 
 #[cfg(test)]
 pub(crate) struct Test {
     router: Router,
+    pool: PgPool,
 }
 
 #[cfg(test)]
 impl Test {
-    pub(crate) async fn new() -> Self {
+    pub(crate) async fn new_empty_db() -> Self {
         let pool = get_test_pool().await;
         Self {
             router: router::setup_v1(AppState(Arc::new(AppStateInner {
@@ -49,25 +57,74 @@ impl Test {
                     },
                 },
                 service: Service {
+                    auth: AuthService::new(pool.clone(), AuthRepo::new()),
                     rule: RuleService::new(pool.clone(), RuleRepo::new()),
                     user: UserService::new(pool.clone()),
                 },
             }))),
+            pool,
         }
     }
 
-    pub(crate) async fn get(&self, url: &str) -> Response {
+    pub(crate) async fn new() -> Self {
+        let pool = get_test_pool().await;
+
+        let mut tx = pool.begin().await.unwrap();
+        initialise_database(&mut tx).await;
+        tx.commit().await.unwrap();
+
+        Self {
+            router: router::setup_v1(AppState(Arc::new(AppStateInner {
+                config: Config {
+                    server: Default::default(),
+                    postgres: Default::default(),
+                    telegram: TelegramConfig {
+                        token: ConfigValue::Value("7212584558:AAFyZo37lw4VPHPIdbynqKtMacHPwF0uMGE".to_string()),
+                    },
+                },
+                service: Service {
+                    auth: AuthService::new(pool.clone(), AuthRepo::new()),
+                    rule: RuleService::new(pool.clone(), RuleRepo::new()),
+                    user: UserService::new(pool.clone()),
+                },
+            }))),
+            pool,
+        }
+    }
+
+    pub async fn in_tx<'a, T, TFut>(func: T)
+    where
+        T: FnOnce(&mut Tx<'a>) -> TFut + Send + 'static,
+        TFut: Future + Send,
+    {
+        let pool = get_test_pool().await;
+        let mut tx = pool.begin().await.unwrap();
+        func(&mut tx).await;
+        tx.commit().await.unwrap();
+    }
+
+    pub(crate) async fn get_unauthenticated(&self, url: &str) -> Response {
         let req = axum::http::Request::builder().uri(url).method("GET").body(Body::empty()).unwrap();
+        self.router.clone().oneshot(req).await.unwrap()
+    }
+
+    pub(crate) async fn get_as_test_user(&self, url: &str) -> Response {
+        let req = axum::http::Request::builder()
+            .uri(url)
+            .method("GET")
+            .header("Authorization", "Bearer TestUserToken")
+            .body(Body::empty())
+            .unwrap();
 
         self.router.clone().oneshot(req).await.unwrap()
     }
 
-    pub(crate) async fn post_no_content(&self, url: &str) -> Response {
+    pub(crate) async fn post_unauthenticated_no_content(&self, url: &str) -> Response {
         let req = axum::http::Request::builder().uri(url).method("POST").body(Body::empty()).unwrap();
         self.router.clone().oneshot(req).await.unwrap()
     }
 
-    pub(crate) async fn post_json(&self, url: &str, json: impl Into<String>) -> Response {
+    pub(crate) async fn post_unauthenticated_json(&self, url: &str, json: impl Into<String>) -> Response {
         let req = axum::http::Request::builder()
             .uri(url)
             .method("POST")
