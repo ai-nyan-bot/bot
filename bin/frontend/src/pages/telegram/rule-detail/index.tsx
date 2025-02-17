@@ -4,6 +4,7 @@ import {useRuleGet, useRuleUpdate} from "@hooks/rule.ts";
 import {useParams} from "react-router-dom";
 import {Sequence} from "@types";
 import {injectId, uuidv4} from "@utils";
+import {RuleDetailForm} from "@components/form";
 
 
 const TelegramRuleDetailPage: React.FC = () => {
@@ -52,14 +53,16 @@ const TelegramRuleDetailPage: React.FC = () => {
     }
 
     return (
-        <div className="max-w-4xl mx-auto space-y-6">
+        <div className="w-full">
+            <RuleDetailForm
+                id={id}
+                name={rule.name}
+            />
+
             <Editor
                 sequence={sequence}
                 onChange={(sequence) => {
-                    updateRule(id, {
-                        name: rule?.name,
-                        sequence
-                    })
+                    updateRule(id, {sequence})
                 }}
             />
         </div>

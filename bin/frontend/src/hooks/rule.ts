@@ -28,8 +28,8 @@ export const useRuleCreate = (): [RuleCreateAction, RuleCreateResponse | null, b
 
 
 export type RuleUpdateRequest = {
-    name: string,
-    sequence: {
+    name?: string,
+    sequence?: {
         condition: Condition,
         action: Action
     }

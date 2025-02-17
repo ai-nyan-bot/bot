@@ -4,6 +4,7 @@ import {useRuleGet, useRuleUpdate} from "@hooks/rule.ts";
 import {useParams} from "react-router-dom";
 import {Sequence} from "@types";
 import {injectId, uuidv4} from "@utils";
+import {RuleDetailForm} from "@components/form";
 
 
 const WebRuleDetailPage: React.FC = () => {
@@ -36,17 +37,18 @@ const WebRuleDetailPage: React.FC = () => {
     }
 
     return (
-        <div className="max-w-4xl mx-auto space-y-6">
+        <div className="w-full flex flex-col space-y-6 bg-zinc-50 p-2">
+            <RuleDetailForm
+                id={id}
+                name={rule.name}
+            />
+
             <Editor
                 sequence={sequence}
                 onChange={(sequence) => {
-                    updateRule(id, {
-                        name: rule?.name,
-                        sequence
-                    })
+                    updateRule(id, {sequence})
                 }}
             />
-            {JSON.stringify(sequence, null, '\t')}
         </div>
     );
 };

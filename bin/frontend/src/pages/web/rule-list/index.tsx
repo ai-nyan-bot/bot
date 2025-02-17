@@ -35,7 +35,7 @@ const TelegramRuleListPage = () => {
     let rules = response.rules.map(r => <Rule key={r.id} id={r.id} name={r.name}/>);
 
     return (
-        <div className="max-w-4xl mx-auto space-y-6">
+        <div className="w-full">
             <h1> Rules </h1>
             {rules}
             <RuleCreateButton/>

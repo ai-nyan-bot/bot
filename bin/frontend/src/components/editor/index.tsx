@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Action, Condition, ConditionType, Field, Operator, Sequence, Timeframe} from "@types";
 import {ConditionList} from "@components/editor/condition.tsx";
 import {uuidv4} from "@app/utils/id.ts";
+import {Card, CardContent, CardHeader, CardTitle} from "@components/ui/card.tsx";
 
 const createCondition = (type: ConditionType): Condition => {
     switch (type) {
@@ -115,30 +116,35 @@ export const Editor: React.FC<EditorProps> = ({sequence, onChange}) => {
 
 
     return (
-        <div className="max-w-4xl mx-auto space-y-6">
-            <div className="border-l-4 border-yellow-500 pl-4">
-                <h3 className="font-semibold text-yellow-600 flex items-center">
-                    <span className="mr-2">IF</span>
-                </h3>
-                <ConditionList
-                    condition={condition}
-                    isRoot={true}
-                    onAdd={addCondition}
-                    onRemove={removeCondition}
-                    onFieldChange={(id, value) => {
-                        updateCondition(id, "field", value)
-                    }}
-                    onOperatorChange={(id, value) => {
-                        updateCondition(id, "operator", value)
-                    }}
-                    onTimeframeChange={(id, value) => {
-                        updateCondition(id, "timeframe", value)
-                    }}
-                    onValueChange={(id, value) => {
-                        updateCondition(id, "value", value)
-                    }}
-                />
-            </div>
-        </div>
+        <Card className="w-full">
+            <CardHeader>
+                <CardTitle className="font-semibold text-yellow-600 flex items-center">IF</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="max-w-4xl mx-auto space-y-6">
+                    <div className="border-l-4 border-yellow-500 pl-4">
+                        <ConditionList
+                            condition={condition}
+                            isRoot={true}
+                            onAdd={addCondition}
+                            onRemove={removeCondition}
+                            onFieldChange={(id, value) => {
+                                updateCondition(id, "field", value)
+                            }}
+                            onOperatorChange={(id, value) => {
+                                updateCondition(id, "operator", value)
+                            }}
+                            onTimeframeChange={(id, value) => {
+                                updateCondition(id, "timeframe", value)
+                            }}
+                            onValueChange={(id, value) => {
+                                updateCondition(id, "value", value)
+                            }}
+                        />
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+
     );
 }
