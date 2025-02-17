@@ -26,6 +26,7 @@ use common::repo::Tx;
 use common::ConfigValue;
 #[cfg(test)]
 use serde::de::DeserializeOwned;
+use sqlx::Connection;
 #[cfg(test)]
 use sqlx::PgPool;
 use std::future::Future;
@@ -92,15 +93,13 @@ impl Test {
         }
     }
 
-    pub async fn in_tx<'a, T, TFut>(func: T)
+    pub async fn tx<'a, T, TFut>(&self, func: T)
     where
-        T: FnOnce(&mut Tx<'a>) -> TFut + Send + 'static,
+        T: FnOnce(Tx<'a>) -> TFut + Send + 'static,
         TFut: Future + Send,
     {
-        let pool = get_test_pool().await;
-        let mut tx = pool.begin().await.unwrap();
-        func(&mut tx).await;
-        tx.commit().await.unwrap();
+        let tx = self.pool.begin().await.unwrap();
+        func(tx).await;
     }
 
     pub(crate) async fn get_unauthenticated(&self, url: &str) -> Response {
@@ -119,8 +118,41 @@ impl Test {
         self.router.clone().oneshot(req).await.unwrap()
     }
 
-    pub(crate) async fn post_unauthenticated_no_content(&self, url: &str) -> Response {
+    pub(crate) async fn get_as_another_user(&self, url: &str) -> Response {
+        let req = axum::http::Request::builder()
+            .uri(url)
+            .method("GET")
+            .header("Authorization", "Bearer AnotherUserToken")
+            .body(Body::empty())
+            .unwrap();
+
+        self.router.clone().oneshot(req).await.unwrap()
+    }
+
+    pub(crate) async fn post_no_content_unauthenticated(&self, url: &str) -> Response {
         let req = axum::http::Request::builder().uri(url).method("POST").body(Body::empty()).unwrap();
+        self.router.clone().oneshot(req).await.unwrap()
+    }
+
+    pub(crate) async fn post_no_content_as_test_user(&self, url: &str) -> Response {
+        let req = axum::http::Request::builder()
+            .uri(url)
+            .header("Authorization", "Bearer TestUserToken")
+            .method("POST")
+            .body(Body::empty())
+            .unwrap();
+        self.router.clone().oneshot(req).await.unwrap()
+    }
+
+    pub(crate) async fn post_json_as_test_user(&self, url: &str, json: impl Into<String>) -> Response {
+        let req = axum::http::Request::builder()
+            .uri(url)
+            .method("POST")
+            .header("content-type", "application/json")
+            .header("Authorization", "Bearer TestUserToken")
+            .body(Body::new(json.into()))
+            .unwrap();
+
         self.router.clone().oneshot(req).await.unwrap()
     }
 
@@ -128,6 +160,44 @@ impl Test {
         let req = axum::http::Request::builder()
             .uri(url)
             .method("POST")
+            .header("content-type", "application/json")
+            .body(Body::new(json.into()))
+            .unwrap();
+
+        self.router.clone().oneshot(req).await.unwrap()
+    }
+
+    pub(crate) async fn patch_no_content_unauthenticated(&self, url: &str) -> Response {
+        let req = axum::http::Request::builder().uri(url).method("PATCH").body(Body::empty()).unwrap();
+        self.router.clone().oneshot(req).await.unwrap()
+    }
+
+    pub(crate) async fn patch_no_content_as_test_user(&self, url: &str) -> Response {
+        let req = axum::http::Request::builder()
+            .uri(url)
+            .header("Authorization", "Bearer TestUserToken")
+            .method("PATCH")
+            .body(Body::empty())
+            .unwrap();
+        self.router.clone().oneshot(req).await.unwrap()
+    }
+
+    pub(crate) async fn patch_json_as_test_user(&self, url: &str, json: impl Into<String>) -> Response {
+        let req = axum::http::Request::builder()
+            .uri(url)
+            .method("PATCH")
+            .header("content-type", "application/json")
+            .header("Authorization", "Bearer TestUserToken")
+            .body(Body::new(json.into()))
+            .unwrap();
+
+        self.router.clone().oneshot(req).await.unwrap()
+    }
+
+    pub(crate) async fn patch_unauthenticated_json(&self, url: &str, json: impl Into<String>) -> Response {
+        let req = axum::http::Request::builder()
+            .uri(url)
+            .method("PATCH")
             .header("content-type", "application/json")
             .body(Body::new(json.into()))
             .unwrap();

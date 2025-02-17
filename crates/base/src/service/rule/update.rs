@@ -16,7 +16,11 @@ impl RuleService {
         let mut tx = self.pool.begin().await?;
         let id = id.into();
 
-        let rule = self.repo.get_by_id(&mut tx, id).await?;
+        let rule = match self.repo.get_by_id(&mut tx, id).await {
+            Ok(rule) => rule,
+            Err(_) => return Err(ServiceError::not_found("Rule not found")),
+        };
+
         if rule.user != user.id {
             return Err(ServiceError::not_found("Rule not found"));
         }

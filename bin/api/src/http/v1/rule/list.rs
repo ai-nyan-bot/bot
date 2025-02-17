@@ -21,9 +21,30 @@ pub async fn list(State(state): State<AppState>, Extension(user): Extension<Auth
 
 #[cfg(test)]
 mod tests {
-    use crate::http::model::rule::HttpRuleListResponse;
-    use crate::http::testing::{extract, extract_error, Test};
-    use axum::http::StatusCode;
+	use crate::http::model::rule::HttpRuleListResponse;
+	use crate::http::testing::{extract, extract_error, Test};
+	use axum::http::StatusCode;
+	use testing::rule::create_rule_for_test_user;
+
+	#[tokio::test]
+    async fn ok() {
+        let test = Test::new().await;
+
+        test.tx(|mut tx| async move {
+            create_rule_for_test_user(&mut tx, "A").await;
+            create_rule_for_test_user(&mut tx, "B").await;
+            tx.commit().await.unwrap()
+        })
+        .await;
+
+        let response = test.get_as_test_user("/v1/rules").await;
+        assert_eq!(response.status(), StatusCode::OK);
+
+        let response = extract::<HttpRuleListResponse>(response).await.unwrap();
+        assert_eq!(response.rules.len(), 2);
+        assert_eq!(response.rules[0].name, "B");
+        assert_eq!(response.rules[1].name, "A");
+    }
 
     #[tokio::test]
     async fn no_rules() {
@@ -39,7 +60,6 @@ mod tests {
     async fn requires_authentication() {
         let test = Test::new_empty_db().await;
         let response = test.get_unauthenticated("/v1/rules").await;
-
         assert_eq!(response.status(), StatusCode::NOT_FOUND);
 
         let error = extract_error(response).await;

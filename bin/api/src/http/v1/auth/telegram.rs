@@ -60,7 +60,7 @@ mod tests {
 	#[tokio::test]
     async fn without_body_and_content_type() {
         let test = Test::new_empty_db().await;
-        let response = test.post_unauthenticated_no_content("/v1/auth/telegram").await;
+        let response = test.post_no_content_unauthenticated("/v1/auth/telegram").await;
 
         assert_eq!(response.status(), StatusCode::BAD_REQUEST);
 

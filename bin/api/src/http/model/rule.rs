@@ -5,27 +5,30 @@ use base::model::{RuleId, RuleName, Sequence};
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Debug)]
-pub struct RuleCreateRequest {
+pub struct HttpRuleCreateRequest {
     pub name: RuleName,
     pub sequence: Sequence,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct RuleCreateResponse {
+pub struct HttpRuleCreateResponse {
     pub id: RuleId,
+    pub name: RuleName,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct RuleUpdateRequest {
+pub struct HttpRuleUpdateRequest {
     pub name: Option<RuleName>,
     pub sequence: Option<Sequence>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct RuleUpdateResponse {
+pub struct HttpRuleUpdateResponse {
     pub id: RuleId,
+    pub name: RuleName,
+    pub sequence: Sequence,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
