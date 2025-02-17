@@ -18,7 +18,7 @@ pub(crate) async fn start(bot: Bot, msg: Message, state: AppState) -> HandlerRes
         vec![InlineKeyboardButton::web_app(
             "Rules",
             WebAppInfo {
-                url: Url::parse("https://telegram.nyan.bot/telegram/rules").unwrap(),
+                url: Url::parse("https://telegram.nyan.bot/rules").unwrap(),
             },
         )],
         // vec![

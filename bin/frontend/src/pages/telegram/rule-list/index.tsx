@@ -9,7 +9,7 @@ const Rule = ({id, name}: { id: number, name: string }) => {
     const navigate = useNavigate();
     return (
         <Card className="p-4 border bg-gray-50 relative" onClick={(_) => {
-            navigate(`/telegram/rules/${id}`);
+            navigate(`/rules/${id}`);
         }}>
             {name}
         </Card>
@@ -58,7 +58,7 @@ const CreateRuleButton = () => {
     )
 }
 
-export const RuleListPage = () => {
+const TelegramRuleListPage = () => {
     const [listRules, response, rulesLoading, error] = useRuleList();
 
     useEffect(() => {
@@ -83,3 +83,5 @@ export const RuleListPage = () => {
         </div>
     )
 }
+
+export default TelegramRuleListPage;

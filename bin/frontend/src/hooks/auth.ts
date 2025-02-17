@@ -88,7 +88,7 @@ export const useMetaMask = (): [MetaMaskAction, string | null, boolean, Error | 
                         wallet: data.wallet,
                     })
 
-                    navigate('/web/home')
+                    navigate('/home')
 
                 })
                 setLoading(false)

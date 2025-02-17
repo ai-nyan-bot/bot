@@ -8,7 +8,6 @@ import {useLocalStorage, useSetMetaMaskAuth, useSetTelegramAuth, useSetUnauthori
 import {appInitialState, appReducer} from "@states/app";
 import {Client} from "@components";
 
-import LandingPage from "@pages/landing";
 import {ConnectionLostPage} from "@pages/connection-lost";
 
 import {Modal} from "./modal.tsx";
@@ -18,13 +17,16 @@ import NotFound from "@app/not-found.tsx";
 
 import './styles/globals.css'
 import {MetaMaskUIProvider} from "@metamask/sdk-react-ui";
-import {HomePage as TelegramHomePage} from "@pages/telegram/home";
-import {RuleDetailPage as TelegramRuleDetailPage} from "@pages/telegram/rule-detail";
-import {RuleListPage as TelegramRuleListPage} from "@pages/telegram/rule-list";
 
-import {HomePage as WebHomePage} from "@pages/web/home";
-import {RuleDetailPage as WebRuleDetailPage} from "@pages/web/rule-detail";
-import {RuleListPage as WebRuleListPage} from "@pages/web/rule-list";
+import TelegramLandingPage from "@pages/telegram/landing";
+import TelegramHomePage from "@pages/telegram/home";
+import TelegramRuleListPage from "@pages/telegram/rule-list";
+import TelegramRuleDetailPage from "@pages/telegram/rule-detail";
+
+import WebLandingPage from "@pages/web/landing";
+import WebHomePage from "@pages/web/home";
+import WebRuleListPage from "@pages/web/rule-list";
+import WebRuleDetailPage from "@pages/web/rule-detail";
 
 
 const Authenticated: FC<{ children: ReactNode }> = ({children}) => {
@@ -50,43 +52,58 @@ const Authenticated: FC<{ children: ReactNode }> = ({children}) => {
     return (children)
 }
 
-const AppRouter = () => (
-    <BrowserRouter>
-        <Routes>
-            <Route path={"/"} element={<LandingPage/>}/>
-            <Route path={"/connection-lost"} element={<ConnectionLostPage/>}/>
+const AppRouter = () => {
+    const appState = useContext(ContextAppState);
 
-            <Route
-                path={"/telegram/home"}
-                element={<Authenticated><TelegramHomePage/></Authenticated>}
-            />
-            <Route
-                path={"/telegram/rules"}
-                element={<Authenticated><TelegramRuleListPage/></Authenticated>}
-            />
-            <Route
-                path={"/telegram/rules/:id"}
-                element={<Authenticated><TelegramRuleDetailPage/></Authenticated>}
-            />
+    if (appState.type === 'Telegram') {
+        return (
+            <BrowserRouter>
+                <Routes>
+                    <Route path={"/"} element={<TelegramLandingPage/>}/>
+                    <Route path={"/connection-lost"} element={<ConnectionLostPage/>}/>
+                    <Route
+                        path={"/home"}
+                        element={<Authenticated><TelegramHomePage/></Authenticated>}
+                    />
+                    <Route
+                        path={"/rules"}
+                        element={<Authenticated><TelegramRuleListPage/></Authenticated>}
+                    />
+                    <Route
+                        path={"/rules/:id"}
+                        element={<Authenticated><TelegramRuleDetailPage/></Authenticated>}
+                    />
+                    <Route path='*' element={<NotFound/>}/>
+                </Routes>
+            </BrowserRouter>
+        );
+    }
 
-            <Route
-                path={"/web/home"}
-                element={<Authenticated><WebHomePage/></Authenticated>}
-            />
-            <Route
-                path={"/web/rules"}
-                element={<Authenticated><WebRuleListPage/></Authenticated>}
-            />
-            <Route
-                path={"/web/rules/:id"}
-                element={<Authenticated><WebRuleDetailPage/></Authenticated>}
-            />
+    if (appState.type === 'WebApp') {
+        return (
+            <BrowserRouter>
+                <Routes>
+                    <Route path={"/"} element={<WebLandingPage/>}/>
+                    <Route path={"/connection-lost"} element={<ConnectionLostPage/>}/>
+                    <Route
+                        path={"/home"}
+                        element={<Authenticated><WebHomePage/></Authenticated>}
+                    />
+                    <Route
+                        path={"/rules"}
+                        element={<Authenticated><WebRuleListPage/></Authenticated>}
+                    />
+                    <Route
+                        path={"/rules/:id"}
+                        element={<Authenticated><WebRuleDetailPage/></Authenticated>}
+                    />
+                    <Route path='*' element={<NotFound/>}/>
+                </Routes>
+            </BrowserRouter>
+        );
+    }
 
-            <Route path='*' element={<NotFound/>}/>
-        </Routes>
-    </BrowserRouter>
-)
-
+}
 const WebApp = () => {
     return (
         <MetaMaskUIProvider

@@ -7,7 +7,7 @@ const Rule = ({id, name}: { id: number, name: string }) => {
     const navigate = useNavigate();
     return (
         <div onClick={(_) => {
-            navigate(`/web/rules/${id}`);
+            navigate(`/rules/${id}`);
         }}>
             {id} - {name}
         </div>
@@ -55,7 +55,7 @@ const CreateRuleButton = () => {
     )
 }
 
-export const RuleListPage = () => {
+const WebRuleListPage = () => {
     const [listRules, response, rulesLoading, error] = useRuleList();
 
     useEffect(() => {
@@ -80,3 +80,5 @@ export const RuleListPage = () => {
         </>
     )
 }
+
+export default WebRuleListPage;

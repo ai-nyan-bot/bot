@@ -6,7 +6,7 @@ import {Sequence} from "@types";
 import {injectId, uuidv4} from "@utils";
 
 
-export const RuleDetailPage: React.FC = () => {
+const WebRuleDetailPage: React.FC = () => {
     const {id} = useParams();
     const [getRule, rule, loading, ruleError] = useRuleGet();
     const [updateRule] = useRuleUpdate();
@@ -51,3 +51,5 @@ export const RuleDetailPage: React.FC = () => {
         </div>
     );
 };
+
+export default WebRuleDetailPage;
