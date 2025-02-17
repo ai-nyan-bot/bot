@@ -61,36 +61,38 @@ export const RuleCreateButton: FC<RuleCreateButtonProps> = ({}) => {
         }
     }, [createdRule]);
 
+    const handleClose = () => {
+        setRuleName('');
+        setIsModalOpen(false);
+    }
+
     return (
         <>
             <Button className="w-full bg-green-500 text-white" onClick={handleCreateClick} disabled={loading}>
                 + Rule
             </Button>
 
-            {/* Modal */}
-            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+            <Dialog open={isModalOpen} onOpenChange={(open) => {
+                if (!open) {
+                    handleClose()
+                }
+            }}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Enter Rule Name</DialogTitle>
+                        <DialogTitle className={"text-zinc-500"}>Name your rule</DialogTitle>
                     </DialogHeader>
                     <Input
                         type="text"
-                        placeholder="Rule Name"
+                        placeholder="Name of your rule"
                         value={ruleName}
                         onChange={(e) => setRuleName(e.target.value)}
                         className="mt-2"
                     />
-                    <DialogFooter>
-
-                        <Button variant="outline" onClick={() => {
-                            setRuleName('');
-                            setIsModalOpen(false);
-                        }}>Cancel</Button>
-
-                        <Button variant={'default'} onClick={handleConfirmCreate} disabled={!ruleName.trim()}>
+                    <DialogFooter className="flex flex-row justify-end gap-2">
+                        <Button variant="outline" onClick={handleClose}>Cancel</Button>
+                        <Button variant="default" onClick={handleConfirmCreate} disabled={!ruleName.trim()}>
                             Create
                         </Button>
-
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
