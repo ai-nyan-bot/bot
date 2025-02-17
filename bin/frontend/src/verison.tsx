@@ -2,7 +2,7 @@ import {FC, ReactNode, useEffect} from "react";
 import useLocalStorageState from "use-local-storage-state";
 import {LOCAL_STORAGE_KEY} from "@states/local";
 
-export const CURRENT_VERSION = "2";
+export const CURRENT_VERSION = "6";
 const VERSION_KEY = 'version'
 
 type VersionProps = {

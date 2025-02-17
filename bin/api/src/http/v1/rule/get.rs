@@ -34,12 +34,12 @@ pub async fn get(
 
 #[cfg(test)]
 mod tests {
-	use crate::http::model::rule::HttpRulGetResponse;
-	use crate::http::testing::{extract, extract_error, Test};
-	use axum::http::StatusCode;
-	use testing::rule::create_rule_for_test_user;
+    use crate::http::model::rule::HttpRulGetResponse;
+    use crate::http::testing::{extract, extract_error, Test};
+    use axum::http::StatusCode;
+    use testing::rule::create_rule_for_test_user;
 
-	#[tokio::test]
+    #[tokio::test]
     async fn ok() {
         let test = Test::new().await;
 

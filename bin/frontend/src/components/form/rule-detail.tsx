@@ -19,7 +19,7 @@ export const RuleDetailForm: FC<RuleDetailFormProps> = ({id, name}) => {
             if (ruleName.trim() && ruleName !== name) {
                 updateRule(id, {name: ruleName});
             }
-        }, 100);
+        }, 1_000);
 
         return () => clearTimeout(handler);
     }, [ruleName, name]);
