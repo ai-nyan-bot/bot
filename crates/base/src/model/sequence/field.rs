@@ -11,4 +11,10 @@ pub enum Field {
     TradesBuy,
     TradesSell,
     Volume,
+
+    //
+    TelegramExists,
+    TelegramHandle,
+    TwitterExists,
+    TwitterHandle,
 }

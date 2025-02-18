@@ -1,29 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::{compare, Fact, Facts, Field, Operator, Value};
-use common::model::Timeframe;
-use serde::{Deserialize, Serialize};
-
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-#[serde(tag = "type", rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum Condition {
-    Compare {
-        field: Field,
-        operator: Operator,
-        value: Value,
-        timeframe: Option<Timeframe>,
-    },
-    And {
-        conditions: Vec<Condition>,
-    },
-    Or {
-        conditions: Vec<Condition>,
-    },
-    AndNot {
-        conditions: Vec<Condition>,
-    },
-}
+use crate::model::{compare, Condition, Fact, Facts};
 
 impl Condition {
     pub fn test(&self, facts: &Facts) -> bool {
@@ -75,21 +53,26 @@ impl Condition {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::model::Value;
+    use common::model::Timeframe;
+    use Fact::{PriceQuote, PriceUsd, VolumeChangeQuote};
+    use Timeframe::{M1, S1};
+    use Value::Quote;
 
     fn facts() -> Facts {
         Facts::new()
-            .with_value(Fact::PriceQuote, Value::Quote(1.0))
+            .with_value(PriceQuote, Quote(1.0))
             .unwrap()
-            .with_value(Fact::PriceUsd, Value::Usd(2.0))
+            .with_value(PriceUsd, Value::Usd(2.0))
             .unwrap()
-            .with_timeframe_value(Fact::VolumeChangeQuote, Value::Quote(3.0), Timeframe::S1)
+            .with_timeframe_value(VolumeChangeQuote, Quote(3.0), S1)
             .unwrap()
-            .with_timeframe_value(Fact::VolumeChangeQuote, Value::Quote(4.0), Timeframe::M1)
+            .with_timeframe_value(VolumeChangeQuote, Quote(4.0), M1)
             .unwrap()
     }
 
     mod without_timeframe {
-        use crate::model::sequence::condition::tests::facts;
+        use crate::model::sequence::condition::test::tests::facts;
         use crate::model::Field::Price;
         use crate::model::Value::Usd;
         use crate::model::{Condition, Field, Operator, Value};
@@ -416,7 +399,7 @@ mod tests {
     }
 
     mod with_timeframe {
-        use crate::model::sequence::condition::tests::facts;
+        use crate::model::sequence::condition::test::tests::facts;
         use crate::model::Condition::{And, AndNot, Or};
         use crate::model::{Condition, Field, Operator, Value};
         use common::model::Timeframe;
