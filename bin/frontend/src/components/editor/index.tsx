@@ -23,7 +23,7 @@ const createCondition = (type: ConditionType): Condition => {
                 id: uuidv4(),
                 type: 'COMPARE',
                 field: Field.PRICE,
-                operator: Operator.GREATER_THAN,
+                operator: Operator.MORE_THAN,
                 value: {
                     type: 'PERCENT',
                     value: 15

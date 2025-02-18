@@ -1,9 +1,17 @@
-import {Condition, Field, Operator, Timeframe, Value} from "@types";
+import {Condition, Field, Operator, Timeframe, Value, ValueType} from "@types";
 import React, {FC} from "react";
 import {SelectOperator} from "@components/editor/operator.tsx";
 import {ValueNumberInput} from "@components/editor/value.tsx";
 import {SelectTimeframe} from "@components/editor/timeframe.tsx";
 import {SelectField} from "@components/editor/field.tsx";
+
+
+
+// export type Comparison = {
+//     field: FieldType;
+//     operator_values: Map<Operator, ValueType>;
+//     operator_timeframes: Map<Operator, Array<Timeframe>>
+// }
 
 type CompareProps = {
     condition: Condition,
@@ -35,7 +43,7 @@ export const Compare: FC<CompareProps> = ({
             <SelectOperator
                 defaultOperator={condition.operator}
                 supported={[
-                    Operator.GREATER_THAN
+                    Operator.MORE_THAN
                 ]}
                 onChange={(value) => onOperatorChange(condition.id, value)}
             />

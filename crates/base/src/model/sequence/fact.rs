@@ -7,7 +7,7 @@ use crate::model::ValueType::{Count, Percent, Quote};
 use crate::model::{Condition, FactError, Field, Value, ValueType};
 use serde::{Deserialize, Serialize};
 use Fact::{
-    TelegramGroup, TelegramGroupName, TradesBuyCount, TradesCount, TradesSellCount, TwitterAccount, TwitterAccountName, VolumeChangeQuote, VolumeQuote,
+	TelegramGroup, TelegramGroupName, TradesBuyCount, TradesCount, TradesSellCount, TwitterAccount, TwitterAccountName, VolumeChangeQuote, VolumeQuote,
 };
 use Field::{Price, Trades, TradesBuy, TradesSell, Volume};
 use ValueType::{Boolean, Usd};
@@ -23,6 +23,9 @@ pub enum Fact {
     TradesCount,
     TradesBuyCount,
     TradesSellCount,
+    // TradesPercent,
+    // TradesBuyPercent,
+    // TradesSellPercent,
 
     VolumeQuote,
     VolumeUsd,
@@ -132,19 +135,19 @@ impl Fact {
 
 #[cfg(test)]
 mod test {
-    use crate::model::Fact::{PriceChangePercent, PriceChangeQuote, PriceChangeUsd, PriceQuote, PriceUsd, TradesSellCount};
-    use crate::model::Field::{Price, Trades, TradesBuy, TradesSell};
-    use crate::model::Operator::GreaterThan;
-    use crate::model::Value::{Count, Percent, Usd};
-    use crate::model::{Condition, Fact, Value};
-    use common::model::Timeframe;
-    use common::model::Timeframe::M15;
-    use Condition::Compare;
-    use Fact::{TradesBuyCount, TradesCount};
-    use Timeframe::H1;
-    use Value::Quote;
+	use crate::model::Fact::{PriceChangePercent, PriceChangeQuote, PriceChangeUsd, PriceQuote, PriceUsd, TradesSellCount};
+	use crate::model::Field::{Price, Trades, TradesBuy, TradesSell};
+	use crate::model::Operator::GreaterThan;
+	use crate::model::Value::{Count, Percent, Usd};
+	use crate::model::{Condition, Fact, Value};
+	use common::model::Timeframe;
+	use common::model::Timeframe::M15;
+	use Condition::Compare;
+	use Fact::{TradesBuyCount, TradesCount};
+	use Timeframe::H1;
+	use Value::Quote;
 
-    #[test]
+	#[test]
     fn price_quote() {
         assert_eq!(
             Fact::try_from(&Compare {

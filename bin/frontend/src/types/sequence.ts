@@ -14,14 +14,10 @@ export type ActionNotify = {
 export enum Field {
     PRICE = 'PRICE',
     TRADES = 'TRADES',
+    TRADES_BUY = 'TRADES_BUY',
+    TRADES_SELL = 'TRADES_SELL',
     VOLUME = 'VOLUME'
 }
-
-// export type Field = {
-//     type: FieldType;
-//     operator_values: Map<Operator, ValueType>;
-//     operator_timeframes: Map<Operator, Array<Timeframe>>
-// }
 
 export type ConditionType = 'COMPARE' | 'AND' | 'OR'
 
@@ -37,7 +33,10 @@ export type Condition = {
 
 export enum Operator {
     EQUAL = "EQUAL",
-    GREATER_THAN = 'GREATER_THAN',
+    INCREASED_BY = 'INCREASED_BY',
+    INCREASED_BY_EQUAL = 'INCREASED_BY_EQUAL',
+    MORE_THAN = 'MORE_THAN',
+    MORE_THAN_EQUAL = 'MORE_THAN_EQUAL',
 }
 
 export type ValueType = 'BOOLEAN' | 'COUNT' | 'PERCENT' | 'QUOTE' | 'STRING' | 'USD';
