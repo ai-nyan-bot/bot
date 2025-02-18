@@ -6,7 +6,7 @@
 
 use crate::model::{Signature, Slot};
 use crate::repo::pumpfun::TradeRepo;
-use base::model::{AddressId, Amount, DecimalAmount, PriceQuote, PublicKey, TokenMint, TokenPairId};
+use base::model::{AddressId, Amount, DecimalAmount, PriceAvgQuote, PublicKey, TokenMint, TokenPairId};
 use base::LoadTokenInfo;
 use common::model::{Count, Timestamp};
 use common::repo::{RepoResult, Tx};
@@ -87,7 +87,7 @@ impl<L: LoadTokenInfo> TradeRepo<L> {
             let base_reserve = DecimalAmount::new(trade.virtual_base_reserves, 6);
             let quote_reserve = DecimalAmount::new(trade.virtual_quote_reserves, 9);
 
-            let price = PriceQuote(quote_amount.0 as f64 / base_amount.0 as f64);
+            let price = PriceAvgQuote(quote_amount.0 as f64 / base_amount.0 as f64);
 
             slots.push(slot.slot);
             address_ids.push(addresses.get(&trade.wallet).unwrap());

@@ -4,724 +4,726 @@
 use crate::model::{compare, Condition, Fact, Facts};
 
 impl Condition {
-    pub fn test(&self, facts: &Facts) -> bool {
-        match self {
-            Condition::Compare {
-                timeframe, operator, value, ..
-            } => {
-                let fact = Fact::try_from(self).unwrap(); // FIXME
+	pub fn test(&self, facts: &Facts) -> bool {
+		match self {
+			Condition::Compare {
+				timeframe, operator, value, ..
+			} => {
+				let fact = Fact::try_from(self).unwrap(); // FIXME
 
-                let result = match timeframe {
-                    None => facts.get(&fact),
-                    Some(timeframe) => facts.get_with_timeframe(&fact, timeframe),
-                };
+				let result = match timeframe {
+					None => facts.get(&fact),
+					Some(timeframe) => facts.get_with_timeframe(&fact, timeframe),
+				};
 
-                if let Some(fact_value) = result {
-                    compare(fact_value, operator, value)
-                } else {
-                    false
-                }
-            }
-            Condition::And { conditions } => {
-                for condition in conditions {
-                    if !condition.test(facts) {
-                        return false;
-                    }
-                }
-                true
-            }
-            Condition::Or { conditions } => {
-                for condition in conditions {
-                    if condition.test(facts) {
-                        return true;
-                    }
-                }
-                false
-            }
-            Condition::AndNot { conditions } => {
-                for condition in conditions {
-                    if condition.test(facts) {
-                        return false;
-                    }
-                }
-                true
-            }
-        }
-    }
+				if let Some(fact_value) = result {
+					compare(fact_value, operator, value)
+				} else {
+					false
+				}
+			}
+			Condition::And { conditions } => {
+				for condition in conditions {
+					if !condition.test(facts) {
+						return false;
+					}
+				}
+				true
+			}
+			Condition::Or { conditions } => {
+				for condition in conditions {
+					if condition.test(facts) {
+						return true;
+					}
+				}
+				false
+			}
+			Condition::AndNot { conditions } => {
+				for condition in conditions {
+					if condition.test(facts) {
+						return false;
+					}
+				}
+				true
+			}
+		}
+	}
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use crate::model::Value;
-    use common::model::Timeframe;
-    use Fact::{PriceQuote, PriceUsd, VolumeChangeQuote};
-    use Timeframe::{M1, S1};
-    use Value::Quote;
+	use super::*;
+	use crate::model::Value;
+	use common::model::Timeframe;
+	use Fact::{PriceQuote, PriceUsd, VolumeChangeQuote};
+	use Timeframe::{M1, S1};
+	use Value::Quote;
 
-    fn facts() -> Facts {
-        Facts::new()
-            .with_value(PriceQuote, Quote(1.0))
-            .unwrap()
-            .with_value(PriceUsd, Value::Usd(2.0))
-            .unwrap()
-            .with_timeframe_value(VolumeChangeQuote, Quote(3.0), S1)
-            .unwrap()
-            .with_timeframe_value(VolumeChangeQuote, Quote(4.0), M1)
-            .unwrap()
-    }
+	fn facts() -> Facts {
+		Facts::new()
+			.with_value(PriceQuote, Quote(1.0))
+			.unwrap()
+			.with_value(PriceUsd, Value::Usd(2.0))
+			.unwrap()
+			.with_timeframe_value(VolumeChangeQuote, Quote(3.0), S1)
+			.unwrap()
+			.with_timeframe_value(VolumeChangeQuote, Quote(4.0), M1)
+			.unwrap()
+	}
 
-    mod without_timeframe {
-        use crate::model::sequence::condition::test::tests::facts;
-        use crate::model::Field::Price;
-        use crate::model::Value::Usd;
-        use crate::model::{Condition, Field, Operator, Value};
-        use Condition::{And, AndNot, Compare, Or};
-        use Field::Volume;
-        use Operator::Equal;
-        use Value::Quote;
+	mod without_timeframe {
+		use crate::model::sequence::condition::test::tests::facts;
+		use crate::model::Field::Price;
+		use crate::model::Operator::{IncreasedByMoreThanEqual, MoreThanEqual};
+		use crate::model::Value::Usd;
+		use crate::model::{Condition, Field, Operator, Value};
+		use Condition::{And, AndNot, Compare, Or};
+		use Field::Volume;
+		use Operator::Equal;
+		use Value::Quote;
 
-        #[test]
-        fn test_equal_true() {
-            assert_eq!(
-                Compare {
-                    field: Price,
-                    operator: Equal,
-                    value: Quote(1.0),
-                    timeframe: None,
-                }
-                .test(&facts()),
-                true
-            )
-        }
+		#[test]
+		fn test_equal_true() {
+			assert_eq!(
+				Compare {
+					field: Price,
+					operator: MoreThanEqual,
+					value: Quote(1.0),
+					timeframe: None,
+				}
+					.test(&facts()),
+				true
+			)
+		}
 
-        #[test]
-        fn test_equal_false() {
-            assert_eq!(
-                Compare {
-                    field: Price,
-                    operator: Equal,
-                    value: Quote(1337.0),
-                    timeframe: None,
-                }
-                .test(&facts()),
-                false
-            )
-        }
+		#[test]
+		fn test_equal_false() {
+			assert_eq!(
+				Compare {
+					field: Price,
+					operator: MoreThanEqual,
+					value: Quote(1337.0),
+					timeframe: None,
+				}
+					.test(&facts()),
+				false
+			)
+		}
 
-        #[test]
-        fn test_and_both_true() {
-            assert_eq!(
-                And {
-                    conditions: vec![
-                        Compare {
-                            field: Price,
-                            operator: Equal,
-                            value: Quote(1.0),
-                            timeframe: None,
-                        },
-                        Compare {
-                            field: Price,
-                            operator: Equal,
-                            value: Usd(2.0),
-                            timeframe: None,
-                        }
-                    ]
-                }
-                .test(&facts()),
-                true
-            )
-        }
+		#[test]
+		fn test_and_both_true() {
+			assert_eq!(
+				And {
+					conditions: vec![
+						Compare {
+							field: Price,
+							operator: MoreThanEqual,
+							value: Quote(1.0),
+							timeframe: None,
+						},
+						Compare {
+							field: Price,
+							operator: MoreThanEqual,
+							value: Usd(2.0),
+							timeframe: None,
+						}
+					]
+				}
+					.test(&facts()),
+				true
+			)
+		}
 
-        #[test]
-        fn test_and_left_true() {
-            assert_eq!(
-                And {
-                    conditions: vec![
-                        Compare {
-                            field: Price,
-                            operator: Equal,
-                            value: Quote(1.0),
-                            timeframe: None
-                        },
-                        Compare {
-                            field: Volume,
-                            operator: Equal,
-                            value: Quote(22222.0),
-                            timeframe: None,
-                        }
-                    ]
-                }
-                .test(&facts()),
-                false
-            )
-        }
+		#[test]
+		fn test_and_left_true() {
+			assert_eq!(
+				And {
+					conditions: vec![
+						Compare {
+							field: Price,
+							operator: MoreThanEqual,
+							value: Quote(1.0),
+							timeframe: None
+						},
+						Compare {
+							field: Price,
+							operator: MoreThanEqual,
+							value: Usd(22222.0),
+							timeframe: None,
+						}
+					]
+				}
+					.test(&facts()),
+				false
+			)
+		}
 
-        #[test]
-        fn test_and_right_true() {
-            assert_eq!(
-                And {
-                    conditions: vec![
-                        Compare {
-                            field: Price,
-                            operator: Equal,
-                            value: Quote(111111.0),
-                            timeframe: None,
-                        },
-                        Compare {
-                            field: Volume,
-                            operator: Equal,
-                            value: Quote(2.0),
-                            timeframe: None,
-                        }
-                    ]
-                }
-                .test(&facts()),
-                false
-            )
-        }
+		#[test]
+		fn test_and_right_true() {
+			assert_eq!(
+				And {
+					conditions: vec![
+						Compare {
+							field: Price,
+							operator: MoreThanEqual,
+							value: Quote(111111.0),
+							timeframe: None,
+						},
+						Compare {
+							field: Volume,
+							operator: MoreThanEqual,
+							value: Quote(2.0),
+							timeframe: None,
+						}
+					]
+				}
+					.test(&facts()),
+				false
+			)
+		}
 
-        #[test]
-        fn test_and_both_false() {
-            assert_eq!(
-                And {
-                    conditions: vec![
-                        Compare {
-                            field: Price,
-                            operator: Equal,
-                            value: Quote(111111.0),
-                            timeframe: None,
-                        },
-                        Compare {
-                            field: Volume,
-                            operator: Equal,
-                            value: Quote(22222.0),
-                            timeframe: None,
-                        }
-                    ]
-                }
-                .test(&facts()),
-                false
-            )
-        }
+		#[test]
+		fn test_and_both_false() {
+			assert_eq!(
+				And {
+					conditions: vec![
+						Compare {
+							field: Price,
+							operator: MoreThanEqual,
+							value: Quote(111111.0),
+							timeframe: None,
+						},
+						Compare {
+							field: Volume,
+							operator: MoreThanEqual,
+							value: Quote(22222.0),
+							timeframe: None,
+						}
+					]
+				}
+					.test(&facts()),
+				false
+			)
+		}
 
-        #[test]
-        fn test_or_both_true() {
-            assert_eq!(
-                Or {
-                    conditions: vec![
-                        Compare {
-                            field: Price,
-                            operator: Equal,
-                            value: Quote(1.0),
-                            timeframe: None,
-                        },
-                        Compare {
-                            field: Volume,
-                            operator: Equal,
-                            value: Quote(2.0),
-                            timeframe: None,
-                        }
-                    ]
-                }
-                .test(&facts()),
-                true
-            )
-        }
+		#[test]
+		fn test_or_both_true() {
+			assert_eq!(
+				Or {
+					conditions: vec![
+						Compare {
+							field: Price,
+							operator: MoreThanEqual,
+							value: Quote(1.0),
+							timeframe: None,
+						},
+						Compare {
+							field: Volume,
+							operator: MoreThanEqual,
+							value: Quote(2.0),
+							timeframe: None,
+						}
+					]
+				}
+					.test(&facts()),
+				true
+			)
+		}
 
-        #[test]
-        fn test_or_left_true() {
-            assert_eq!(
-                Or {
-                    conditions: vec![
-                        Compare {
-                            field: Price,
-                            operator: Equal,
-                            value: Quote(1.0),
-                            timeframe: None,
-                        },
-                        Compare {
-                            field: Volume,
-                            operator: Equal,
-                            value: Quote(22222.0),
-                            timeframe: None,
-                        }
-                    ]
-                }
-                .test(&facts()),
-                true
-            )
-        }
+		#[test]
+		fn test_or_left_true() {
+			assert_eq!(
+				Or {
+					conditions: vec![
+						Compare {
+							field: Price,
+							operator: MoreThanEqual,
+							value: Quote(1.0),
+							timeframe: None,
+						},
+						Compare {
+							field: Volume,
+							operator: MoreThanEqual,
+							value: Quote(22222.0),
+							timeframe: None,
+						}
+					]
+				}
+					.test(&facts()),
+				true
+			)
+		}
 
-        #[test]
-        fn test_or_right_true() {
-            assert_eq!(
-                Or {
-                    conditions: vec![
-                        Compare {
-                            field: Price,
-                            operator: Equal,
-                            value: Quote(111111.0),
-                            timeframe: None,
-                        },
-                        Compare {
-                            field: Price,
-                            operator: Equal,
-                            value: Usd(2.0),
-                            timeframe: None,
-                        }
-                    ]
-                }
-                .test(&facts()),
-                true
-            )
-        }
+		#[test]
+		fn test_or_right_true() {
+			assert_eq!(
+				Or {
+					conditions: vec![
+						Compare {
+							field: Price,
+							operator: MoreThanEqual,
+							value: Quote(111111.0),
+							timeframe: None,
+						},
+						Compare {
+							field: Price,
+							operator: MoreThanEqual,
+							value: Usd(2.0),
+							timeframe: None,
+						}
+					]
+				}
+					.test(&facts()),
+				true
+			)
+		}
 
-        #[test]
-        fn test_or_both_false() {
-            assert_eq!(
-                Or {
-                    conditions: vec![
-                        Compare {
-                            field: Price,
-                            operator: Equal,
-                            value: Quote(111111.0),
-                            timeframe: None,
-                        },
-                        Compare {
-                            field: Volume,
-                            operator: Equal,
-                            value: Quote(22222.0),
-                            timeframe: None,
-                        }
-                    ]
-                }
-                .test(&facts()),
-                false
-            )
-        }
+		#[test]
+		fn test_or_both_false() {
+			assert_eq!(
+				Or {
+					conditions: vec![
+						Compare {
+							field: Price,
+							operator: MoreThanEqual,
+							value: Quote(111111.0),
+							timeframe: None,
+						},
+						Compare {
+							field: Price,
+							operator: MoreThanEqual,
+							value: Usd(22222.0),
+							timeframe: None,
+						}
+					]
+				}
+					.test(&facts()),
+				false
+			)
+		}
 
-        #[test]
-        fn test_and_not_both_true() {
-            assert_eq!(
-                AndNot {
-                    conditions: vec![
-                        Compare {
-                            field: Price,
-                            operator: Equal,
-                            value: Quote(1.0),
-                            timeframe: None,
-                        },
-                        Compare {
-                            field: Volume,
-                            operator: Equal,
-                            value: Quote(2.0),
-                            timeframe: None,
-                        }
-                    ]
-                }
-                .test(&facts()),
-                false
-            )
-        }
+		#[test]
+		fn test_and_not_both_true() {
+			assert_eq!(
+				AndNot {
+					conditions: vec![
+						Compare {
+							field: Price,
+							operator: MoreThanEqual,
+							value: Quote(1.0),
+							timeframe: None,
+						},
+						Compare {
+							field: Volume,
+							operator: MoreThanEqual,
+							value: Quote(2.0),
+							timeframe: None,
+						}
+					]
+				}
+					.test(&facts()),
+				false
+			)
+		}
 
-        #[test]
-        fn test_and_not_left_true() {
-            assert_eq!(
-                AndNot {
-                    conditions: vec![
-                        Compare {
-                            field: Price,
-                            operator: Equal,
-                            value: Quote(1.0),
-                            timeframe: None
-                        },
-                        Compare {
-                            field: Volume,
-                            operator: Equal,
-                            value: Quote(22222.0),
-                            timeframe: None,
-                        }
-                    ]
-                }
-                .test(&facts()),
-                false
-            )
-        }
+		#[test]
+		fn test_and_not_left_true() {
+			assert_eq!(
+				AndNot {
+					conditions: vec![
+						Compare {
+							field: Price,
+							operator: MoreThanEqual,
+							value: Quote(1.0),
+							timeframe: None
+						},
+						Compare {
+							field: Volume,
+							operator: MoreThanEqual,
+							value: Quote(22222.0),
+							timeframe: None,
+						}
+					]
+				}
+					.test(&facts()),
+				false
+			)
+		}
 
-        #[test]
-        fn test_and_not_right_true() {
-            assert_eq!(
-                AndNot {
-                    conditions: vec![
-                        Compare {
-                            field: Price,
-                            operator: Equal,
-                            value: Quote(111111.0),
-                            timeframe: None,
-                        },
-                        Compare {
-                            field: Price,
-                            operator: Equal,
-                            value: Usd(2.0),
-                            timeframe: None,
-                        }
-                    ]
-                }
-                .test(&facts()),
-                false
-            )
-        }
+		#[test]
+		fn test_and_not_right_true() {
+			assert_eq!(
+				AndNot {
+					conditions: vec![
+						Compare {
+							field: Price,
+							operator: MoreThanEqual,
+							value: Quote(111111.0),
+							timeframe: None,
+						},
+						Compare {
+							field: Price,
+							operator: MoreThanEqual,
+							value: Usd(2.0),
+							timeframe: None,
+						}
+					]
+				}
+					.test(&facts()),
+				false
+			)
+		}
 
-        #[test]
-        fn test_and_not_both_false() {
-            assert_eq!(
-                AndNot {
-                    conditions: vec![
-                        Compare {
-                            field: Price,
-                            operator: Equal,
-                            value: Quote(111111.0),
-                            timeframe: None,
-                        },
-                        Compare {
-                            field: Volume,
-                            operator: Equal,
-                            value: Quote(22222.0),
-                            timeframe: None,
-                        }
-                    ]
-                }
-                .test(&facts()),
-                true
-            )
-        }
-    }
+		#[test]
+		fn test_and_not_both_false() {
+			assert_eq!(
+				AndNot {
+					conditions: vec![
+						Compare {
+							field: Price,
+							operator: MoreThanEqual,
+							value: Quote(111111.0),
+							timeframe: None,
+						},
+						Compare {
+							field: Price,
+							operator: MoreThanEqual,
+							value: Usd(22222.0),
+							timeframe: None,
+						}
+					]
+				}
+					.test(&facts()),
+				true
+			)
+		}
+	}
 
-    mod with_timeframe {
-        use crate::model::sequence::condition::test::tests::facts;
-        use crate::model::Condition::{And, AndNot, Or};
-        use crate::model::{Condition, Field, Operator, Value};
-        use common::model::Timeframe;
-        use Condition::Compare;
-        use Operator::Equal;
-        use Timeframe::{M1, S1};
-        use Value::Quote;
+	mod with_timeframe {
+		use crate::model::sequence::condition::test::tests::facts;
+		use crate::model::Condition::{And, AndNot, Or};
+		use crate::model::Operator::IncreasedByMoreThanEqual;
+		use crate::model::{Condition, Field, Operator, Value};
+		use common::model::Timeframe;
+		use Condition::Compare;
+		use Field::Volume;
+		use Timeframe::{M1, S1};
+		use Value::Quote;
 
-        #[test]
-        fn test_equal_true() {
-            assert_eq!(
-                Compare {
-                    field: Field::Volume,
-                    operator: Equal,
-                    value: Quote(3.0),
-                    timeframe: Some(S1),
-                }
-                .test(&facts()),
-                true
-            )
-        }
+		#[test]
+		fn test_equal_true() {
+			assert_eq!(
+				Compare {
+					field: Volume,
+					operator: IncreasedByMoreThanEqual,
+					value: Quote(3.0),
+					timeframe: Some(S1),
+				}
+					.test(&facts()),
+				true
+			)
+		}
 
-        #[test]
-        fn test_equal_false() {
-            assert_eq!(
-                Compare {
-                    field: Field::Volume,
-                    operator: Equal,
-                    value: Quote(1337.0),
-                    timeframe: Some(M1),
-                }
-                .test(&facts()),
-                false
-            )
-        }
+		#[test]
+		fn test_equal_false() {
+			assert_eq!(
+				Compare {
+					field: Volume,
+					operator: IncreasedByMoreThanEqual,
+					value: Quote(1337.0),
+					timeframe: Some(M1),
+				}
+					.test(&facts()),
+				false
+			)
+		}
 
-        #[test]
-        fn test_and_both_true() {
-            assert_eq!(
-                And {
-                    conditions: vec![
-                        Compare {
-                            field: Field::Volume,
-                            operator: Equal,
-                            value: Quote(3.0),
-                            timeframe: Some(S1),
-                        },
-                        Compare {
-                            field: Field::Volume,
-                            operator: Equal,
-                            value: Quote(4.0),
-                            timeframe: Some(M1),
-                        }
-                    ]
-                }
-                .test(&facts()),
-                true
-            )
-        }
+		#[test]
+		fn test_and_both_true() {
+			assert_eq!(
+				And {
+					conditions: vec![
+						Compare {
+							field: Volume,
+							operator: IncreasedByMoreThanEqual,
+							value: Quote(3.0),
+							timeframe: Some(S1),
+						},
+						Compare {
+							field: Volume,
+							operator: IncreasedByMoreThanEqual,
+							value: Quote(4.0),
+							timeframe: Some(M1),
+						}
+					]
+				}
+					.test(&facts()),
+				true
+			)
+		}
 
-        #[test]
-        fn test_and_left_true() {
-            assert_eq!(
-                And {
-                    conditions: vec![
-                        Compare {
-                            field: Field::Volume,
-                            operator: Equal,
-                            value: Quote(3.0),
-                            timeframe: Some(S1),
-                        },
-                        Compare {
-                            field: Field::Volume,
-                            operator: Equal,
-                            value: Quote(444444.0),
-                            timeframe: Some(M1),
-                        }
-                    ]
-                }
-                .test(&facts()),
-                false
-            )
-        }
+		#[test]
+		fn test_and_left_true() {
+			assert_eq!(
+				And {
+					conditions: vec![
+						Compare {
+							field: Volume,
+							operator: IncreasedByMoreThanEqual,
+							value: Quote(3.0),
+							timeframe: Some(S1),
+						},
+						Compare {
+							field: Volume,
+							operator: IncreasedByMoreThanEqual,
+							value: Quote(444444.0),
+							timeframe: Some(M1),
+						}
+					]
+				}
+					.test(&facts()),
+				false
+			)
+		}
 
-        #[test]
-        fn test_and_right_true() {
-            assert_eq!(
-                And {
-                    conditions: vec![
-                        Compare {
-                            field: Field::Volume,
-                            operator: Equal,
-                            value: Quote(33333.0),
-                            timeframe: Some(S1),
-                        },
-                        Compare {
-                            field: Field::Volume,
-                            operator: Equal,
-                            value: Quote(4.0),
-                            timeframe: Some(M1),
-                        }
-                    ]
-                }
-                .test(&facts()),
-                false
-            )
-        }
+		#[test]
+		fn test_and_right_true() {
+			assert_eq!(
+				And {
+					conditions: vec![
+						Compare {
+							field: Volume,
+							operator: IncreasedByMoreThanEqual,
+							value: Quote(33333.0),
+							timeframe: Some(S1),
+						},
+						Compare {
+							field: Volume,
+							operator: IncreasedByMoreThanEqual,
+							value: Quote(4.0),
+							timeframe: Some(M1),
+						}
+					]
+				}
+					.test(&facts()),
+				false
+			)
+		}
 
-        #[test]
-        fn test_and_both_false() {
-            assert_eq!(
-                And {
-                    conditions: vec![
-                        Compare {
-                            field: Field::Volume,
-                            operator: Equal,
-                            value: Quote(33333.0),
-                            timeframe: Some(S1),
-                        },
-                        Compare {
-                            field: Field::Volume,
-                            operator: Equal,
-                            value: Quote(44444.0),
-                            timeframe: Some(M1),
-                        }
-                    ]
-                }
-                .test(&facts()),
-                false
-            )
-        }
+		#[test]
+		fn test_and_both_false() {
+			assert_eq!(
+				And {
+					conditions: vec![
+						Compare {
+							field: Volume,
+							operator: IncreasedByMoreThanEqual,
+							value: Quote(33333.0),
+							timeframe: Some(S1),
+						},
+						Compare {
+							field: Volume,
+							operator: IncreasedByMoreThanEqual,
+							value: Quote(44444.0),
+							timeframe: Some(M1),
+						}
+					]
+				}
+					.test(&facts()),
+				false
+			)
+		}
 
-        #[test]
-        fn test_or_both_true() {
-            assert_eq!(
-                Or {
-                    conditions: vec![
-                        Compare {
-                            field: Field::Volume,
-                            operator: Equal,
-                            value: Quote(3.0),
-                            timeframe: Some(S1),
-                        },
-                        Compare {
-                            field: Field::Volume,
-                            operator: Equal,
-                            value: Quote(4.0),
-                            timeframe: Some(M1),
-                        }
-                    ]
-                }
-                .test(&facts()),
-                true
-            )
-        }
+		#[test]
+		fn test_or_both_true() {
+			assert_eq!(
+				Or {
+					conditions: vec![
+						Compare {
+							field: Volume,
+							operator: IncreasedByMoreThanEqual,
+							value: Quote(3.0),
+							timeframe: Some(S1),
+						},
+						Compare {
+							field: Volume,
+							operator: IncreasedByMoreThanEqual,
+							value: Quote(4.0),
+							timeframe: Some(M1),
+						}
+					]
+				}
+					.test(&facts()),
+				true
+			)
+		}
 
-        #[test]
-        fn test_or_left_true() {
-            assert_eq!(
-                Or {
-                    conditions: vec![
-                        Compare {
-                            field: Field::Volume,
-                            operator: Equal,
-                            value: Quote(3.0),
-                            timeframe: Some(S1),
-                        },
-                        Compare {
-                            field: Field::Volume,
-                            operator: Equal,
-                            value: Quote(444444.0),
-                            timeframe: Some(M1),
-                        }
-                    ]
-                }
-                .test(&facts()),
-                true
-            )
-        }
+		#[test]
+		fn test_or_left_true() {
+			assert_eq!(
+				Or {
+					conditions: vec![
+						Compare {
+							field: Volume,
+							operator: IncreasedByMoreThanEqual,
+							value: Quote(3.0),
+							timeframe: Some(S1),
+						},
+						Compare {
+							field: Volume,
+							operator: IncreasedByMoreThanEqual,
+							value: Quote(444444.0),
+							timeframe: Some(M1),
+						}
+					]
+				}
+					.test(&facts()),
+				true
+			)
+		}
 
-        #[test]
-        fn test_or_right_true() {
-            assert_eq!(
-                Or {
-                    conditions: vec![
-                        Compare {
-                            field: Field::Volume,
-                            operator: Equal,
-                            value: Quote(33333.0),
-                            timeframe: Some(S1),
-                        },
-                        Compare {
-                            field: Field::Volume,
-                            operator: Equal,
-                            value: Quote(4.0),
-                            timeframe: Some(M1),
-                        }
-                    ]
-                }
-                .test(&facts()),
-                true
-            )
-        }
+		#[test]
+		fn test_or_right_true() {
+			assert_eq!(
+				Or {
+					conditions: vec![
+						Compare {
+							field: Volume,
+							operator: IncreasedByMoreThanEqual,
+							value: Quote(33333.0),
+							timeframe: Some(S1),
+						},
+						Compare {
+							field: Volume,
+							operator: IncreasedByMoreThanEqual,
+							value: Quote(4.0),
+							timeframe: Some(M1),
+						}
+					]
+				}
+					.test(&facts()),
+				true
+			)
+		}
 
-        #[test]
-        fn test_or_both_false() {
-            assert_eq!(
-                Or {
-                    conditions: vec![
-                        Compare {
-                            field: Field::Volume,
-                            operator: Equal,
-                            value: Quote(33333.0),
-                            timeframe: Some(S1),
-                        },
-                        Compare {
-                            field: Field::Volume,
-                            operator: Equal,
-                            value: Quote(44444.0),
-                            timeframe: Some(M1),
-                        }
-                    ]
-                }
-                .test(&facts()),
-                false
-            )
-        }
+		#[test]
+		fn test_or_both_false() {
+			assert_eq!(
+				Or {
+					conditions: vec![
+						Compare {
+							field: Volume,
+							operator: IncreasedByMoreThanEqual,
+							value: Quote(33333.0),
+							timeframe: Some(S1),
+						},
+						Compare {
+							field: Volume,
+							operator: IncreasedByMoreThanEqual,
+							value: Quote(44444.0),
+							timeframe: Some(M1),
+						}
+					]
+				}
+					.test(&facts()),
+				false
+			)
+		}
 
-        #[test]
-        fn test_and_not_both_true() {
-            assert_eq!(
-                AndNot {
-                    conditions: vec![
-                        Compare {
-                            field: Field::Volume,
-                            operator: Equal,
-                            value: Quote(3.0),
-                            timeframe: Some(S1),
-                        },
-                        Compare {
-                            field: Field::Volume,
-                            operator: Equal,
-                            value: Quote(4.0),
-                            timeframe: Some(M1),
-                        }
-                    ]
-                }
-                .test(&facts()),
-                false
-            )
-        }
+		#[test]
+		fn test_and_not_both_true() {
+			assert_eq!(
+				AndNot {
+					conditions: vec![
+						Compare {
+							field: Volume,
+							operator: IncreasedByMoreThanEqual,
+							value: Quote(3.0),
+							timeframe: Some(S1),
+						},
+						Compare {
+							field: Volume,
+							operator: IncreasedByMoreThanEqual,
+							value: Quote(4.0),
+							timeframe: Some(M1),
+						}
+					]
+				}
+					.test(&facts()),
+				false
+			)
+		}
 
-        #[test]
-        fn test_and_not_left_true() {
-            assert_eq!(
-                AndNot {
-                    conditions: vec![
-                        Compare {
-                            field: Field::Volume,
-                            operator: Equal,
-                            value: Quote(3.0),
-                            timeframe: Some(S1),
-                        },
-                        Compare {
-                            field: Field::Volume,
-                            operator: Equal,
-                            value: Quote(444444.0),
-                            timeframe: Some(M1),
-                        }
-                    ]
-                }
-                .test(&facts()),
-                false
-            )
-        }
+		#[test]
+		fn test_and_not_left_true() {
+			assert_eq!(
+				AndNot {
+					conditions: vec![
+						Compare {
+							field: Volume,
+							operator: IncreasedByMoreThanEqual,
+							value: Quote(3.0),
+							timeframe: Some(S1),
+						},
+						Compare {
+							field: Volume,
+							operator: IncreasedByMoreThanEqual,
+							value: Quote(444444.0),
+							timeframe: Some(M1),
+						}
+					]
+				}
+					.test(&facts()),
+				false
+			)
+		}
 
-        #[test]
-        fn test_and_not_right_true() {
-            assert_eq!(
-                AndNot {
-                    conditions: vec![
-                        Compare {
-                            field: Field::Volume,
-                            operator: Equal,
-                            value: Quote(33333.0),
-                            timeframe: Some(S1),
-                        },
-                        Compare {
-                            field: Field::Volume,
-                            operator: Equal,
-                            value: Quote(4.0),
-                            timeframe: Some(M1),
-                        }
-                    ]
-                }
-                .test(&facts()),
-                false
-            )
-        }
+		#[test]
+		fn test_and_not_right_true() {
+			assert_eq!(
+				AndNot {
+					conditions: vec![
+						Compare {
+							field: Volume,
+							operator: IncreasedByMoreThanEqual,
+							value: Quote(33333.0),
+							timeframe: Some(S1),
+						},
+						Compare {
+							field: Volume,
+							operator: IncreasedByMoreThanEqual,
+							value: Quote(4.0),
+							timeframe: Some(M1),
+						}
+					]
+				}
+					.test(&facts()),
+				false
+			)
+		}
 
-        #[test]
-        fn test_and_not_both_false() {
-            assert_eq!(
-                AndNot {
-                    conditions: vec![
-                        Compare {
-                            field: Field::Volume,
-                            operator: Equal,
-                            value: Quote(33333.0),
-                            timeframe: Some(S1),
-                        },
-                        Compare {
-                            field: Field::Volume,
-                            operator: Equal,
-                            value: Quote(44444.0),
-                            timeframe: Some(M1),
-                        }
-                    ]
-                }
-                .test(&facts()),
-                true
-            )
-        }
-    }
+		#[test]
+		fn test_and_not_both_false() {
+			assert_eq!(
+				AndNot {
+					conditions: vec![
+						Compare {
+							field: Volume,
+							operator: IncreasedByMoreThanEqual,
+							value: Quote(33333.0),
+							timeframe: Some(S1),
+						},
+						Compare {
+							field: Volume,
+							operator: IncreasedByMoreThanEqual,
+							value: Quote(44444.0),
+							timeframe: Some(M1),
+						}
+					]
+				}
+					.test(&facts()),
+				true
+			)
+		}
+	}
 }

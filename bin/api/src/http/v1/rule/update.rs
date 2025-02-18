@@ -44,7 +44,7 @@ mod tests {
     use crate::http::testing::{extract, extract_error, Test};
     use axum::http::StatusCode;
     use base::model::Condition;
-    use base::model::Field::Price;
+    use base::model::Field::PriceAvg;
     use base::model::Operator::MoreThan;
     use base::model::Value::Percent;
     use common::model::Timeframe::M15;
@@ -94,7 +94,7 @@ mod tests {
         assert_eq!(
             response.sequence.condition,
             Compare {
-                field: Price,
+                field: PriceAvg,
                 operator: MoreThan,
                 value: Percent(2.0),
                 timeframe: Some(M15)
@@ -121,7 +121,7 @@ mod tests {
         assert_eq!(
             response.sequence.condition,
             Compare {
-                field: Price,
+                field: PriceAvg,
                 operator: MoreThan,
                 value: Percent(2.0),
                 timeframe: Some(M15)

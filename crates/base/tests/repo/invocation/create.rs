@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use base::model::Condition::Compare;
-use base::model::Field::Price;
+use base::model::Field::PriceAvg;
 use base::model::Operator::MoreThan;
 use base::model::{Action, Sequence, TokenMint, Value};
 use base::repo::{InvocationCreateCmd, InvocationRepo};
@@ -31,7 +31,7 @@ async fn test_create() {
                     token_pair: token_pair.id,
                     next: Some(Sequence {
                         condition: Compare {
-                            field: Price,
+                            field: PriceAvg,
                             operator: MoreThan,
                             value: Value::Percent(23.0),
                             timeframe: None,
@@ -52,7 +52,7 @@ async fn test_create() {
         assert_eq!(
             next.condition,
             Compare {
-                field: Price,
+                field: PriceAvg,
                 operator: MoreThan,
                 value: Value::Percent(23.0),
                 timeframe: None,
@@ -116,7 +116,7 @@ async fn test_invocation_requires_existing_user() {
                     token_pair: token_pair.id,
                     next: Some(Sequence {
                         condition: Compare {
-                            field: Price,
+                            field: PriceAvg,
                             operator: MoreThan,
                             value: Value::Percent(23.0),
                             timeframe: None,
@@ -151,7 +151,7 @@ async fn test_invocation_requires_existing_rule() {
                     token_pair: token_pair.id,
                     next: Some(Sequence {
                         condition: Compare {
-                            field: Price,
+                            field: PriceAvg,
                             operator: MoreThan,
                             value: Value::Percent(23.0),
                             timeframe: None,
@@ -186,7 +186,7 @@ async fn test_invocation_requires_existing_token_pair() {
                     token_pair: 12345679.into(),
                     next: Some(Sequence {
                         condition: Compare {
-                            field: Price,
+                            field: PriceAvg,
                             operator: MoreThan,
                             value: Value::Percent(23.0),
                             timeframe: None,

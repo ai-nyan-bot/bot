@@ -8,7 +8,10 @@ export const useOperatorOptions = (supported: Array<Operator>): Array<{
 }> => {
     // FIXME i18n
     return [
-        {value: Operator.MORE_THAN, label: "greater than"},
+        {value: Operator.INCREASED_BY_MORE_THAN, label: "increased by more than"},
+        {value: Operator.INCREASED_BY_MORE_THAN_EQUAL, label: "increased by more than or equal to"},
+        {value: Operator.MORE_THAN, label: "more than"},
+        {value: Operator.MORE_THAN_EQUAL, label: "more than or equal to"},
     ].filter(opt => supported.find(v => v === opt.value));
 }
 

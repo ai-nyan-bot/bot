@@ -20,7 +20,7 @@ pub async fn create_rule_for_test_user<'a>(tx: &mut Tx<'a>, name: impl Into<Rule
                 name: name.into(),
                 sequence: Sequence {
                     condition: Compare {
-                        field: Field::Price,
+                        field: Field::PriceAvg,
                         operator: MoreThan,
                         value: Value::Percent(2.0),
                         timeframe: Some(Timeframe::M15),

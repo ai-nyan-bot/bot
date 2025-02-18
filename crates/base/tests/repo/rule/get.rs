@@ -3,7 +3,7 @@
 
 mod get_by_id {
 	use base::model::Action::Notify;
-	use base::model::Field::Price;
+	use base::model::Field::PriceAvg;
 	use base::model::Operator::MoreThan;
 	use base::model::{Condition, Value};
 	use base::repo::RuleRepo;
@@ -28,7 +28,7 @@ mod get_by_id {
             assert_eq!(
                 result.sequence.condition,
                 Condition::Compare {
-                    field: Price,
+                    field: PriceAvg,
                     operator: MoreThan,
                     value: Percent(2.0),
                     timeframe: Some(M15),

@@ -5,15 +5,15 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize, sqlx::Type)]
 #[sqlx(transparent)]
-pub struct PriceQuote(pub f64);
+pub struct PriceAvgQuote(pub f64);
 
-impl From<f64> for PriceQuote {
+impl From<f64> for PriceAvgQuote {
     fn from(value: f64) -> Self {
         Self(value)
     }
 }
 
-impl PartialEq<f64> for PriceQuote {
+impl PartialEq<f64> for PriceAvgQuote {
     fn eq(&self, other: &f64) -> bool {
         self.0 == *other
     }

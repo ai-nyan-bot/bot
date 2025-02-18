@@ -3,7 +3,7 @@
 
 use base::model::Action::Notify;
 use base::model::Condition::Compare;
-use base::model::Field::{Price, Volume};
+use base::model::Field::{PriceAvg, Volume};
 use base::model::Operator::{Equal, MoreThan};
 use base::model::Value::Quote;
 use base::model::{Action, Sequence, Value};
@@ -92,7 +92,7 @@ async fn test_nothing_changed() {
                     name: "A".into(),
                     sequence: Sequence {
                         condition: Compare {
-                            field: Price,
+                            field: PriceAvg,
                             operator: MoreThan,
                             value: Value::Percent(2.0),
                             timeframe: Some(M15),
@@ -111,7 +111,7 @@ async fn test_nothing_changed() {
         assert_eq!(
             result.sequence.condition,
             Compare {
-                field: Price,
+                field: PriceAvg,
                 operator: MoreThan,
                 value: Value::Percent(2.0),
                 timeframe: Some(M15),
@@ -165,7 +165,7 @@ async fn test_different_user() {
         assert_eq!(
             rule.sequence.condition,
             Compare {
-                field: Price,
+                field: PriceAvg,
                 operator: MoreThan,
                 value: Value::Percent(2.0),
                 timeframe: Some(M15),

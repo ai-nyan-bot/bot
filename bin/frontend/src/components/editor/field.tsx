@@ -8,9 +8,11 @@ export const useFieldOptions = (supported: Array<Field>): Array<{
 }> => {
     // FIXME i18n
     return [
-        {value: Field.PRICE, label: 'Price'},
-        {value: Field.TRADES, label: 'Trades'},
-        {value: Field.VOLUME, label: 'Volume'},
+        // {value: Field.PRICE, label: 'Price'},
+        {value: Field.TRADES, label: 'All trades'},
+        {value: Field.TRADES_BUY, label: 'Buy trades'},
+        {value: Field.TRADES_SELL, label: 'Sell trades'},
+        // {value: Field.VOLUME, label: 'Volume'},
     ]
 }
 

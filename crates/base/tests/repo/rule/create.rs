@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use base::model::Condition::Compare;
-use base::model::Field::Price;
+use base::model::Field::PriceAvg;
 use base::model::{Action, Operator, Sequence, Value};
 use base::repo::{RuleCreateCmd, RuleRepo};
 use common::repo::error::RepoError;
@@ -25,7 +25,7 @@ async fn test_create() {
                     name: "ChubakaStrat1337".into(),
                     sequence: Sequence {
                         condition: Compare {
-                            field: Price,
+                            field: PriceAvg,
                             operator: MoreThan,
                             value: Value::Percent(23.0),
                             timeframe: None,
@@ -43,7 +43,7 @@ async fn test_create() {
         assert_eq!(
             result.sequence.condition,
             Compare {
-                field: Price,
+                field: PriceAvg,
                 operator: MoreThan,
                 value: Value::Percent(23.0),
                 timeframe: None,
@@ -69,7 +69,7 @@ async fn test_rule_requires_existing_user() {
                     name: "ChubakaStrat1337".into(),
                     sequence: Sequence {
                         condition: Compare {
-                            field: Price,
+                            field: PriceAvg,
                             operator: MoreThan,
                             value: Value::Percent(23.0),
                             timeframe: None,

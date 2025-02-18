@@ -6,7 +6,7 @@
 
 use crate::model::{Signature, Slot};
 use crate::repo::jupiter::TradeRepo;
-use base::model::{determine_mints, AddressId, Amount, DecimalAmount, PriceQuote, PublicKey, Token, TokenMint, TokenPair, TokenPairMint};
+use base::model::{determine_mints, AddressId, Amount, DecimalAmount, PriceAvgQuote, PublicKey, Token, TokenMint, TokenPair, TokenPairMint};
 use base::LoadTokenInfo;
 use common::model::{Count, Timestamp};
 use common::repo::{RepoResult, Tx};
@@ -126,7 +126,7 @@ impl<L: LoadTokenInfo> TradeRepo<L> {
     }
 }
 
-fn calculate_price_amount_and_side(trade: &SlotTrade, base_token: &Token, quote_token: &Token) -> (PriceQuote, DecimalAmount, bool) {
+fn calculate_price_amount_and_side(trade: &SlotTrade, base_token: &Token, quote_token: &Token) -> (PriceAvgQuote, DecimalAmount, bool) {
     let input_decimals = if trade.input_mint == base_token.mint {
         &base_token.decimals
     } else {
@@ -143,9 +143,9 @@ fn calculate_price_amount_and_side(trade: &SlotTrade, base_token: &Token, quote_
 
     if trade.input_mint == base_token.mint {
         assert!(input_amount > 0.0, "Input amount must not be 0");
-        (PriceQuote(output_amount.0 as f64 / input_amount.0 as f64), input_amount, false)
+        (PriceAvgQuote(output_amount.0 as f64 / input_amount.0 as f64), input_amount, false)
     } else {
         assert!(output_amount > 0.0, "Output amount must not be 0");
-        (PriceQuote(input_amount.0 as f64 / output_amount.0 as f64), output_amount, true)
+        (PriceAvgQuote(input_amount.0 as f64 / output_amount.0 as f64), output_amount, true)
     }
 }

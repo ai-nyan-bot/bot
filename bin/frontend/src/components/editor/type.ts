@@ -22,13 +22,13 @@ export const UI_FIELDS: Array<UiField> = [
         operators: [
             {
                 id: "INCREASED_BY_MORE_THAN",
-                operator: Operator.INCREASED_BY,
+                operator: Operator.INCREASED_BY_MORE_THAN,
                 values: ['PERCENT', 'COUNT'],
                 timeframes: ALL_TIMEFRAMES
             },
             {
                 id: "INCREASED_BY_MORE_THEN_EQUAL",
-                operator: Operator.INCREASED_BY_EQUAL,
+                operator: Operator.INCREASED_BY_MORE_THAN_EQUAL,
                 values: ['PERCENT', 'COUNT'],
                 timeframes: ALL_TIMEFRAMES
             },

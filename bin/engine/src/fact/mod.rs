@@ -41,7 +41,7 @@ impl FactService {
 
         let mut result: Vec<(TokenPairId, Facts)> = Vec::with_capacity(summary_1m.len());
         // for trade in most_recent_trades {
-        //     let facts = Facts::new().with_value(Fact::TokenPriceQuote, trade.price).unwrap();
+        //     let facts = Facts::new().with_value(Fact::TokenPriceAvgQuote, trade.price).unwrap();
         //     result.push((trade.token_pair.clone(), facts));
         // }
 
