@@ -21,13 +21,13 @@ export const UI_FIELDS: Array<UiField> = [
         id: Field.TRADES,
         operators: [
             {
-                id: "INCREASED_BY",
+                id: "INCREASED_BY_MORE_THAN",
                 operator: Operator.INCREASED_BY,
                 values: ['PERCENT', 'COUNT'],
                 timeframes: ALL_TIMEFRAMES
             },
             {
-                id: "INCREASED_BY_EQUAL",
+                id: "INCREASED_BY_MORE_THEN_EQUAL",
                 operator: Operator.INCREASED_BY_EQUAL,
                 values: ['PERCENT', 'COUNT'],
                 timeframes: ALL_TIMEFRAMES

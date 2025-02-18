@@ -11,10 +11,30 @@ impl Condition {
             Condition::Compare { value, operator, .. } => match value {
                 Value::Boolean(_) => match operator {
                     Operator::Equal | Operator::NotEqual => true,
-                    Operator::MoreThan | Operator::MoreThanEqual | Operator::LessThan | Operator::LessThanEqual => false,
+
+                    Operator::IncreasedByMoreThan
+                    | Operator::IncreasedByMoreThanEqual
+                    | Operator::IncreasedByLessThan
+                    | Operator::IncreasedByLessThanEqual
+                    | Operator::DecreasedByMoreThan
+                    | Operator::DecreasedByMoreThanEqual
+                    | Operator::DecreasedByLessThan
+                    | Operator::DecreasedByLessThanEqual
+                    | Operator::MoreThan
+                    | Operator::MoreThanEqual
+                    | Operator::LessThan
+                    | Operator::LessThanEqual => false,
                 },
                 Value::Count(value) => match operator {
                     Operator::Equal => true,
+                    Operator::IncreasedByMoreThan => *value > 0,
+                    Operator::IncreasedByMoreThanEqual => *value != 0,
+                    Operator::IncreasedByLessThan => *value < u64::MAX,
+                    Operator::IncreasedByLessThanEqual => *value != u64::MAX,
+                    Operator::DecreasedByMoreThan => *value > 0,
+                    Operator::DecreasedByMoreThanEqual => *value != 0,
+                    Operator::DecreasedByLessThan => *value < u64::MAX,
+                    Operator::DecreasedByLessThanEqual => *value != u64::MAX,
                     Operator::MoreThan => *value > 0,
                     Operator::MoreThanEqual => *value != 0,
                     Operator::LessThan => *value < u64::MAX,
@@ -23,6 +43,14 @@ impl Condition {
                 },
                 Value::Percent(value) => match operator {
                     Operator::Equal => false,
+                    Operator::IncreasedByMoreThan => *value != 0.0f64,
+                    Operator::IncreasedByMoreThanEqual => *value != 0.0f64,
+                    Operator::IncreasedByLessThan => *value != 0.0f64,
+                    Operator::IncreasedByLessThanEqual => *value != 0.0f64,
+                    Operator::DecreasedByMoreThan => *value != 0.0f64,
+                    Operator::DecreasedByMoreThanEqual => *value != 0.0f64,
+                    Operator::DecreasedByLessThan => *value != 0.0f64,
+                    Operator::DecreasedByLessThanEqual => *value != 0.0f64,
                     Operator::MoreThan => *value != 0.0f64,
                     Operator::MoreThanEqual => *value != 0.0f64,
                     Operator::LessThan => *value != 0.0f64,
@@ -31,6 +59,14 @@ impl Condition {
                 },
                 Value::Quote(value) => match operator {
                     Operator::Equal => false,
+                    Operator::IncreasedByMoreThan => *value != 0.0f64,
+                    Operator::IncreasedByMoreThanEqual => *value != 0.0f64,
+                    Operator::IncreasedByLessThan => *value != 0.0f64,
+                    Operator::IncreasedByLessThanEqual => *value != 0.0f64,
+                    Operator::DecreasedByMoreThan => *value != 0.0f64,
+                    Operator::DecreasedByMoreThanEqual => *value != 0.0f64,
+                    Operator::DecreasedByLessThan => *value != 0.0f64,
+                    Operator::DecreasedByLessThanEqual => *value != 0.0f64,
                     Operator::MoreThan => *value != 0.0f64,
                     Operator::MoreThanEqual => *value != 0.0f64,
                     Operator::LessThan => *value != 0.0f64,
@@ -39,11 +75,30 @@ impl Condition {
                 },
                 Value::String(value) => match operator {
                     Operator::Equal => value.trim() != "",
-                    Operator::NotEqual => false,
-                    Operator::MoreThan | Operator::MoreThanEqual | Operator::LessThan | Operator::LessThanEqual => false,
+                    Operator::NotEqual
+                    | Operator::IncreasedByMoreThan
+                    | Operator::IncreasedByMoreThanEqual
+                    | Operator::IncreasedByLessThan
+                    | Operator::IncreasedByLessThanEqual
+                    | Operator::DecreasedByMoreThan
+                    | Operator::DecreasedByMoreThanEqual
+                    | Operator::DecreasedByLessThan
+                    | Operator::DecreasedByLessThanEqual
+                    | Operator::MoreThan
+                    | Operator::MoreThanEqual
+                    | Operator::LessThan
+                    | Operator::LessThanEqual => false,
                 },
                 Value::Usd(value) => match operator {
                     Operator::Equal => false,
+                    Operator::IncreasedByMoreThan => *value != 0.0f64,
+                    Operator::IncreasedByMoreThanEqual => *value != 0.0f64,
+                    Operator::IncreasedByLessThan => *value != 0.0f64,
+                    Operator::IncreasedByLessThanEqual => *value != 0.0f64,
+                    Operator::DecreasedByMoreThan => *value != 0.0f64,
+                    Operator::DecreasedByMoreThanEqual => *value != 0.0f64,
+                    Operator::DecreasedByLessThan => *value != 0.0f64,
+                    Operator::DecreasedByLessThanEqual => *value != 0.0f64,
                     Operator::MoreThan => *value != 0.0f64,
                     Operator::MoreThanEqual => *value != 0.0f64,
                     Operator::LessThan => *value != 0.0f64,
@@ -65,7 +120,10 @@ mod tests {
         mod bool {
             use crate::model::Condition::Compare;
             use crate::model::Field::TwitterExists;
-            use crate::model::Operator::{Equal, MoreThan, MoreThanEqual, LessThan, LessThanEqual, NotEqual};
+            use crate::model::Operator::{
+                DecreasedByLessThan, DecreasedByLessThanEqual, DecreasedByMoreThan, DecreasedByMoreThanEqual, Equal, IncreasedByMoreThan,
+                IncreasedByMoreThanEqual, LessThan, LessThanEqual, MoreThan, MoreThanEqual, NotEqual,
+            };
             use crate::model::Value::Boolean;
 
             #[test]
@@ -104,6 +162,158 @@ mod tests {
                     timeframe: None,
                 };
                 assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn increased_by_more_than_not_ready() {
+                let test_instance = Compare {
+                    field: TwitterExists,
+                    operator: IncreasedByMoreThan,
+                    value: Boolean(false),
+                    timeframe: None,
+                };
+                assert_eq!(test_instance.applicable(), false);
+
+                let test_instance = Compare {
+                    field: TwitterExists,
+                    operator: IncreasedByMoreThan,
+                    value: Boolean(true),
+                    timeframe: None,
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn increased_by_more_than_equal_not_ready() {
+                let test_instance = Compare {
+                    field: TwitterExists,
+                    operator: IncreasedByMoreThanEqual,
+                    value: Boolean(false),
+                    timeframe: None,
+                };
+                assert_eq!(test_instance.applicable(), false);
+
+                let test_instance = Compare {
+                    field: TwitterExists,
+                    operator: IncreasedByMoreThanEqual,
+                    value: Boolean(true),
+                    timeframe: None,
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn increased_by_less_than_not_ready() {
+                let test_instance = Compare {
+                    field: TwitterExists,
+                    operator: DecreasedByLessThan,
+                    value: Boolean(false),
+                    timeframe: None,
+                };
+                assert_eq!(test_instance.applicable(), false);
+
+                let test_instance = Compare {
+                    field: TwitterExists,
+                    operator: DecreasedByLessThan,
+                    value: Boolean(true),
+                    timeframe: None,
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn increased_by_less_than_equal_not_ready() {
+                let test_instance = Compare {
+                    field: TwitterExists,
+                    operator: DecreasedByLessThanEqual,
+                    value: Boolean(false),
+                    timeframe: None,
+                };
+                assert_eq!(test_instance.applicable(), false);
+
+                let test_instance = Compare {
+                    field: TwitterExists,
+                    operator: DecreasedByLessThanEqual,
+                    value: Boolean(true),
+                    timeframe: None,
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn decreased_by_more_than_not_ready() {
+                let test_instance = Compare {
+                    field: TwitterExists,
+                    operator: DecreasedByMoreThan,
+                    value: Boolean(false),
+                    timeframe: None,
+                };
+                assert_eq!(test_instance.applicable(), false);
+
+                let test_instance = Compare {
+                    field: TwitterExists,
+                    operator: DecreasedByMoreThan,
+                    value: Boolean(true),
+                    timeframe: None,
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn decreased_by_more_than_equal_not_ready() {
+                let test_instance = Compare {
+                    field: TwitterExists,
+                    operator: DecreasedByMoreThanEqual,
+                    value: Boolean(false),
+                    timeframe: None,
+                };
+                assert_eq!(test_instance.applicable(), false);
+
+                let test_instance = Compare {
+                    field: TwitterExists,
+                    operator: DecreasedByMoreThanEqual,
+                    value: Boolean(true),
+                    timeframe: None,
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn decreased_by_less_than_not_ready() {
+                let test_instance = Compare {
+                    field: TwitterExists,
+                    operator: DecreasedByLessThan,
+                    value: Boolean(false),
+                    timeframe: None,
+                };
+                assert_eq!(test_instance.applicable(), false);
+
+                let test_instance = Compare {
+                    field: TwitterExists,
+                    operator: DecreasedByLessThan,
+                    value: Boolean(true),
+                    timeframe: None,
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn decreased_by_less_than_equal_not_ready() {
+                let test_instance = Compare {
+                    field: TwitterExists,
+                    operator: DecreasedByLessThanEqual,
+                    value: Boolean(false),
+                    timeframe: None,
+                };
+                assert_eq!(test_instance.applicable(), false);
+
+                let test_instance = Compare {
+                    field: TwitterExists,
+                    operator: DecreasedByLessThanEqual,
+                    value: Boolean(true),
+                    timeframe: None,
+                };
+                assert_eq!(test_instance.applicable(), false)
             }
 
             #[test]
@@ -184,13 +394,192 @@ mod tests {
         }
 
         mod count {
-            use crate::model::Operator::{Equal, NotEqual};
+            use crate::model::Operator::{
+                DecreasedByLessThan, DecreasedByLessThanEqual, DecreasedByMoreThan, DecreasedByMoreThanEqual, Equal, IncreasedByLessThan,
+                IncreasedByLessThanEqual, IncreasedByMoreThan, IncreasedByMoreThanEqual, NotEqual,
+            };
             use crate::model::{Condition, Field, Operator, Value};
             use common::model::Timeframe::M15;
             use Condition::Compare;
             use Field::TradesBuy;
-            use Operator::{MoreThan, MoreThanEqual, LessThan, LessThanEqual};
+            use Operator::{LessThan, LessThanEqual, MoreThan, MoreThanEqual};
             use Value::Count;
+
+            #[test]
+            fn increased_by_more_than_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByMoreThan,
+                    value: Count(1),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn increased_by_more_than_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByMoreThan,
+                    value: Count(0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn increased_by_more_than_equal_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByMoreThanEqual,
+                    value: Count(1),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn increased_by_more_than_equal_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByMoreThanEqual,
+                    value: Count(0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn increased_by_less_than_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByLessThan,
+                    value: Count(u64::MAX - 1),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn increased_by_less_than_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByLessThan,
+                    value: Count(u64::MAX),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn increased_by_less_than_equal_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByLessThanEqual,
+                    value: Count(u64::MAX - 1),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn increased_by_less_than_equal_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByLessThanEqual,
+                    value: Count(u64::MAX),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn decreased_by_more_than_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByMoreThan,
+                    value: Count(1),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn decreased_by_more_than_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByMoreThan,
+                    value: Count(0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn decreased_by_more_than_equal_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByMoreThanEqual,
+                    value: Count(1),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn decreased_by_more_than_equal_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByMoreThanEqual,
+                    value: Count(0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn decreased_by_less_than_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByLessThan,
+                    value: Count(u64::MAX - 1),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn decreased_by_less_than_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByLessThan,
+                    value: Count(u64::MAX),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn decreased_by_less_than_equal_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByLessThanEqual,
+                    value: Count(u64::MAX - 1),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn decreased_by_less_than_equal_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByLessThanEqual,
+                    value: Count(u64::MAX),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
 
             #[test]
             fn more_than_ready() {
@@ -336,13 +725,192 @@ mod tests {
         }
 
         mod percent {
-            use crate::model::Operator::{Equal, NotEqual};
+            use crate::model::Operator::{
+                DecreasedByLessThan, DecreasedByLessThanEqual, DecreasedByMoreThan, DecreasedByMoreThanEqual, Equal, IncreasedByLessThan,
+                IncreasedByLessThanEqual, IncreasedByMoreThan, IncreasedByMoreThanEqual, NotEqual,
+            };
             use crate::model::{Condition, Field, Operator, Value};
             use common::model::Timeframe::M15;
             use Condition::Compare;
             use Field::TradesBuy;
-            use Operator::{MoreThan, MoreThanEqual, LessThan, LessThanEqual};
+            use Operator::{LessThan, LessThanEqual, MoreThan, MoreThanEqual};
             use Value::Percent;
+
+            #[test]
+            fn increased_by_more_than_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByMoreThan,
+                    value: Percent(1.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn increased_by_more_than_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByMoreThan,
+                    value: Percent(0.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn increased_by_more_than_equal_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByMoreThanEqual,
+                    value: Percent(1.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn increased_by_more_than_equal_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByMoreThanEqual,
+                    value: Percent(0.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn increased_by_less_than_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByLessThan,
+                    value: Percent(1.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn increased_by_less_than_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByLessThan,
+                    value: Percent(0.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn increased_by_less_than_equal_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByLessThanEqual,
+                    value: Percent(1.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn increased_by_less_than_equal_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByLessThanEqual,
+                    value: Percent(0.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn decreased_by_more_than_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByMoreThan,
+                    value: Percent(1.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn decreased_by_more_than_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByMoreThan,
+                    value: Percent(0.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn decreased_by_more_than_equal_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByMoreThanEqual,
+                    value: Percent(1.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn decreased_by_more_than_equal_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByMoreThanEqual,
+                    value: Percent(0.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn decreased_by_less_than_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByLessThan,
+                    value: Percent(1.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn decreased_by_less_than_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByLessThan,
+                    value: Percent(0.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn decreased_by_less_than_equal_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByLessThanEqual,
+                    value: Percent(1.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn decreased_by_less_than_equal_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByLessThanEqual,
+                    value: Percent(0.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
 
             #[test]
             fn more_than_ready() {
@@ -488,13 +1056,192 @@ mod tests {
         }
 
         mod quote {
-            use crate::model::Operator::{Equal, NotEqual};
+            use crate::model::Operator::{
+                DecreasedByLessThan, DecreasedByLessThanEqual, DecreasedByMoreThan, DecreasedByMoreThanEqual, Equal, IncreasedByLessThan,
+                IncreasedByLessThanEqual, IncreasedByMoreThan, IncreasedByMoreThanEqual, NotEqual,
+            };
             use crate::model::{Condition, Field, Operator, Value};
             use common::model::Timeframe::M15;
             use Condition::Compare;
             use Field::TradesBuy;
-            use Operator::{MoreThan, MoreThanEqual, LessThan, LessThanEqual};
+            use Operator::{LessThan, LessThanEqual, MoreThan, MoreThanEqual};
             use Value::Quote;
+
+            #[test]
+            fn increased_by_more_than_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByMoreThan,
+                    value: Quote(1.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn increased_by_more_than_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByMoreThan,
+                    value: Quote(0.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn increased_by_more_than_equal_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByMoreThanEqual,
+                    value: Quote(1.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn increased_by_more_than_equal_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByMoreThanEqual,
+                    value: Quote(0.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn increased_by_less_than_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByLessThan,
+                    value: Quote(1.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn increased_by_less_than_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByLessThan,
+                    value: Quote(0.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn increased_by_less_than_equal_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByLessThanEqual,
+                    value: Quote(1.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn increased_by_less_than_equal_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByLessThanEqual,
+                    value: Quote(0.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn decreased_by_more_than_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByMoreThan,
+                    value: Quote(1.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn decreased_by_more_than_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByMoreThan,
+                    value: Quote(0.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn decreased_by_more_than_equal_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByMoreThanEqual,
+                    value: Quote(1.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn decreased_by_more_than_equal_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByMoreThanEqual,
+                    value: Quote(0.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn decreased_by_less_than_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByLessThan,
+                    value: Quote(1.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn decreased_by_less_than_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByLessThan,
+                    value: Quote(0.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn decreased_by_less_than_equal_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByLessThanEqual,
+                    value: Quote(1.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn decreased_by_less_than_equal_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByLessThanEqual,
+                    value: Quote(0.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
 
             #[test]
             fn more_than_ready() {
@@ -642,7 +1389,10 @@ mod tests {
         mod string {
             use crate::model::Condition::Compare;
             use crate::model::Field::TwitterHandle;
-            use crate::model::Operator::{Equal, MoreThan, MoreThanEqual, LessThan, LessThanEqual, NotEqual};
+            use crate::model::Operator::{
+                DecreasedByLessThan, DecreasedByLessThanEqual, DecreasedByMoreThan, DecreasedByMoreThanEqual, Equal, IncreasedByLessThan,
+                IncreasedByLessThanEqual, IncreasedByMoreThan, IncreasedByMoreThanEqual, LessThan, LessThanEqual, MoreThan, MoreThanEqual, NotEqual,
+            };
             use crate::model::Value::String;
 
             #[test]
@@ -681,6 +1431,94 @@ mod tests {
                     field: TwitterHandle,
                     operator: NotEqual,
                     value: String("   ".to_string()),
+                    timeframe: None,
+                };
+                assert_eq!(test_instance.applicable(), false);
+            }
+
+            #[test]
+            fn increased_by_more_than_not_ready() {
+                let test_instance = Compare {
+                    field: TwitterHandle,
+                    operator: IncreasedByMoreThan,
+                    value: String("AI_nyanbot".to_string()),
+                    timeframe: None,
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn increased_by_more_than_equal_not_ready() {
+                let test_instance = Compare {
+                    field: TwitterHandle,
+                    operator: IncreasedByMoreThanEqual,
+                    value: String("AI_nyanbot".to_string()),
+                    timeframe: None,
+                };
+                assert_eq!(test_instance.applicable(), false);
+            }
+
+            #[test]
+            fn increased_by_less_than_not_ready() {
+                let test_instance = Compare {
+                    field: TwitterHandle,
+                    operator: IncreasedByLessThan,
+                    value: String("AI_nyanbot".to_string()),
+                    timeframe: None,
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn increased_by_less_than_equal_not_ready() {
+                let test_instance = Compare {
+                    field: TwitterHandle,
+                    operator: IncreasedByLessThanEqual,
+                    value: String("AI_nyanbot".to_string()),
+                    timeframe: None,
+                };
+                assert_eq!(test_instance.applicable(), false);
+            }
+
+            #[test]
+            fn decreased_by_more_than_not_ready() {
+                let test_instance = Compare {
+                    field: TwitterHandle,
+                    operator: DecreasedByMoreThan,
+                    value: String("AI_nyanbot".to_string()),
+                    timeframe: None,
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn decreased_by_more_than_equal_not_ready() {
+                let test_instance = Compare {
+                    field: TwitterHandle,
+                    operator: DecreasedByMoreThanEqual,
+                    value: String("AI_nyanbot".to_string()),
+                    timeframe: None,
+                };
+                assert_eq!(test_instance.applicable(), false);
+            }
+
+            #[test]
+            fn decreased_by_less_than_not_ready() {
+                let test_instance = Compare {
+                    field: TwitterHandle,
+                    operator: DecreasedByLessThan,
+                    value: String("AI_nyanbot".to_string()),
+                    timeframe: None,
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn decreased_by_less_than_equal_not_ready() {
+                let test_instance = Compare {
+                    field: TwitterHandle,
+                    operator: DecreasedByLessThanEqual,
+                    value: String("AI_nyanbot".to_string()),
                     timeframe: None,
                 };
                 assert_eq!(test_instance.applicable(), false);
@@ -732,13 +1570,192 @@ mod tests {
         }
 
         mod usd {
-            use crate::model::Operator::{Equal, NotEqual};
+            use crate::model::Operator::{
+                DecreasedByLessThan, DecreasedByLessThanEqual, DecreasedByMoreThan, DecreasedByMoreThanEqual, Equal, IncreasedByLessThan,
+                IncreasedByLessThanEqual, IncreasedByMoreThan, IncreasedByMoreThanEqual, NotEqual,
+            };
             use crate::model::{Condition, Field, Operator, Value};
             use common::model::Timeframe::M15;
             use Condition::Compare;
             use Field::TradesBuy;
-            use Operator::{MoreThan, MoreThanEqual, LessThan, LessThanEqual};
+            use Operator::{LessThan, LessThanEqual, MoreThan, MoreThanEqual};
             use Value::Usd;
+
+            #[test]
+            fn increased_by_more_than_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByMoreThan,
+                    value: Usd(1.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn increased_by_more_than_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByMoreThan,
+                    value: Usd(0.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn increased_by_more_than_equal_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByMoreThanEqual,
+                    value: Usd(1.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn increased_by_more_than_equal_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByMoreThanEqual,
+                    value: Usd(0.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn increased_by_less_than_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByLessThan,
+                    value: Usd(1.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn increased_by_less_than_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByLessThan,
+                    value: Usd(0.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn increased_by_less_than_equal_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByLessThanEqual,
+                    value: Usd(1.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn increased_by_less_than_equal_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: IncreasedByLessThanEqual,
+                    value: Usd(0.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn decreased_by_more_than_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByMoreThan,
+                    value: Usd(1.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn decreased_by_more_than_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByMoreThan,
+                    value: Usd(0.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn decreased_by_more_than_equal_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByMoreThanEqual,
+                    value: Usd(1.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn decreased_by_more_than_equal_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByMoreThanEqual,
+                    value: Usd(0.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn decreased_by_less_than_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByLessThan,
+                    value: Usd(1.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn decreased_by_less_than_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByLessThan,
+                    value: Usd(0.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
+
+            #[test]
+            fn decreased_by_less_than_equal_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByLessThanEqual,
+                    value: Usd(1.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), true)
+            }
+
+            #[test]
+            fn decreased_by_less_than_equal_not_ready() {
+                let test_instance = Compare {
+                    field: TradesBuy,
+                    operator: DecreasedByLessThanEqual,
+                    value: Usd(0.0),
+                    timeframe: Some(M15),
+                };
+                assert_eq!(test_instance.applicable(), false)
+            }
 
             #[test]
             fn more_than_ready() {

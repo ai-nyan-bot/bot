@@ -9,6 +9,16 @@ pub enum Operator {
     Equal,
     NotEqual,
 
+    IncreasedByMoreThan,
+    IncreasedByMoreThanEqual,
+    IncreasedByLessThan,
+    IncreasedByLessThanEqual,
+
+    DecreasedByMoreThan,
+    DecreasedByMoreThanEqual,
+    DecreasedByLessThan,
+    DecreasedByLessThanEqual,
+
     MoreThan,
     MoreThanEqual,
 
