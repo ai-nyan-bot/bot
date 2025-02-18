@@ -11,28 +11,28 @@ impl Condition {
             Condition::Compare { value, operator, .. } => match value {
                 Value::Boolean(_) => match operator {
                     Operator::Equal | Operator::NotEqual => true,
-                    Operator::GreaterThan | Operator::GreaterThanEqual | Operator::LessThan | Operator::LessThanEqual => false,
+                    Operator::MoreThan | Operator::MoreThanEqual | Operator::LessThan | Operator::LessThanEqual => false,
                 },
                 Value::Count(value) => match operator {
                     Operator::Equal => true,
-                    Operator::GreaterThan => *value > 0,
-                    Operator::GreaterThanEqual => *value != 0,
+                    Operator::MoreThan => *value > 0,
+                    Operator::MoreThanEqual => *value != 0,
                     Operator::LessThan => *value < u64::MAX,
                     Operator::LessThanEqual => *value != u64::MAX,
                     Operator::NotEqual => true,
                 },
                 Value::Percent(value) => match operator {
                     Operator::Equal => false,
-                    Operator::GreaterThan => *value != 0.0f64,
-                    Operator::GreaterThanEqual => *value != 0.0f64,
+                    Operator::MoreThan => *value != 0.0f64,
+                    Operator::MoreThanEqual => *value != 0.0f64,
                     Operator::LessThan => *value != 0.0f64,
                     Operator::LessThanEqual => *value != 0.0f64,
                     Operator::NotEqual => false,
                 },
                 Value::Quote(value) => match operator {
                     Operator::Equal => false,
-                    Operator::GreaterThan => *value != 0.0f64,
-                    Operator::GreaterThanEqual => *value != 0.0f64,
+                    Operator::MoreThan => *value != 0.0f64,
+                    Operator::MoreThanEqual => *value != 0.0f64,
                     Operator::LessThan => *value != 0.0f64,
                     Operator::LessThanEqual => *value != 0.0f64,
                     Operator::NotEqual => false,
@@ -40,12 +40,12 @@ impl Condition {
                 Value::String(value) => match operator {
                     Operator::Equal => value.trim() != "",
                     Operator::NotEqual => false,
-                    Operator::GreaterThan | Operator::GreaterThanEqual | Operator::LessThan | Operator::LessThanEqual => false,
+                    Operator::MoreThan | Operator::MoreThanEqual | Operator::LessThan | Operator::LessThanEqual => false,
                 },
                 Value::Usd(value) => match operator {
                     Operator::Equal => false,
-                    Operator::GreaterThan => *value != 0.0f64,
-                    Operator::GreaterThanEqual => *value != 0.0f64,
+                    Operator::MoreThan => *value != 0.0f64,
+                    Operator::MoreThanEqual => *value != 0.0f64,
                     Operator::LessThan => *value != 0.0f64,
                     Operator::LessThanEqual => *value != 0.0f64,
                     Operator::NotEqual => false,
@@ -65,7 +65,7 @@ mod tests {
         mod bool {
             use crate::model::Condition::Compare;
             use crate::model::Field::TwitterExists;
-            use crate::model::Operator::{Equal, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, NotEqual};
+            use crate::model::Operator::{Equal, MoreThan, MoreThanEqual, LessThan, LessThanEqual, NotEqual};
             use crate::model::Value::Boolean;
 
             #[test]
@@ -107,10 +107,10 @@ mod tests {
             }
 
             #[test]
-            fn greater_than_not_ready() {
+            fn more_than_not_ready() {
                 let test_instance = Compare {
                     field: TwitterExists,
-                    operator: GreaterThan,
+                    operator: MoreThan,
                     value: Boolean(false),
                     timeframe: None,
                 };
@@ -118,7 +118,7 @@ mod tests {
 
                 let test_instance = Compare {
                     field: TwitterExists,
-                    operator: GreaterThan,
+                    operator: MoreThan,
                     value: Boolean(true),
                     timeframe: None,
                 };
@@ -126,10 +126,10 @@ mod tests {
             }
 
             #[test]
-            fn greater_than_equal_not_ready() {
+            fn more_than_equal_not_ready() {
                 let test_instance = Compare {
                     field: TwitterExists,
-                    operator: GreaterThanEqual,
+                    operator: MoreThanEqual,
                     value: Boolean(false),
                     timeframe: None,
                 };
@@ -137,7 +137,7 @@ mod tests {
 
                 let test_instance = Compare {
                     field: TwitterExists,
-                    operator: GreaterThanEqual,
+                    operator: MoreThanEqual,
                     value: Boolean(true),
                     timeframe: None,
                 };
@@ -189,14 +189,14 @@ mod tests {
             use common::model::Timeframe::M15;
             use Condition::Compare;
             use Field::TradesBuy;
-            use Operator::{GreaterThan, GreaterThanEqual, LessThan, LessThanEqual};
+            use Operator::{MoreThan, MoreThanEqual, LessThan, LessThanEqual};
             use Value::Count;
 
             #[test]
-            fn greater_than_ready() {
+            fn more_than_ready() {
                 let test_instance = Compare {
                     field: TradesBuy,
-                    operator: GreaterThan,
+                    operator: MoreThan,
                     value: Count(1),
                     timeframe: Some(M15),
                 };
@@ -204,10 +204,10 @@ mod tests {
             }
 
             #[test]
-            fn greater_than_not_ready() {
+            fn more_than_not_ready() {
                 let test_instance = Compare {
                     field: TradesBuy,
-                    operator: GreaterThan,
+                    operator: MoreThan,
                     value: Count(0),
                     timeframe: Some(M15),
                 };
@@ -215,10 +215,10 @@ mod tests {
             }
 
             #[test]
-            fn greater_than_equal_ready() {
+            fn more_than_equal_ready() {
                 let test_instance = Compare {
                     field: TradesBuy,
-                    operator: GreaterThanEqual,
+                    operator: MoreThanEqual,
                     value: Count(1),
                     timeframe: Some(M15),
                 };
@@ -226,10 +226,10 @@ mod tests {
             }
 
             #[test]
-            fn greater_than_equal_not_ready() {
+            fn more_than_equal_not_ready() {
                 let test_instance = Compare {
                     field: TradesBuy,
-                    operator: GreaterThanEqual,
+                    operator: MoreThanEqual,
                     value: Count(0),
                     timeframe: Some(M15),
                 };
@@ -341,14 +341,14 @@ mod tests {
             use common::model::Timeframe::M15;
             use Condition::Compare;
             use Field::TradesBuy;
-            use Operator::{GreaterThan, GreaterThanEqual, LessThan, LessThanEqual};
+            use Operator::{MoreThan, MoreThanEqual, LessThan, LessThanEqual};
             use Value::Percent;
 
             #[test]
-            fn greater_than_ready() {
+            fn more_than_ready() {
                 let test_instance = Compare {
                     field: TradesBuy,
-                    operator: GreaterThan,
+                    operator: MoreThan,
                     value: Percent(1.0),
                     timeframe: Some(M15),
                 };
@@ -356,10 +356,10 @@ mod tests {
             }
 
             #[test]
-            fn greater_than_not_ready() {
+            fn more_than_not_ready() {
                 let test_instance = Compare {
                     field: TradesBuy,
-                    operator: GreaterThan,
+                    operator: MoreThan,
                     value: Percent(0.0),
                     timeframe: Some(M15),
                 };
@@ -367,10 +367,10 @@ mod tests {
             }
 
             #[test]
-            fn greater_than_equal_ready() {
+            fn more_than_equal_ready() {
                 let test_instance = Compare {
                     field: TradesBuy,
-                    operator: GreaterThanEqual,
+                    operator: MoreThanEqual,
                     value: Percent(1.0),
                     timeframe: Some(M15),
                 };
@@ -378,10 +378,10 @@ mod tests {
             }
 
             #[test]
-            fn greater_than_equal_not_ready() {
+            fn more_than_equal_not_ready() {
                 let test_instance = Compare {
                     field: TradesBuy,
-                    operator: GreaterThanEqual,
+                    operator: MoreThanEqual,
                     value: Percent(0.0),
                     timeframe: Some(M15),
                 };
@@ -493,14 +493,14 @@ mod tests {
             use common::model::Timeframe::M15;
             use Condition::Compare;
             use Field::TradesBuy;
-            use Operator::{GreaterThan, GreaterThanEqual, LessThan, LessThanEqual};
+            use Operator::{MoreThan, MoreThanEqual, LessThan, LessThanEqual};
             use Value::Quote;
 
             #[test]
-            fn greater_than_ready() {
+            fn more_than_ready() {
                 let test_instance = Compare {
                     field: TradesBuy,
-                    operator: GreaterThan,
+                    operator: MoreThan,
                     value: Quote(1.0),
                     timeframe: Some(M15),
                 };
@@ -508,10 +508,10 @@ mod tests {
             }
 
             #[test]
-            fn greater_than_not_ready() {
+            fn more_than_not_ready() {
                 let test_instance = Compare {
                     field: TradesBuy,
-                    operator: GreaterThan,
+                    operator: MoreThan,
                     value: Quote(0.0),
                     timeframe: Some(M15),
                 };
@@ -519,10 +519,10 @@ mod tests {
             }
 
             #[test]
-            fn greater_than_equal_ready() {
+            fn more_than_equal_ready() {
                 let test_instance = Compare {
                     field: TradesBuy,
-                    operator: GreaterThanEqual,
+                    operator: MoreThanEqual,
                     value: Quote(1.0),
                     timeframe: Some(M15),
                 };
@@ -530,10 +530,10 @@ mod tests {
             }
 
             #[test]
-            fn greater_than_equal_not_ready() {
+            fn more_than_equal_not_ready() {
                 let test_instance = Compare {
                     field: TradesBuy,
-                    operator: GreaterThanEqual,
+                    operator: MoreThanEqual,
                     value: Quote(0.0),
                     timeframe: Some(M15),
                 };
@@ -642,7 +642,7 @@ mod tests {
         mod string {
             use crate::model::Condition::Compare;
             use crate::model::Field::TwitterHandle;
-            use crate::model::Operator::{Equal, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, NotEqual};
+            use crate::model::Operator::{Equal, MoreThan, MoreThanEqual, LessThan, LessThanEqual, NotEqual};
             use crate::model::Value::String;
 
             #[test]
@@ -687,10 +687,10 @@ mod tests {
             }
 
             #[test]
-            fn greater_than_not_ready() {
+            fn more_than_not_ready() {
                 let test_instance = Compare {
                     field: TwitterHandle,
-                    operator: GreaterThan,
+                    operator: MoreThan,
                     value: String("AI_nyanbot".to_string()),
                     timeframe: None,
                 };
@@ -698,10 +698,10 @@ mod tests {
             }
 
             #[test]
-            fn greater_than_equal_not_ready() {
+            fn more_than_equal_not_ready() {
                 let test_instance = Compare {
                     field: TwitterHandle,
-                    operator: GreaterThanEqual,
+                    operator: MoreThanEqual,
                     value: String("AI_nyanbot".to_string()),
                     timeframe: None,
                 };
@@ -737,14 +737,14 @@ mod tests {
             use common::model::Timeframe::M15;
             use Condition::Compare;
             use Field::TradesBuy;
-            use Operator::{GreaterThan, GreaterThanEqual, LessThan, LessThanEqual};
+            use Operator::{MoreThan, MoreThanEqual, LessThan, LessThanEqual};
             use Value::Usd;
 
             #[test]
-            fn greater_than_ready() {
+            fn more_than_ready() {
                 let test_instance = Compare {
                     field: TradesBuy,
-                    operator: GreaterThan,
+                    operator: MoreThan,
                     value: Usd(1.0),
                     timeframe: Some(M15),
                 };
@@ -752,10 +752,10 @@ mod tests {
             }
 
             #[test]
-            fn greater_than_not_ready() {
+            fn more_than_not_ready() {
                 let test_instance = Compare {
                     field: TradesBuy,
-                    operator: GreaterThan,
+                    operator: MoreThan,
                     value: Usd(0.0),
                     timeframe: Some(M15),
                 };
@@ -763,10 +763,10 @@ mod tests {
             }
 
             #[test]
-            fn greater_than_equal_ready() {
+            fn more_than_equal_ready() {
                 let test_instance = Compare {
                     field: TradesBuy,
-                    operator: GreaterThanEqual,
+                    operator: MoreThanEqual,
                     value: Usd(1.0),
                     timeframe: Some(M15),
                 };
@@ -774,10 +774,10 @@ mod tests {
             }
 
             #[test]
-            fn greater_than_equal_not_ready() {
+            fn more_than_equal_not_ready() {
                 let test_instance = Compare {
                     field: TradesBuy,
-                    operator: GreaterThanEqual,
+                    operator: MoreThanEqual,
                     value: Usd(0.0),
                     timeframe: Some(M15),
                 };
@@ -888,7 +888,7 @@ mod tests {
         use crate::model::Condition;
         use crate::model::Condition::Compare;
         use crate::model::Field::{TradesBuy, TwitterHandle};
-        use crate::model::Operator::{Equal, GreaterThan, NotEqual};
+        use crate::model::Operator::{Equal, MoreThan, NotEqual};
         use crate::model::Value::{Percent, String};
         use common::model::Timeframe::M15;
 
@@ -930,7 +930,7 @@ mod tests {
                 conditions: vec![
                     Compare {
                         field: TradesBuy,
-                        operator: GreaterThan,
+                        operator: MoreThan,
                         value: Percent(1.0),
                         timeframe: Some(M15),
                     },
@@ -952,7 +952,7 @@ mod tests {
                     // applicable
                     Compare {
                         field: TradesBuy,
-                        operator: GreaterThan,
+                        operator: MoreThan,
                         value: Percent(1.0),
                         timeframe: Some(M15),
                     },
@@ -985,7 +985,7 @@ mod tests {
         use crate::model::Condition;
         use crate::model::Condition::Compare;
         use crate::model::Field::{TradesBuy, TwitterHandle};
-        use crate::model::Operator::{Equal, GreaterThan, NotEqual};
+        use crate::model::Operator::{Equal, MoreThan, NotEqual};
         use crate::model::Value::{Percent, String};
         use common::model::Timeframe::M15;
         use Condition::Or;
@@ -1028,7 +1028,7 @@ mod tests {
                 conditions: vec![
                     Compare {
                         field: TradesBuy,
-                        operator: GreaterThan,
+                        operator: MoreThan,
                         value: Percent(1.0),
                         timeframe: Some(M15),
                     },
@@ -1050,7 +1050,7 @@ mod tests {
                     // applicable
                     Compare {
                         field: TradesBuy,
-                        operator: GreaterThan,
+                        operator: MoreThan,
                         value: Percent(1.0),
                         timeframe: Some(M15),
                     },
@@ -1083,7 +1083,7 @@ mod tests {
         use crate::model::Condition;
         use crate::model::Condition::{And, Compare, Or};
         use crate::model::Field::{TradesBuy, TwitterHandle};
-        use crate::model::Operator::{Equal, GreaterThan, NotEqual};
+        use crate::model::Operator::{Equal, MoreThan, NotEqual};
         use crate::model::Value::{Percent, String};
         use common::model::Timeframe::M15;
         use Condition::AndNot;
@@ -1126,7 +1126,7 @@ mod tests {
                 conditions: vec![
                     Compare {
                         field: TradesBuy,
-                        operator: GreaterThan,
+                        operator: MoreThan,
                         value: Percent(1.0),
                         timeframe: Some(M15),
                     },
@@ -1148,7 +1148,7 @@ mod tests {
                     // applicable
                     Compare {
                         field: TradesBuy,
-                        operator: GreaterThan,
+                        operator: MoreThan,
                         value: Percent(1.0),
                         timeframe: Some(M15),
                     },

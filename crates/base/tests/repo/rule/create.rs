@@ -10,7 +10,7 @@ use sqlx::Acquire;
 use testing::rule::create_rule_for_test_user;
 use testing::run_test_on_empty_db;
 use testing::user::get_or_create_test_user;
-use Operator::GreaterThan;
+use Operator::MoreThan;
 
 #[test_log::test(sqlx::test)]
 async fn test_create() {
@@ -26,7 +26,7 @@ async fn test_create() {
                     sequence: Sequence {
                         condition: Compare {
                             field: Price,
-                            operator: GreaterThan,
+                            operator: MoreThan,
                             value: Value::Percent(23.0),
                             timeframe: None,
                         },
@@ -44,7 +44,7 @@ async fn test_create() {
             result.sequence.condition,
             Compare {
                 field: Price,
-                operator: GreaterThan,
+                operator: MoreThan,
                 value: Value::Percent(23.0),
                 timeframe: None,
             }
@@ -70,7 +70,7 @@ async fn test_rule_requires_existing_user() {
                     sequence: Sequence {
                         condition: Compare {
                             field: Price,
-                            operator: GreaterThan,
+                            operator: MoreThan,
                             value: Value::Percent(23.0),
                             timeframe: None,
                         },

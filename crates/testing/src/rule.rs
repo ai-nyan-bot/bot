@@ -4,7 +4,7 @@
 use crate::user::{get_or_create_another_user, get_or_create_test_user};
 use base::model::Action::Notify;
 use base::model::Condition::Compare;
-use base::model::Operator::GreaterThan;
+use base::model::Operator::MoreThan;
 use base::model::{Field, Rule, RuleId, RuleName, Sequence, Value};
 use base::repo::{RuleCreateCmd, RuleQueryAll, RuleRepo};
 use common::model::{Count, Limit, Timeframe};
@@ -21,7 +21,7 @@ pub async fn create_rule_for_test_user<'a>(tx: &mut Tx<'a>, name: impl Into<Rule
                 sequence: Sequence {
                     condition: Compare {
                         field: Field::Price,
-                        operator: GreaterThan,
+                        operator: MoreThan,
                         value: Value::Percent(2.0),
                         timeframe: Some(Timeframe::M15),
                     },
@@ -44,7 +44,7 @@ pub async fn create_rule_for_another_user<'a>(tx: &mut Tx<'a>, name: impl Into<R
                 sequence: Sequence {
                     condition: Compare {
                         field: Field::Volume,
-                        operator: GreaterThan,
+                        operator: MoreThan,
                         value: Value::Percent(2.0),
                         timeframe: Some(Timeframe::D1),
                     },

@@ -45,7 +45,7 @@ mod tests {
     use axum::http::StatusCode;
     use base::model::Condition;
     use base::model::Field::Price;
-    use base::model::Operator::GreaterThan;
+    use base::model::Operator::MoreThan;
     use base::model::Value::Percent;
     use common::model::Timeframe::M15;
     use testing::rule::create_rule_for_test_user;
@@ -95,7 +95,7 @@ mod tests {
             response.sequence.condition,
             Compare {
                 field: Price,
-                operator: GreaterThan,
+                operator: MoreThan,
                 value: Percent(2.0),
                 timeframe: Some(M15)
             }
@@ -122,7 +122,7 @@ mod tests {
             response.sequence.condition,
             Compare {
                 field: Price,
-                operator: GreaterThan,
+                operator: MoreThan,
                 value: Percent(2.0),
                 timeframe: Some(M15)
             }

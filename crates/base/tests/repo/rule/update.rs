@@ -4,7 +4,7 @@
 use base::model::Action::Notify;
 use base::model::Condition::Compare;
 use base::model::Field::{Price, Volume};
-use base::model::Operator::{Equal, GreaterThan};
+use base::model::Operator::{Equal, MoreThan};
 use base::model::Value::Quote;
 use base::model::{Action, Sequence, Value};
 use base::repo::{RuleRepo, RuleUpdateCmd};
@@ -93,7 +93,7 @@ async fn test_nothing_changed() {
                     sequence: Sequence {
                         condition: Compare {
                             field: Price,
-                            operator: GreaterThan,
+                            operator: MoreThan,
                             value: Value::Percent(2.0),
                             timeframe: Some(M15),
                         },
@@ -112,7 +112,7 @@ async fn test_nothing_changed() {
             result.sequence.condition,
             Compare {
                 field: Price,
-                operator: GreaterThan,
+                operator: MoreThan,
                 value: Value::Percent(2.0),
                 timeframe: Some(M15),
             }
@@ -166,7 +166,7 @@ async fn test_different_user() {
             rule.sequence.condition,
             Compare {
                 field: Price,
-                operator: GreaterThan,
+                operator: MoreThan,
                 value: Value::Percent(2.0),
                 timeframe: Some(M15),
             }

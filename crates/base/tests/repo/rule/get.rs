@@ -4,7 +4,7 @@
 mod get_by_id {
 	use base::model::Action::Notify;
 	use base::model::Field::Price;
-	use base::model::Operator::GreaterThan;
+	use base::model::Operator::MoreThan;
 	use base::model::{Condition, Value};
 	use base::repo::RuleRepo;
 	use common::model::Timeframe::M15;
@@ -29,7 +29,7 @@ mod get_by_id {
                 result.sequence.condition,
                 Condition::Compare {
                     field: Price,
-                    operator: GreaterThan,
+                    operator: MoreThan,
                     value: Percent(2.0),
                     timeframe: Some(M15),
                 }

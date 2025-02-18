@@ -3,7 +3,7 @@
 
 use base::model::Condition::Compare;
 use base::model::Field::Price;
-use base::model::Operator::GreaterThan;
+use base::model::Operator::MoreThan;
 use base::model::{Action, Sequence, TokenMint, Value};
 use base::repo::{InvocationCreateCmd, InvocationRepo};
 use common::repo::error::RepoError;
@@ -32,7 +32,7 @@ async fn test_create() {
                     next: Some(Sequence {
                         condition: Compare {
                             field: Price,
-                            operator: GreaterThan,
+                            operator: MoreThan,
                             value: Value::Percent(23.0),
                             timeframe: None,
                         },
@@ -53,7 +53,7 @@ async fn test_create() {
             next.condition,
             Compare {
                 field: Price,
-                operator: GreaterThan,
+                operator: MoreThan,
                 value: Value::Percent(23.0),
                 timeframe: None,
             }
@@ -117,7 +117,7 @@ async fn test_invocation_requires_existing_user() {
                     next: Some(Sequence {
                         condition: Compare {
                             field: Price,
-                            operator: GreaterThan,
+                            operator: MoreThan,
                             value: Value::Percent(23.0),
                             timeframe: None,
                         },
@@ -152,7 +152,7 @@ async fn test_invocation_requires_existing_rule() {
                     next: Some(Sequence {
                         condition: Compare {
                             field: Price,
-                            operator: GreaterThan,
+                            operator: MoreThan,
                             value: Value::Percent(23.0),
                             timeframe: None,
                         },
@@ -187,7 +187,7 @@ async fn test_invocation_requires_existing_token_pair() {
                     next: Some(Sequence {
                         condition: Compare {
                             field: Price,
-                            operator: GreaterThan,
+                            operator: MoreThan,
                             value: Value::Percent(23.0),
                             timeframe: None,
                         },

@@ -137,7 +137,7 @@ impl Fact {
 mod test {
 	use crate::model::Fact::{PriceChangePercent, PriceChangeQuote, PriceChangeUsd, PriceQuote, PriceUsd, TradesSellCount};
 	use crate::model::Field::{Price, Trades, TradesBuy, TradesSell};
-	use crate::model::Operator::GreaterThan;
+	use crate::model::Operator::MoreThan;
 	use crate::model::Value::{Count, Percent, Usd};
 	use crate::model::{Condition, Fact, Value};
 	use common::model::Timeframe;
@@ -152,7 +152,7 @@ mod test {
         assert_eq!(
             Fact::try_from(&Compare {
                 field: Price,
-                operator: GreaterThan,
+                operator: MoreThan,
                 value: Quote(2.0),
                 timeframe: None
             })
@@ -166,7 +166,7 @@ mod test {
         assert_eq!(
             Fact::try_from(&Compare {
                 field: Price,
-                operator: GreaterThan,
+                operator: MoreThan,
                 value: Usd(2.0),
                 timeframe: None
             })
@@ -180,7 +180,7 @@ mod test {
         assert_eq!(
             Fact::try_from(&Compare {
                 field: Price,
-                operator: GreaterThan,
+                operator: MoreThan,
                 value: Percent(2.0),
                 timeframe: Some(H1)
             })
@@ -194,7 +194,7 @@ mod test {
         assert_eq!(
             Fact::try_from(&Compare {
                 field: Price,
-                operator: GreaterThan,
+                operator: MoreThan,
                 value: Quote(2.0),
                 timeframe: Some(H1)
             })
@@ -208,7 +208,7 @@ mod test {
         assert_eq!(
             Fact::try_from(&Compare {
                 field: Price,
-                operator: GreaterThan,
+                operator: MoreThan,
                 value: Usd(2.0),
                 timeframe: Some(H1)
             })
@@ -222,7 +222,7 @@ mod test {
         assert_eq!(
             Fact::try_from(&Compare {
                 field: Trades,
-                operator: GreaterThan,
+                operator: MoreThan,
                 value: Count(2),
                 timeframe: Some(M15)
             })
@@ -236,7 +236,7 @@ mod test {
         assert_eq!(
             Fact::try_from(&Compare {
                 field: TradesBuy,
-                operator: GreaterThan,
+                operator: MoreThan,
                 value: Count(2),
                 timeframe: Some(M15)
             })
@@ -250,7 +250,7 @@ mod test {
         assert_eq!(
             Fact::try_from(&Compare {
                 field: TradesSell,
-                operator: GreaterThan,
+                operator: MoreThan,
                 value: Count(2),
                 timeframe: Some(M15)
             })
