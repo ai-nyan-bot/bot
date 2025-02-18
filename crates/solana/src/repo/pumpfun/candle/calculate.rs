@@ -73,7 +73,7 @@ close_prices as (
     order by
         token_pair_id, second desc
 ),
-buy_amount as (
+amount_buy as (
     select
         token_pair_id,
         second,
@@ -84,7 +84,7 @@ buy_amount as (
     group by
         token_pair_id, second
 ),
-buy_volumes as (
+volume_buys as (
     select
         token_pair_id,
         second,
@@ -95,7 +95,7 @@ buy_volumes as (
     group by
         token_pair_id, second
 ),
-buy_trades as (
+trades_buy as (
     select
         token_pair_id,
         second,
@@ -106,7 +106,7 @@ buy_trades as (
     group by
         token_pair_id, second
 ),
-sell_amount as (
+amount_sell as (
     select
         token_pair_id,
         second,
@@ -117,7 +117,7 @@ sell_amount as (
     group by
         token_pair_id, second
 ),
-sell_volumes as (
+volume_sells as (
     select
         token_pair_id,
         second,
@@ -128,7 +128,7 @@ sell_volumes as (
     group by
         token_pair_id, second
 ),
-sell_trades as (
+trades_sell as (
     select
         token_pair_id,
         second,
@@ -148,22 +148,22 @@ current_candles as (
         max(t.price) as high_price,
         min(t.price) as low_price,
         avg(t.price) as avg,
-        coalesce(ba.amount,0) as buy_amount,
-        coalesce(bt.trades,0) as buy_trades,
-        coalesce(bv.volume,0) as buy_volume,
-        coalesce(sa.amount,0) as sell_amount,
-        coalesce(st.trades,0) as sell_trades,
-        coalesce(sv.volume,0) as sell_volume
+        coalesce(ba.amount,0) as amount_buy,
+        coalesce(bt.trades,0) as trades_buy,
+        coalesce(bv.volume,0) as volume_buy,
+        coalesce(sa.amount,0) as amount_sell,
+        coalesce(st.trades,0) as trades_sell,
+        coalesce(sv.volume,0) as volume_sell
     from
         trades t
     join open_prices o on t.token_pair_id = o.token_pair_id         and t.second = o.second
     join close_prices c on t.token_pair_id = c.token_pair_id        and t.second = c.second
-    left join buy_amount ba on t.token_pair_id = ba.token_pair_id    and t.second = ba.second
-    left join buy_volumes bv on t.token_pair_id = bv.token_pair_id  and t.second = bv.second
-    left join buy_trades bt on t.token_pair_id = bt.token_pair_id   and t.second = bt.second
-    left join sell_amount sa on t.token_pair_id = sa.token_pair_id  and t.second = sa.second
-    left join sell_volumes sv on t.token_pair_id = sv.token_pair_id and t.second = sv.second
-    left join sell_trades st on t.token_pair_id = st.token_pair_id  and t.second = st.second
+    left join amount_buy ba on t.token_pair_id = ba.token_pair_id    and t.second = ba.second
+    left join volume_buys bv on t.token_pair_id = bv.token_pair_id  and t.second = bv.second
+    left join trades_buy bt on t.token_pair_id = bt.token_pair_id   and t.second = bt.second
+    left join amount_sell sa on t.token_pair_id = sa.token_pair_id  and t.second = sa.second
+    left join volume_sells sv on t.token_pair_id = sv.token_pair_id and t.second = sv.second
+    left join trades_sell st on t.token_pair_id = st.token_pair_id  and t.second = st.second
     group by
         t.token_pair_id,
         t.second,
@@ -191,12 +191,12 @@ insert_current_candle as (
         low,
         close,
         avg,
-        buy_amount,
-        buy_trades,
-        buy_volume,
-        sell_amount,
-        sell_trades,
-        sell_volume,
+        amount_buy,
+        trades_buy,
+        volume_buy,
+        amount_sell,
+        trades_sell,
+        volume_sell,
         duration
     )
     select
@@ -207,12 +207,12 @@ insert_current_candle as (
         cur.low_price,
         cur.close_price,
         cur.avg,
-        cur.buy_amount,
-        cur.buy_trades,
-        cur.buy_volume,
-        cur.sell_amount,
-        cur.sell_trades,
-        cur.sell_volume,
+        cur.amount_buy,
+        cur.trades_buy,
+        cur.volume_buy,
+        cur.amount_sell,
+        cur.trades_sell,
+        cur.volume_sell,
         null
     from
         current_candles cur
@@ -230,24 +230,24 @@ insert_current_candle as (
         low = excluded.low,
         close = excluded.close,
         avg = excluded.avg,
-        buy_amount = excluded.buy_amount,
-        buy_volume = excluded.buy_volume,
-        buy_trades = excluded.buy_trades,
-        sell_amount = excluded.sell_amount,
-        sell_volume = excluded.sell_volume,
-        sell_trades = excluded.sell_trades
+        amount_buy = excluded.amount_buy,
+        volume_buy = excluded.volume_buy,
+        trades_buy = excluded.trades_buy,
+        amount_sell = excluded.amount_sell,
+        volume_sell = excluded.volume_sell,
+        trades_sell = excluded.trades_sell
     where (
            {candle_table}.open != excluded.open or
            {candle_table}.high != excluded.high or
            {candle_table}.low != excluded.low or
            {candle_table}.close != excluded.close or
            {candle_table}.avg != excluded.avg or
-           {candle_table}.buy_amount != excluded.buy_amount or
-           {candle_table}.buy_volume != excluded.buy_volume or
-           {candle_table}.buy_trades != excluded.buy_trades or
-           {candle_table}.sell_amount != excluded.sell_amount or
-           {candle_table}.sell_volume != excluded.sell_volume or
-           {candle_table}.sell_trades != excluded.sell_trades
+           {candle_table}.amount_buy != excluded.amount_buy or
+           {candle_table}.volume_buy != excluded.volume_buy or
+           {candle_table}.trades_buy != excluded.trades_buy or
+           {candle_table}.amount_sell != excluded.amount_sell or
+           {candle_table}.volume_sell != excluded.volume_sell or
+           {candle_table}.trades_sell != excluded.trades_sell
         )
     returning 1
 ),
@@ -380,17 +380,17 @@ aggregated_candles as (
         coalesce(min(low),0)  as low,
         coalesce((array_agg(close order by timestamp desc))[1],0)  as close,
         coalesce(avg(avg),0) as avg,
-        sum(buy_amount) as buy_amount,
-        sum(buy_trades) as buy_trades,
-        sum(buy_volume) as buy_volume,
-        sum(sell_amount) as sell_amount,
-        sum(sell_trades) as sell_trades,
-        sum(sell_volume) as sell_volume
+        sum(amount_buy) as amount_buy,
+        sum(trades_buy) as trades_buy,
+        sum(volume_buy) as volume_buy,
+        sum(amount_sell) as amount_sell,
+        sum(trades_sell) as trades_sell,
+        sum(volume_sell) as volume_sell
     from {source_table}
         where
             timestamp > (select start_ts from timestamp) and
             timestamp < (select end_ts from timestamp) and
-            (buy_trades + sell_trades) > 0
+            (trades_buy + trades_sell) > 0
     group by token_pair_id, date_trunc('{time_unit}', timestamp) - (extract({time_unit} from timestamp)::int % {window}) * interval '1 {time_unit}'
 )
 insert into {destination_table} (
@@ -401,12 +401,12 @@ insert into {destination_table} (
     low,
     close,
     avg,
-    buy_amount,
-    buy_trades,
-    buy_volume,
-    sell_amount,
-    sell_trades,
-    sell_volume
+    amount_buy,
+    trades_buy,
+    volume_buy,
+    amount_sell,
+    trades_sell,
+    volume_sell
 )
 select
     token_pair_id,
@@ -416,12 +416,12 @@ select
     low,
     close,
     avg,
-    buy_amount,
-    buy_trades,
-    buy_volume,
-    sell_amount,
-    sell_trades,
-    sell_volume
+    amount_buy,
+    trades_buy,
+    volume_buy,
+    amount_sell,
+    trades_sell,
+    volume_sell
 from aggregated_candles
 on conflict (token_pair_id, timestamp)
 do update set
@@ -430,24 +430,24 @@ do update set
     low = excluded.low,
     close = excluded.close,
     avg = excluded.avg,
-    buy_amount = excluded.buy_amount,
-    buy_trades = excluded.buy_trades,
-    buy_volume = excluded.buy_volume,
-    sell_amount = excluded.sell_amount,
-    sell_trades = excluded.sell_trades,
-    sell_volume = excluded.sell_volume
+    amount_buy = excluded.amount_buy,
+    trades_buy = excluded.trades_buy,
+    volume_buy = excluded.volume_buy,
+    amount_sell = excluded.amount_sell,
+    trades_sell = excluded.trades_sell,
+    volume_sell = excluded.volume_sell
 where (
        {destination_table}.open != excluded.open or
        {destination_table}.high != excluded.high or
        {destination_table}.low != excluded.low or
        {destination_table}.close != excluded.close or
        {destination_table}.avg != excluded.avg or
-       {destination_table}.buy_amount != excluded.buy_amount or
-       {destination_table}.buy_trades != excluded.buy_trades or
-       {destination_table}.buy_volume != excluded.buy_volume or
-       {destination_table}.sell_amount != excluded.sell_amount or
-       {destination_table}.sell_trades != excluded.sell_trades or
-       {destination_table}.sell_volume != excluded.sell_volume
+       {destination_table}.amount_buy != excluded.amount_buy or
+       {destination_table}.trades_buy != excluded.trades_buy or
+       {destination_table}.volume_buy != excluded.volume_buy or
+       {destination_table}.amount_sell != excluded.amount_sell or
+       {destination_table}.trades_sell != excluded.trades_sell or
+       {destination_table}.volume_sell != excluded.volume_sell
     )
         "#
     );

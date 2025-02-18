@@ -57,10 +57,10 @@ impl Pumpfun {
         // let bonding_curve_account = rpc.get_bonding_curve_account(mint).unwrap();
         let bonding_curve_account = rpc.get_bonding_curve_account(mint.clone()).await;
 
-        // let buy_amount = bonding_curve_account.get_buy_price(amount_sol).map_err(error::ClientError::BondingCurveError)?;
-        let buy_amount = bonding_curve_account.get_buy_price(amount_sol);
+        // let amount_buy = bonding_curve_account.get_buy_price(amount_sol).map_err(error::ClientError::BondingCurveError)?;
+        let amount_buy = bonding_curve_account.get_buy_price(amount_sol);
 
-        let buy_amount_with_slippage = calculate_with_slippage_buy(amount_sol, slippage_basis_points.unwrap_or(500));
+        let amount_buy_with_slippage = calculate_with_slippage_buy(amount_sol, slippage_basis_points.unwrap_or(500));
 
         let client = Arc::new(RpcClient::new("https://api.mainnet-beta.solana.com".to_string()));
 
@@ -88,8 +88,8 @@ impl Pumpfun {
             &mint,
             &pubkey!("CebN5WGQ4jvEPvsVU4EoHEpgzq1VV7AbicfhtW4xC9iM"),
             BuyInstructionArgs {
-                amount: buy_amount,
-                max_sol_cost: buy_amount_with_slippage,
+                amount: amount_buy,
+                max_sol_cost: amount_buy_with_slippage,
             },
         ));
         //
@@ -160,8 +160,8 @@ impl Pumpfun {
         //     mint,
         //     &global_account.fee_recipient,
         //     BuyInstructionArgs {
-        //         amount: buy_amount,
-        //         max_sol_cost: buy_amount_with_slippage,
+        //         amount: amount_buy,
+        //         max_sol_cost: amount_buy_with_slippage,
         //     },
         // ));
         //

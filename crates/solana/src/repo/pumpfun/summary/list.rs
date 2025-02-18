@@ -17,8 +17,8 @@ impl SummaryRepo {
 select
     token_pair_id,
     trades,
-    buy_trades,
-    sell_trades
+    trades_buy,
+    trades_sell
 from {table}
 "#,
         ));
@@ -42,12 +42,12 @@ from {table}
 fn row_to_trades(row: &PgRow) -> SummaryTrades {
     SummaryTrades {
         buy: TradesAndChange {
-            trades: row.get::<Trades, _>("buy_trades"),
-            // change: Change(row.get::<f64, _>("buy_trades_change")),
+            trades: row.get::<Trades, _>("trades_buy"),
+            // change: Change(row.get::<f64, _>("trades_buy_change")),
         },
         sell: TradesAndChange {
-            trades: row.get::<Trades, _>("sell_trades"),
-            // change: Change(row.get::<f64, _>("sell_trades_change")),
+            trades: row.get::<Trades, _>("trades_sell"),
+            // change: Change(row.get::<f64, _>("trades_sell_change")),
         },
         total: TradesAndChange {
             trades: row.get::<Trades, _>("trades"),
