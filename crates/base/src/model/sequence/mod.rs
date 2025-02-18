@@ -39,3 +39,9 @@ impl From<JsonValue> for Sequence {
         serde_json::from_value(value).expect("Failed to deserialize Sequence")
     }
 }
+
+impl Sequence {
+    pub fn applicable(&self) -> bool {
+        self.condition.applicable()
+    }
+}

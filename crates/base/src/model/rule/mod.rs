@@ -25,3 +25,9 @@ pub struct Rule {
     pub created_at: CreatedAt,
     pub updated_at: UpdatedAt,
 }
+
+impl Rule {
+    pub fn applicable(&self) -> bool {
+        self.sequence.applicable()
+    }
+}

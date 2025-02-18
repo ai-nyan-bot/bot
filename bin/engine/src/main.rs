@@ -43,12 +43,16 @@ fn main() {
         }));
 
         loop {
-            let strategies = state.service.rule.list_active().await.unwrap();
+            let rules = state.service.rule.list_active().await.unwrap();
 
             let pumpfun_facts = state.service.fact.pumpfun_facts().await;
             println!("{} pumpfun facts", pumpfun_facts.len());
 
-            for rule in &strategies {
+            for rule in &rules {
+                if !rule.applicable() {
+                    // FIXME filter them out before hitting this loop
+                    continue;
+                }
                 println!("test rule - {}", rule.id.0);
 
                 for (token_pair_id, facts) in &pumpfun_facts {
