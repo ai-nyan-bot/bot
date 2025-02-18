@@ -1,75 +1,87 @@
-import React, {FC} from "react";
-import {ValueCount, ValuePercent} from "@types";
+import React, {FC, useState} from "react";
+import {ValueNumber, ValueNumberType} from "@types";
 
-export type ValuePercentInputProps = {
-    defaultValue?: number;
-    value?: number;
-    onChange?: (value: ValuePercent) => void;
-}
+export type ValueNumberInputProps = {
+    supportedTypes: Array<ValueNumberType>;
+    defaultValue: ValueNumber;
+    value?: ValueNumber;
+    onChange?: (value: ValueNumber) => void;
+};
 
-export const ValuePercentInput: FC<ValuePercentInputProps> = ({value, defaultValue, onChange}) => {
-    return (
-        <input
-            type="number"
-            value={value?.toString() || defaultValue?.toString()}
-            onChange={(e) => {
-                if (onChange) {
-                    const input = e.target.value;
-                    if (input.trim() === "") {
-                        onChange(
-                            {
-                                type: 'PERCENT',
-                                value: 0
-                            }
-                        )
-                        return;
+export const ValueNumberInput: FC<ValueNumberInputProps> = ({supportedTypes, value, defaultValue, onChange}) => {
+    const [selectedType, setSelectedType] = useState<ValueNumberType>(value?.type || defaultValue.type);
+    const [inputValue, setInputValue] = useState<number | undefined>(value?.value || defaultValue.value);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const input = e.target.value.trim();
+        if (input === "") {
+            setInputValue(undefined);
+        } else {
+            const parsedValue = (selectedType === 'COUNT')
+                ? parseInt(input, 10)
+                : parseFloat(input);
+
+            setInputValue(parsedValue)
+
+            if (onChange) {
+                onChange(
+                    {
+                        type: selectedType,
+                        value: parsedValue
                     }
-                    onChange(
-                        {
-                            type: 'PERCENT',
-                            value: parseFloat(e.target.value)
-                        }
-                    )
-                }
-            }}
-            className="border p-2 w-full rounded"
-        />
-    )
-}
+                )
+            }
+        }
+    }
 
+    const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const newType = e.target.value as ValueNumberType;
+        setSelectedType(newType);
 
-export type ValueCountInputProps = {
-    defaultValue?: number;
-    value?: number;
-    onChange?: (value: ValueCount) => void;
-}
+        let value = inputValue;
+        if (newType === 'COUNT') {
+            if (value) {
+                value = Math.trunc(value);
+                setInputValue(value);
+            }
+        }
 
-export const ValueCountInput: FC<ValueCountInputProps> = ({value, defaultValue, onChange}) => {
-    return (
-        <input
-            type="number"
-            value={value?.toString() || defaultValue?.toString()}
-            onChange={(e) => {
-                if (onChange) {
-                    const input = e.target.value;
-                    if (input.trim() === "") {
-                        onChange(
-                            {
-                                type: 'COUNT',
-                                value: 0
-                            }
-                        )
-                        return;
+        if (value) {
+            if (onChange) {
+                onChange(
+                    {
+                        type: newType,
+                        value
                     }
-                    onChange(
-                        {
-                            type: 'COUNT',
-                            value: parseInt(e.target.value)
-                        }
-                    )
-                }
-            }}
-            className="border p-2 w-full rounded"
-        />
-    )
+                )
+            }
+        }
+    };
+
+    const options = [
+        {value: 'COUNT', label: "Count"},
+        {value: 'PERCENT', label: '%'},
+        {value: 'QUOTE', label: 'SOL'},
+        {value: 'USD', label: 'USD'}
+    ].filter(opt => supportedTypes.find(t => opt.value === t))
+        .map(opt => <option value={opt.value}>{opt.label}</option>);
+
+    return (
+        <div className="flex items-center space-x-2">
+            <input
+                type="number"
+                value={inputValue}
+                onChange={handleInputChange}
+                className="border p-2 w-full rounded"
+            />
+            <select
+                value={selectedType}
+                onChange={handleTypeChange}
+                className="border p-2 rounded"
+                disabled={options.length < 2}
+            >
+                {options}
+            </select>
+        </div>
+    );
 }

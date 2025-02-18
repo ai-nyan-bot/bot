@@ -40,7 +40,11 @@ export enum Operator {
     GREATER_THAN = 'GREATER_THAN',
 }
 
+export type ValueType = 'BOOLEAN' | 'COUNT' | 'PERCENT' | 'QUOTE' | 'STRING' | 'USD';
+export type ValueNumberType = 'COUNT' | 'PERCENT' | 'QUOTE' | 'USD';
+
 export type Value = ValueBoolean | ValueCount | ValuePercent | ValueQuote | ValueString | ValueUsd;
+export type ValueNumber = ValueCount | ValuePercent | ValueQuote | ValueUsd;
 
 export type ValueBoolean = {
     type: 'BOOLEAN';
