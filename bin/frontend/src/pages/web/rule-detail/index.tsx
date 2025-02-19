@@ -5,12 +5,14 @@ import {useParams} from "react-router-dom";
 import {Sequence} from "@types";
 import {injectId, uuidv4} from "@utils";
 import {RuleDetailForm} from "@components/form";
+import {Button} from "@components/ui/button.tsx";
 
 
 const WebRuleDetailPage: React.FC = () => {
     const {id} = useParams();
     const [getRule, rule, loading, ruleError] = useRuleGet();
-    const [updateRule] = useRuleUpdate();
+    const [updateRule, _, updating] = useRuleUpdate();
+    const [ruleName, setRuleName] = useState<string>();
     const [sequence, setSequence] = useState<Sequence>();
 
     useEffect(() => {
@@ -25,6 +27,7 @@ const WebRuleDetailPage: React.FC = () => {
 
     useEffect(() => {
         let injectedSequence = injectId(rule?.sequence, uuidv4) as Sequence;
+        setRuleName(rule?.name)
         setSequence(injectedSequence)
     }, [rule]);
 
@@ -40,15 +43,20 @@ const WebRuleDetailPage: React.FC = () => {
         <div className="w-full flex flex-col space-y-2 bg-zinc-50 p-2">
             <RuleDetailForm
                 id={id}
-                name={rule.name}
+                name={ruleName || ''}
+                onNameChanged={setRuleName}
             />
 
             <Editor
                 sequence={sequence}
                 onChange={(sequence) => {
-                    updateRule(id, {sequence})
+                    setSequence(sequence)
                 }}
             />
+
+            <Button onClick={() => {
+                updateRule(id, {name: ruleName, sequence})
+            }} disabled={updating}>Update</Button>
         </div>
     );
 };

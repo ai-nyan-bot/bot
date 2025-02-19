@@ -1,28 +1,14 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::{Condition, Operator, Value};
+use crate::model::{Condition, Fact};
 
 impl Condition {
 	/// Determines whether a condition can be applied.
 	/// E.g. the user provides an empty AND condition, which would match everything
 	pub fn applicable(&self) -> bool {
-		
 		match self {
-			Condition::Compare { value, operator, .. } => match value {
-				Value::Boolean(_) => match operator {
-					Operator::Equal | Operator::NotEqual => true,
-					_ => false,
-				},
-				Value::Count(_) => true,
-				Value::Percent(_) => true,
-				Value::Quote(_) => true,
-				Value::String(value) => match operator {
-					Operator::Equal => value.trim() != "",
-					_ => false,
-				},
-				Value::Usd(_) => true
-			},
+			Condition::Compare { .. } => Fact::try_from(self).is_ok(),
 			Condition::And { conditions } => !conditions.is_empty() && conditions.iter().find(|c| c.applicable() == false).is_none(),
 			Condition::Or { conditions } => !conditions.is_empty() && conditions.iter().find(|c| c.applicable() == false).is_none(),
 			Condition::AndNot { conditions } => !conditions.is_empty() && conditions.iter().find(|c| c.applicable() == false).is_none(),
