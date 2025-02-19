@@ -1,6 +1,5 @@
 import {Operator} from "@types";
-import React, {FC} from "react";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@components/ui/select.tsx";
+import React, {FC, useState} from "react";
 
 export const useOperatorOptions = (supported: Array<Operator>): Array<{
     value: Operator,
@@ -24,34 +23,38 @@ export const useOperatorOptions = (supported: Array<Operator>): Array<{
 }
 
 export type SelectOperatorProps = {
-    defaultOperator?: Operator;
+    defaultOperator: Operator;
     supported: Array<Operator>
     onChange?: (value: Operator) => void
 }
 
 export const SelectOperator: FC<SelectOperatorProps> = ({defaultOperator, supported, onChange}) => {
-    const operatorOptions = useOperatorOptions(supported);
+    const [selected, setSelected] = useState<Operator>(defaultOperator);
+
+    const options = useOperatorOptions(supported)
+        .map(opt => <option value={opt.value}>{opt.label}</option>);
+
     if (supported.length === 0) {
         return null;
     }
-    return (
-        <Select defaultValue={defaultOperator ?? supported[0]}
-                onValueChange={(value) => {
-                    if (onChange) {
-                        onChange(value as Operator);
-                    }
-                }}>
-            <SelectTrigger className="w-full">
-                <SelectValue/>
-            </SelectTrigger>
-            <SelectContent>
-                {operatorOptions.map(({value, label}) => (
-                    <SelectItem key={value} value={value}>
-                        {label}
-                    </SelectItem>
-                ))}
-            </SelectContent>
-        </Select>
 
+    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const newOperator = e.target.value as Operator;
+        setSelected(newOperator);
+        if (onChange) {
+            onChange(newOperator)
+        }
+    };
+
+
+    return (
+        <select
+            value={selected}
+            onChange={handleChange}
+            className="w-full border p-2 rounded"
+            disabled={options.length < 2}
+        >
+            {options}
+        </select>
     );
 }
