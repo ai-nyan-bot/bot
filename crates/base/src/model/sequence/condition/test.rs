@@ -9,7 +9,8 @@ impl Condition {
 			Condition::Compare {
 				timeframe, operator, value, ..
 			} => {
-				let fact = Fact::try_from(self).unwrap(); // FIXME
+				// Should always be Ok, as this is enforced during creation / update
+				let Ok(fact) = Fact::try_from(self) else { return false };
 
 				let result = match timeframe {
 					None => facts.get(&fact),
@@ -60,26 +61,17 @@ mod tests {
 	use Value::Quote;
 
 	fn facts() -> Facts {
-		Facts::new()
-			.with_value(PriceQuote, Quote(1.0))
-			.unwrap()
-			.with_value(PriceUsd, Value::Usd(2.0))
-			.unwrap()
-			.with_timeframe_value(VolumeChangeQuote, Quote(3.0), S1)
-			.unwrap()
-			.with_timeframe_value(VolumeChangeQuote, Quote(4.0), M1)
-			.unwrap()
+		Facts::new().with_value(PriceQuote, Quote(1.0)).unwrap().with_value(PriceUsd, Value::Usd(2.0)).unwrap().with_timeframe_value(VolumeChangeQuote, Quote(3.0), S1).unwrap().with_timeframe_value(VolumeChangeQuote, Quote(4.0), M1).unwrap()
 	}
 
 	mod without_timeframe {
 		use crate::model::sequence::condition::test::tests::facts;
 		use crate::model::Field::Price;
-		use crate::model::Operator::{IncreasedByMoreThanEqual, MoreThanEqual};
+		use crate::model::Operator::MoreThanEqual;
 		use crate::model::Value::Usd;
-		use crate::model::{Condition, Field, Operator, Value};
+		use crate::model::{Condition, Field, Value};
 		use Condition::{And, AndNot, Compare, Or};
 		use Field::Volume;
-		use Operator::Equal;
 		use Value::Quote;
 
 		#[test]
@@ -90,8 +82,7 @@ mod tests {
 					operator: MoreThanEqual,
 					value: Quote(1.0),
 					timeframe: None,
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				true
 			)
 		}
@@ -104,8 +95,7 @@ mod tests {
 					operator: MoreThanEqual,
 					value: Quote(1337.0),
 					timeframe: None,
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				false
 			)
 		}
@@ -128,8 +118,7 @@ mod tests {
 							timeframe: None,
 						}
 					]
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				true
 			)
 		}
@@ -152,8 +141,7 @@ mod tests {
 							timeframe: None,
 						}
 					]
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				false
 			)
 		}
@@ -176,8 +164,7 @@ mod tests {
 							timeframe: None,
 						}
 					]
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				false
 			)
 		}
@@ -200,8 +187,7 @@ mod tests {
 							timeframe: None,
 						}
 					]
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				false
 			)
 		}
@@ -224,8 +210,7 @@ mod tests {
 							timeframe: None,
 						}
 					]
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				true
 			)
 		}
@@ -248,8 +233,7 @@ mod tests {
 							timeframe: None,
 						}
 					]
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				true
 			)
 		}
@@ -272,8 +256,7 @@ mod tests {
 							timeframe: None,
 						}
 					]
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				true
 			)
 		}
@@ -296,8 +279,7 @@ mod tests {
 							timeframe: None,
 						}
 					]
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				false
 			)
 		}
@@ -320,8 +302,7 @@ mod tests {
 							timeframe: None,
 						}
 					]
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				false
 			)
 		}
@@ -344,8 +325,7 @@ mod tests {
 							timeframe: None,
 						}
 					]
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				false
 			)
 		}
@@ -368,8 +348,7 @@ mod tests {
 							timeframe: None,
 						}
 					]
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				false
 			)
 		}
@@ -392,8 +371,7 @@ mod tests {
 							timeframe: None,
 						}
 					]
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				true
 			)
 		}
@@ -403,7 +381,7 @@ mod tests {
 		use crate::model::sequence::condition::test::tests::facts;
 		use crate::model::Condition::{And, AndNot, Or};
 		use crate::model::Operator::IncreasedByMoreThanEqual;
-		use crate::model::{Condition, Field, Operator, Value};
+		use crate::model::{Condition, Field, Value};
 		use common::model::Timeframe;
 		use Condition::Compare;
 		use Field::Volume;
@@ -418,8 +396,7 @@ mod tests {
 					operator: IncreasedByMoreThanEqual,
 					value: Quote(3.0),
 					timeframe: Some(S1),
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				true
 			)
 		}
@@ -432,8 +409,7 @@ mod tests {
 					operator: IncreasedByMoreThanEqual,
 					value: Quote(1337.0),
 					timeframe: Some(M1),
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				false
 			)
 		}
@@ -456,8 +432,7 @@ mod tests {
 							timeframe: Some(M1),
 						}
 					]
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				true
 			)
 		}
@@ -480,8 +455,7 @@ mod tests {
 							timeframe: Some(M1),
 						}
 					]
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				false
 			)
 		}
@@ -504,8 +478,7 @@ mod tests {
 							timeframe: Some(M1),
 						}
 					]
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				false
 			)
 		}
@@ -528,8 +501,7 @@ mod tests {
 							timeframe: Some(M1),
 						}
 					]
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				false
 			)
 		}
@@ -552,8 +524,7 @@ mod tests {
 							timeframe: Some(M1),
 						}
 					]
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				true
 			)
 		}
@@ -576,8 +547,7 @@ mod tests {
 							timeframe: Some(M1),
 						}
 					]
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				true
 			)
 		}
@@ -600,8 +570,7 @@ mod tests {
 							timeframe: Some(M1),
 						}
 					]
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				true
 			)
 		}
@@ -624,8 +593,7 @@ mod tests {
 							timeframe: Some(M1),
 						}
 					]
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				false
 			)
 		}
@@ -648,8 +616,7 @@ mod tests {
 							timeframe: Some(M1),
 						}
 					]
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				false
 			)
 		}
@@ -672,8 +639,7 @@ mod tests {
 							timeframe: Some(M1),
 						}
 					]
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				false
 			)
 		}
@@ -696,8 +662,7 @@ mod tests {
 							timeframe: Some(M1),
 						}
 					]
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				false
 			)
 		}
@@ -720,8 +685,7 @@ mod tests {
 							timeframe: Some(M1),
 						}
 					]
-				}
-					.test(&facts()),
+				}.test(&facts()),
 				true
 			)
 		}
