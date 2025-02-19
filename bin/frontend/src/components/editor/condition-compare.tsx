@@ -1,4 +1,4 @@
-import {Condition, Field, Operator, Timeframe, Value} from "@types";
+import {Condition, Field, Operator, Timeframe, Value, ValueNumber} from "@types";
 import React, {FC} from "react";
 import {SelectOperator} from "@components/editor/operator.tsx";
 import {ValueNumberInput} from "@components/editor/value.tsx";
@@ -58,18 +58,9 @@ export const Compare: FC<CompareProps> = ({
                 onChange={(value) => onOperatorChange(condition.id, value)}
             />
 
-            {/*<ValuePercentInput*/}
-            {/*    defaultValue={(condition.value as ValuePercent)?.value}*/}
-            {/*    onChange={(value) => onValueChange(condition.id, value)}*/}
-            {/*/>*/}
-
             <ValueNumberInput
-                // supportedTypes={['COUNT']}
                 supportedTypes={['COUNT', 'PERCENT']}
-                // supportedTypes={['QUOTE', 'USD']}
-                defaultValue={{type: 'COUNT', value: 0}}
-                // defaultValue={{type: 'QUOTE', value: 0}}
-                // defaultValue={(condition.value as ValueCount)?.value}
+                defaultValue={condition.value ? condition.value as ValueNumber : {type: 'COUNT', value: 0}}
                 onChange={(value) => onValueChange(condition.id, value)}
             />
 
