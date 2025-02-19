@@ -1,6 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use std::ops::Neg;
 use crate::model::{Operator, Value};
 
 pub(crate) fn compare(fact: &Value, operator: &Operator, rule: &Value) -> bool {
@@ -14,15 +15,15 @@ pub(crate) fn compare(fact: &Value, operator: &Operator, rule: &Value) -> bool {
             Operator::Equal => fact == rule,
             Operator::NotEqual => fact != rule,
 
-            Operator::IncreasedByMoreThan => fact > rule,
-            Operator::IncreasedByMoreThanEqual => fact >= rule,
-            Operator::IncreasedByLessThan => fact < rule,
-            Operator::IncreasedByLessThanEqual => fact <= rule,
+            Operator::IncreasedByMoreThan => *fact > 0 && fact > rule,
+            Operator::IncreasedByMoreThanEqual => *fact > 0 && fact >= rule,
+            Operator::IncreasedByLessThan => *fact > 0 && fact < rule,
+            Operator::IncreasedByLessThanEqual => *fact > 0 && fact <= rule,
 
-            Operator::DecreasedByMoreThan => fact < rule,
-            Operator::DecreasedByMoreThanEqual => fact <= rule,
-            Operator::DecreasedByLessThan => fact > rule,
-            Operator::DecreasedByLessThanEqual => fact >= rule,
+            Operator::DecreasedByMoreThan => *fact < 0 && *fact > rule.neg(),
+            Operator::DecreasedByMoreThanEqual => *fact < 0 && *fact >= rule.neg(),
+            Operator::DecreasedByLessThan => *fact < 0 && *fact < rule.neg(),
+            Operator::DecreasedByLessThanEqual => *fact < 0 && *fact <= rule.neg(),
 
             Operator::MoreThan => fact > rule,
             Operator::MoreThanEqual => fact >= rule,
@@ -34,15 +35,15 @@ pub(crate) fn compare(fact: &Value, operator: &Operator, rule: &Value) -> bool {
             Operator::Equal => fact == rule,
             Operator::NotEqual => fact != rule,
 
-            Operator::IncreasedByMoreThan => fact > rule,
-            Operator::IncreasedByMoreThanEqual => fact >= rule,
-            Operator::IncreasedByLessThan => fact < rule,
-            Operator::IncreasedByLessThanEqual => fact <= rule,
+            Operator::IncreasedByMoreThan => *fact > 0.0 && fact > rule,
+            Operator::IncreasedByMoreThanEqual => *fact > 0.0 && fact >= rule,
+            Operator::IncreasedByLessThan => *fact > 0.0 && fact < rule,
+            Operator::IncreasedByLessThanEqual => *fact > 0.0 && fact <= rule,
 
-            Operator::DecreasedByMoreThan => fact < rule,
-            Operator::DecreasedByMoreThanEqual => fact <= rule,
-            Operator::DecreasedByLessThan => fact > rule,
-            Operator::DecreasedByLessThanEqual => fact >= rule,
+            Operator::DecreasedByMoreThan => *fact < 0.0 && *fact > rule.neg(),
+            Operator::DecreasedByMoreThanEqual => *fact < 0.0 && *fact >= rule.neg(),
+            Operator::DecreasedByLessThan => *fact < 0.0 && *fact < rule.neg(),
+            Operator::DecreasedByLessThanEqual => *fact < 0.0 && *fact <= rule.neg(),
 
             Operator::MoreThan => fact > rule,
             Operator::MoreThanEqual => fact >= rule,
@@ -54,15 +55,15 @@ pub(crate) fn compare(fact: &Value, operator: &Operator, rule: &Value) -> bool {
             Operator::Equal => fact == rule,
             Operator::NotEqual => fact != rule,
 
-            Operator::IncreasedByMoreThan => fact > rule,
-            Operator::IncreasedByMoreThanEqual => fact >= rule,
-            Operator::IncreasedByLessThan => fact < rule,
-            Operator::IncreasedByLessThanEqual => fact <= rule,
+            Operator::IncreasedByMoreThan => *fact > 0.0 && fact > rule,
+            Operator::IncreasedByMoreThanEqual => *fact > 0.0 && fact >= rule,
+            Operator::IncreasedByLessThan => *fact > 0.0 && fact < rule,
+            Operator::IncreasedByLessThanEqual => *fact > 0.0 && fact <= rule,
 
-            Operator::DecreasedByMoreThan => fact < rule,
-            Operator::DecreasedByMoreThanEqual => fact <= rule,
-            Operator::DecreasedByLessThan => fact > rule,
-            Operator::DecreasedByLessThanEqual => fact >= rule,
+            Operator::DecreasedByMoreThan => *fact < 0.0 && *fact > rule.neg(),
+            Operator::DecreasedByMoreThanEqual => *fact < 0.0 && *fact >= rule.neg(),
+            Operator::DecreasedByLessThan => *fact < 0.0 && *fact < rule.neg(),
+            Operator::DecreasedByLessThanEqual => *fact < 0.0 && *fact <= rule.neg(),
 
             Operator::MoreThan => fact > rule,
             Operator::MoreThanEqual => fact >= rule,
@@ -79,15 +80,15 @@ pub(crate) fn compare(fact: &Value, operator: &Operator, rule: &Value) -> bool {
             Operator::Equal => fact == rule,
             Operator::NotEqual => fact != rule,
 
-            Operator::IncreasedByMoreThan => fact > rule,
-            Operator::IncreasedByMoreThanEqual => fact >= rule,
-            Operator::IncreasedByLessThan => fact < rule,
-            Operator::IncreasedByLessThanEqual => fact <= rule,
+            Operator::IncreasedByMoreThan => *fact > 0.0 && fact > rule,
+            Operator::IncreasedByMoreThanEqual => *fact > 0.0 && fact >= rule,
+            Operator::IncreasedByLessThan => *fact > 0.0 && fact < rule,
+            Operator::IncreasedByLessThanEqual => *fact > 0.0 && fact <= rule,
 
-            Operator::DecreasedByMoreThan => fact < rule,
-            Operator::DecreasedByMoreThanEqual => fact <= rule,
-            Operator::DecreasedByLessThan => fact > rule,
-            Operator::DecreasedByLessThanEqual => fact >= rule,
+            Operator::DecreasedByMoreThan => *fact < 0.0 && *fact > rule.neg(),
+            Operator::DecreasedByMoreThanEqual => *fact < 0.0 && *fact >= rule.neg(),
+            Operator::DecreasedByLessThan => *fact < 0.0 && *fact < rule.neg(),
+            Operator::DecreasedByLessThanEqual => *fact < 0.0 && *fact <= rule.neg(),
 
             Operator::MoreThan => fact > rule,
             Operator::MoreThanEqual => fact >= rule,
@@ -127,10 +128,10 @@ mod tests {
         assert!(compare(&Count(3), &IncreasedByLessThan, &Count(5)));
         assert!(compare(&Count(3), &IncreasedByLessThanEqual, &Count(3)));
 
-        assert!(compare(&Count(3), &DecreasedByMoreThan, &Count(5)));
-        assert!(compare(&Count(5), &DecreasedByMoreThanEqual, &Count(5)));
-        assert!(compare(&Count(5), &DecreasedByLessThan, &Count(3)));
-        assert!(compare(&Count(3), &DecreasedByLessThanEqual, &Count(3)));
+        assert!(compare(&Count(-3), &DecreasedByMoreThan, &Count(5)));
+        assert!(compare(&Count(-5), &DecreasedByMoreThanEqual, &Count(5)));
+        assert!(compare(&Count(-5), &DecreasedByLessThan, &Count(3)));
+        assert!(compare(&Count(-3), &DecreasedByLessThanEqual, &Count(3)));
 
         assert!(compare(&Count(5), &MoreThan, &Count(3)));
         assert!(compare(&Count(5), &MoreThanEqual, &Count(5)));
@@ -149,10 +150,10 @@ mod tests {
         assert!(compare(&Percent(3.0), &IncreasedByLessThan, &Percent(5.0)));
         assert!(compare(&Percent(3.0), &IncreasedByLessThanEqual, &Percent(3.0)));
 
-        assert!(compare(&Percent(3.0), &DecreasedByMoreThan, &Percent(5.0)));
-        assert!(compare(&Percent(5.0), &DecreasedByMoreThanEqual, &Percent(5.0)));
-        assert!(compare(&Percent(5.0), &DecreasedByLessThan, &Percent(3.0)));
-        assert!(compare(&Percent(3.0), &DecreasedByLessThanEqual, &Percent(3.0)));
+        assert!(compare(&Percent(-3.0), &DecreasedByMoreThan, &Percent(5.0)));
+        assert!(compare(&Percent(-5.0), &DecreasedByMoreThanEqual, &Percent(5.0)));
+        assert!(compare(&Percent(-5.0), &DecreasedByLessThan, &Percent(3.0)));
+        assert!(compare(&Percent(-3.0), &DecreasedByLessThanEqual, &Percent(3.0)));
 
         assert!(compare(&Percent(5.0), &MoreThan, &Percent(3.0)));
         assert!(compare(&Percent(5.0), &MoreThanEqual, &Percent(5.0)));
@@ -170,10 +171,10 @@ mod tests {
         assert!(compare(&Quote(3.0), &IncreasedByLessThan, &Quote(5.0)));
         assert!(compare(&Quote(3.0), &IncreasedByLessThanEqual, &Quote(3.0)));
 
-        assert!(compare(&Quote(3.0), &DecreasedByMoreThan, &Quote(5.0)));
-        assert!(compare(&Quote(5.0), &DecreasedByMoreThanEqual, &Quote(5.0)));
-        assert!(compare(&Quote(5.0), &DecreasedByLessThan, &Quote(3.0)));
-        assert!(compare(&Quote(3.0), &DecreasedByLessThanEqual, &Quote(3.0)));
+        assert!(compare(&Quote(-3.0), &DecreasedByMoreThan, &Quote(5.0)));
+        assert!(compare(&Quote(-5.0), &DecreasedByMoreThanEqual, &Quote(5.0)));
+        assert!(compare(&Quote(-5.0), &DecreasedByLessThan, &Quote(3.0)));
+        assert!(compare(&Quote(-3.0), &DecreasedByLessThanEqual, &Quote(3.0)));
 
         assert!(compare(&Quote(5.0), &MoreThan, &Quote(3.0)));
         assert!(compare(&Quote(5.0), &MoreThanEqual, &Quote(5.0)));
@@ -198,10 +199,10 @@ mod tests {
         assert!(compare(&Usd(3.0), &IncreasedByLessThan, &Usd(5.0)));
         assert!(compare(&Usd(3.0), &IncreasedByLessThanEqual, &Usd(3.0)));
 
-        assert!(compare(&Usd(3.0), &DecreasedByMoreThan, &Usd(5.0)));
-        assert!(compare(&Usd(5.0), &DecreasedByMoreThanEqual, &Usd(5.0)));
-        assert!(compare(&Usd(5.0), &DecreasedByLessThan, &Usd(3.0)));
-        assert!(compare(&Usd(3.0), &DecreasedByLessThanEqual, &Usd(3.0)));
+        assert!(compare(&Usd(-3.0), &DecreasedByMoreThan, &Usd(5.0)));
+        assert!(compare(&Usd(-5.0), &DecreasedByMoreThanEqual, &Usd(5.0)));
+        assert!(compare(&Usd(-5.0), &DecreasedByLessThan, &Usd(3.0)));
+        assert!(compare(&Usd(-3.0), &DecreasedByLessThanEqual, &Usd(3.0)));
 
         assert!(compare(&Usd(5.0), &MoreThan, &Usd(3.0)));
         assert!(compare(&Usd(5.0), &MoreThanEqual, &Usd(5.0)));

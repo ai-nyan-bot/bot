@@ -25,7 +25,7 @@ pub enum Value {
     #[serde(serialize_with = "serialize_boolean", deserialize_with = "deserialize_boolean")]
     Boolean(bool),
     #[serde(serialize_with = "serialize_count", deserialize_with = "deserialize_count")]
-    Count(u64),
+    Count(i64),
     #[serde(serialize_with = "serialize_percent", deserialize_with = "deserialize_percent")]
     Percent(f64),
     #[serde(serialize_with = "serialize_quote", deserialize_with = "deserialize_quote")]
@@ -44,7 +44,7 @@ impl From<PriceAvgQuote> for Value {
 
 impl From<Trades> for Value {
     fn from(value: Trades) -> Self {
-        Self::Count(value.0 as u64)
+        Self::Count(value.0 as i64)
     }
 }
 

@@ -44,6 +44,10 @@ impl Facts {
 		}
 	}
 
+	pub fn set_timeframe_value(&mut self, fact: Fact, value: impl Into<Value>, timeframe: Timeframe) -> Result<(), FactError> {
+		self.set(fact, value.into(), Some(timeframe))
+	}
+
 	pub fn set(&mut self, fact: Fact, value: Value, timeframe: Option<Timeframe>) -> Result<(), FactError> {
 		if value.value_type() != fact.value_type() {
 			return Err(FactError::ValueTypeMismatch {
