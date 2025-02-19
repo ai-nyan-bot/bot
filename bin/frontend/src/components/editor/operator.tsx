@@ -10,8 +10,16 @@ export const useOperatorOptions = (supported: Array<Operator>): Array<{
     return [
         {value: Operator.INCREASED_BY_MORE_THAN, label: "increased by more than"},
         {value: Operator.INCREASED_BY_MORE_THAN_EQUAL, label: "increased by more than or equal to"},
+        {value: Operator.INCREASED_BY_LESS_THAN, label: "increased by less than"},
+        {value: Operator.INCREASED_BY_LESS_THAN_EQUAL, label: "increased by less than or equal to"},
+        {value: Operator.DECREASED_BY_MORE_THAN, label: "decreased by more than"},
+        {value: Operator.DECREASED_BY_MORE_THAN_EQUAL, label: "decreased by more than or equal to"},
+        {value: Operator.DECREASED_BY_LESS_THAN, label: "decreased by less than"},
+        {value: Operator.DECREASED_BY_LESS_THAN_EQUAL, label: "decreased by less than or equal to"},
         {value: Operator.MORE_THAN, label: "more than"},
         {value: Operator.MORE_THAN_EQUAL, label: "more than or equal to"},
+        {value: Operator.LESS_THAN, label: "less than"},
+        {value: Operator.LESS_THAN_EQUAL, label: "less than or equal to"},
     ].filter(opt => supported.find(v => v === opt.value));
 }
 

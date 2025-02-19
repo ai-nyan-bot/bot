@@ -7,6 +7,7 @@ impl Condition {
 	/// Determines whether a condition can be applied.
 	/// E.g. the user provides an empty AND condition, which would match everything
 	pub fn applicable(&self) -> bool {
+		
 		match self {
 			Condition::Compare { value, operator, .. } => match value {
 				Value::Boolean(_) => match operator {

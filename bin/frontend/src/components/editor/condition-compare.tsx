@@ -44,7 +44,16 @@ export const Compare: FC<CompareProps> = ({
                 supported={[
                     Operator.INCREASED_BY_MORE_THAN,
                     Operator.INCREASED_BY_MORE_THAN_EQUAL,
-                    Operator.MORE_THAN
+                    Operator.INCREASED_BY_LESS_THAN,
+                    Operator.INCREASED_BY_LESS_THAN_EQUAL,
+                    Operator.DECREASED_BY_MORE_THAN,
+                    Operator.DECREASED_BY_MORE_THAN_EQUAL,
+                    Operator.DECREASED_BY_LESS_THAN,
+                    Operator.DECREASED_BY_LESS_THAN_EQUAL,
+                    Operator.MORE_THAN,
+                    Operator.MORE_THAN_EQUAL,
+                    Operator.LESS_THAN,
+                    Operator.LESS_THAN_EQUAL,
                 ]}
                 onChange={(value) => onOperatorChange(condition.id, value)}
             />
