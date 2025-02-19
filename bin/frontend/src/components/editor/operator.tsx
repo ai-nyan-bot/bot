@@ -23,13 +23,13 @@ export const useOperatorOptions = (supported: Array<Operator>): Array<{
 }
 
 export type SelectOperatorProps = {
-    defaultOperator: Operator;
+    defaultOperator?: Operator;
     supported: Array<Operator>
     onChange?: (value: Operator) => void
 }
 
 export const SelectOperator: FC<SelectOperatorProps> = ({defaultOperator, supported, onChange}) => {
-    const [selected, setSelected] = useState<Operator>(defaultOperator);
+    const [selected, setSelected] = useState<Operator>(defaultOperator || supported[0]);
 
     const options = useOperatorOptions(supported)
         .map(opt => <option value={opt.value}>{opt.label}</option>);
