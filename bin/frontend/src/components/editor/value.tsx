@@ -77,7 +77,7 @@ export const ValueNumberInput: FC<ValueNumberInputProps> = ({supportedTypes, val
             <select
                 value={selectedType}
                 onChange={handleTypeChange}
-                className="border p-2 rounded"
+                className="border p-2 rounded bg-white"
                 disabled={options.length < 2}
             >
                 {options}

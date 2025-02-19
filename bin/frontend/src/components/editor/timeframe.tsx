@@ -1,6 +1,5 @@
 import {Timeframe} from "@types";
-import React, {FC} from "react";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@components/ui/select.tsx";
+import React, {FC, useState} from "react";
 
 
 export const useTimeframeOptions = (supported: Array<Timeframe>): Array<{ value: Timeframe, label: string }> => {
@@ -19,28 +18,31 @@ export type SelectTimeframeProps = {
 }
 
 export const SelectTimeframe: FC<SelectTimeframeProps> = ({defaultTimeframe, supported, onChange}) => {
-    const timeframeOptions = useTimeframeOptions(supported);
+    const [selected, setSelected] = useState<Timeframe>(defaultTimeframe || supported[0]);
+
+    const options = useTimeframeOptions(supported)
+        .map(opt => <option value={opt.value}>{opt.label}</option>);
+
     if (supported.length === 0) {
         return null;
     }
-    return (
-        <Select defaultValue={defaultTimeframe ?? supported[0]}
-                onValueChange={(value) => {
-                    if (onChange) {
-                        onChange(value as Timeframe);
-                    }
-                }}>
-            <SelectTrigger className="w-full">
-                <SelectValue/>
-            </SelectTrigger>
-            <SelectContent>
-                {timeframeOptions.map(({value, label}) => (
-                    <SelectItem key={value} value={value}>
-                        {label}
-                    </SelectItem>
-                ))}
-            </SelectContent>
-        </Select>
 
+    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const newTimeframe = e.target.value as Timeframe;
+        setSelected(newTimeframe);
+        if (onChange) {
+            onChange(newTimeframe)
+        }
+    };
+
+    return (
+        <select
+            value={selected}
+            onChange={handleChange}
+            className="w-full border p-2 rounded bg-white"
+            disabled={options.length < 2}
+        >
+            {options}
+        </select>
     );
 }

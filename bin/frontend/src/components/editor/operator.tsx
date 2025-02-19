@@ -51,7 +51,7 @@ export const SelectOperator: FC<SelectOperatorProps> = ({defaultOperator, suppor
         <select
             value={selected}
             onChange={handleChange}
-            className="w-full border p-2 rounded"
+            className="w-full border p-2 rounded bg-white"
             disabled={options.length < 2}
         >
             {options}

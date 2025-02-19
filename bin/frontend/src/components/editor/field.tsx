@@ -1,6 +1,5 @@
 import {Field} from "@types";
-import React, {FC} from "react";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@components/ui/select.tsx";
+import React, {FC, useState} from "react";
 
 export const useFieldOptions = (supported: Array<Field>): Array<{
     value: Field,
@@ -23,28 +22,31 @@ export type SelectFieldProps = {
 }
 
 export const SelectField: FC<SelectFieldProps> = ({defaultField, supported, onChange}) => {
-    const fieldOptions = useFieldOptions(supported);
+    const [selected, setSelected] = useState<Field>(defaultField || supported[0]);
+
+    const options = useFieldOptions(supported)
+        .map(opt => <option value={opt.value}>{opt.label}</option>);
+
     if (supported.length === 0) {
         return null;
     }
-    return (
-        <Select defaultValue={defaultField ?? supported[0]}
-                onValueChange={(value) => {
-                    if (onChange) {
-                        onChange(value as Field);
-                    }
-                }}>
-            <SelectTrigger className="w-full">
-                <SelectValue/>
-            </SelectTrigger>
-            <SelectContent>
-                {fieldOptions.map(({value, label}) => (
-                    <SelectItem key={value} value={value}>
-                        {label}
-                    </SelectItem>
-                ))}
-            </SelectContent>
-        </Select>
 
+    const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const newField = e.target.value as Field;
+        setSelected(newField);
+        if (onChange) {
+            onChange(newField)
+        }
+    };
+
+    return (
+        <select
+            value={selected}
+            onChange={handleChange}
+            className="w-full border p-2 rounded bg-white"
+            disabled={options.length < 2}
+        >
+            {options}
+        </select>
     );
 }
