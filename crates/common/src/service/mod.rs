@@ -3,6 +3,7 @@
 
 use crate::repo::error::RepoError;
 use log::error;
+use std::fmt::{Display, Formatter};
 
 #[derive(Debug, PartialEq)]
 pub enum ServiceError {
@@ -43,5 +44,17 @@ impl From<serde_json::Error> for ServiceError {
 		ServiceError::Internal(format!("serde error: {}", value.to_string()))
 	}
 }
+
+impl Display for ServiceError {
+	fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+		match self {
+			ServiceError::Conflict(err) => f.write_fmt(format_args!("conflict error: {err}")),
+			ServiceError::Internal(err) => f.write_fmt(format_args!("internal error: {err}")),
+			ServiceError::NotFound(err) => f.write_fmt(format_args!("not found error: {err}")),
+		}
+	}
+}
+
+impl std::error::Error for ServiceError {}
 
 pub type ServiceResult<T> = Result<T, ServiceError>;

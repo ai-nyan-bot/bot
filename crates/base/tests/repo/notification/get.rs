@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 mod get_by_id {
-    use base::model::{NotificationChannel, NotificationKind, NotificationPayload};
+    use base::model::{NotificationChannel, NotificationType, NotificationPayload};
     use base::repo::NotificationRepo;
     use common::repo::error::RepoError;
     use serde_json::Map;
@@ -17,7 +17,7 @@ mod get_by_id {
 
             let notification = create_notification_for_test_user(
                 &mut tx,
-                NotificationKind::ConditionMet,
+                NotificationType::RuleMatched,
                 NotificationPayload(JsonValue::Object({
                     let mut map = Map::new();
                     map.insert("answer".to_string(), JsonValue::String("42".to_string()));
@@ -31,7 +31,7 @@ mod get_by_id {
             assert_eq!(result.id, 1);
             assert_eq!(result.user, 1);
             assert_eq!(result.channel, NotificationChannel::Telegram);
-            assert_eq!(result.kind, NotificationKind::ConditionMet);
+            assert_eq!(result.ty, NotificationType::RuleMatched);
             assert_eq!(&result.payload.0.to_string(), "{\"answer\":\"42\"}");
         })
         .await

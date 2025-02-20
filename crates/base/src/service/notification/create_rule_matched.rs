@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::{NotificationChannel, NotificationKind, NotificationPayload, RuleId, UserId};
+use crate::model::{NotificationChannel, NotificationType, NotificationPayload, RuleId, UserId};
 use crate::model::{TelegramButtonConfig, TokenPairId};
 use crate::repo::NotificationCreateCmd;
 use crate::service::notification::NotificationService;
@@ -10,7 +10,7 @@ use common::service::ServiceResult;
 use serde_json::Map;
 use sqlx::types::JsonValue;
 
-pub enum NotificationConditionMatched {
+pub enum NotificationRuleMatched {
 	Telegram {
 		user: UserId,
 		rule: RuleId,
@@ -20,21 +20,21 @@ pub enum NotificationConditionMatched {
 }
 
 impl NotificationService {
-	pub async fn create_condition_matched(&self, notification: NotificationConditionMatched) -> ServiceResult<()> {
+	pub async fn create_rule_matched(&self, notification: NotificationRuleMatched) -> ServiceResult<()> {
 		let mut tx = self.pool.begin().await?;
-		self.create_condition_matched_tx(&mut tx, notification).await?;
+		self.create_rule_matched_tx(&mut tx, notification).await?;
 		tx.commit().await?;
 		Ok(())
 	}
 
-	pub async fn create_condition_matched_tx<'a>(&self, tx: &mut Tx<'a>, notification: NotificationConditionMatched) -> ServiceResult<()> {
+	pub async fn create_rule_matched_tx<'a>(&self, tx: &mut Tx<'a>, notification: NotificationRuleMatched) -> ServiceResult<()> {
 		match notification {
-			NotificationConditionMatched::Telegram { user, rule, token_pair, buttons } => {
+			NotificationRuleMatched::Telegram { user, rule, token_pair, buttons } => {
 				self.repo.create(
 					tx,
 					NotificationCreateCmd {
 						user,
-						kind: NotificationKind::ConditionMet,
+						ty: NotificationType::RuleMatched,
 						channel: NotificationChannel::Telegram,
 						payload: NotificationPayload(JsonValue::Object({
 							let mut map = Map::new();

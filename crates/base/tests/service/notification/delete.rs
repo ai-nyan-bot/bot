@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use base::model::{NotificationChannel, NotificationKind, NotificationPayload};
+use base::model::{NotificationChannel, NotificationType, NotificationPayload};
 use base::repo::NotificationRepo;
 use base::service::{NotificationError, NotificationService};
 use common::service::ServiceError;
@@ -12,7 +12,7 @@ use testing::notification::{count_all, create_notification_for_another_user, cre
 use testing::run_test_with_pool_on_empty_db;
 use JsonValue::Object;
 use NotificationChannel::Telegram;
-use NotificationKind::ConditionMet;
+use NotificationType::RuleMatched;
 
 #[test_log::test(sqlx::test)]
 async fn test_nothing_to_delete() {
@@ -40,7 +40,7 @@ async fn test_one() {
 
 		create_notification_for_test_user(
 			&mut tx,
-			ConditionMet,
+			RuleMatched,
 			NotificationPayload(Object({
 				let mut map = Map::new();
 				map.insert("value".to_string(), JsonValue::String("1".to_string()));
@@ -52,7 +52,7 @@ async fn test_one() {
 
 		create_notification_for_another_user(
 			&mut tx,
-			ConditionMet,
+			RuleMatched,
 			NotificationPayload(Object({
 				let mut map = Map::new();
 				map.insert("value".to_string(), JsonValue::String("2".to_string()));
@@ -76,7 +76,7 @@ async fn test_one() {
 		assert_eq!(notification.id, 1);
 		assert_eq!(notification.user, 1);
 		assert_eq!(notification.channel, Telegram);
-		assert_eq!(notification.kind, ConditionMet);
+		assert_eq!(notification.ty, RuleMatched);
 		assert_eq!(&notification.payload.0.to_string(), "{\"value\":\"1\"}");
 
 		let mut tx = pool.begin().await.unwrap();
@@ -93,7 +93,7 @@ async fn test_many() {
 
 		create_notification_for_test_user(
 			&mut tx,
-			NotificationKind::ConditionMet,
+			NotificationType::RuleMatched,
 			NotificationPayload(Object({
 				let mut map = Map::new();
 				map.insert("value".to_string(), JsonValue::String("1".to_string()));
@@ -105,7 +105,7 @@ async fn test_many() {
 
 		create_notification_for_another_user(
 			&mut tx,
-			NotificationKind::ConditionMet,
+			NotificationType::RuleMatched,
 			NotificationPayload(Object({
 				let mut map = Map::new();
 				map.insert("value".to_string(), JsonValue::String("2".to_string()));
@@ -117,7 +117,7 @@ async fn test_many() {
 
 		create_notification_for_test_user(
 			&mut tx,
-			NotificationKind::ConditionMet,
+			NotificationType::RuleMatched,
 			NotificationPayload(Object({
 				let mut map = Map::new();
 				map.insert("value".to_string(), JsonValue::String("3".to_string()));
@@ -142,14 +142,14 @@ async fn test_many() {
 		assert_eq!(first.id, 1);
 		assert_eq!(first.user, 1);
 		assert_eq!(first.channel, NotificationChannel::Telegram);
-		assert_eq!(first.kind, NotificationKind::ConditionMet);
+		assert_eq!(first.ty, NotificationType::RuleMatched);
 		assert_eq!(&first.payload.0.to_string(), "{\"value\":\"1\"}");
 
 		let second = &result[1];
 		assert_eq!(second.id, 2);
 		assert_eq!(second.user, 2);
 		assert_eq!(second.channel, NotificationChannel::Telegram);
-		assert_eq!(second.kind, NotificationKind::ConditionMet);
+		assert_eq!(second.ty, NotificationType::RuleMatched);
 		assert_eq!(&second.payload.0.to_string(), "{\"value\":\"2\"}");
 
 		let mut tx = pool.begin().await.unwrap();
@@ -166,7 +166,7 @@ async fn test_rolls_back_if_any_fails() {
 
 		create_notification_for_test_user(
 			&mut tx,
-			ConditionMet,
+			RuleMatched,
 			NotificationPayload(Object({
 				let mut map = Map::new();
 				map.insert("value".to_string(), JsonValue::String("1".to_string()));
@@ -178,7 +178,7 @@ async fn test_rolls_back_if_any_fails() {
 
 		create_notification_for_another_user(
 			&mut tx,
-			ConditionMet,
+			RuleMatched,
 			NotificationPayload(Object({
 				let mut map = Map::new();
 				map.insert("value".to_string(), JsonValue::String("2".to_string()));
@@ -190,7 +190,7 @@ async fn test_rolls_back_if_any_fails() {
 
 		create_notification_for_test_user(
 			&mut tx,
-			ConditionMet,
+			RuleMatched,
 			NotificationPayload(Object({
 				let mut map = Map::new();
 				map.insert("value".to_string(), JsonValue::String("3".to_string()));

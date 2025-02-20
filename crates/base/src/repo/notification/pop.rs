@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::{Notification, NotificationChannel, NotificationId, NotificationKind, NotificationPayload, UserId};
+use crate::model::{Notification, NotificationChannel, NotificationId, NotificationType, NotificationPayload, UserId};
 use crate::repo::NotificationRepo;
 use common::model::{CreatedAt, Limit};
 use common::repo::{RepoResult, Tx};
@@ -18,7 +18,7 @@ impl NotificationRepo {
                 order by id ASC
                 limit $1
             )
-            returning id, user_id, kind, channel, payload, created_at
+            returning id, user_id, type, channel, payload, created_at
             "#,
         )
         .bind(limit)
@@ -29,7 +29,7 @@ impl NotificationRepo {
             id: r.get::<NotificationId, _>("id"),
             user: r.get::<UserId, _>("user_id"),
             channel: r.get::<NotificationChannel, _>("channel"),
-            kind: r.get::<NotificationKind, _>("kind"),
+            ty: r.get::<NotificationType, _>("type"),
             payload: r.get::<NotificationPayload, _>("payload"),
             created_at: r.get::<CreatedAt, _>("created_at"),
         })

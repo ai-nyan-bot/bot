@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use base::model::{NotificationChannel, NotificationKind, NotificationPayload};
+use base::model::{NotificationChannel, NotificationType, NotificationPayload};
 use base::repo::{NotificationCreateCmd, NotificationRepo};
 use common::repo::error::RepoError;
 use serde_json::Map;
@@ -20,7 +20,7 @@ async fn test_create() {
                 &mut tx,
                 NotificationCreateCmd {
                     user: user.id,
-                    kind: NotificationKind::ConditionMet,
+                    ty: NotificationType::RuleMatched,
                     channel: NotificationChannel::Telegram,
                     payload: NotificationPayload(JsonValue::Object({
                         let mut map = Map::new();
@@ -35,7 +35,7 @@ async fn test_create() {
         assert_eq!(result.id, 1);
         assert_eq!(result.user, 1);
         assert_eq!(result.channel, NotificationChannel::Telegram);
-        assert_eq!(result.kind, NotificationKind::ConditionMet);
+        assert_eq!(result.ty, NotificationType::RuleMatched);
         assert_eq!(&result.payload.0.to_string(), "{\"answer\":\"42\"}");
 
         let count = testing::notification::count_all(&mut tx).await;
@@ -53,7 +53,7 @@ async fn test_notification_requires_existing_user() {
                 &mut tx.begin().await.unwrap(),
                 NotificationCreateCmd {
                     user: 1.into(),
-                    kind: NotificationKind::ConditionMet,
+                    ty: NotificationType::RuleMatched,
                     channel: NotificationChannel::Telegram,
                     payload: NotificationPayload(JsonValue::Object({
                         let mut map = Map::new();

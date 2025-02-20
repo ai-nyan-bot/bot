@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 pub use auth::AuthService;
-pub use notification::{NotificationConditionMatched, NotificationService, NotificationError};
+pub use notification::{NotificationError, NotificationResult, NotificationRuleMatched, NotificationService};
 pub use rule::{RuleCreateCmd, RuleService, RuleUpdateCmd};
 pub use user::{AuthenticateUserTelegramCmd, UserService};
 

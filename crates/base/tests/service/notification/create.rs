@@ -1,10 +1,10 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-mod condition_matched {
+mod rule_matched {
 	use base::model::{RuleId, TelegramButtonConfig, TokenPairId, Value};
 	use base::repo::NotificationRepo;
-	use base::service::{NotificationConditionMatched, NotificationService};
+	use base::service::{NotificationRuleMatched, NotificationService};
 	use testing::notification::count_all;
 	use testing::run_test_with_pool_on_empty_db;
 	use testing::user::get_or_create_test_user;
@@ -18,7 +18,7 @@ mod condition_matched {
 			let _ = tx.commit().await.unwrap();
 
 			let test_instance = NotificationService::new(pool.clone(), NotificationRepo::new());
-			test_instance.create_condition_matched(NotificationConditionMatched::Telegram {
+			test_instance.create_rule_matched(NotificationRuleMatched::Telegram {
 				user: test_user.id,
 				token_pair: 234.into(),
 				rule: 456.into(),

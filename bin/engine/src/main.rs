@@ -6,7 +6,7 @@ use crate::fact::FactService;
 use crate::state::{AppState, AppStateInner, Service};
 use base::model::Action;
 use base::repo::{InvocationCreateCmd, InvocationRepo, NotificationRepo, RuleRepo};
-use base::service::{NotificationConditionMatched, NotificationService, RuleService};
+use base::service::{NotificationRuleMatched, NotificationService, RuleService};
 use common::repo::pool::setup_pool;
 use solana::repo::pumpfun::{ReadTradeRepo, SummaryRepo};
 use std::sync::Arc;
@@ -72,9 +72,9 @@ fn main() {
 									Action::AndThen { .. } => {}
 									Action::Buy => {}
 									Action::NotifyTelegram { buttons } => {
-										let _ = state.service.notification.create_condition_matched_tx(
+										let _ = state.service.notification.create_rule_matched_tx(
 											&mut tx,
-											NotificationConditionMatched::Telegram {
+											NotificationRuleMatched::Telegram {
 												user: rule.user,
 												rule: rule.id,
 												token_pair: token_pair_id.clone(),
