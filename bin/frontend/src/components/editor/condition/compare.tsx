@@ -23,7 +23,6 @@ export const Compare: FC<CompareProps> = ({
                                               onValueChange
                                           }) => {
 
-    console.log("C", condition)
     const supportedOperators = Object.keys(config[condition.field!!]?.operators || {}) as Operator[];
     const supportedValueTypes = config[condition.field!!]?.operators[condition.operator!!]?.valueTypes || [];
     const supportedTimeframes = config[condition.field!!]?.operators[condition.operator!!]?.timeframes || [];

@@ -8,7 +8,7 @@ export type ActionEditorProps = {
     onChange(action: Action): void;
 }
 
-export const ActionEditor: FC<ActionEditorProps> = ({action}) => {
+export const ActionEditor: FC<ActionEditorProps> = ({action, onChange}) => {
 
     return (
         <div>
@@ -18,11 +18,10 @@ export const ActionEditor: FC<ActionEditorProps> = ({action}) => {
                     ActionType.NOTIFY_TELEGRAM
                 ]}
                 onChange={(type) => {
-                    console.log("Changed action type")
                 }}
             />
             {action.type === ActionType.NOTIFY_TELEGRAM && <Notify action={action} onChange={(action) => {
-                console.log("updated action", action)
+                onChange(action)
             }}/>}
         </div>
     );

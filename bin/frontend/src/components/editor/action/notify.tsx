@@ -1,5 +1,5 @@
 import {FC} from "react";
-import {ActionNotifyTelegram} from "@types";
+import {ActionNotifyTelegram, ActionType} from "@types";
 import {TelegramButtons} from "@components/editor/action/telegram.tsx";
 
 export type NotifyProps = {
@@ -10,8 +10,16 @@ export type NotifyProps = {
 export const Notify: FC<NotifyProps> = ({action, onChange}) => {
     return (
         <>
-            {/*<p>{JSON.stringify(action)}</p>*/}
-            <TelegramButtons action={action}/>
+            <TelegramButtons
+                action={action}
+                onChange={(buttons) => {
+                    onChange({
+                        type: ActionType.NOTIFY_TELEGRAM,
+                        buttons
+
+                    })
+                }}
+            />
         </>
     )
 }

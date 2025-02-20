@@ -108,14 +108,14 @@ export const Editor: React.FC<EditorProps> = ({sequence, onChange}) => {
 
     useEffect(() => {
         const handler = setTimeout(() => {
-            if (condition) {
+            if (action && condition) {
                 if (onChange) {
                     onChange({action, condition})
                 }
             }
         }, 100);
         return () => clearTimeout(handler);
-    }, [condition]);
+    }, [action, condition]);
 
     return (
         <div className={"flex flex-col space-y-2"}>

@@ -8,15 +8,17 @@ import {ValueNumberInput} from "@components/editor/value.tsx";
 
 export type TelegramButtonsProps = {
     action: ActionNotifyTelegram;
+    onChange: (configs: Array<TelegramButtonConfig>) => void;
 }
 
-export const TelegramButtons: FC<TelegramButtonsProps> = ({action}) => {
+export const TelegramButtons: FC<TelegramButtonsProps> = ({action, onChange}) => {
     const [configs, setConfigs] = useState<(TelegramButtonConfig)[]>(action.buttons);
 
     const handleUpdate = (index: number, config: TelegramButtonConfig) => {
         const newConfigs = [...configs];
         newConfigs[index] = config;
         setConfigs(newConfigs);
+        onChange(newConfigs);
     };
 
     return (
