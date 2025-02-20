@@ -76,6 +76,7 @@ fn main() {
 											&mut tx,
 											NotificationConditionMatched::Telegram {
 												user: rule.user,
+												rule: rule.id,
 												token_pair: token_pair_id.clone(),
 												buttons: buttons.clone(),
 											},

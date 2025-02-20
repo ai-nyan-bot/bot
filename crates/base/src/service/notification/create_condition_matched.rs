@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::{NotificationChannel, NotificationKind, NotificationPayload, UserId};
+use crate::model::{NotificationChannel, NotificationKind, NotificationPayload, RuleId, UserId};
 use crate::model::{TelegramButtonConfig, TokenPairId};
 use crate::repo::NotificationCreateCmd;
 use crate::service::notification::NotificationService;
@@ -13,6 +13,7 @@ use sqlx::types::JsonValue;
 pub enum NotificationConditionMatched {
 	Telegram {
 		user: UserId,
+		rule: RuleId,
 		token_pair: TokenPairId,
 		buttons: Vec<TelegramButtonConfig>,
 	}
@@ -28,7 +29,7 @@ impl NotificationService {
 
 	pub async fn create_condition_matched_tx<'a>(&self, tx: &mut Tx<'a>, notification: NotificationConditionMatched) -> ServiceResult<()> {
 		match notification {
-			NotificationConditionMatched::Telegram { user, token_pair, buttons } => {
+			NotificationConditionMatched::Telegram { user, rule, token_pair, buttons } => {
 				self.repo.create(
 					tx,
 					NotificationCreateCmd {
@@ -37,7 +38,8 @@ impl NotificationService {
 						channel: NotificationChannel::Telegram,
 						payload: NotificationPayload(JsonValue::Object({
 							let mut map = Map::new();
-							map.insert("token_pair".to_string(), JsonValue::String(token_pair.to_string()));
+							map.insert("rule".to_string(), serde_json::to_value(rule)?);
+							map.insert("token_pair".to_string(), serde_json::to_value(token_pair)?);
 							map.insert("button_0".to_string(), serde_json::to_value(buttons.get(0).unwrap_or(&TelegramButtonConfig::None)).unwrap());
 							map.insert("button_1".to_string(), serde_json::to_value(buttons.get(1).unwrap_or(&TelegramButtonConfig::None)).unwrap());
 							map.insert("button_2".to_string(), serde_json::to_value(buttons.get(2).unwrap_or(&TelegramButtonConfig::None)).unwrap());
