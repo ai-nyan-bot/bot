@@ -1,16 +1,11 @@
-import {Condition, Field, Operator, Timeframe, Value, ValueNumber} from "@types";
+import {Condition, Field, Operator, Timeframe, Value, ValueNumber, ValueNumberType} from "@types";
 import React, {FC} from "react";
 import {SelectOperator} from "@components/editor/operator.tsx";
 import {ValueNumberInput} from "@components/editor/value.tsx";
 import {SelectTimeframe} from "@components/editor/timeframe.tsx";
 import {SelectField} from "@components/editor/field.tsx";
+import {config} from "./config.ts";
 
-
-// export type Comparison = {
-//     field: FieldType;
-//     operator_values: Map<Operator, ValueType>;
-//     operator_timeframes: Map<Operator, Array<Timeframe>>
-// }
 
 type CompareProps = {
     condition: Condition,
@@ -27,53 +22,37 @@ export const Compare: FC<CompareProps> = ({
                                               onTimeframeChange,
                                               onValueChange
                                           }) => {
+
+    console.log("C", condition)
+    const supportedOperators = Object.keys(config[condition.field!!]?.operators || {}) as Operator[];
+    const supportedValueTypes = config[condition.field!!]?.operators[condition.operator!!]?.valueTypes || [];
+    const supportedTimeframes = config[condition.field!!]?.operators[condition.operator!!]?.timeframes || [];
+
     return (
         <div key={condition.id}>
             <SelectField
                 defaultField={condition.field}
-                supported={[
-                    Field.PRICE,
-                    Field.TRADES,
-                    Field.VOLUME,
-                ]}
+                supported={Object.keys(config) as Field[]}
                 onChange={(value) => onFieldChange(condition.id, value)}
             />
 
             <SelectOperator
                 defaultOperator={condition.operator}
-                supported={[
-                    Operator.INCREASED_BY_MORE_THAN,
-                    Operator.INCREASED_BY_MORE_THAN_EQUAL,
-                    Operator.INCREASED_BY_LESS_THAN,
-                    Operator.INCREASED_BY_LESS_THAN_EQUAL,
-                    Operator.DECREASED_BY_MORE_THAN,
-                    Operator.DECREASED_BY_MORE_THAN_EQUAL,
-                    Operator.DECREASED_BY_LESS_THAN,
-                    Operator.DECREASED_BY_LESS_THAN_EQUAL,
-                    Operator.MORE_THAN,
-                    Operator.MORE_THAN_EQUAL,
-                    Operator.LESS_THAN,
-                    Operator.LESS_THAN_EQUAL,
-                ]}
+                supported={supportedOperators}
                 onChange={(value) => onOperatorChange(condition.id, value)}
             />
 
             <ValueNumberInput
-                supportedTypes={['COUNT', 'PERCENT']}
-                defaultValue={condition.value ? condition.value as ValueNumber : {type: 'COUNT', value: 0}}
+                supported={supportedValueTypes as ValueNumberType[]}
+                defaultValue={(condition.value) ? condition.value as ValueNumber : undefined}
                 onChange={(value) => onValueChange(condition.id, value)}
             />
 
-            <SelectTimeframe
+            {supportedTimeframes.length > 0 && <SelectTimeframe
                 defaultTimeframe={condition.timeframe}
-                supported={[
-                    Timeframe.M1,
-                    Timeframe.M5,
-                    Timeframe.M15
-                ]}
+                supported={supportedTimeframes}
                 onChange={(value) => onTimeframeChange(condition.id, value)}
-            >
-            </SelectTimeframe>
+            />}
         </div>
     )
 }

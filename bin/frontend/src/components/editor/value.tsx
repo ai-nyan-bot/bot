@@ -2,15 +2,15 @@ import React, {FC, useState} from "react";
 import {ValueNumber, ValueNumberType} from "@types";
 
 export type ValueNumberInputProps = {
-    supportedTypes: Array<ValueNumberType>;
-    defaultValue: ValueNumber;
+    supported: Array<ValueNumberType>;
+    defaultValue?: ValueNumber;
     value?: ValueNumber;
     onChange?: (value: ValueNumber) => void;
 };
 
-export const ValueNumberInput: FC<ValueNumberInputProps> = ({supportedTypes, value, defaultValue, onChange}) => {
-    const [selectedType, setSelectedType] = useState<ValueNumberType>(value?.type || defaultValue.type);
-    const [inputValue, setInputValue] = useState<number | undefined>(value?.value || defaultValue.value);
+export const ValueNumberInput: FC<ValueNumberInputProps> = ({supported, value, defaultValue, onChange}) => {
+    const [selectedType, setSelectedType] = useState<ValueNumberType>(value?.type || defaultValue?.type || supported[0]);
+    const [inputValue, setInputValue] = useState<number | undefined>(value?.value || defaultValue?.value);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const input = e.target.value.trim();
@@ -63,8 +63,12 @@ export const ValueNumberInput: FC<ValueNumberInputProps> = ({supportedTypes, val
         {value: 'PERCENT', label: '%'},
         {value: 'QUOTE', label: 'SOL'},
         {value: 'USD', label: 'USD'}
-    ].filter(opt => supportedTypes.find(t => opt.value === t))
+    ].filter(opt => supported.find(t => opt.value === t))
         .map(opt => <option value={opt.value}>{opt.label}</option>);
+
+    if (options.length === 0) {
+        return null;
+    }
 
     return (
         <div className="flex items-center space-x-2">

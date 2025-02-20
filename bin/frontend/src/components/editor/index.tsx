@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Action, Condition, ConditionType, Field, Operator, Sequence, Timeframe} from "@types";
+import {Action, Condition, ConditionType, Field, Operator, Sequence, Timeframe, ValueType} from "@types";
 import {ConditionList} from "@components/editor/condition.tsx";
 import {uuidv4} from "@app/utils/id.ts";
 import {Card, CardContent, CardHeader, CardTitle} from "@components/ui/card.tsx";
@@ -22,10 +22,10 @@ const createCondition = (type: ConditionType): Condition => {
             return {
                 id: uuidv4(),
                 type: 'COMPARE',
-                field: Field.PRICE,
+                field: Field.TRADES,
                 operator: Operator.MORE_THAN,
                 value: {
-                    type: 'PERCENT',
+                    type: ValueType.COUNT,
                     value: 15
                 },
                 timeframe: Timeframe.M15

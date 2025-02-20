@@ -46,7 +46,6 @@ export const SelectOperator: FC<SelectOperatorProps> = ({defaultOperator, suppor
         }
     };
 
-
     return (
         <select
             value={selected}

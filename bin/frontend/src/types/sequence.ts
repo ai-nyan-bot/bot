@@ -12,11 +12,9 @@ export type ActionNotify = {
 }
 
 export enum Field {
-    PRICE = 'PRICE',
     TRADES = 'TRADES',
     TRADES_BUY = 'TRADES_BUY',
     TRADES_SELL = 'TRADES_SELL',
-    VOLUME = 'VOLUME'
 }
 
 export type ConditionType = 'COMPARE' | 'AND' | 'OR'
@@ -52,38 +50,48 @@ export enum Operator {
 
 }
 
-export type ValueType = 'BOOLEAN' | 'COUNT' | 'PERCENT' | 'QUOTE' | 'STRING' | 'USD';
-export type ValueNumberType = 'COUNT' | 'PERCENT' | 'QUOTE' | 'USD';
+export enum ValueType {
+    BOOLEAN = 'BOOLEAN',
+    COUNT = 'COUNT',
+    PERCENT = 'PERCENT',
+    QUOTE = 'QUOTE',
+    STRING = 'STRING',
+    USD = 'USD'
+}
+
+export const COUNT_AND_PERCENT: Array<ValueNumberType> = [ValueType.COUNT, ValueType.PERCENT];
+
+export type ValueNumberType = ValueType.COUNT | ValueType.PERCENT | ValueType.QUOTE | ValueType.USD;
 
 export type Value = ValueBoolean | ValueCount | ValuePercent | ValueQuote | ValueString | ValueUsd;
 export type ValueNumber = ValueCount | ValuePercent | ValueQuote | ValueUsd;
 
 export type ValueBoolean = {
-    type: 'BOOLEAN';
+    type: ValueType.BOOLEAN;
     value: boolean;
 }
 
 export type ValueCount = {
-    type: 'COUNT';
+    type: ValueType.COUNT;
     value: number;
 }
 
 export type ValuePercent = {
-    type: 'PERCENT';
+    type: ValueType.PERCENT;
     value: number;
 }
 
 export type ValueQuote = {
-    type: 'QUOTE';
+    type: ValueType.QUOTE;
     value: number;
 }
 
 export type ValueString = {
-    type: 'STRING';
+    type: ValueType.STRING;
     value: string;
 }
 
 export type ValueUsd = {
-    type: 'USD';
+    type: ValueType.USD;
     value: number;
 }
