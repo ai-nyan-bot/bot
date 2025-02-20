@@ -13,15 +13,15 @@ export const ActionEditor: FC<ActionEditorProps> = ({action}) => {
     return (
         <div>
             <SelectActionType
-                defaultActionType={ActionType.NOTIFY}
+                defaultActionType={ActionType.NOTIFY_TELEGRAM}
                 supported={[
-                    ActionType.NOTIFY
+                    ActionType.NOTIFY_TELEGRAM
                 ]}
                 onChange={(type) => {
                     console.log("Changed action type")
                 }}
             />
-            {action.type === ActionType.NOTIFY && <Notify action={action} onChange={(action) => {
+            {action.type === ActionType.NOTIFY_TELEGRAM && <Notify action={action} onChange={(action) => {
                 console.log("updated action", action)
             }}/>}
         </div>

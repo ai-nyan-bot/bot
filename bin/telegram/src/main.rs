@@ -21,16 +21,6 @@ use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
 use url::Url;
 
-#[derive(Debug)]
-struct NotificationError(pub String);
-
-impl Display for NotificationError {
-	fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-		f.write_fmt(format_args!("notification error: {}", self.0))
-	}
-}
-
-impl std::error::Error for NotificationError {}
 
 fn main() {
 	let config = Config::load();
@@ -51,7 +41,7 @@ fn main() {
 		let notification_state = state.clone();
 		tokio::spawn(async move {
 			loop {
-				let result = notification_state.service.notification.pop(1, |notification| async move { Ok::<Notification, NotificationError>(notification) }).await.unwrap();
+				let result = notification_state.service.notification.pop(1, |notification| async move { Ok(notification) }).await.unwrap();
 
 				for notification in result {
 					trace!("Sent {notification:#?}");

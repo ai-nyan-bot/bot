@@ -6,24 +6,22 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Hash, Deserialize, Serialize, sqlx::Type)]
 #[repr(i16)]
 pub enum NotificationChannel {
-    Telegram = 1,         // same chat as bot
-    TelegramSeparate = 2, // separate notification bot
-    Twitter = 3,
+	Telegram = 1,         // same chat as bot
+	TelegramChannelOne = 2, // separate notification bot
 }
 
 impl From<i16> for NotificationChannel {
-    fn from(value: i16) -> Self {
-        match value {
-            1 => NotificationChannel::Telegram,
-            2 => NotificationChannel::TelegramSeparate,
-            3 => NotificationChannel::Twitter,
-            _ => panic!("Invalid NotificationChannel value: {}", value),
-        }
-    }
+	fn from(value: i16) -> Self {
+		match value {
+			1 => NotificationChannel::Telegram,
+			2 => NotificationChannel::TelegramChannelOne,
+			_ => panic!("Invalid NotificationChannel value: {}", value),
+		}
+	}
 }
 
 impl From<NotificationChannel> for i16 {
-    fn from(channel: NotificationChannel) -> Self {
-        channel as i16
-    }
+	fn from(channel: NotificationChannel) -> Self {
+		channel as i16
+	}
 }

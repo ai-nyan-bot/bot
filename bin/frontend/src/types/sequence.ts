@@ -6,18 +6,25 @@ export type Sequence = {
 }
 
 export enum ActionType {
-    NOTIFY = 'NOTIFY'
+    NOTIFY_TELEGRAM = 'NOTIFY_TELEGRAM'
 }
 
 export enum NotificationChannel {
     TELEGRAM = 'TELEGRAM'
 }
 
-export type Action = ActionNotify;
+export type TelegramButtonAction = 'NONE' | 'BUY' | 'SELL'
 
-export type ActionNotify = {
+export type TelegramButtonConfig = {
+    action: TelegramButtonAction;
+    value: Value;
+}
+
+export type Action = ActionNotifyTelegram;
+
+export type ActionNotifyTelegram = {
     type: ActionType,
-    channel: NotificationChannel,
+    buttons: Array<TelegramButtonConfig>,
 }
 
 export enum Field {
@@ -64,6 +71,7 @@ export enum ValueType {
     COUNT = 'COUNT',
     PERCENT = 'PERCENT',
     QUOTE = 'QUOTE',
+    SOL = 'SOL',
     STRING = 'STRING',
     USD = 'USD'
 }
@@ -72,8 +80,8 @@ export const COUNT_AND_PERCENT: Array<ValueNumberType> = [ValueType.COUNT, Value
 
 export type ValueNumberType = ValueType.COUNT | ValueType.PERCENT | ValueType.QUOTE | ValueType.USD;
 
-export type Value = ValueBoolean | ValueCount | ValuePercent | ValueQuote | ValueString | ValueUsd;
-export type ValueNumber = ValueCount | ValuePercent | ValueQuote | ValueUsd;
+export type Value = ValueBoolean | ValueCount | ValuePercent | ValueQuote | ValueSol | ValueString | ValueUsd;
+export type ValueNumber = ValueCount | ValuePercent | ValueQuote | ValueSol | ValueUsd;
 
 export type ValueBoolean = {
     type: ValueType.BOOLEAN;
@@ -92,6 +100,11 @@ export type ValuePercent = {
 
 export type ValueQuote = {
     type: ValueType.QUOTE;
+    value: number;
+}
+
+export type ValueSol = {
+    type: ValueType.SOL;
     value: number;
 }
 

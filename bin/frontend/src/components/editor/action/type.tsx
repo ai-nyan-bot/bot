@@ -7,7 +7,7 @@ export const useActionTypeOptions = (supported: Array<ActionType>): Array<{
 }> => {
     // FIXME i18n
     return [
-        {value: ActionType.NOTIFY, label: "Notify"},
+        {value: ActionType.NOTIFY_TELEGRAM, label: "Notify"},
     ].filter(opt => supported.find(v => v === opt.value));
 }
 

@@ -5,7 +5,8 @@ import {Button} from "@components/ui/button.tsx";
 import {Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle} from "@components/ui/dialog";
 import {Input} from "@components/ui/input";
 import {Plus} from "lucide-react";
-import {ActionType, NotificationChannel} from "@types";
+import {ActionType} from "@types";
+import {uuidv4} from "@utils";
 
 export type RuleCreateButtonProps = {}
 
@@ -35,19 +36,22 @@ export const RuleCreateButton: FC<RuleCreateButtonProps> = ({}) => {
             name: ruleName,
             sequence: {
                 condition: {
-                    id: "root",
+                    id: uuidv4(),
                     type: "AND",
                     conditions: []
                 },
                 action: {
-                    type: ActionType.NOTIFY,
-                    channel: NotificationChannel.TELEGRAM,
+                    type: ActionType.NOTIFY_TELEGRAM,
+                    buttons: Array(6).fill({
+                        action: 'NONE',
+                        value: undefined
+                    })
                 }
             }
         }, newAbortController);
 
         setIsModalOpen(false);
-        setRuleName(""); // Reset input
+        setRuleName("");
     };
 
     useEffect(() => {

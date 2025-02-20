@@ -1,6 +1,45 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-pub struct TelegramButton{
+use crate::model::Value;
+use serde::{Deserialize, Serialize};
 
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "action", rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum TelegramButtonConfig {
+	None,
+	Buy {
+		value: Value
+	},
+	Sell {
+		value: Value
+	},
+}
+
+#[cfg(test)]
+mod tests {
+	use crate::model::notification::telegram::TelegramButtonConfig;
+	use crate::model::Value;
+
+	#[test]
+	fn serde_none() {
+		let serialised = serde_json::to_string(&TelegramButtonConfig::None).unwrap();
+		assert_eq!(serialised, r#"{"action":"NONE"}"#);
+		assert_eq!(serde_json::from_str::<TelegramButtonConfig>(serialised.as_str()).unwrap(), TelegramButtonConfig::None);
+	}
+
+	#[test]
+	fn serde_buy() {
+		let serialised = serde_json::to_string(&TelegramButtonConfig::Buy { value: Value::Sol(23.4) }).unwrap();
+		assert_eq!(serialised, r#"{"action":"BUY","value":{"type":"SOL","value":23.4}}"#);
+		assert_eq!(serde_json::from_str::<TelegramButtonConfig>(serialised.as_str()).unwrap(), TelegramButtonConfig::Buy { value: Value::Sol(23.4) });
+	}
+
+	#[test]
+	fn serde_sell() {
+		let serialised = serde_json::to_string(&TelegramButtonConfig::Sell { value: Value::Percent(51.2) }).unwrap();
+		assert_eq!(serialised, r#"{"action":"SELL","value":{"type":"PERCENT","value":51.2}}"#);
+		assert_eq!(serde_json::from_str::<TelegramButtonConfig>(serialised.as_str()).unwrap(), TelegramButtonConfig::Sell { value: Value::Percent(51.2) });
+	}
 }

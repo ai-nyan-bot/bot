@@ -15,6 +15,7 @@ pub struct HttpRuleCreateRequest {
 pub struct HttpRuleCreateResponse {
     pub id: RuleId,
     pub name: RuleName,
+    pub sequence: Sequence,
 }
 
 #[derive(Serialize, Deserialize, Debug)]

@@ -114,6 +114,20 @@ where
 	deserialize_single_field(deserializer)
 }
 
+pub(crate) fn serialize_sol<S>(v: &f64, serializer: S) -> Result<S::Ok, S::Error>
+where
+	S: Serializer,
+{
+	serialize_single_field(v, serializer, "Sol")
+}
+
+pub(crate) fn deserialize_sol<'de, D>(deserializer: D) -> Result<f64, D::Error>
+where
+	D: Deserializer<'de>,
+{
+	deserialize_single_field(deserializer)
+}
+
 pub(crate) fn serialize_string<S>(v: &String, serializer: S) -> Result<S::Ok, S::Error>
 where
 	S: Serializer,
@@ -172,6 +186,13 @@ mod tests {
 		let serialised = serde_json::to_string(&Value::Quote(1.234)).unwrap();
 		assert_eq!(serialised, r#"{"type":"QUOTE","value":1.234}"#);
 		assert_eq!(serde_json::from_str::<Value>(serialised.as_str()).unwrap(), Value::Quote(1.234));
+	}
+
+	#[test]
+	fn sol() {
+		let serialised = serde_json::to_string(&Value::Sol(1.234)).unwrap();
+		assert_eq!(serialised, r#"{"type":"SOL","value":1.234}"#);
+		assert_eq!(serde_json::from_str::<Value>(serialised.as_str()).unwrap(), Value::Sol(1.234));
 	}
 
 	#[test]

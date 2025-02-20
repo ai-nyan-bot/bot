@@ -12,207 +12,206 @@ use base::service::RuleUpdateCmd;
 use log::debug;
 
 pub async fn update(
-    Path(id): Path<String>,
-    State(state): State<AppState>,
-    Extension(user): Extension<AuthenticatedUser>,
-    JsonReq(req): JsonReq<HttpRuleUpdateRequest>,
+	Path(id): Path<String>,
+	State(state): State<AppState>,
+	Extension(user): Extension<AuthenticatedUser>,
+	JsonReq(req): JsonReq<HttpRuleUpdateRequest>,
 ) -> Result<Json<HttpRuleUpdateResponse>, HttpError> {
-    debug!("PATCH /v1/rules/{id} {:?}", req);
+	debug!("PATCH /v1/rules/{id} {:?}", req);
 
-    let result = state
-        .rule_service()
-        .update(
-            id,
-            RuleUpdateCmd {
-                name: req.name,
-                sequence: req.sequence,
-            },
-            user,
-        )
-        .await?;
+	let result = state.rule_service().update(
+		id,
+		RuleUpdateCmd {
+			name: req.name,
+			sequence: req.sequence,
+		},
+		user,
+	).await?;
 
-    Ok(Json(HttpRuleUpdateResponse {
-        id: result.id,
-        name: result.name,
-        sequence: result.sequence,
-    }))
+	Ok(Json(HttpRuleUpdateResponse {
+		id: result.id,
+		name: result.name,
+		sequence: result.sequence,
+	}))
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::http::model::rule::HttpRuleUpdateResponse;
-    use crate::http::testing::{extract, extract_error, Test};
-    use axum::http::StatusCode;
-    use base::model::Condition;
-    use base::model::Field::PriceAvg;
-    use base::model::Operator::MoreThan;
-    use base::model::Value::Percent;
-    use common::model::Timeframe::M15;
-    use testing::rule::create_rule_for_test_user;
-    use Condition::Compare;
+	use crate::http::model::rule::HttpRuleUpdateResponse;
+	use crate::http::testing::{extract, extract_error, Test};
+	use axum::http::StatusCode;
+	use base::model::Field::PriceAvg;
+	use base::model::Operator::MoreThan;
+	use base::model::Value::Percent;
+	use base::model::{Action, Condition, TelegramButtonConfig, Value};
+	use common::model::Timeframe::M15;
+	use testing::rule::create_rule_for_test_user;
+	use Condition::Compare;
+	use Value::Sol;
 
-    #[tokio::test]
-    async fn ok() {
-        let test = Test::new().await;
+	#[tokio::test]
+	async fn ok() {
+		let test = Test::new().await;
 
-        test.tx(|mut tx| async move {
-            create_rule_for_test_user(&mut tx, "MoneyMaker").await;
-            tx.commit().await.unwrap()
-        })
-        .await;
+		test.tx(|mut tx| async move {
+			create_rule_for_test_user(&mut tx, "MoneyMaker").await;
+			tx.commit().await.unwrap()
+		}).await;
 
-        let response = test
-            .patch_json_as_test_user(
-                "/v1/rules/4",
-                r#"{"name":"UpdatedMoneyMaker","sequence":{"condition":{"id":"root","type":"OR","conditions":[]},"action":{"type":"NOTIFY"}}}"#,
-            )
-            .await;
-        assert_eq!(response.status(), StatusCode::OK);
+		let response = test.patch_json_as_test_user(
+			"/v1/rules/4",
+			r#"{"name":"UpdatedMoneyMaker","sequence":{"condition":{"id":"root","type":"OR","conditions":[]},
+			"action":{"type":"NOTIFY_TELEGRAM",
+				"buttons":[
+					{"action":"NONE"},
+					{"action":"BUY","value":{"type":"SOL","value":1.2}},
+					{"action":"SELL","value":{"type":"PERCENT","value":3.4}},
+					{"action":"NONE"},
+					{"action":"NONE"},
+					{"action":"NONE"}]}}}"#,
+		).await;
+		assert_eq!(response.status(), StatusCode::OK);
 
-        let response = extract::<HttpRuleUpdateResponse>(response).await.unwrap();
-        assert_eq!(response.id, 4);
-        assert_eq!(response.name, "UpdatedMoneyMaker");
-        assert_eq!(response.sequence.condition, Condition::Or { conditions: vec![] });
-    }
+		let response = extract::<HttpRuleUpdateResponse>(response).await.unwrap();
+		assert_eq!(response.id, 4);
+		assert_eq!(response.name, "UpdatedMoneyMaker");
+		assert_eq!(response.sequence.condition, Condition::Or { conditions: vec![] });
 
-    #[tokio::test]
-    async fn empty_json_object() {
-        let test = Test::new().await;
+		let Action::NotifyTelegram { buttons } = response.sequence.action else { panic!() };
+		assert_eq!(buttons.len(), 6);
+		assert_eq!(buttons.get(0).unwrap(), &TelegramButtonConfig::None);
+		assert_eq!(buttons.get(1).unwrap(), &TelegramButtonConfig::Buy { value: Sol(1.2) });
+		assert_eq!(buttons.get(2).unwrap(), &TelegramButtonConfig::Sell { value: Percent(3.4) });
+	}
 
-        test.tx(|mut tx| async move {
-            create_rule_for_test_user(&mut tx, "MoneyMaker").await;
-            tx.commit().await.unwrap()
-        })
-        .await;
+	#[tokio::test]
+	async fn empty_json_object() {
+		let test = Test::new().await;
 
-        let response = test.patch_json_as_test_user("/v1/rules/4", "{}").await;
-        assert_eq!(response.status(), StatusCode::OK);
+		test.tx(|mut tx| async move {
+			create_rule_for_test_user(&mut tx, "MoneyMaker").await;
+			tx.commit().await.unwrap()
+		}).await;
 
-        let response = extract::<HttpRuleUpdateResponse>(response).await.unwrap();
-        assert_eq!(response.id, 4);
-        assert_eq!(response.name, "MoneyMaker");
-        assert_eq!(
-            response.sequence.condition,
-            Compare {
-                field: PriceAvg,
-                operator: MoreThan,
-                value: Percent(2.0),
-                timeframe: Some(M15)
-            }
-        );
-    }
+		let response = test.patch_json_as_test_user("/v1/rules/4", "{}").await;
+		assert_eq!(response.status(), StatusCode::OK);
 
-    #[tokio::test]
-    async fn partial_update() {
-        let test = Test::new().await;
+		let response = extract::<HttpRuleUpdateResponse>(response).await.unwrap();
+		assert_eq!(response.id, 4);
+		assert_eq!(response.name, "MoneyMaker");
+		assert_eq!(
+			response.sequence.condition,
+			Compare {
+				field: PriceAvg,
+				operator: MoreThan,
+				value: Percent(2.0),
+				timeframe: Some(M15)
+			}
+		);
+	}
 
-        test.tx(|mut tx| async move {
-            create_rule_for_test_user(&mut tx, "MoneyMaker").await;
-            tx.commit().await.unwrap()
-        })
-        .await;
+	#[tokio::test]
+	async fn partial_update() {
+		let test = Test::new().await;
 
-        let response = test.patch_json_as_test_user("/v1/rules/4", r#"{"name":"NameWasUpdated"}"#).await;
-        assert_eq!(response.status(), StatusCode::OK);
+		test.tx(|mut tx| async move {
+			create_rule_for_test_user(&mut tx, "MoneyMaker").await;
+			tx.commit().await.unwrap()
+		}).await;
 
-        let response = extract::<HttpRuleUpdateResponse>(response).await.unwrap();
-        assert_eq!(response.id, 4);
-        assert_eq!(response.name, "NameWasUpdated");
-        assert_eq!(
-            response.sequence.condition,
-            Compare {
-                field: PriceAvg,
-                operator: MoreThan,
-                value: Percent(2.0),
-                timeframe: Some(M15)
-            }
-        );
-    }
+		let response = test.patch_json_as_test_user("/v1/rules/4", r#"{"name":"NameWasUpdated"}"#).await;
+		assert_eq!(response.status(), StatusCode::OK);
 
-    #[tokio::test]
-    async fn not_found() {
-        let test = Test::new().await;
-        let response = test
-            .patch_json_as_test_user(
-                "/v1/rules/4",
-                r#"{"name":"UpdatedMoneyMaker","sequence":{"condition":{"id":"root","type":"OR","conditions":[]},"action":{"type":"NOTIFY"}}}"#,
-            )
-            .await;
-        assert_eq!(response.status(), StatusCode::NOT_FOUND);
+		let response = extract::<HttpRuleUpdateResponse>(response).await.unwrap();
+		assert_eq!(response.id, 4);
+		assert_eq!(response.name, "NameWasUpdated");
+		assert_eq!(
+			response.sequence.condition,
+			Compare {
+				field: PriceAvg,
+				operator: MoreThan,
+				value: Percent(2.0),
+				timeframe: Some(M15)
+			}
+		);
+	}
 
-        let error = extract_error(response).await;
-        assert_eq!(error.code, StatusCode::NOT_FOUND);
-        assert_eq!(error.message, "Rule not found");
-    }
+	#[tokio::test]
+	async fn not_found() {
+		let test = Test::new().await;
+		let response = test.patch_json_as_test_user(
+			"/v1/rules/4",
+			r#"{"name":"UpdatedMoneyMaker","sequence":{"condition":{"id":"root","type":"OR","conditions":[]},"action":{"type":"NOTIFY_TELEGRAM","buttons":[]}}}"#,
+		).await;
+		assert_eq!(response.status(), StatusCode::NOT_FOUND);
 
-    #[tokio::test]
-    async fn belongs_to_another_user() {
-        let test = Test::new().await;
-        let response = test
-            .patch_json_as_test_user(
-                "/v1/rules/1",
-                r#"{"name":"UpdatedMoneyMaker","sequence":{"condition":{"id":"root","type":"OR","conditions":[]},"action":{"type":"NOTIFY"}}}"#,
-            )
-            .await;
-        assert_eq!(response.status(), StatusCode::NOT_FOUND);
+		let error = extract_error(response).await;
+		assert_eq!(error.code, StatusCode::NOT_FOUND);
+		assert_eq!(error.message, "Rule not found");
+	}
 
-        let error = extract_error(response).await;
-        assert_eq!(error.code, StatusCode::NOT_FOUND);
-        assert_eq!(error.message, "Rule not found");
-    }
+	#[tokio::test]
+	async fn belongs_to_another_user() {
+		let test = Test::new().await;
+		let response = test.patch_json_as_test_user(
+			"/v1/rules/1",
+			r#"{"name":"UpdatedMoneyMaker","sequence":{"condition":{"id":"root","type":"OR","conditions":[]},"action":{"type":"NOTIFY_TELEGRAM","buttons":[]}}}"#,
+		).await;
+		assert_eq!(response.status(), StatusCode::NOT_FOUND);
 
-    #[tokio::test]
-    async fn requires_authentication() {
-        let test = Test::new().await;
-        let response = test
-            .patch_unauthenticated_json(
-                "/v1/rules/1",
-                r#"{"name":"UpdatedMoneyMaker","sequence":{"condition":{"id":"root","type":"OR","conditions":[]},"action":{"type":"NOTIFY"}}}"#,
-            )
-            .await;
-        assert_eq!(response.status(), StatusCode::NOT_FOUND);
+		let error = extract_error(response).await;
+		assert_eq!(error.code, StatusCode::NOT_FOUND);
+		assert_eq!(error.message, "Rule not found");
+	}
 
-        let error = extract_error(response).await;
-        assert_eq!(error.code, StatusCode::NOT_FOUND);
-        assert_eq!(error.message, "User not found");
-    }
+	#[tokio::test]
+	async fn requires_authentication() {
+		let test = Test::new().await;
+		let response = test.patch_unauthenticated_json(
+			"/v1/rules/1",
+			r#"{"name":"UpdatedMoneyMaker","sequence":{"condition":{"id":"root","type":"OR","conditions":[]},"action":{"type":"NOTIFY_TELEGRAM","buttons":[]}}}"#,
+		).await;
+		assert_eq!(response.status(), StatusCode::NOT_FOUND);
 
-    #[tokio::test]
-    async fn without_body_and_content_type() {
-        let test = Test::new().await;
+		let error = extract_error(response).await;
+		assert_eq!(error.code, StatusCode::NOT_FOUND);
+		assert_eq!(error.message, "User not found");
+	}
 
-        test.tx(|mut tx| async move {
-            create_rule_for_test_user(&mut tx, "MoneyMaker").await;
-            tx.commit().await.unwrap()
-        })
-        .await;
+	#[tokio::test]
+	async fn without_body_and_content_type() {
+		let test = Test::new().await;
 
-        let response = test.patch_no_content_as_test_user("/v1/rules/4").await;
-        assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+		test.tx(|mut tx| async move {
+			create_rule_for_test_user(&mut tx, "MoneyMaker").await;
+			tx.commit().await.unwrap()
+		}).await;
 
-        let error = extract_error(response).await;
-        assert_eq!(error.code, StatusCode::BAD_REQUEST);
-        assert_eq!(error.message, "Request needs to be of content type application/json");
-    }
+		let response = test.patch_no_content_as_test_user("/v1/rules/4").await;
+		assert_eq!(response.status(), StatusCode::BAD_REQUEST);
 
-    #[tokio::test]
-    async fn malformed_json() {
-        let test = Test::new().await;
+		let error = extract_error(response).await;
+		assert_eq!(error.code, StatusCode::BAD_REQUEST);
+		assert_eq!(error.message, "Request needs to be of content type application/json");
+	}
 
-        test.tx(|mut tx| async move {
-            create_rule_for_test_user(&mut tx, "MoneyMaker").await;
-            tx.commit().await.unwrap()
-        })
-        .await;
+	#[tokio::test]
+	async fn malformed_json() {
+		let test = Test::new().await;
 
-        let response = test.patch_json_as_test_user("/v1/rules/4", "{,}").await;
-        assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+		test.tx(|mut tx| async move {
+			create_rule_for_test_user(&mut tx, "MoneyMaker").await;
+			tx.commit().await.unwrap()
+		}).await;
 
-        let error = extract_error(response).await;
-        assert_eq!(error.code, StatusCode::BAD_REQUEST);
-        assert_eq!(
-            error.message,
-            "Failed to parse the request body as JSON: key must be a string at line 1 column 2"
-        );
-    }
+		let response = test.patch_json_as_test_user("/v1/rules/4", "{,}").await;
+		assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+
+		let error = extract_error(response).await;
+		assert_eq!(error.code, StatusCode::BAD_REQUEST);
+		assert_eq!(
+			error.message,
+			"Failed to parse the request body as JSON: key must be a string at line 1 column 2"
+		);
+	}
 }

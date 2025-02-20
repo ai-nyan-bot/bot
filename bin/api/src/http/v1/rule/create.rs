@@ -12,102 +12,120 @@ use base::service::RuleCreateCmd;
 use log::debug;
 
 pub async fn create(
-    State(state): State<AppState>,
-    Extension(user): Extension<AuthenticatedUser>,
-    JsonReq(req): JsonReq<HttpRuleCreateRequest>,
+	State(state): State<AppState>,
+	Extension(user): Extension<AuthenticatedUser>,
+	JsonReq(req): JsonReq<HttpRuleCreateRequest>,
 ) -> Result<Json<HttpRuleCreateResponse>, HttpError> {
-    debug!("POST /v1/rules {:?}", req);
+	debug!("POST /v1/rules {:?}", req);
 
-    let result = state
-        .rule_service()
-        .create(
-            RuleCreateCmd {
-                name: req.name,
-                sequence: req.sequence,
-            },
-            user,
-        )
-        .await?;
+	let result = state
+		.rule_service()
+		.create(
+			RuleCreateCmd {
+				name: req.name,
+				sequence: req.sequence,
+			},
+			user,
+		)
+		.await?;
 
-    Ok(Json(HttpRuleCreateResponse {
-        id: result.id,
-        name: result.name,
-    }))
+	Ok(Json(HttpRuleCreateResponse {
+		id: result.id,
+		name: result.name,
+		sequence: result.sequence,
+	}))
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::http::model::rule::HttpRuleCreateResponse;
-    use crate::http::testing::{extract, extract_error, Test};
-    use axum::http::StatusCode;
+	use crate::http::model::rule::HttpRuleCreateResponse;
+	use crate::http::testing::{extract, extract_error, Test};
+	use axum::http::StatusCode;
+	use base::model::Value::{Percent, Sol};
+	use base::model::{Action, Condition, TelegramButtonConfig};
 
-    #[tokio::test]
-    async fn ok() {
-        let test = Test::new().await;
-        let response = test
-            .post_json_as_test_user(
-                "/v1/rules",
-                r#"{"name":"test","sequence":{"condition":{"id":"root","type":"AND","conditions":[]},"action":{"type":"NOTIFY"}}}"#,
-            )
-            .await;
-        assert_eq!(response.status(), StatusCode::OK);
+	#[tokio::test]
+	async fn ok() {
+		let test = Test::new().await;
+		let response = test
+			.post_json_as_test_user(
+				"/v1/rules",
+				r#"{"name":"test","sequence":{"condition":{"id":"root","type":"AND","conditions":[]},
+			"action":{"type":"NOTIFY_TELEGRAM",
+				"buttons":[
+					{"action":"NONE"},
+					{"action":"BUY","value":{"type":"SOL","value":1.2}},
+					{"action":"SELL","value":{"type":"PERCENT","value":3.4}},
+					{"action":"NONE"},
+					{"action":"NONE"},
+					{"action":"NONE"}]}}}"#, )
+			.await;
+		assert_eq!(response.status(), StatusCode::OK);
 
-        let response = extract::<HttpRuleCreateResponse>(response).await.unwrap();
-        assert_eq!(response.id, 4);
-    }
+		let response = extract::<HttpRuleCreateResponse>(response).await.unwrap();
+		assert_eq!(response.id, 4);
+		assert_eq!(response.name, "test");
+		assert_eq!(response.sequence.condition, Condition::And { conditions: vec![] });
 
-    #[tokio::test]
-    async fn requires_authentication() {
-        let test = Test::new_empty_db().await;
-        let response = test
-            .post_unauthenticated_json(
-                "/v1/rules",
-                r#"{"name":"test","sequence":{"condition":{"id":"root","type":"AND","conditions":[]},"action":{"type":"NOTIFY"}}}"#,
-            )
-            .await;
-        assert_eq!(response.status(), StatusCode::NOT_FOUND);
+		let Action::NotifyTelegram { buttons } = response.sequence.action else { panic!() };
+		assert_eq!(buttons.len(), 6);
+		assert_eq!(buttons.get(0).unwrap(), &TelegramButtonConfig::None);
+		assert_eq!(buttons.get(1).unwrap(), &TelegramButtonConfig::Buy { value: Sol(1.2) });
+		assert_eq!(buttons.get(2).unwrap(), &TelegramButtonConfig::Sell { value: Percent(3.4) });
+	}
 
-        let error = extract_error(response).await;
-        assert_eq!(error.code, StatusCode::NOT_FOUND);
-        assert_eq!(error.message, "User not found");
-    }
+	#[tokio::test]
+	async fn requires_authentication() {
+		let test = Test::new_empty_db().await;
+		let response = test
+			.post_unauthenticated_json(
+				"/v1/rules",
+				r#"{"name":"test","sequence":{"condition":{"id":"root","type":"AND","conditions":[]},"action":{"type":"NOTIFY_TELEGRAM","buttons":[{"action":"NONE"},{"action":"NONE"},{"action":"NONE"},{"action":"NONE"},{"action":"NONE"},{"action":"NONE"}]}}}"#,
+			)
+			.await;
+		assert_eq!(response.status(), StatusCode::NOT_FOUND);
 
-    #[tokio::test]
-    async fn without_body_and_content_type() {
-        let test = Test::new().await;
-        let response = test.post_no_content_as_test_user("/v1/rules").await;
-        assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+		let error = extract_error(response).await;
+		assert_eq!(error.code, StatusCode::NOT_FOUND);
+		assert_eq!(error.message, "User not found");
+	}
 
-        let error = extract_error(response).await;
-        assert_eq!(error.code, StatusCode::BAD_REQUEST);
-        assert_eq!(error.message, "Request needs to be of content type application/json");
-    }
+	#[tokio::test]
+	async fn without_body_and_content_type() {
+		let test = Test::new().await;
+		let response = test.post_no_content_as_test_user("/v1/rules").await;
+		assert_eq!(response.status(), StatusCode::BAD_REQUEST);
 
-    #[tokio::test]
-    async fn malformed_json() {
-        let test = Test::new().await;
-        let response = test.post_json_as_test_user("/v1/rules", "{,}").await;
-        assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+		let error = extract_error(response).await;
+		assert_eq!(error.code, StatusCode::BAD_REQUEST);
+		assert_eq!(error.message, "Request needs to be of content type application/json");
+	}
 
-        let error = extract_error(response).await;
-        assert_eq!(error.code, StatusCode::BAD_REQUEST);
-        assert_eq!(
-            error.message,
-            "Failed to parse the request body as JSON: key must be a string at line 1 column 2"
-        );
-    }
+	#[tokio::test]
+	async fn malformed_json() {
+		let test = Test::new().await;
+		let response = test.post_json_as_test_user("/v1/rules", "{,}").await;
+		assert_eq!(response.status(), StatusCode::BAD_REQUEST);
 
-    #[tokio::test]
-    async fn empty_json_object() {
-        let test = Test::new().await;
-        let response = test.post_json_as_test_user("/v1/rules", "{}").await;
-        assert_eq!(response.status(), StatusCode::UNPROCESSABLE_ENTITY);
+		let error = extract_error(response).await;
+		assert_eq!(error.code, StatusCode::BAD_REQUEST);
+		assert_eq!(
+			error.message,
+			"Failed to parse the request body as JSON: key must be a string at line 1 column 2"
+		);
+	}
 
-        let error = extract_error(response).await;
-        assert_eq!(error.code, StatusCode::UNPROCESSABLE_ENTITY);
-        assert_eq!(
-            error.message,
-            "Failed to deserialize the JSON body into the target type: missing field `name` at line 1 column 2"
-        );
-    }
+	#[tokio::test]
+	async fn empty_json_object() {
+		let test = Test::new().await;
+		let response = test.post_json_as_test_user("/v1/rules", "{}").await;
+		assert_eq!(response.status(), StatusCode::UNPROCESSABLE_ENTITY);
+
+		let error = extract_error(response).await;
+		assert_eq!(error.code, StatusCode::UNPROCESSABLE_ENTITY);
+		assert_eq!(
+			error.message,
+			"Failed to deserialize the JSON body into the target type: missing field `name` at line 1 column 2"
+		);
+	}
 }

@@ -15,7 +15,7 @@ pub enum Field {
 
     //
     TelegramExists,
-    TelegramHandle,
+    TelegramGroupHandle,
     TwitterExists,
-    TwitterHandle,
+    TwitterAccountHandle,
 }

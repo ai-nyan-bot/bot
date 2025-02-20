@@ -6,19 +6,16 @@ use crate::model::Field::PriceAvg;
 use crate::model::ValueType::{Count, Percent, Quote, Usd};
 use crate::model::{Condition, FactError, Field, Operator, Value, ValueType};
 use serde::{Deserialize, Serialize};
-use Fact::{PriceAvgQuote, PriceAvgUsd, PriceQuote, PriceUsd, TelegramGroup, TelegramGroupName, TradesBuyChangeCount, TradesBuyChangePercent, TradesBuyCount, TradesChangeCount, TradesChangePercent, TradesCount, TradesSellChangeCount, TradesSellChangePercent, TradesSellCount, TwitterAccount, TwitterAccountName, VolumeChangeQuote};
+use Fact::{PriceAvgQuote, PriceAvgUsd, PriceQuote, PriceUsd, TelegramGroup, TelegramGroupHandle, TradesBuyChangeCount, TradesBuyChangePercent, TradesBuyCount, TradesChangeCount, TradesChangePercent, TradesCount, TradesSellChangeCount, TradesSellChangePercent, TradesSellCount, TwitterAccount, TwitterAccountHandle, VolumeChangeQuote};
 use Field::{Price, Trades, TradesBuy, TradesSell, Volume};
-use Operator::{
-	DecreasedByLessThan, DecreasedByLessThanEqual, DecreasedByMoreThan, DecreasedByMoreThanEqual, IncreasedByLessThan, IncreasedByLessThanEqual,
-	IncreasedByMoreThan, IncreasedByMoreThanEqual, LessThan, LessThanEqual, MoreThan, MoreThanEqual,
-};
+use Operator::{DecreasedByLessThan, DecreasedByLessThanEqual, DecreasedByMoreThan, DecreasedByMoreThanEqual, Equal, IncreasedByLessThan, IncreasedByLessThanEqual, IncreasedByMoreThan, IncreasedByMoreThanEqual, LessThan, LessThanEqual, MoreThan, MoreThanEqual};
 use ValueType::Boolean;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Fact {
 	PriceQuote,
 	PriceUsd,
-	
+
 	PriceAvgQuote,
 	PriceAvgUsd,
 	// PriceChangePercent,
@@ -44,10 +41,10 @@ pub enum Fact {
 	// VolumeChangeUsd,
 
 	TelegramGroup,
-	TelegramGroupName,
+	TelegramGroupHandle,
 
 	TwitterAccount,
-	TwitterAccountName,
+	TwitterAccountHandle,
 }
 
 impl Fact {
@@ -55,7 +52,7 @@ impl Fact {
 		match self {
 			PriceQuote => false,
 			PriceUsd => false,
-			
+
 			PriceAvgQuote => true,
 			PriceAvgUsd => true,
 			//
@@ -82,10 +79,10 @@ impl Fact {
 			// VolumeChangeUsd => true,
 
 			TelegramGroup => false,
-			TelegramGroupName => false,
+			TelegramGroupHandle => false,
 
 			TwitterAccount => false,
-			TwitterAccountName => false,
+			TwitterAccountHandle => false,
 		}
 	}
 
@@ -93,7 +90,7 @@ impl Fact {
 		match self {
 			PriceQuote => Quote,
 			PriceUsd => Usd,
-			
+
 			PriceAvgQuote => Quote,
 			PriceAvgUsd => Usd,
 			//
@@ -120,9 +117,9 @@ impl Fact {
 			// VolumeChangeUsd => Usd,
 
 			TelegramGroup => Boolean,
-			TelegramGroupName => ValueType::String,
+			TelegramGroupHandle => ValueType::String,
 			TwitterAccount => Boolean,
-			TwitterAccountName => ValueType::String,
+			TwitterAccountHandle => ValueType::String,
 		}
 	}
 }
@@ -158,7 +155,7 @@ impl Fact {
 			(Price, MoreThanEqual, Usd, false) => PriceUsd,
 			(Price, LessThan, Usd, false) => PriceUsd,
 			(Price, LessThanEqual, Usd, false) => PriceUsd,
-			
+
 			// PriceAvgQuote
 			(PriceAvg, MoreThan, Quote, true) => PriceAvgQuote,
 			(PriceAvg, MoreThanEqual, Quote, true) => PriceAvgQuote,
@@ -258,6 +255,12 @@ impl Fact {
 			(Volume, DecreasedByMoreThanEqual, Quote, true) => VolumeChangeQuote,
 			(Volume, DecreasedByLessThan, Quote, true) => VolumeChangeQuote,
 			(Volume, DecreasedByLessThanEqual, Quote, true) => VolumeChangeQuote,
+
+			// Telegram
+			(Field::TelegramGroupHandle, Equal, ValueType::String, false) => TelegramGroupHandle,
+
+			// Twitter
+			(Field::TwitterAccountHandle, Equal, ValueType::String, false) => TwitterAccountHandle,
 
 			_ => return None,
 		};

@@ -8,6 +8,7 @@ pub use channel::*;
 pub use id::*;
 pub use kind::*;
 pub use payload::*;
+pub use telegram::*;
 
 mod channel;
 mod id;
