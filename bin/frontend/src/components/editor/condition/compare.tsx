@@ -1,10 +1,10 @@
 import {Condition, Field, Operator, Timeframe, Value, ValueNumber, ValueNumberType} from "@types";
 import React, {FC} from "react";
-import {SelectOperator} from "@components/editor/operator.tsx";
-import {ValueNumberInput} from "@components/editor/value.tsx";
-import {SelectTimeframe} from "@components/editor/timeframe.tsx";
-import {SelectField} from "@components/editor/field.tsx";
-import {config} from "./config.ts";
+import {SelectOperator} from "./operator.tsx";
+import {ValueNumberInput} from "./value.tsx";
+import {SelectTimeframe} from "./timeframe.tsx";
+import {SelectField} from "./field.tsx";
+import {config} from "@components/editor/config.ts";
 
 
 type CompareProps = {
