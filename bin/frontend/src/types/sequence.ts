@@ -17,7 +17,7 @@ export type TelegramButtonAction = 'NONE' | 'BUY' | 'SELL'
 
 export type TelegramButtonConfig = {
     action: TelegramButtonAction;
-    value: Value;
+    value?: ValueNumber;
 }
 
 export type Action = ActionNotifyTelegram;
@@ -78,7 +78,7 @@ export enum ValueType {
 
 export const COUNT_AND_PERCENT: Array<ValueNumberType> = [ValueType.COUNT, ValueType.PERCENT];
 
-export type ValueNumberType = ValueType.COUNT | ValueType.PERCENT | ValueType.QUOTE | ValueType.USD;
+export type ValueNumberType = ValueType.COUNT | ValueType.PERCENT | ValueType.SOL | ValueType.QUOTE | ValueType.USD;
 
 export type Value = ValueBoolean | ValueCount | ValuePercent | ValueQuote | ValueSol | ValueString | ValueUsd;
 export type ValueNumber = ValueCount | ValuePercent | ValueQuote | ValueSol | ValueUsd;

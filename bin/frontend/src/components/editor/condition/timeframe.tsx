@@ -21,7 +21,7 @@ export const SelectTimeframe: FC<SelectTimeframeProps> = ({defaultTimeframe, sup
     const [selected, setSelected] = useState<Timeframe>(defaultTimeframe || supported[0]);
 
     const options = useTimeframeOptions(supported)
-        .map(opt => <option value={opt.value}>{opt.label}</option>);
+        .map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>);
 
     if (supported.length === 0) {
         return null;

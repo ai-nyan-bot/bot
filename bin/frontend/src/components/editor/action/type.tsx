@@ -21,7 +21,7 @@ export const SelectActionType: FC<SelectActionTypeProps> = ({defaultActionType, 
     const [selected, setSelected] = useState<ActionType>(defaultActionType || supported[0]);
 
     const options = useActionTypeOptions(supported)
-        .map(opt => <option value={opt.value}>{opt.label}</option>);
+        .map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>);
 
     if (supported.length === 0) {
         return null;

@@ -1,4 +1,4 @@
-import React, {FC, useState} from "react";
+import React, {FC, useEffect, useState} from "react";
 import {ValueNumber, ValueNumberType} from "@types";
 
 export type ValueNumberInputProps = {
@@ -9,74 +9,73 @@ export type ValueNumberInputProps = {
 };
 
 export const ValueNumberInput: FC<ValueNumberInputProps> = ({supported, value, defaultValue, onChange}) => {
-    const [selectedType, setSelectedType] = useState<ValueNumberType>(value?.type || defaultValue?.type || supported[0]);
-    const [inputValue, setInputValue] = useState<number | undefined>(value?.value || defaultValue?.value);
+    const [selectedType, setSelectedType] = useState<ValueNumberType>(
+        value?.type || defaultValue?.type || supported[0]
+    );
+    const [inputValue, setInputValue] = useState<number | undefined>(
+        value?.value ?? defaultValue?.value
+    );
+
+    useEffect(() => {
+        if (value) {
+            setSelectedType(value.type);
+            setInputValue(value.value);
+        }
+    }, [value]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const input = e.target.value.trim();
-        if (input === "") {
+        const parsedValue = selectedType === 'COUNT' ? parseInt(input, 10) : parseFloat(input);
+
+        if (input === '' || isNaN(parsedValue)) {
             setInputValue(undefined);
+            onChange?.({type: selectedType, value: NaN});
         } else {
-            const parsedValue = (selectedType === 'COUNT')
-                ? parseInt(input, 10)
-                : parseFloat(input);
-
-            setInputValue(parsedValue)
-
-            if (onChange) {
-                onChange(
-                    {
-                        type: selectedType,
-                        value: parsedValue
-                    }
-                )
-            }
+            setInputValue(parsedValue);
+            onChange?.({type: selectedType, value: parsedValue});
         }
-    }
+    };
 
     const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const newType = e.target.value as ValueNumberType;
         setSelectedType(newType);
 
-        let value = inputValue;
-        if (newType === 'COUNT') {
-            if (value) {
-                value = Math.trunc(value);
-                setInputValue(value);
-            }
+        let adjustedValue = inputValue;
+        if (newType === 'COUNT' && inputValue !== undefined) {
+            adjustedValue = Math.trunc(inputValue);
+            setInputValue(adjustedValue);
         }
 
-        if (value) {
-            if (onChange) {
-                onChange(
-                    {
-                        type: newType,
-                        value
-                    }
-                )
-            }
-        }
+        onChange?.({
+            type: newType,
+            value: adjustedValue ?? NaN
+        });
     };
 
     const options = [
-        {value: 'COUNT', label: "Count"},
+        {value: 'COUNT', label: 'Count'},
         {value: 'PERCENT', label: '%'},
+        {value: 'SOL', label: 'SOL'},
         {value: 'QUOTE', label: 'SOL'},
         {value: 'USD', label: 'USD'}
-    ].filter(opt => supported.find(t => opt.value === t))
-        .map(opt => <option value={opt.value}>{opt.label}</option>);
+    ]
+        .filter(opt => supported.includes(opt.value as ValueNumberType))
+        .map(opt => (
+            <option key={opt.value} value={opt.value}>
+                {opt.label}
+            </option>
+        ));
 
-    if (options.length === 0) {
-        return null;
-    }
+    if (options.length === 0) return null;
 
     return (
         <div className="flex items-center space-x-2">
             <input
                 type="number"
-                value={inputValue}
+                value={inputValue ?? ''}
                 onChange={handleInputChange}
                 className="border p-2 w-full rounded"
+                placeholder="Enter value"
             />
             <select
                 value={selectedType}
@@ -88,4 +87,4 @@ export const ValueNumberInput: FC<ValueNumberInputProps> = ({supported, value, d
             </select>
         </div>
     );
-}
+};

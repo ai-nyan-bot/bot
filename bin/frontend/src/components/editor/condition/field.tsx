@@ -25,7 +25,7 @@ export const SelectField: FC<SelectFieldProps> = ({defaultField, supported, onCh
     const [selected, setSelected] = useState<Field>(defaultField || supported[0]);
 
     const options = useFieldOptions(supported)
-        .map(opt => <option value={opt.value}>{opt.label}</option>);
+        .map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>);
 
     if (supported.length === 0) {
         return null;
