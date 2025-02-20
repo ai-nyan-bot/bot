@@ -5,10 +5,19 @@ export type Sequence = {
     action: Action
 }
 
+export enum ActionType {
+    NOTIFY = 'NOTIFY'
+}
+
+export enum NotificationChannel {
+    TELEGRAM = 'TELEGRAM'
+}
+
 export type Action = ActionNotify;
 
 export type ActionNotify = {
-    type: 'NOTIFY'
+    type: ActionType,
+    channel: NotificationChannel,
 }
 
 export enum Field {

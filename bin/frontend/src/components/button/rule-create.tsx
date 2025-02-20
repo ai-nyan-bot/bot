@@ -5,6 +5,7 @@ import {Button} from "@components/ui/button.tsx";
 import {Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle} from "@components/ui/dialog";
 import {Input} from "@components/ui/input";
 import {Plus} from "lucide-react";
+import {ActionType, NotificationChannel} from "@types";
 
 export type RuleCreateButtonProps = {}
 
@@ -39,7 +40,8 @@ export const RuleCreateButton: FC<RuleCreateButtonProps> = ({}) => {
                     conditions: []
                 },
                 action: {
-                    type: "NOTIFY"
+                    type: ActionType.NOTIFY,
+                    channel: NotificationChannel.TELEGRAM,
                 }
             }
         }, newAbortController);

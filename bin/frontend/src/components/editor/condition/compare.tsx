@@ -1,7 +1,7 @@
 import {Condition, Field, Operator, Timeframe, Value, ValueNumber, ValueNumberType} from "@types";
 import React, {FC} from "react";
 import {SelectOperator} from "./operator.tsx";
-import {ValueNumberInput} from "./value.tsx";
+import {ValueNumberInput} from "../value.tsx";
 import {SelectTimeframe} from "./timeframe.tsx";
 import {SelectField} from "./field.tsx";
 import {config} from "@components/editor/config.ts";

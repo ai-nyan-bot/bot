@@ -31,7 +31,7 @@ async fn test_nothing_to_delete() {
         let test_instance = NotificationService::new(pool.clone(), NotificationRepo::new());
 
         let result = test_instance
-            .delete(10, |notification| async move { Ok::<NotificationId, TestError>(notification.id) })
+            .pop(10, |notification| async move { Ok::<NotificationId, TestError>(notification.id) })
             .await
             .unwrap();
 
@@ -78,7 +78,7 @@ async fn test_one() {
         let test_instance = NotificationService::new(pool.clone(), NotificationRepo::new());
 
         let result = test_instance
-            .delete(1, |notification| async move { Ok::<Notification, TestError>(notification) })
+            .pop(1, |notification| async move { Ok::<Notification, TestError>(notification) })
             .await
             .unwrap();
         assert_eq!(result.len(), 1);
@@ -143,7 +143,7 @@ async fn test_many() {
         let test_instance = NotificationService::new(pool.clone(), NotificationRepo::new());
 
         let result = test_instance
-            .delete(2, |notification| async move { Ok::<Notification, TestError>(notification) })
+            .pop(2, |notification| async move { Ok::<Notification, TestError>(notification) })
             .await
             .unwrap();
 
@@ -216,7 +216,7 @@ async fn test_rolls_back_if_any_fails() {
         let test_instance = NotificationService::new(pool.clone(), NotificationRepo::new());
 
         let result = test_instance
-            .delete(10, |notification| async move {
+            .pop(10, |notification| async move {
                 if notification.id == 2 {
                     return Err(TestError {});
                 }

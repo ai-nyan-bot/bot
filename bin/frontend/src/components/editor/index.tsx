@@ -113,8 +113,7 @@ export const Editor: React.FC<EditorProps> = ({sequence, onChange}) => {
                     onChange({action, condition})
                 }
             }
-        }, 1_000);
-
+        }, 100);
         return () => clearTimeout(handler);
     }, [condition]);
 
@@ -158,6 +157,7 @@ export const Editor: React.FC<EditorProps> = ({sequence, onChange}) => {
                         <div className="border-l-4 border-blue-500 pl-4">
                             <ActionEditor
                                 action={action}
+                                onChange={setAction}
                             />
                         </div>
                     </div>

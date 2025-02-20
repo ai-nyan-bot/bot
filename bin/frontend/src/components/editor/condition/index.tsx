@@ -2,7 +2,6 @@ export * from './compare'
 export * from './field'
 export * from './operator'
 export * from './timeframe'
-export * from './value'
 
 import {Card} from "@components/ui/card.tsx";
 import {Condition, ConditionType, Field, Operator, Timeframe, Value} from "@types";

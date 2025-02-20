@@ -13,13 +13,14 @@ mod channel;
 mod id;
 mod kind;
 mod payload;
+mod telegram;
 
 #[derive(Debug)]
 pub struct Notification {
-    pub id: NotificationId,
-    pub user: UserId,
-    pub channel: NotificationChannel,
-    pub kind: NotificationKind,
-    pub payload: NotificationPayload,
-    pub created_at: CreatedAt,
+	pub id: NotificationId,
+	pub user: UserId,
+	pub channel: NotificationChannel,
+	pub kind: NotificationKind,
+	pub payload: NotificationPayload,
+	pub created_at: CreatedAt,
 }

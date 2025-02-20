@@ -13,7 +13,7 @@ async fn test_no_notifications() {
     run_test(|mut tx| async move {
         let test_instance = NotificationRepo::new();
 
-        let result = test_instance.delete(&mut tx, 10).await.unwrap();
+        let result = test_instance.pop(&mut tx, 10).await.unwrap();
         assert_eq!(result.len(), 0);
 
         let count = count_all(&mut tx).await;
@@ -63,7 +63,7 @@ async fn test_one() {
         .await
         .unwrap();
 
-        let result = test_instance.delete(&mut tx, 1).await.unwrap();
+        let result = test_instance.pop(&mut tx, 1).await.unwrap();
         assert_eq!(result.len(), 1);
 
         let notification = &result[0];
@@ -138,7 +138,7 @@ async fn test_many() {
         .await
         .unwrap();
 
-        let result = test_instance.delete(&mut tx, 3).await.unwrap();
+        let result = test_instance.pop(&mut tx, 3).await.unwrap();
         assert_eq!(result.len(), 3);
 
         assert_eq!(result[0].payload.0.to_string(), "{\"value\":\"1\"}");

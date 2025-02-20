@@ -11,7 +11,7 @@ use std::sync::Arc;
 mod count;
 mod create;
 mod get;
-mod delete;
+mod pop;
 
 pub struct NotificationQueryAll {
     pub limit: Limit,

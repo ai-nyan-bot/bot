@@ -10,7 +10,7 @@ use std::error::Error;
 use std::future::Future;
 
 impl NotificationService {
-    pub async fn delete<T, TFut, R, E>(&self, limit: impl Into<Limit>, mut fun: T) -> ServiceResult<Box<[R]>>
+    pub async fn pop<T, TFut, R, E>(&self, limit: impl Into<Limit>, mut fun: T) -> ServiceResult<Box<[R]>>
     where
         T: FnMut(Notification) -> TFut + Send + 'static,
         TFut: Future<Output = Result<R, E>> + Send,
@@ -19,7 +19,7 @@ impl NotificationService {
         let limit = limit.into();
         let mut tx = self.pool.begin().await?;
 
-        let notifications = self.repo.delete(&mut tx, limit).await?;
+        let notifications = self.repo.pop(&mut tx, limit).await?;
         let mut result = Vec::with_capacity(notifications.len());
 
         for notification in notifications {

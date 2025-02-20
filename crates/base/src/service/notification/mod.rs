@@ -4,7 +4,7 @@
 pub use create_condition_met::NotificationConditionMet;
 
 mod create_condition_met;
-mod delete;
+mod pop;
 
 use crate::repo::NotificationRepo;
 use sqlx::PgPool;

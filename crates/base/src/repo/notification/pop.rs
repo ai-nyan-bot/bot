@@ -8,7 +8,7 @@ use common::repo::{RepoResult, Tx};
 use sqlx::{query, Row};
 
 impl NotificationRepo {
-    pub async fn delete<'a>(&self, tx: &mut Tx<'a>, limit: impl Into<Limit>) -> RepoResult<Box<[Notification]>> {
+    pub async fn pop<'a>(&self, tx: &mut Tx<'a>, limit: impl Into<Limit>) -> RepoResult<Box<[Notification]>> {
         let limit = limit.into();
         Ok(query(
             r#"
