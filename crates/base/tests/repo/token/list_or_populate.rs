@@ -17,7 +17,7 @@ async fn test_wsol() {
     // already exists
     run_test_on_empty_db(|mut tx| async move {
         let test_instance = TokenRepo::testing(SuccessfulTokenInfoLoader::default());
-        let mut result = test_instance.list_or_populate_by_mints(&mut tx, vec![TokenMint::wsol()]).await.unwrap();
+        let mut result = test_instance.list_or_populate(&mut tx, vec![TokenMint::wsol()]).await.unwrap();
         assert_eq!(result.len(), 1);
         let result = result.pop().unwrap();
 
@@ -38,7 +38,7 @@ async fn test_usdt() {
     // already exists
     run_test_on_empty_db(|mut tx| async move {
         let test_instance = TokenRepo::testing(SuccessfulTokenInfoLoader::default());
-        let mut result = test_instance.list_or_populate_by_mints(&mut tx, vec![TokenMint::usdt()]).await.unwrap();
+        let mut result = test_instance.list_or_populate(&mut tx, vec![TokenMint::usdt()]).await.unwrap();
         assert_eq!(result.len(), 1);
         let result = result.pop().unwrap();
 
@@ -59,7 +59,7 @@ async fn test_usdc() {
     // already exists
     run_test_on_empty_db(|mut tx| async move {
         let test_instance = TokenRepo::testing(SuccessfulTokenInfoLoader::default());
-        let mut result = test_instance.list_or_populate_by_mints(&mut tx, vec![TokenMint::usdc()]).await.unwrap();
+        let mut result = test_instance.list_or_populate(&mut tx, vec![TokenMint::usdc()]).await.unwrap();
         assert_eq!(result.len(), 1);
         let result = result.pop().unwrap();
 
@@ -79,11 +79,11 @@ async fn test_usdc() {
 async fn test_already_in_db() {
     run_test_on_empty_db(|mut tx| async move {
         let test_instance = TokenRepo::testing(SuccessfulTokenInfoLoader::default());
-        let result = test_instance.list_or_populate_by_mints(&mut tx, vec![bonk_mint()]).await.unwrap();
+        let result = test_instance.list_or_populate(&mut tx, vec![bonk_mint()]).await.unwrap();
         assert_eq!(result.len(), 1);
 
         let test_instance = TokenRepo::testing(SuccessfulTokenInfoLoader::default());
-        let mut result = test_instance.list_or_populate_by_mints(&mut tx, vec![bonk_mint()]).await.unwrap();
+        let mut result = test_instance.list_or_populate(&mut tx, vec![bonk_mint()]).await.unwrap();
         assert_eq!(result.len(), 1);
 
         let result = result.remove(0);
@@ -103,7 +103,7 @@ async fn test_already_in_db() {
 async fn test_already_in_cache() {
     run_test_on_empty_db(|mut tx| async move {
         let test_instance = TokenRepo::testing(SuccessfulTokenInfoLoader::default());
-        let mut result = test_instance.list_or_populate_by_mints(&mut tx, vec![bonk_mint()]).await.unwrap();
+        let mut result = test_instance.list_or_populate(&mut tx, vec![bonk_mint()]).await.unwrap();
         assert_eq!(result.len(), 1);
 
         let result = result.remove(0);
@@ -124,7 +124,7 @@ async fn test_insert_one() {
     run_test_on_empty_db(|mut tx| async move {
         let test_instance = TokenRepo::testing(SuccessfulTokenInfoLoader::default());
 
-        let result = test_instance.list_or_populate_by_mints(&mut tx, vec![lost_lot_of_money_mint()]).await.unwrap();
+        let result = test_instance.list_or_populate(&mut tx, vec![lost_lot_of_money_mint()]).await.unwrap();
         assert_eq!(result.len(), 1);
 
         let result = result.first().unwrap();
@@ -147,17 +147,17 @@ async fn test_one_in_cache_one_in_db_one_insert() {
 
         let test_instance = TokenRepo::testing(loader.clone());
         let result = test_instance
-            .list_or_populate_by_mints(&mut tx, vec![lost_lot_of_money_mint(), bonk_mint()])
+            .list_or_populate(&mut tx, vec![lost_lot_of_money_mint(), bonk_mint()])
             .await
             .unwrap();
         assert_eq!(result.len(), 2);
 
         let test_instance = TokenRepo::testing(loader);
-        let result = test_instance.list_or_populate_by_mints(&mut tx, vec![lost_lot_of_money_mint()]).await.unwrap();
+        let result = test_instance.list_or_populate(&mut tx, vec![lost_lot_of_money_mint()]).await.unwrap();
         assert_eq!(result.len(), 1);
 
         let result = test_instance
-            .list_or_populate_by_mints(
+            .list_or_populate(
                 &mut tx,
                 vec![
                     TokenMint::new("Av6qVigkb7USQyPXJkUvAEm4f599WTRvd75PUWBA9eNm"),
@@ -202,7 +202,7 @@ async fn test_insert_many() {
         let test_instance = TokenRepo::testing(SuccessfulTokenInfoLoader::default());
 
         let result = test_instance
-            .list_or_populate_by_mints(
+            .list_or_populate(
                 &mut tx,
                 vec![
                     "9uRJ5aGgeu2i3J98hsC5FDxd2PmRjVy9fQwNAy7fzLG3",
@@ -237,7 +237,7 @@ async fn test_unable_to_load() {
     run_test_on_empty_db(|mut tx| async move {
         let test_instance = TokenRepo::testing(FailingTokenInfoLoader {});
 
-        let result = test_instance.list_or_populate_by_mints(&mut tx, vec![TokenMint::new("Does_Not_Exists")]).await;
+        let result = test_instance.list_or_populate(&mut tx, vec![TokenMint::new("Does_Not_Exists")]).await;
         assert_eq!(result.err().unwrap(), RepoError::NotFound);
 
         let count = count_all(&mut tx).await;

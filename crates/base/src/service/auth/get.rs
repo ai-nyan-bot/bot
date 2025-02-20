@@ -11,9 +11,9 @@ impl AuthService {
         let mut tx = self.pool.begin().await?;
         let result = match self.auth_repo.get_by_token(&mut tx, token).await {
             Ok(auth) => auth,
-            Err(err) => match err {
-                RepoError::NotFound => return Err(ServiceError::not_found("User not found")),
-                _ => return Err(err.into()),
+            Err(err) => return match err {
+                RepoError::NotFound => Err(ServiceError::not_found("User not found")),
+                _ => Err(err.into()),
             },
         };
         let _ = tx.commit().await?;

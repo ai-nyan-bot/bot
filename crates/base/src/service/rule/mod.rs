@@ -5,6 +5,7 @@ pub use create::RuleCreateCmd;
 pub use update::RuleUpdateCmd;
 
 mod create;
+mod get;
 mod list;
 mod update;
 
@@ -32,5 +33,12 @@ pub struct RuleServiceInner {
 impl RuleService {
     pub fn new(pool: PgPool, repo: RuleRepo) -> Self {
         Self(Arc::new(RuleServiceInner { pool, repo }))
+    }
+
+    pub fn testing(pool: PgPool) -> Self {
+        Self(Arc::new(RuleServiceInner {
+            pool,
+            repo: RuleRepo::new(),
+        }))
     }
 }

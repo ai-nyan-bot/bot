@@ -139,3 +139,27 @@ where
         panic::resume_unwind(err)
     }
 }
+
+pub async fn run_test_with_pool<T, TFut>(test: T)
+where
+    T: FnOnce(PgPool) -> TFut + 'static,
+    TFut: Future,
+{
+    let result = panic::AssertUnwindSafe(async move {
+        let pool = get_test_pool().await;
+
+        let mut tx = pool.begin().await.unwrap();
+        initialise_database(&mut tx).await;
+        let _ = tx.commit().await;
+        
+        test(pool.clone()).await;
+    })
+        .catch_unwind()
+        .await
+        .err();
+
+    // propagate error if test or preparation failed
+    if let Some(err) = result {
+        panic::resume_unwind(err)
+    }
+}

@@ -11,7 +11,7 @@ use crate::LoadTokenInfo;
 use common::repo::{RepoResult, Tx};
 
 impl<L: LoadTokenInfo> TokenRepo<L> {
-    pub async fn list_or_populate_by_mints<'a>(&self, tx: &mut Tx<'a>, mints: impl IntoIterator<Item = impl Into<TokenMint>> + Send) -> RepoResult<Vec<Token>> {
+    pub async fn list_or_populate<'a>(&self, tx: &mut Tx<'a>, mints: impl IntoIterator<Item = impl Into<TokenMint>> + Send) -> RepoResult<Vec<Token>> {
         let mints = mints.into_iter().map(|mint| mint.into()).collect::<Vec<_>>();
 
         let mut result = vec![];

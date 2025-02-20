@@ -11,7 +11,7 @@ use crate::LoadTokenInfo;
 use common::repo::{RepoResult, Tx};
 
 impl<L: LoadTokenInfo> TokenPairRepo<L> {
-    pub async fn list_or_populate_by_mints<'a>(
+    pub async fn list_or_populate<'a>(
         &self,
         tx: &mut Tx<'a>,
         mints: impl IntoIterator<Item = (impl Into<TokenMint>, impl Into<TokenMint>)> + Send,

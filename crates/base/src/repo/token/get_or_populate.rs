@@ -11,8 +11,8 @@ use common::repo::error::RepoError;
 use common::repo::{RepoResult, Tx};
 
 impl<L: LoadTokenInfo> TokenRepo<L> {
-    pub async fn get_or_populate_by_mint<'a>(&self, tx: &mut Tx<'a>, mint: impl Into<TokenMint> + Send) -> RepoResult<Token> {
-        let mut result = self.list_or_populate_by_mints(tx, vec![mint.into()]).await?;
+    pub async fn get_or_populate<'a>(&self, tx: &mut Tx<'a>, mint: impl Into<TokenMint> + Send) -> RepoResult<Token> {
+        let mut result = self.list_or_populate(tx, vec![mint.into()]).await?;
         if result.is_empty() {
             return Err(RepoError::NotFound);
         }

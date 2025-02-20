@@ -15,7 +15,7 @@ async fn test_wsol_usdt() {
         let test_instance = TokenPairRepo::testing(TokenRepo::testing(SuccessfulTokenInfoLoader::default()));
 
         let mut result = test_instance
-            .list_or_populate_by_mints(&mut tx, vec![(TokenMint::wsol(), TokenMint::usdt())])
+            .list_or_populate(&mut tx, vec![(TokenMint::wsol(), TokenMint::usdt())])
             .await
             .unwrap();
         assert_eq!(result.len(), 1);
@@ -50,7 +50,7 @@ async fn test_wsol_usdc() {
         let test_instance = TokenPairRepo::testing(TokenRepo::testing(SuccessfulTokenInfoLoader::default()));
 
         let mut result = test_instance
-            .list_or_populate_by_mints(&mut tx, vec![(TokenMint::wsol(), TokenMint::usdc())])
+            .list_or_populate(&mut tx, vec![(TokenMint::wsol(), TokenMint::usdc())])
             .await
             .unwrap();
         assert_eq!(result.len(), 1);
@@ -85,7 +85,7 @@ async fn test_usdc_usdt() {
         let test_instance = TokenPairRepo::testing(TokenRepo::testing(SuccessfulTokenInfoLoader::default()));
 
         let mut result = test_instance
-            .list_or_populate_by_mints(&mut tx, vec![(TokenMint::usdc(), TokenMint::usdt())])
+            .list_or_populate(&mut tx, vec![(TokenMint::usdc(), TokenMint::usdt())])
             .await
             .unwrap();
         assert_eq!(result.len(), 1);
@@ -119,14 +119,14 @@ async fn test_already_in_db() {
     run_test_on_empty_db(|mut tx| async move {
         let test_instance = TokenPairRepo::testing(TokenRepo::testing(SuccessfulTokenInfoLoader::default()));
         let result = test_instance
-            .list_or_populate_by_mints(&mut tx, vec![("Av6qVigkb7USQyPXJkUvAEm4f599WTRvd75PUWBA9eNm", TokenMint::wsol())])
+            .list_or_populate(&mut tx, vec![("Av6qVigkb7USQyPXJkUvAEm4f599WTRvd75PUWBA9eNm", TokenMint::wsol())])
             .await
             .unwrap();
         assert_eq!(result.len(), 1);
 
         let test_instance = TokenPairRepo::testing(TokenRepo::testing(SuccessfulTokenInfoLoader::default()));
         let mut result = test_instance
-            .list_or_populate_by_mints(&mut tx, vec![("Av6qVigkb7USQyPXJkUvAEm4f599WTRvd75PUWBA9eNm", TokenMint::wsol())])
+            .list_or_populate(&mut tx, vec![("Av6qVigkb7USQyPXJkUvAEm4f599WTRvd75PUWBA9eNm", TokenMint::wsol())])
             .await
             .unwrap();
         assert_eq!(result.len(), 1);
@@ -158,12 +158,12 @@ async fn test_already_in_cache() {
     run_test_on_empty_db(|mut tx| async move {
         let test_instance = TokenPairRepo::testing(TokenRepo::testing(SuccessfulTokenInfoLoader::default()));
         let _ = test_instance
-            .list_or_populate_by_mints(&mut tx, vec![("Av6qVigkb7USQyPXJkUvAEm4f599WTRvd75PUWBA9eNm", TokenMint::wsol())])
+            .list_or_populate(&mut tx, vec![("Av6qVigkb7USQyPXJkUvAEm4f599WTRvd75PUWBA9eNm", TokenMint::wsol())])
             .await
             .unwrap();
 
         let mut result = test_instance
-            .list_or_populate_by_mints(&mut tx, vec![("Av6qVigkb7USQyPXJkUvAEm4f599WTRvd75PUWBA9eNm", TokenMint::wsol())])
+            .list_or_populate(&mut tx, vec![("Av6qVigkb7USQyPXJkUvAEm4f599WTRvd75PUWBA9eNm", TokenMint::wsol())])
             .await
             .unwrap();
         assert_eq!(result.len(), 1);
@@ -197,7 +197,7 @@ async fn test_insert_one() {
         let test_instance = TokenPairRepo::testing(TokenRepo::testing(SuccessfulTokenInfoLoader::default()));
 
         let mut result = test_instance
-            .list_or_populate_by_mints(&mut tx, vec![("Av6qVigkb7USQyPXJkUvAEm4f599WTRvd75PUWBA9eNm", TokenMint::wsol())])
+            .list_or_populate(&mut tx, vec![("Av6qVigkb7USQyPXJkUvAEm4f599WTRvd75PUWBA9eNm", TokenMint::wsol())])
             .await
             .unwrap();
 
@@ -232,7 +232,7 @@ async fn test_one_in_cache_one_in_db_one_insert() {
         let test_instance = TokenPairRepo::testing(TokenRepo::testing(SuccessfulTokenInfoLoader::default()));
 
         let result = test_instance
-            .list_or_populate_by_mints(
+            .list_or_populate(
                 &mut tx,
                 vec![
                     ("9uRJ5aGgeu2i3J98hsC5FDxd2PmRjVy9fQwNAy7fzLG3", TokenMint::usdc()),
@@ -245,13 +245,13 @@ async fn test_one_in_cache_one_in_db_one_insert() {
 
         let test_instance = TokenPairRepo::testing(TokenRepo::testing(SuccessfulTokenInfoLoader::default()));
         let result = test_instance
-            .list_or_populate_by_mints(&mut tx, vec![("9uRJ5aGgeu2i3J98hsC5FDxd2PmRjVy9fQwNAy7fzLG3", TokenMint::usdc())])
+            .list_or_populate(&mut tx, vec![("9uRJ5aGgeu2i3J98hsC5FDxd2PmRjVy9fQwNAy7fzLG3", TokenMint::usdc())])
             .await
             .unwrap();
         assert_eq!(result.len(), 1);
 
         let result = test_instance
-            .list_or_populate_by_mints(
+            .list_or_populate(
                 &mut tx,
                 vec![
                     ("Av6qVigkb7USQyPXJkUvAEm4f599WTRvd75PUWBA9eNm", TokenMint::usdt()),
@@ -290,7 +290,7 @@ async fn test_insert_many() {
         let test_instance = TokenPairRepo::testing(TokenRepo::testing(SuccessfulTokenInfoLoader::default()));
 
         let result = test_instance
-            .list_or_populate_by_mints(
+            .list_or_populate(
                 &mut tx,
                 vec![
                     ("9uRJ5aGgeu2i3J98hsC5FDxd2PmRjVy9fQwNAy7fzLG3", TokenMint::wsol()),
@@ -332,7 +332,7 @@ async fn test_unable_to_load() {
         let test_instance = TokenPairRepo::testing(TokenRepo::testing(FailingTokenInfoLoader {}));
 
         let result = test_instance
-            .list_or_populate_by_mints(&mut tx, vec![(TokenMint::new("Does_Not_Exists"), TokenMint::wsol())])
+            .list_or_populate(&mut tx, vec![(TokenMint::new("Does_Not_Exists"), TokenMint::wsol())])
             .await;
         assert_eq!(result.err().unwrap(), RepoError::NotFound);
 

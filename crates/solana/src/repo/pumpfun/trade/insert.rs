@@ -62,7 +62,7 @@ impl<L: LoadTokenInfo> TradeRepo<L> {
 
         let token_pairs: HashMap<TokenMint, TokenPairId> = self
             .token_pair_repo
-            .list_or_populate_by_mints(tx, token_pairs)
+            .list_or_populate(tx, token_pairs)
             .await?
             .into_iter()
             .map(|p| (p.base.mint, p.id))

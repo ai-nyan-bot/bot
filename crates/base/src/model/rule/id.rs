@@ -2,6 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use serde::{Deserialize, Serialize};
+use std::fmt::{Display, Formatter};
 
 #[derive(Eq, Hash, Copy, Clone, Debug, PartialEq, PartialOrd, Ord, Deserialize, Serialize, sqlx::Type)]
 #[sqlx(transparent)]
@@ -28,5 +29,11 @@ impl From<i32> for RuleId {
 impl From<String> for RuleId {
     fn from(value: String) -> Self {
         Self(value.parse::<i32>().unwrap_or(0))
+    }
+}
+
+impl Display for RuleId{
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        Display::fmt(&self.0, f)
     }
 }

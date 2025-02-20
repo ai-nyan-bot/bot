@@ -4,9 +4,11 @@
 pub use auth::AuthService;
 pub use notification::{NotificationError, NotificationResult, NotificationRuleMatched, NotificationService};
 pub use rule::{RuleCreateCmd, RuleService, RuleUpdateCmd};
+pub use token::TokenService;
 pub use user::{AuthenticateUserTelegramCmd, UserService};
 
 mod auth;
 mod notification;
 mod rule;
 mod user;
+mod token;

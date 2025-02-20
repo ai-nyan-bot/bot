@@ -11,13 +11,13 @@ use common::repo::error::RepoError;
 use common::repo::{RepoResult, Tx};
 
 impl<L: LoadTokenInfo> TokenPairRepo<L> {
-    pub async fn get_or_populate_by_mint<'a>(
+    pub async fn get_or_populate<'a>(
         &self,
         tx: &mut Tx<'a>,
         base_mint: impl Into<TokenMint> + Send,
         quote_mint: impl Into<TokenMint> + Send,
     ) -> RepoResult<TokenPair> {
-        let mut result = self.list_or_populate_by_mints(tx, vec![(base_mint.into(), quote_mint.into())]).await?;
+        let mut result = self.list_or_populate(tx, vec![(base_mint.into(), quote_mint.into())]).await?;
         if result.is_empty() {
             return Err(RepoError::NotFound);
         }

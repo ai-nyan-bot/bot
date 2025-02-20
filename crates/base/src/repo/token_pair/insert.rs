@@ -28,7 +28,7 @@ impl<L: LoadTokenInfo> TokenPairRepo<L> {
             }
         }
 
-        let tokens: Vec<Token> = self.token_repo.list_or_populate_by_mints(tx, token_mints).await?;
+        let tokens: Vec<Token> = self.token_repo.list_or_populate(tx, token_mints).await?;
         let tokens: HashMap<TokenMint, Token> = tokens.into_iter().map(|token| (token.mint.clone(), token)).collect();
 
         let mut base_ids = Vec::with_capacity(mints.len());

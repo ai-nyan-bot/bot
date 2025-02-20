@@ -32,4 +32,8 @@ impl NotificationService {
 	pub fn new(pool: PgPool, repo: NotificationRepo) -> Self {
 		Self(Arc::new(NotificationServiceInner { pool, repo }))
 	}
+	
+	pub fn testing(pool: PgPool) -> Self {
+		Self(Arc::new(NotificationServiceInner { pool, repo: NotificationRepo::new() }))
+	}
 }

@@ -10,20 +10,13 @@ use base::model::{AuthenticatedUser, RuleId};
 use log::debug;
 
 pub async fn get(
-    Path(id): Path<String>,
+    Path(id): Path<RuleId>,
     State(state): State<AppState>,
     Extension(user): Extension<AuthenticatedUser>,
 ) -> Result<Json<HttpRulGetResponse>, HttpError> {
     debug!("GET /v1/rules/{id}");
 
-    let r = state
-        .service
-        .rule
-        .list_user(user.id)
-        .await?
-        .into_iter()
-        .find(|r| r.id == RuleId(id.parse::<i32>().unwrap()))
-        .ok_or(HttpError::not_found("Rule not found"))?;
+    let r = state.service.rule.get_by_id_user(id, user.id).await?;
 
     Ok(Json(HttpRulGetResponse {
         id: r.id,

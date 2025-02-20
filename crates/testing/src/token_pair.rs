@@ -7,12 +7,16 @@ use base::test::SuccessfulTokenInfoLoader;
 use common::model::{Count, Limit};
 use common::repo::Tx;
 
-pub async fn get_or_create_token_pair<'a>(tx: &mut Tx<'a>, base: impl Into<TokenMint> + Send, quote: impl Into<TokenMint> + Send) -> TokenPair {
+pub async fn get_or_create_token_pair<'a>(
+    tx: &mut Tx<'a>,
+    base: impl Into<TokenMint> + Send,
+    quote: impl Into<TokenMint> + Send,
+) -> TokenPair {
     TokenPairRepo::new(
         TokenRepo::new(SuccessfulTokenInfoLoader::default(), ReadTokenRepo::new()),
         ReadTokenPairRepo::new(ReadTokenRepo::new()),
     )
-    .list_or_populate_by_mints(tx, vec![(base, quote)])
+    .list_or_populate(tx, vec![(base, quote)])
     .await
     .unwrap()
     .pop()
@@ -21,5 +25,12 @@ pub async fn get_or_create_token_pair<'a>(tx: &mut Tx<'a>, base: impl Into<Token
 
 pub async fn count_all<'a>(tx: &mut Tx<'a>) -> Count {
     let repo = ReadTokenPairRepo::new(ReadTokenRepo::new());
-    repo.count(tx, TokenPairQuery { limit: Limit::max() }).await.unwrap()
+    repo.count(
+        tx,
+        TokenPairQuery {
+            limit: Limit::max(),
+        },
+    )
+    .await
+    .unwrap()
 }
