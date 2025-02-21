@@ -6,7 +6,7 @@ use base::model::Condition::Compare;
 use base::model::Field::{PriceAvg, Volume};
 use base::model::Operator::{Equal, MoreThan};
 use base::model::Value::Quote;
-use base::model::{Action, Sequence, TelegramButtonConfig, Value};
+use base::model::{Action, Sequence, TelegramActionButtonConfig, Value};
 use base::repo::{RuleRepo, RuleUpdateCmd};
 use common::model::Timeframe::{H1, M15};
 use common::repo::error::RepoError;
@@ -45,11 +45,11 @@ async fn test_update() {
 						},
 						action: Action::NotifyTelegram {
 							buttons: vec![
-								TelegramButtonConfig::None,
-								TelegramButtonConfig::Buy {
+								TelegramActionButtonConfig::None,
+								TelegramActionButtonConfig::Buy {
 									value: Value::Sol(1.2)
 								},
-								TelegramButtonConfig::Sell {
+								TelegramActionButtonConfig::Sell {
 									value: Value::Percent(3.4)
 								}
 							]
@@ -75,11 +75,11 @@ async fn test_update() {
 		);
 		assert_eq!(result.sequence.action, Action::NotifyTelegram {
 			buttons: vec![
-				TelegramButtonConfig::None,
-				TelegramButtonConfig::Buy {
+				TelegramActionButtonConfig::None,
+				TelegramActionButtonConfig::Buy {
 					value: Value::Sol(1.2)
 				},
-				TelegramButtonConfig::Sell {
+				TelegramActionButtonConfig::Sell {
 					value: Value::Percent(3.4)
 				}
 			]

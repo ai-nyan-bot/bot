@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use base::model::{RuleId, TelegramButtonConfig, TokenPairId, Value};
+use base::model::{RuleId, TelegramActionButtonConfig, TokenPairId, Value};
 use base::repo::NotificationRepo;
 use base::service::{NotificationRuleMatched, NotificationService};
 use testing::notification::count_all;
@@ -22,11 +22,11 @@ async fn test_ok() {
 			token_pair: 234.into(),
 			rule: 456.into(),
 			buttons: vec![
-				TelegramButtonConfig::None,
-				TelegramButtonConfig::Buy {
+				TelegramActionButtonConfig::None,
+				TelegramActionButtonConfig::Buy {
 					value: Value::Sol(1.2)
 				},
-				TelegramButtonConfig::Sell {
+				TelegramActionButtonConfig::Sell {
 					value: Value::Percent(3.4)
 				}
 			],
@@ -40,12 +40,12 @@ async fn test_ok() {
 			assert_eq!(notification.user, 1);
 			assert_eq!(notification.payload("rule"), Some(RuleId(456)));
 			assert_eq!(notification.payload("token_pair"), Some(TokenPairId(234)));
-			assert_eq!(notification.payload("button_0"), Some(TelegramButtonConfig::None));
-			assert_eq!(notification.payload("button_1"), Some(TelegramButtonConfig::Buy { value: Value::Sol(1.2) }));
-			assert_eq!(notification.payload("button_2"), Some(TelegramButtonConfig::Sell { value: Value::Percent(3.4) }));
-			assert_eq!(notification.payload("button_3"), Some(TelegramButtonConfig::None));
-			assert_eq!(notification.payload("button_4"), Some(TelegramButtonConfig::None));
-			assert_eq!(notification.payload("button_5"), Some(TelegramButtonConfig::None));
+			assert_eq!(notification.payload("button_0"), Some(TelegramActionButtonConfig::None));
+			assert_eq!(notification.payload("button_1"), Some(TelegramActionButtonConfig::Buy { value: Value::Sol(1.2) }));
+			assert_eq!(notification.payload("button_2"), Some(TelegramActionButtonConfig::Sell { value: Value::Percent(3.4) }));
+			assert_eq!(notification.payload("button_3"), Some(TelegramActionButtonConfig::None));
+			assert_eq!(notification.payload("button_4"), Some(TelegramActionButtonConfig::None));
+			assert_eq!(notification.payload("button_5"), Some(TelegramActionButtonConfig::None));
 			Ok(())
 		}).await.unwrap();
 	}).await

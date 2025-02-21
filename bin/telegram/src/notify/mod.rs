@@ -43,27 +43,3 @@ async fn next_notifications(state: AppState) {
 		}
 	}).await;
 }
-
-// async fn next_notifications(state: AppState) {
-// 	let _ = state.notification_service().pop(1, |notification| async move {
-// 		match notification.ty {
-// 			NotificationType::RuleMatched => rule_matched(state.clone(), notification).await
-// 			// NotificationType::RuleMatched => {}
-// 		}
-// 		// let user = state.user_service().get_by_id(notification.user).await.unwrap();
-// 		// if let Some(telegram_id) = user.telegram_id {
-// 		// 	let token_pair_id = notification.payload.0.get("token_pair_id").unwrap().as_str().unwrap();
-// 		//
-// 		// 	let buttons = InlineKeyboardMarkup::new(vec![
-// 		// 		vec![InlineKeyboardButton::web_app("Buy 0.01", WebAppInfo { url: Url::parse("https://telegram.nyan.bot/rules").unwrap(), })],
-// 		// 		vec![InlineKeyboardButton::web_app("Sell 100%", WebAppInfo { url: Url::parse("https://telegram.nyan.bot/rules").unwrap(), })]
-// 		// 	]);
-// 		//
-// 		// 	let x = notifier.send_message(
-// 		// 		Recipient::Id(ChatId(telegram_id.0.parse::<i64>().unwrap())),
-// 		// 		format!("Condition met {token_pair_id}"),
-// 		// 	).reply_markup(buttons).await.unwrap();
-// 
-// 		Ok(())
-// 	}).await;
-// }

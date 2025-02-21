@@ -1,12 +1,14 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use crate::callback::CallbackStore;
 use crate::config::Config;
 use base::repo::{NotificationRepo, ReadTokenPairRepo, ReadTokenRepo, RuleRepo};
 use base::service::{NotificationService, RuleService, TokenService, UserService};
 use common::repo::pool::setup_pool;
 use std::ops::Deref;
 use std::sync::Arc;
+use std::time::Duration;
 use teloxide::Bot;
 use testing::get_test_pool;
 
@@ -41,6 +43,7 @@ impl Deref for AppState {
 pub struct AppStateInner {
     pub config: Config,
     pub bot: Bot,
+    pub callback_store: CallbackStore,
     pub service: Service,
 }
 
@@ -62,6 +65,7 @@ impl AppState {
         Self(Arc::new(AppStateInner {
             config,
             bot,
+            callback_store: CallbackStore::new(Duration::from_secs(60 * 15)),
             service: Service {
                 notification: NotificationService::new(pool.clone(), NotificationRepo::new()),
                 rule: RuleService::new(pool.clone(), RuleRepo::new()),
@@ -78,6 +82,7 @@ impl AppState {
         Self(Arc::new(AppStateInner {
             config,
             bot,
+            callback_store: CallbackStore::new(Duration::from_secs(1)),
             service: Service {
                 notification: NotificationService::testing(pool.clone()),
                 rule: RuleService::testing(pool.clone()),

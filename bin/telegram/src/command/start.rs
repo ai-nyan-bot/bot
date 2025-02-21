@@ -35,10 +35,10 @@ pub(crate) async fn start(bot: Bot, msg: Message, state: AppState) -> HandlerRes
         //     InlineKeyboardButton::callback(i18n.start, "send"),
         //     InlineKeyboardButton::callback(i18n.help, "receive"),
         // ],
-        // vec![
-        //     InlineKeyboardButton::callback(format!("📊 {}", i18n.button_text_balance), "balance"),
-        //     InlineKeyboardButton::callback(format!("🏦 {}", i18n.button_text_wallet), "wallet"),
-        // ],
+        vec![
+            InlineKeyboardButton::callback(format!("📊 {}", i18n.button_text_balance), "balance"),
+            // InlineKeyboardButton::callback(format!("🏦 {}", i18n.button_text_wallet), "wallet"),
+        ],
     ]);
 
     if let Some(user) = msg.from {

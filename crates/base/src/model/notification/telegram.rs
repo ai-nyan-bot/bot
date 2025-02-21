@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "action", rename_all = "SCREAMING_SNAKE_CASE")]
-pub enum TelegramButtonConfig {
+pub enum TelegramActionButtonConfig {
 	None,
 	Buy {
 		value: Value
@@ -19,27 +19,27 @@ pub enum TelegramButtonConfig {
 
 #[cfg(test)]
 mod tests {
-	use crate::model::notification::telegram::TelegramButtonConfig;
+	use crate::model::notification::telegram::TelegramActionButtonConfig;
 	use crate::model::Value;
 
 	#[test]
 	fn serde_none() {
-		let serialised = serde_json::to_string(&TelegramButtonConfig::None).unwrap();
+		let serialised = serde_json::to_string(&TelegramActionButtonConfig::None).unwrap();
 		assert_eq!(serialised, r#"{"action":"NONE"}"#);
-		assert_eq!(serde_json::from_str::<TelegramButtonConfig>(serialised.as_str()).unwrap(), TelegramButtonConfig::None);
+		assert_eq!(serde_json::from_str::<TelegramActionButtonConfig>(serialised.as_str()).unwrap(), TelegramActionButtonConfig::None);
 	}
 
 	#[test]
 	fn serde_buy() {
-		let serialised = serde_json::to_string(&TelegramButtonConfig::Buy { value: Value::Sol(23.4) }).unwrap();
+		let serialised = serde_json::to_string(&TelegramActionButtonConfig::Buy { value: Value::Sol(23.4) }).unwrap();
 		assert_eq!(serialised, r#"{"action":"BUY","value":{"type":"SOL","value":23.4}}"#);
-		assert_eq!(serde_json::from_str::<TelegramButtonConfig>(serialised.as_str()).unwrap(), TelegramButtonConfig::Buy { value: Value::Sol(23.4) });
+		assert_eq!(serde_json::from_str::<TelegramActionButtonConfig>(serialised.as_str()).unwrap(), TelegramActionButtonConfig::Buy { value: Value::Sol(23.4) });
 	}
 
 	#[test]
 	fn serde_sell() {
-		let serialised = serde_json::to_string(&TelegramButtonConfig::Sell { value: Value::Percent(51.2) }).unwrap();
+		let serialised = serde_json::to_string(&TelegramActionButtonConfig::Sell { value: Value::Percent(51.2) }).unwrap();
 		assert_eq!(serialised, r#"{"action":"SELL","value":{"type":"PERCENT","value":51.2}}"#);
-		assert_eq!(serde_json::from_str::<TelegramButtonConfig>(serialised.as_str()).unwrap(), TelegramButtonConfig::Sell { value: Value::Percent(51.2) });
+		assert_eq!(serde_json::from_str::<TelegramActionButtonConfig>(serialised.as_str()).unwrap(), TelegramActionButtonConfig::Sell { value: Value::Percent(51.2) });
 	}
 }

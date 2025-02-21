@@ -7,29 +7,29 @@ use serde::de::DeserializeOwned;
 
 pub use channel::*;
 pub use id::*;
-pub use r#type::*;
 pub use payload::*;
+pub use r#type::*;
 pub use telegram::*;
 
 mod channel;
 mod id;
-mod r#type;
 mod payload;
 mod telegram;
+mod r#type;
 
 #[derive(Debug)]
 pub struct Notification {
-	pub id: NotificationId,
-	pub user: UserId,
-	pub channel: NotificationChannel,
-	pub ty: NotificationType,
-	pub payload: NotificationPayload,
-	pub created_at: CreatedAt,
+    pub id: NotificationId,
+    pub user: UserId,
+    pub channel: NotificationChannel,
+    pub ty: NotificationType,
+    pub payload: NotificationPayload,
+    pub created_at: CreatedAt,
 }
 
 impl Notification {
-	pub fn payload<T: DeserializeOwned>(&self, index: &'static str) -> Option<T> {
-		let value = self.payload.0.get(index)?;
-		serde_json::from_value::<T>(value.clone()).ok()
-	}
+    pub fn payload<'a, T: DeserializeOwned>(&self, index: &'a str) -> Option<T> {
+        let value = self.payload.0.get(index)?;
+        serde_json::from_value::<T>(value.clone()).ok()
+    }
 }

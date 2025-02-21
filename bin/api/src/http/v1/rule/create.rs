@@ -42,7 +42,7 @@ mod tests {
 	use crate::http::testing::{extract, extract_error, Test};
 	use axum::http::StatusCode;
 	use base::model::Value::{Percent, Sol};
-	use base::model::{Action, Condition, TelegramButtonConfig};
+	use base::model::{Action, Condition, TelegramActionButtonConfig};
 
 	#[tokio::test]
 	async fn ok() {
@@ -69,9 +69,9 @@ mod tests {
 
 		let Action::NotifyTelegram { buttons } = response.sequence.action else { panic!() };
 		assert_eq!(buttons.len(), 6);
-		assert_eq!(buttons.get(0).unwrap(), &TelegramButtonConfig::None);
-		assert_eq!(buttons.get(1).unwrap(), &TelegramButtonConfig::Buy { value: Sol(1.2) });
-		assert_eq!(buttons.get(2).unwrap(), &TelegramButtonConfig::Sell { value: Percent(3.4) });
+		assert_eq!(buttons.get(0).unwrap(), &TelegramActionButtonConfig::None);
+		assert_eq!(buttons.get(1).unwrap(), &TelegramActionButtonConfig::Buy { value: Sol(1.2) });
+		assert_eq!(buttons.get(2).unwrap(), &TelegramActionButtonConfig::Sell { value: Percent(3.4) });
 	}
 
 	#[tokio::test]

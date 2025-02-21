@@ -61,6 +61,7 @@ tracing = { version = "0.1.41" }
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
 uint = { version = "0.10.0" }
 url = { version = "2.5.4" }
+uuid = { version = "1.13.2", features = ["v4"] }
 
 [profile.dev]
 lto = false

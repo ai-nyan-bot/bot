@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::{NotificationChannel, NotificationType, NotificationPayload, RuleId, UserId};
-use crate::model::{TelegramButtonConfig, TokenPairId};
+use crate::model::{TelegramActionButtonConfig, TokenPairId};
 use crate::repo::NotificationCreateCmd;
 use crate::service::notification::NotificationService;
 use common::repo::Tx;
@@ -15,7 +15,7 @@ pub enum NotificationRuleMatched {
 		user: UserId,
 		rule: RuleId,
 		token_pair: TokenPairId,
-		buttons: Vec<TelegramButtonConfig>,
+		buttons: Vec<TelegramActionButtonConfig>,
 	}
 }
 
@@ -40,12 +40,12 @@ impl NotificationService {
 							let mut map = Map::new();
 							map.insert("rule".to_string(), serde_json::to_value(rule)?);
 							map.insert("token_pair".to_string(), serde_json::to_value(token_pair)?);
-							map.insert("button_0".to_string(), serde_json::to_value(buttons.get(0).unwrap_or(&TelegramButtonConfig::None)).unwrap());
-							map.insert("button_1".to_string(), serde_json::to_value(buttons.get(1).unwrap_or(&TelegramButtonConfig::None)).unwrap());
-							map.insert("button_2".to_string(), serde_json::to_value(buttons.get(2).unwrap_or(&TelegramButtonConfig::None)).unwrap());
-							map.insert("button_3".to_string(), serde_json::to_value(buttons.get(3).unwrap_or(&TelegramButtonConfig::None)).unwrap());
-							map.insert("button_4".to_string(), serde_json::to_value(buttons.get(4).unwrap_or(&TelegramButtonConfig::None)).unwrap());
-							map.insert("button_5".to_string(), serde_json::to_value(buttons.get(5).unwrap_or(&TelegramButtonConfig::None)).unwrap());
+							map.insert("button_0".to_string(), serde_json::to_value(buttons.get(0).unwrap_or(&TelegramActionButtonConfig::None)).unwrap());
+							map.insert("button_1".to_string(), serde_json::to_value(buttons.get(1).unwrap_or(&TelegramActionButtonConfig::None)).unwrap());
+							map.insert("button_2".to_string(), serde_json::to_value(buttons.get(2).unwrap_or(&TelegramActionButtonConfig::None)).unwrap());
+							map.insert("button_3".to_string(), serde_json::to_value(buttons.get(3).unwrap_or(&TelegramActionButtonConfig::None)).unwrap());
+							map.insert("button_4".to_string(), serde_json::to_value(buttons.get(4).unwrap_or(&TelegramActionButtonConfig::None)).unwrap());
+							map.insert("button_5".to_string(), serde_json::to_value(buttons.get(5).unwrap_or(&TelegramActionButtonConfig::None)).unwrap());
 							map
 						})),
 					},

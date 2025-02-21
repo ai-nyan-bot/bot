@@ -8,6 +8,7 @@ use teloxide::dptree::case;
 use teloxide::macros::BotCommands;
 use teloxide::prelude::Update;
 use teloxide::{dptree, filter_command};
+use crate::callback::callback;
 
 #[derive(BotCommands, Clone)]
 #[command(rename_rule = "lowercase")]
@@ -37,8 +38,7 @@ pub fn schema() -> UpdateHandler<Box<dyn std::error::Error + Send + Sync + 'stat
         // .branch(case![MessageState::ReceiveFullName].endpoint(receive_full_name))
         .branch(dptree::endpoint(message::invalid));
 
-    let callback_query_handler =
-        Update::filter_callback_query().branch(case![MessageState::Main].endpoint(callback::start));
+    let callback_query_handler = Update::filter_callback_query().endpoint(callback);
     // .branch(case![MessageState::ReceiveProductChoice { full_name }]
     //         .endpoint(receive_product_selection),
     // );

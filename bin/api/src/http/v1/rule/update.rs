@@ -43,7 +43,7 @@ mod tests {
 	use base::model::Field::PriceAvg;
 	use base::model::Operator::MoreThan;
 	use base::model::Value::Percent;
-	use base::model::{Action, Condition, TelegramButtonConfig, Value};
+	use base::model::{Action, Condition, TelegramActionButtonConfig, Value};
 	use common::model::Timeframe::M15;
 	use testing::rule::create_rule_for_test_user;
 	use Condition::Compare;
@@ -79,9 +79,9 @@ mod tests {
 
 		let Action::NotifyTelegram { buttons } = response.sequence.action else { panic!() };
 		assert_eq!(buttons.len(), 6);
-		assert_eq!(buttons.get(0).unwrap(), &TelegramButtonConfig::None);
-		assert_eq!(buttons.get(1).unwrap(), &TelegramButtonConfig::Buy { value: Sol(1.2) });
-		assert_eq!(buttons.get(2).unwrap(), &TelegramButtonConfig::Sell { value: Percent(3.4) });
+		assert_eq!(buttons.get(0).unwrap(), &TelegramActionButtonConfig::None);
+		assert_eq!(buttons.get(1).unwrap(), &TelegramActionButtonConfig::Buy { value: Sol(1.2) });
+		assert_eq!(buttons.get(2).unwrap(), &TelegramActionButtonConfig::Sell { value: Percent(3.4) });
 	}
 
 	#[tokio::test]
