@@ -20,9 +20,9 @@ export const ActionEditor: FC<ActionEditorProps> = ({action, onChange}) => {
                 onChange={(type) => {
                 }}
             />
-            {action.type === ActionType.NOTIFY_TELEGRAM && <Notify action={action} onChange={(action) => {
-                onChange(action)
-            }}/>}
+            {/*{action.type === ActionType.NOTIFY_TELEGRAM && <Notify action={action} onChange={(action) => {*/}
+            {/*    onChange(action)*/}
+            {/*}}/>}*/}
         </div>
     );
 }
