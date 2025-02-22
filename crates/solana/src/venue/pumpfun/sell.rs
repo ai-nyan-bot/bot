@@ -43,7 +43,7 @@ impl Pumpfun {
         slippage_basis_points: Option<u64>,
         // priority_fee: Option<PriorityFee>,
         // ) -> Result<Signature, error::ClientError> {
-    ) -> pumpfun::Result<Signature> {
+    ) -> pumpfun::PumpfunResult<Signature> {
         // let ata: Pubkey = get_associated_token_address(&self.payer.pubkey(), mint);
         // let balance = self.rpc.get_token_account_balance(&ata).unwrap();
         //
@@ -61,7 +61,7 @@ impl Pumpfun {
 
         let min_sol_output = bonding_curve_account
             // .get_sell_price(_amount, global_account.fee_basis_points)
-            .get_sell_price(amount, global_account.fee_basis_points);
+            .get_sell_price(amount, global_account.fee_basis_points)?;
         // .unwrap();
         // .map_err(error::ClientError::BondingCurveError)?;
 

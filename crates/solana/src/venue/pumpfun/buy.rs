@@ -44,7 +44,7 @@ impl Pumpfun {
         amount_sol: u64,
         slippage_basis_points: Option<u64>,
         // priority_fee: Option<PriorityFee>,
-    ) -> pumpfun::Result<Signature> {
+    ) -> pumpfun::PumpfunResult<Signature> {
         // let client = Arc::new(RpcClient::new("https://api.mainnet-beta.solana.com".to_string()));
 
         let rpc = Rpc::new();
@@ -58,11 +58,14 @@ impl Pumpfun {
         let bonding_curve_account = rpc.get_bonding_curve_account(mint.clone()).await;
 
         // let amount_buy = bonding_curve_account.get_buy_price(amount_sol).map_err(error::ClientError::BondingCurveError)?;
-        let amount_buy = bonding_curve_account.get_buy_price(amount_sol);
+        let amount_buy = bonding_curve_account.get_buy_price(amount_sol)?;
 
-        let amount_buy_with_slippage = calculate_with_slippage_buy(amount_sol, slippage_basis_points.unwrap_or(500));
+        let amount_buy_with_slippage =
+            calculate_with_slippage_buy(amount_sol, slippage_basis_points.unwrap_or(500));
 
-        let client = Arc::new(RpcClient::new("https://api.mainnet-beta.solana.com".to_string()));
+        let client = Arc::new(RpcClient::new(
+            "https://api.mainnet-beta.solana.com".to_string(),
+        ));
 
         // let keypair = Keypair::from_base58_string(keypair.as_str());
 
@@ -99,7 +102,8 @@ impl Pumpfun {
 
         // let kp: Keypair = payer.clone().into();
 
-        let mut message = VersionedMessage::Legacy(Message::new(&instructions, Some(&payer.public.into())));
+        let mut message =
+            VersionedMessage::Legacy(Message::new(&instructions, Some(&payer.public.into())));
         // if let Some(hash) = blockhash {
         message.set_recent_blockhash(blockhash);
         // }
@@ -177,7 +181,12 @@ impl Pumpfun {
     }
 }
 
-async fn create_ata_if_not_exists(client: &RpcClient, payer: &Keypair, wallet_address: &Pubkey, token_mint: &Pubkey) -> Pubkey {
+async fn create_ata_if_not_exists(
+    client: &RpcClient,
+    payer: &Keypair,
+    wallet_address: &Pubkey,
+    token_mint: &Pubkey,
+) -> Pubkey {
     let token_program_id = Pubkey::from_str("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA").unwrap();
 
     // Get the associated token address for the wallet and mint
@@ -190,13 +199,23 @@ async fn create_ata_if_not_exists(client: &RpcClient, payer: &Keypair, wallet_ad
     }
 
     // Create instruction to initialize the ATA
-    let instruction = instruction::create_associated_token_account(&payer.pubkey(), &wallet_address, &token_mint, &token_program_id);
+    let instruction = instruction::create_associated_token_account(
+        &payer.pubkey(),
+        &wallet_address,
+        &token_mint,
+        &token_program_id,
+    );
 
     // Create and send the transaction
     let recent_blockhash = client.get_latest_blockhash().await.unwrap();
     println!("{recent_blockhash}");
 
-    let transaction = Transaction::new_signed_with_payer(&[instruction], Some(&payer.pubkey()), &[payer], recent_blockhash);
+    let transaction = Transaction::new_signed_with_payer(
+        &[instruction],
+        Some(&payer.pubkey()),
+        &[payer],
+        recent_blockhash,
+    );
 
     println!("before sending and confirming");
 
