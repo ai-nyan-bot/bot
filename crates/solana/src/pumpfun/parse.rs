@@ -1,8 +1,8 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::pumpfun::Instruction;
 use crate::model::Transaction;
+use crate::pumpfun::model::Instruction;
 use crate::venue::{ParseResult, Parser};
 use common::model::Timestamp;
 use common::ByteReader;
@@ -57,28 +57,49 @@ const TRADE_EVENT_DISCRIMINANT: [u8; 8] = [189, 219, 127, 211, 78, 230, 97, 238]
 
 fn decode_create(reader: &ByteReader) -> Instruction {
     Instruction::Create {
-        name: String::from_utf8_lossy(reader.read_variable_length::<u32>().unwrap()).to_string().into(),
-        symbol: String::from_utf8_lossy(reader.read_variable_length::<u32>().unwrap()).to_string().into(),
-        uri: String::from_utf8_lossy(reader.read_variable_length::<u32>().unwrap()).to_string().into(),
-        mint: Pubkey::try_from(reader.read_range(32).unwrap()).unwrap().into(),
-        bonding_curve: Pubkey::try_from(reader.read_range(32).unwrap()).unwrap().into(),
-        user: Pubkey::try_from(reader.read_range(32).unwrap()).unwrap().into(),
+        name: String::from_utf8_lossy(reader.read_variable_length::<u32>().unwrap())
+            .to_string()
+            .into(),
+        symbol: String::from_utf8_lossy(reader.read_variable_length::<u32>().unwrap())
+            .to_string()
+            .into(),
+        uri: String::from_utf8_lossy(reader.read_variable_length::<u32>().unwrap())
+            .to_string()
+            .into(),
+        mint: Pubkey::try_from(reader.read_range(32).unwrap())
+            .unwrap()
+            .into(),
+        bonding_curve: Pubkey::try_from(reader.read_range(32).unwrap())
+            .unwrap()
+            .into(),
+        user: Pubkey::try_from(reader.read_range(32).unwrap())
+            .unwrap()
+            .into(),
     }
 }
 
 fn decode_trade(reader: &ByteReader) -> Option<Instruction> {
     let trade = Instruction::Trade {
-        mint: Pubkey::try_from(reader.read_range(32).unwrap()).unwrap().into(),
+        mint: Pubkey::try_from(reader.read_range(32).unwrap())
+            .unwrap()
+            .into(),
         sol_amount: reader.read_u64().unwrap().into(),
         token_amount: reader.read_u64().unwrap().into(),
         is_buy: reader.read_u8().unwrap() == 1,
-        user: Pubkey::try_from(reader.read_range(32).unwrap()).unwrap().into(),
+        user: Pubkey::try_from(reader.read_range(32).unwrap())
+            .unwrap()
+            .into(),
         timestamp: Timestamp::from_solana_time(reader.read_u64().unwrap() as i64),
         virtual_sol_reserves: reader.read_u64().unwrap().into(),
         virtual_token_reserves: reader.read_u64().unwrap().into(),
     };
 
-    if let Instruction::Trade { sol_amount, token_amount, .. } = &trade {
+    if let Instruction::Trade {
+        sol_amount,
+        token_amount,
+        ..
+    } = &trade
+    {
         if *sol_amount == 0 || *token_amount == 0 {
             return None;
         }
@@ -90,16 +111,16 @@ fn decode_trade(reader: &ByteReader) -> Option<Instruction> {
 
 #[cfg(test)]
 mod tests {
-	use crate::convert::convert_transaction;
-	use crate::model::pumpfun::Instruction;
-	use crate::model::Transaction;
-	use crate::venue::pumpfun::PumpFunParser;
-	use crate::venue::Parser;
-	use lazy_static::lazy_static;
-	use solana_transaction_status::EncodedTransactionWithStatusMeta;
-	use std::collections::HashMap;
+    use crate::convert::convert_transaction;
+    use crate::pumpfun::model::Instruction;
+    use crate::model::Transaction;
+    use crate::pumpfun::PumpFunParser;
+    use crate::venue::Parser;
+    use lazy_static::lazy_static;
+    use solana_transaction_status::EncodedTransactionWithStatusMeta;
+    use std::collections::HashMap;
 
-	#[test]
+    #[test]
     fn test_create() {
         let test_instance = PumpFunParser::new();
         let tx = transaction("iurqm3R8LYed6Y5fJcozXRZFg54LSoeVaabi3zk1arA1ULtUSjV66gBUidfiduVrJpFB8C7z2CaCucvk8DuFEcK");
@@ -142,9 +163,15 @@ mod tests {
         };
         assert_eq!(name, "ТURTlS");
         assert_eq!(symbol, "ТURTlS");
-        assert_eq!(uri, "https://ipfs.io/ipfs/QmTBYaHRY47odx3pvXJH7hdSbpNErYhT74dz1W1CS3Likf");
+        assert_eq!(
+            uri,
+            "https://ipfs.io/ipfs/QmTBYaHRY47odx3pvXJH7hdSbpNErYhT74dz1W1CS3Likf"
+        );
         assert_eq!(mint, "G3TpcmEy28TbzbyjL7TQy5noZbXrFBzJ5Vw5PqhTpump");
-        assert_eq!(bonding_curve, "B8wno3ipF3v1p59SHCZsUfjXwpv98bL7aJHXbo382nA6");
+        assert_eq!(
+            bonding_curve,
+            "B8wno3ipF3v1p59SHCZsUfjXwpv98bL7aJHXbo382nA6"
+        );
         assert_eq!(user, "HcvYEizKBqExpW4uJBnEqDKFtCBUKmuLpExwzcRWdbQE");
     }
 

@@ -3,7 +3,7 @@
 
 use base::model::{Fact, Facts, TokenPairId, Value};
 use common::model::{Limit, Timeframe};
-use solana::repo::pumpfun::{ReadTradeRepo, SummaryQuery, SummaryRepo};
+use solana::pumpfun::repo::{ReadTradeRepo, SummaryQuery, SummaryRepo};
 use sqlx::PgPool;
 
 #[derive(Clone)]

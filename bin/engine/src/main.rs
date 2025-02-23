@@ -8,7 +8,7 @@ use base::model::Action;
 use base::repo::{InvocationCreateCmd, InvocationRepo, NotificationRepo, RuleRepo};
 use base::service::{NotificationRuleMatched, NotificationService, RuleService};
 use common::repo::pool::setup_pool;
-use solana::repo::pumpfun::{ReadTradeRepo, SummaryRepo};
+use solana::pumpfun::repo::{ReadTradeRepo, SummaryRepo};
 use std::sync::Arc;
 use std::time::Duration;
 use tokio::runtime::Builder;

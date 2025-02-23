@@ -4,8 +4,8 @@
 // This file includes portions of code from https://github.com/nhuxhr/pumpfun-rs (MIT License).
 // Original MIT License Copyright (c) nhuxhr 2024.
 
-use crate::venue::pumpfun::constant::ids::CPI_ID;
-use crate::venue::pumpfun::constant::seeds::{BONDING_CURVE_SEED, GLOBAL_SEED};
+use crate::pumpfun::constant::ids::CPI_ID;
+use crate::pumpfun::constant::seeds::{BONDING_CURVE_SEED, GLOBAL_SEED};
 use solana_sdk::pubkey::Pubkey;
 
 /// Gets the Program Derived Address (PDA) for the global state account

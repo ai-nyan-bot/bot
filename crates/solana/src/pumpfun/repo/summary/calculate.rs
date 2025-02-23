@@ -4,7 +4,7 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
-use crate::repo::pumpfun::SummaryRepo;
+use crate::pumpfun::repo::SummaryRepo;
 use common::model::Partition;
 use common::repo::{RepoResult, Tx};
 

@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use common::model::Partition;
-use solana::repo::pumpfun::SummaryRepo;
+use solana::pumpfun::repo::SummaryRepo;
 use sqlx::PgPool;
 use std::sync::Arc;
 use std::time::Duration;

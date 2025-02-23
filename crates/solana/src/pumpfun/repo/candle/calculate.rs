@@ -4,7 +4,7 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
-use crate::repo::pumpfun::CandleRepo;
+use crate::pumpfun::repo::CandleRepo;
 use common::model::Partition;
 use common::repo::{RepoResult, Tx};
 
@@ -348,7 +348,13 @@ impl CandleRepo {
     }
 }
 
-async fn aggregate_candle<'a>(tx: &mut Tx<'a>, window: usize, time_unit: &str, source_table: &str, destination_table: &str) -> RepoResult<()> {
+async fn aggregate_candle<'a>(
+    tx: &mut Tx<'a>,
+    window: usize,
+    time_unit: &str,
+    source_table: &str,
+    destination_table: &str,
+) -> RepoResult<()> {
     let query_str = format!(
         r#"
 with last_candle_ts as (

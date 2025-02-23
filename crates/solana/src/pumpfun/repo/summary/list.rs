@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::{Summary, SummaryTrades, TradesWithChange};
-use crate::repo::pumpfun::{SummaryQuery, SummaryRepo};
+use crate::pumpfun::repo::{SummaryQuery, SummaryRepo};
 use base::model::{TokenPairId, Trades, TradesChange, TradesChangePercent};
 use common::repo::{RepoResult, Tx};
 use sqlx::postgres::PgRow;

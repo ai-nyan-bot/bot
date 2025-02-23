@@ -1,8 +1,8 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::venue::pumpfun::util::{get_bonding_curve_pda, get_global_pda};
-use crate::venue::pumpfun::{BondingCurveAccount, GlobalAccount};
+use crate::pumpfun::util::{get_bonding_curve_pda, get_global_pda};
+use crate::pumpfun::{BondingCurveAccount, GlobalAccount};
 use common::ByteReader;
 use solana_rpc_client::nonblocking::rpc_client::RpcClient;
 use solana_sdk::pubkey::Pubkey;
@@ -19,7 +19,9 @@ impl Rpc {
 impl Rpc {
     pub async fn get_global_account(&self) -> GlobalAccount {
         let global: Pubkey = get_global_pda();
-        let client = Arc::new(RpcClient::new("https://api.mainnet-beta.solana.com".to_string()));
+        let client = Arc::new(RpcClient::new(
+            "https://api.mainnet-beta.solana.com".to_string(),
+        ));
 
         let account = client.get_account(&global).await.unwrap();
         // .map_err(error::ClientError::SolanaClientError)?;
@@ -38,7 +40,9 @@ impl Rpc {
     ///
     /// Returns the deserialized BondingCurveAccount if successful, or a ClientError if the operation fails
     pub async fn get_bonding_curve_account(&self, mint: impl Into<Pubkey>) -> BondingCurveAccount {
-        let client = Arc::new(RpcClient::new("https://api.mainnet-beta.solana.com".to_string()));
+        let client = Arc::new(RpcClient::new(
+            "https://api.mainnet-beta.solana.com".to_string(),
+        ));
 
         let mint = mint.into();
         let bonding_curve_pda =

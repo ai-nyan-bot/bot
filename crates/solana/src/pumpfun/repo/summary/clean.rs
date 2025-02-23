@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::repo::pumpfun::SummaryRepo;
+use crate::pumpfun::repo::SummaryRepo;
 use common::repo::{RepoResult, Tx};
 
 impl SummaryRepo {

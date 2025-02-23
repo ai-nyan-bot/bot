@@ -1,9 +1,9 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::pumpfun::Trade;
 use crate::model::Slot;
-use crate::repo::pumpfun::ReadTradeRepo;
+use crate::pumpfun::model::Trade;
+use crate::pumpfun::repo::ReadTradeRepo;
 use base::model::{AddressId, DecimalAmount, PriceAvgQuote, TokenPairId};
 use common::model::Timestamp;
 use common::repo::{RepoResult, Tx};

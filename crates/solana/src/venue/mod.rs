@@ -3,7 +3,6 @@
 
 pub use parse::*;
 pub mod jupiter;
-pub mod pumpfun;
 pub mod raydium;
 
 mod parse;

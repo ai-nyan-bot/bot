@@ -3,6 +3,7 @@
 
 pub(crate) mod convert;
 pub mod model;
+pub mod pumpfun;
 pub mod repo;
 pub mod rpc;
 pub mod stream;

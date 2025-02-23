@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use common::model::Partition;
-use solana::repo::pumpfun::CandleRepo;
+use solana::pumpfun::repo::CandleRepo;
 use base::repo::ReadTokenPairRepo;
 use sqlx::PgPool;
 use std::sync::Arc;

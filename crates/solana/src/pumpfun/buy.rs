@@ -5,10 +5,10 @@
 // Original MIT License Copyright (c) nhuxhr 2024.
 
 use crate::model::Signature;
-use crate::venue::pumpfun;
-use crate::venue::pumpfun::ix::{create_buy_instruction, BuyInstructionArgs};
-use crate::venue::pumpfun::util::calculate_with_slippage_buy;
-use crate::venue::pumpfun::{Pumpfun, Rpc};
+use crate::pumpfun;
+use crate::pumpfun::ix::{create_buy_instruction, BuyInstructionArgs};
+use crate::pumpfun::util::calculate_with_slippage_buy;
+use crate::pumpfun::{Pumpfun, Rpc};
 use base::model::KeyPair;
 use base::model::TokenMint;
 use solana_client::rpc_config::RpcSendTransactionConfig;

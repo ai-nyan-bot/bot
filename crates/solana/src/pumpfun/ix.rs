@@ -16,8 +16,8 @@
 //! - `buy`: Instruction to buy tokens from a bonding curve by providing SOL.
 //! - `sell`: Instruction to sell tokens back to the bonding curve in exchange for SOL.
 
-use crate::venue::pumpfun::constant::accounts::{ASSOCIATED_TOKEN_PROGRAM, EVENT_AUTHORITY, PUMPFUN, RENT, SYSTEM_PROGRAM, TOKEN_PROGRAM};
-use crate::venue::pumpfun::util::{get_bonding_curve_pda, get_global_pda};
+use crate::pumpfun::constant::accounts::{ASSOCIATED_TOKEN_PROGRAM, EVENT_AUTHORITY, PUMPFUN, RENT, SYSTEM_PROGRAM, TOKEN_PROGRAM};
+use crate::pumpfun::util::{get_bonding_curve_pda, get_global_pda};
 use solana_sdk::{
 	instruction::{AccountMeta, Instruction},
 	pubkey::Pubkey,

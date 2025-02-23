@@ -5,7 +5,7 @@
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
 use crate::model::{Signature, Slot};
-use crate::repo::pumpfun::TradeRepo;
+use crate::pumpfun::repo::TradeRepo;
 use base::model::{AddressId, Amount, DecimalAmount, PriceAvgQuote, PublicKey, TokenMint, TokenPairId};
 use base::LoadTokenInfo;
 use common::model::{Count, Timestamp};

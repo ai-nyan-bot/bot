@@ -12,7 +12,6 @@ pub use transaction::*;
 mod account;
 mod indexer;
 pub mod jupiter;
-pub mod pumpfun;
 mod signature;
 mod slot;
 mod summary;

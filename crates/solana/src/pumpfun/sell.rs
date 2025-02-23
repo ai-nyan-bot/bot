@@ -5,10 +5,10 @@
 // Original MIT License Copyright (c) nhuxhr 2024.
 
 use crate::model::Signature;
-use crate::venue::pumpfun;
-use crate::venue::pumpfun::ix::{create_sell_instruction, SellInstructionArgs};
-use crate::venue::pumpfun::util::calculate_with_slippage_sell;
-use crate::venue::pumpfun::{Pumpfun, Rpc};
+use crate::pumpfun;
+use crate::pumpfun::ix::{create_sell_instruction, SellInstructionArgs};
+use crate::pumpfun::util::calculate_with_slippage_sell;
+use crate::pumpfun::{Pumpfun, Rpc};
 use base::model::KeyPair;
 use base::model::TokenMint;
 use solana_client::rpc_config::RpcSendTransactionConfig;
@@ -53,7 +53,9 @@ impl Pumpfun {
 
         // let _amount = amount_token.unwrap_or(balance_u64);
         let amount = amount.unwrap();
-        let client = Arc::new(RpcClient::new("https://api.mainnet-beta.solana.com".to_string()));
+        let client = Arc::new(RpcClient::new(
+            "https://api.mainnet-beta.solana.com".to_string(),
+        ));
 
         let global_account = rpc.get_global_account().await;
 
@@ -65,7 +67,8 @@ impl Pumpfun {
         // .unwrap();
         // .map_err(error::ClientError::BondingCurveError)?;
 
-        let _min_sol_output = calculate_with_slippage_sell(min_sol_output, slippage_basis_points.unwrap_or(500));
+        let _min_sol_output =
+            calculate_with_slippage_sell(min_sol_output, slippage_basis_points.unwrap_or(500));
 
         // let mut request = self.program.request();
 

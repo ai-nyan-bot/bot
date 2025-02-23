@@ -14,11 +14,11 @@ use base::repo::{AddressRepo, ReadTokenPairRepo, ReadTokenRepo, TokenPairRepo, T
 use common::repo::pool::setup_pool;
 use common::{ResolveOr, Signal};
 use solana::model::TransactionStatus;
+use solana::pumpfun::PumpFunParser;
 use solana::repo;
 use solana::stream::{BlockStream, RpcBlockStream, RpcBlockStreamConfig, RpcSlotStream};
 use solana::token_info::rpc::RpcTokenInfoLoader;
 use solana::venue::jupiter::JupiterParser;
-use solana::venue::pumpfun::PumpFunParser;
 use solana::venue::Parser;
 use sqlx::Acquire;
 use tokio::signal::unix::SignalKind;
@@ -50,7 +50,7 @@ pub(crate) fn index_solana(runtime: Runtime, config: Config) {
 
         let wallet_repo = AddressRepo::new();
 
-        let pumpfun_trade_repo = repo::pumpfun::TradeRepo::new(token_pair_repo.clone(), wallet_repo.clone());
+        let pumpfun_trade_repo = solana::pumpfun::repo::TradeRepo::new(token_pair_repo.clone(), wallet_repo.clone());
         let jupiter_trade_repo = repo::jupiter::TradeRepo::new(token_pair_repo.clone(), wallet_repo.clone());
 
         let state = State(Arc::new(StateInner {
@@ -106,7 +106,7 @@ pub(crate) fn index_solana(runtime: Runtime, config: Config) {
                             trades: vec![],
                         };
 
-                        let mut pumpfun_slot_trades = repo::pumpfun::SlotTrades{
+                        let mut pumpfun_slot_trades = solana::pumpfun::repo::SlotTrades{
                             slot: block.slot.clone(),
                             timestamp: block.timestamp.clone(),
                             trades: vec![],
@@ -117,8 +117,8 @@ pub(crate) fn index_solana(runtime: Runtime, config: Config) {
                                 if transaction.account_keys.contains(&pumpfun_account){
                                     for instruction in  pumpfun_parser.parse(&transaction).unwrap(){
                                         match instruction{
-                                        solana::model::pumpfun::Instruction::Create{ .. } => {}
-                                        solana::model::pumpfun::Instruction::Trade{
+                                        solana::pumpfun::model::Instruction::Create{ .. } => {}
+                                        solana::pumpfun::model::Instruction::Trade{
                                             mint,
                                             sol_amount,
                                             token_amount,
@@ -128,7 +128,7 @@ pub(crate) fn index_solana(runtime: Runtime, config: Config) {
                                             virtual_token_reserves,
                                             ..
                                         } => {
-                                                pumpfun_slot_trades.trades.push(repo::pumpfun::SlotTrade{
+                                                pumpfun_slot_trades.trades.push(solana::pumpfun::repo::SlotTrade{
                                                         mint,
                                                         base_amount: token_amount,
                                                         quote_amount: sol_amount,
