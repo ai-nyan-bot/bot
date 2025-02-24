@@ -3,7 +3,7 @@
 
 use crate::rpc::RpcClient;
 
-pub use curve::{CurveInfo, LoadCurveInfo};
+pub use curve::LoadCurveInfo;
 
 mod curve;
 mod global;

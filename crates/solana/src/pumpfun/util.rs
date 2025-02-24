@@ -21,27 +21,3 @@ pub(crate) fn curve_pda(key: impl Into<Pubkey>) -> Option<Pubkey> {
     let pda: Option<(Pubkey, u8)> = Pubkey::try_find_program_address(seeds, program_id);
     pda.map(|pubkey| pubkey.0)
 }
-
-/// Calculates the maximum amount to pay when buying tokens, accounting for slippage tolerance
-///
-/// # Arguments
-/// * `amount` - The base amount in lamports (1 SOL = 1,000,000,000 lamports)
-/// * `basis_points` - The slippage tolerance in basis points (1% = 100 basis points)
-///
-/// # Returns
-/// The maximum amount to pay, including slippage tolerance
-pub fn calculate_with_slippage_buy(amount: u64, basis_points: u64) -> u64 {
-    amount + (amount * basis_points) / 10000
-}
-
-/// Calculates the minimum amount to receive when selling tokens, accounting for slippage tolerance
-///
-/// # Arguments
-/// * `amount` - The base amount in lamports (1 SOL = 1,000,000,000 lamports)
-/// * `basis_points` - The slippage tolerance in basis points (1% = 100 basis points)
-///
-/// # Returns
-/// The minimum amount to receive, accounting for slippage tolerance
-pub fn calculate_with_slippage_sell(amount: u64, basis_points: u64) -> u64 {
-    amount - (amount * basis_points) / 10000
-}

@@ -1,6 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use crate::pumpfun::model::CurveInfo;
 use crate::pumpfun::util::curve_pda;
 use crate::pumpfun::{PumpfunError, PumpfunResult, Rpc};
 use async_trait::async_trait;
@@ -12,16 +13,6 @@ use std::ops::{Div, Mul, Sub};
 #[async_trait]
 pub trait LoadCurveInfo: Send + Sync {
     async fn load_curve_info(&self, key: impl Into<PublicKey> + Send) -> Option<CurveInfo>;
-}
-
-#[derive(Debug, Clone)]
-pub struct CurveInfo {
-    pub virtual_token_reserves: Amount,
-    pub virtual_sol_reserves: Amount,
-    pub real_token_reserves: Amount,
-    pub real_sol_reserves: Amount,
-    pub token_total_supply: Amount,
-    pub complete: bool,
 }
 
 #[async_trait]

@@ -6,24 +6,15 @@
 
 use crate::model::Signature;
 use crate::pumpfun;
-use crate::pumpfun::ix::{create_buy_instruction, BuyInstructionArgs};
-use crate::pumpfun::util::calculate_with_slippage_buy;
-use crate::pumpfun::{Pumpfun, Rpc};
-use crate::rpc::RpcClient as LocalRpcClient;
+use crate::pumpfun::Pumpfun;
 use base::model::KeyPair;
 use base::model::TokenMint;
-use solana_client::rpc_config::RpcSendTransactionConfig;
 use solana_rpc_client::nonblocking::rpc_client::RpcClient;
-use solana_sdk::compute_budget::ComputeBudgetInstruction;
-use solana_sdk::instruction::Instruction;
-use solana_sdk::message::{Message, VersionedMessage};
-use solana_sdk::pubkey;
 use solana_sdk::pubkey::Pubkey;
 use solana_sdk::signature::{Keypair, Signer};
-use solana_sdk::transaction::{Transaction, VersionedTransaction};
+use solana_sdk::transaction::Transaction;
 use spl_associated_token_account::{get_associated_token_address, instruction};
 use std::str::FromStr;
-use std::sync::Arc;
 
 impl Pumpfun {
     /// Buys tokens from a bonding curve by spending SOL
@@ -47,46 +38,46 @@ impl Pumpfun {
         // priority_fee: Option<PriorityFee>,
     ) -> pumpfun::PumpfunResult<Signature> {
         // let client = Arc::new(RpcClient::new("https://api.mainnet-beta.solana.com".to_string()));
-        // 
+        //
         // let rpc = Rpc::new(LocalRpcClient::new("https://api.mainnet-beta.solana.com"));
-        // 
+        //
         // // Get accounts and calculate buy amounts
         // // let global_account = self.get_global_account()?;
         // // let global_account = self.get_global_account().unwrap();
-        // 
+        //
         // // let bonding_curve_account = self.get_bonding_curve_account(mint)?;
         // // let bonding_curve_account = rpc.get_bonding_curve_account(mint).unwrap();
         // let bonding_curve_account = rpc.get_curve_account(mint.clone()).await.unwrap();
-        // 
+        //
         // // let amount_buy = bonding_curve_account.get_buy_price(amount_sol).map_err(error::ClientError::BondingCurveError)?;
         // let amount_buy = bonding_curve_account.get_buy_price(amount_sol)?;
-        // 
+        //
         // let amount_buy_with_slippage =
         //     calculate_with_slippage_buy(amount_sol, slippage_basis_points.unwrap_or(500));
-        // 
+        //
         // let client = Arc::new(RpcClient::new(
         //     "https://api.mainnet-beta.solana.com".to_string(),
         // ));
-        // 
+        //
         // // let keypair = Keypair::from_base58_string(keypair.as_str());
-        // 
+        //
         // // let mut transaction = self.swap_transaction(keypair.pubkey(), quote, overrides).await.unwrap();
         // let blockhash = client.get_latest_blockhash().await.unwrap();
-        // 
+        //
         // let mut instructions: Vec<Instruction> = vec![];
-        // 
+        //
         // // let kp: Keypair = payer.clone().into();
         // let kp: Keypair = payer.clone().into();
         // let mint: Pubkey = mint.into();
-        // 
+        //
         // let ata = create_ata_if_not_exists(&client, &kp, &kp.pubkey(), &mint).await;
         // dbg!(&ata);
-        // 
+        //
         // instructions.push(ComputeBudgetInstruction::set_compute_unit_price(100_000));
         // instructions.push(ComputeBudgetInstruction::set_compute_unit_limit(300_000));
-        // 
+        //
         // // instructions.extend(setup_instructions);
-        // 
+        //
         // instructions.push(create_buy_instruction(
         //     &kp,
         //     &mint,
@@ -100,9 +91,9 @@ impl Pumpfun {
         // // if let Some(cleanup_instruction) = cleanup_instruction {
         // //     final_instructions.push(cleanup_instruction);
         // // }
-        // 
+        //
         // // let kp: Keypair = payer.clone().into();
-        // 
+        //
         // let mut message =
         //     VersionedMessage::Legacy(Message::new(&instructions, Some(&payer.public.into())));
         // // if let Some(hash) = blockhash {
@@ -112,12 +103,12 @@ impl Pumpfun {
         //     signatures: vec![solana_sdk::signature::Signature::default()],
         //     message,
         // };
-        // 
+        //
         // transaction.message.set_recent_blockhash(blockhash);
-        // 
+        //
         // let tx = VersionedTransaction::try_new(transaction.message, &[&kp]).unwrap();
         // // dbg!(&swap_tx);
-        // 
+        //
         // let result = client
         //     .send_transaction_with_config(
         //         &tx,
@@ -131,10 +122,10 @@ impl Pumpfun {
         //     )
         //     .await
         //     .expect("Failed to swap");
-        // 
+        //
         // // println!("{result}");
         // Ok(Signature(result.to_string()))
-        // 
+        //
         // // // Add priority fee if provided
         // // if let Some(fee) = priority_fee {
         // //     if let Some(limit) = fee.limit {
@@ -147,7 +138,7 @@ impl Pumpfun {
         // //         request = request.instruction(price_ix);
         // //     }
         // // }
-        // 
+        //
         // // Create Associated Token Account if needed
         // // let ata: Pubkey = get_associated_token_address(&self.payer.pubkey(), mint);
         // // if client.get_account(&ata).is_err() {

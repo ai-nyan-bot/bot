@@ -1,9 +1,9 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use solana::pumpfun::rpc::LoadCurveInfo;
 use solana::pumpfun::Rpc;
 use solana::rpc::RpcClient;
-use solana_sdk::pubkey;
 
 #[tokio::main]
 async fn main() {
@@ -33,12 +33,12 @@ async fn main() {
 
     // let ga = rpc.get_global_account().await;
     // dbg!(&ga);
-    // 
-    // let ca = rpc
-    //     .get_curve_account(pubkey!("CpV7zK77DkyVvbCgGWtWrsqvh2VonFrqPg8cecrTpump"))
-    //     .await
-    //     .unwrap();
-    // dbg!(&ca);
+    //
+    let ca = rpc
+        .load_curve_info("HSFKU1bSRKgFEzdV8dZYwXS3U113rg7ui4zxk8Qypump")
+        .await
+        .unwrap();
+    dbg!(&ca);
 
     // println!("{}", bc.get_market_cap_sol());
     // println!("{}", bc.get_final_market_cap_sol(1000));

@@ -8,6 +8,7 @@ use base::model::TokenPairMint;
 use common::repo::{RepoResult, Tx};
 
 impl<L: LoadCurveInfo> CurveRepo<L> {
+
     pub async fn create_curves_if_not_exists<'a>(
         &self,
         tx: &mut Tx<'a>,

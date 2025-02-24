@@ -28,8 +28,11 @@ use solana_sdk::{
 };
 use spl_associated_token_account::get_associated_token_address;
 
-pub const DEFAULT_BUY: [u8; 8] = [0x66, 0x06, 0x3d, 0x12, 0x01, 0xda, 0xeb, 0xea];
-pub const DEFAULT_SELL: [u8; 8] = [0x33, 0xe6, 0x85, 0xa4, 0x01, 0x7f, 0x83, 0xad];
+mod buy;
+mod sell;
+
+const BUY: [u8; 8] = [0x66, 0x06, 0x3d, 0x12, 0x01, 0xda, 0xeb, 0xea];
+const SELL: [u8; 8] = [0x33, 0xe6, 0x85, 0xa4, 0x01, 0x7f, 0x83, 0xad];
 
 pub struct BuyInstructionArgs {
     // _amount: u64,
@@ -65,7 +68,7 @@ pub fn create_buy_instruction(
     // let expected_size = 1 + 8 + 8;
     let mut data = Vec::with_capacity(24);
     // data.extend_from_slice(&[9u8]);
-    data.extend_from_slice(&DEFAULT_BUY);
+    data.extend_from_slice(&BUY);
     data.extend_from_slice(&args.amount.to_le_bytes());
     data.extend_from_slice(&args.max_sol_cost.to_le_bytes());
     // assert_eq!(data.len(), expected_size);
@@ -124,7 +127,7 @@ pub fn create_sell_instruction(
     // let expected_size = 1 + 8 + 8;
     let mut data = Vec::with_capacity(24);
     // data.extend_from_slice(&[9u8]);
-    data.extend_from_slice(&DEFAULT_SELL);
+    data.extend_from_slice(&SELL);
     data.extend_from_slice(&args.amount.to_le_bytes());
     data.extend_from_slice(&args.min_sol_output.to_le_bytes());
     // assert_eq!(data.len(), expected_size);
@@ -147,4 +150,29 @@ pub fn create_sell_instruction(
             AccountMeta::new_readonly(PUMPFUN, false),
         ],
     }
+}
+
+
+/// Calculates the maximum amount to pay when buying tokens, accounting for slippage tolerance
+///
+/// # Arguments
+/// * `amount` - The base amount in lamports (1 SOL = 1,000,000,000 lamports)
+/// * `basis_points` - The slippage tolerance in basis points (1% = 100 basis points)
+///
+/// # Returns
+/// The maximum amount to pay, including slippage tolerance
+pub fn calculate_with_slippage_buy(amount: u64, basis_points: u64) -> u64 {
+    amount + (amount * basis_points) / 10000
+}
+
+/// Calculates the minimum amount to receive when selling tokens, accounting for slippage tolerance
+///
+/// # Arguments
+/// * `amount` - The base amount in lamports (1 SOL = 1,000,000,000 lamports)
+/// * `basis_points` - The slippage tolerance in basis points (1% = 100 basis points)
+///
+/// # Returns
+/// The minimum amount to receive, accounting for slippage tolerance
+pub fn calculate_with_slippage_sell(amount: u64, basis_points: u64) -> u64 {
+    amount - (amount * basis_points) / 10000
 }

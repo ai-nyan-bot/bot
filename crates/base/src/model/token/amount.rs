@@ -87,15 +87,15 @@ impl PartialOrd<f64> for DecimalAmount {
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize, sqlx::Type)]
 #[sqlx(transparent)]
-pub struct DecimalAmountChangeChange(pub f64);
+pub struct DecimalAmountChange(pub f64);
 
-impl From<f64> for DecimalAmountChangeChange {
+impl From<f64> for DecimalAmountChange {
     fn from(value: f64) -> Self {
         Self(value)
     }
 }
 
-impl PartialEq<f64> for DecimalAmountChangeChange {
+impl PartialEq<f64> for DecimalAmountChange {
     fn eq(&self, other: &f64) -> bool {
         self.0 == *other
     }
