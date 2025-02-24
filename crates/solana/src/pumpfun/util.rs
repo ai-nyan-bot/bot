@@ -28,7 +28,7 @@ pub fn get_global_pda() -> Pubkey {
 /// # Returns
 ///
 /// Returns Some(PDA) if derivation succeeds, or None if it fails
-pub(crate) fn get_bonding_curve_pda(mint: &Pubkey) -> Option<Pubkey> {
+pub(crate) fn get_curve_pda(mint: &Pubkey) -> Option<Pubkey> {
     let seeds: &[&[u8]; 2] = &[BONDING_CURVE_SEED, mint.as_ref()];
     let program_id: &Pubkey = &CPI_ID;
     let pda: Option<(Pubkey, u8)> = Pubkey::try_find_program_address(seeds, program_id);

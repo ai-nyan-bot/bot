@@ -55,7 +55,7 @@ impl Pumpfun {
 
         // let bonding_curve_account = self.get_bonding_curve_account(mint)?;
         // let bonding_curve_account = rpc.get_bonding_curve_account(mint).unwrap();
-        let bonding_curve_account = rpc.get_bonding_curve_account(mint.clone()).await;
+        let bonding_curve_account = rpc.get_curve_account(mint.clone()).await;
 
         // let amount_buy = bonding_curve_account.get_buy_price(amount_sol).map_err(error::ClientError::BondingCurveError)?;
         let amount_buy = bonding_curve_account.get_buy_price(amount_sol)?;

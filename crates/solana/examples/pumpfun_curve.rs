@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use solana::venue::pumpfun::Rpc;
+use solana::pumpfun::Rpc;
 use solana_sdk::pubkey;
 
 #[tokio::main]
@@ -31,7 +31,7 @@ async fn main() {
     // 71
 
     let bc = rpc
-        .get_bonding_curve_account(pubkey!("CpV7zK77DkyVvbCgGWtWrsqvh2VonFrqPg8cecrTpump"))
+        .get_curve_account(pubkey!("CpV7zK77DkyVvbCgGWtWrsqvh2VonFrqPg8cecrTpump"))
         .await;
     dbg!(&bc);
 

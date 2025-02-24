@@ -23,6 +23,7 @@ use solana_sdk::transaction::VersionedTransaction;
 use std::sync::Arc;
 
 impl Pumpfun {
+
     /// Sells tokens back to the bonding curve in exchange for SOL
     ///
     /// # Arguments
@@ -59,7 +60,7 @@ impl Pumpfun {
 
         let global_account = rpc.get_global_account().await;
 
-        let bonding_curve_account = rpc.get_bonding_curve_account(mint.clone()).await;
+        let bonding_curve_account = rpc.get_curve_account(mint.clone()).await;
 
         let min_sol_output = bonding_curve_account
             // .get_sell_price(_amount, global_account.fee_basis_points)
