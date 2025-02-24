@@ -30,14 +30,3 @@ pub enum Instruction {
     },
 }
 
-pub struct Trade {
-    pub slot: Slot,
-    pub address: AddressId,
-    pub token_pair: TokenPairId,
-    pub base_amount: DecimalAmount,
-    pub quote_amount: DecimalAmount,
-    pub price: PriceAvgQuote,
-    pub is_buy: bool,
-    pub timestamp: Timestamp,
-}
-

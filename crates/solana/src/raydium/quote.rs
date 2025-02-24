@@ -122,7 +122,7 @@ impl Raydium {
         // market_event_q_account,
         ] = accounts.as_slice() else { panic!() };
 
-        let amm = Amm::decode(&amm_account.data).unwrap();
+        let amm = Amm::decode(&amm_account.account.data).unwrap();
         // dbg!(&amm);
 
         // let _amm_target: raydium_amm::state::TargetOrders =
@@ -131,9 +131,9 @@ impl Raydium {
         //     ))
         //         .map_err(|e| e.without_src())?;
 
-        let amm_pc_vault = Account::unpack(&amm_pc_vault_account.data).unwrap();
+        let amm_pc_vault = Account::unpack(&amm_pc_vault_account.account.data).unwrap();
 
-        let amm_coin_vault = Account::unpack(&amm_coin_vault_account.data).unwrap();
+        let amm_coin_vault = Account::unpack(&amm_coin_vault_account.account.data).unwrap();
 
         // let (amm_pool_pc_vault_amount, amm_pool_coin_vault_amount) =
         // if raydium_amm::state::AmmStatus::from_u64(amm.status).orderbook_permission() {

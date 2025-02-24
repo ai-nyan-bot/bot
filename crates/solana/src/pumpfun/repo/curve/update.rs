@@ -1,18 +1,16 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::pumpfun::model::Curve;
+use crate::pumpfun::model::{Curve, Trade};
 use crate::pumpfun::repo::curve::CurveRepo;
 use crate::pumpfun::rpc::LoadCurveInfo;
-use base::model::TokenPairMint;
 use common::repo::{RepoResult, Tx};
 
 impl<L: LoadCurveInfo> CurveRepo<L> {
-
-    pub async fn create_curves_if_not_exists<'a>(
+    pub async fn update<'a>(
         &self,
         tx: &mut Tx<'a>,
-        token_mints: &[TokenPairMint],
+        token_mints: &[Trade],
     ) -> RepoResult<Vec<Curve>> {
         // let mut mints = Vec::with_capacity(token_mints.len());
         // let mut names = std::vec::Vec(token_mints.len());

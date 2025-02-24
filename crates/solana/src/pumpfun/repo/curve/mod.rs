@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-mod insert;
+mod update;
 
 use crate::pumpfun::rpc::LoadCurveInfo;
 use common::model::Limit;

@@ -3,6 +3,8 @@
 
 pub use curve::*;
 pub use instruction::*;
+pub use trade::*;
 
 mod curve;
 mod instruction;
+mod trade;

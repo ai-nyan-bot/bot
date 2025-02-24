@@ -16,8 +16,8 @@ create table pumpfun.trade
     price                   double precision not null,
     is_buy                  boolean not null,
     timestamp               timestamptz not null,
-    virtual_base_reserves   double precision not null,
-    virtual_quote_reserves  double precision not null,
+    virtual_base_reserves   int8 not null,
+    virtual_quote_reserves  int8 not null,
     signature               text not null,
 
     constraint fk_wallet
@@ -26,7 +26,11 @@ create table pumpfun.trade
 
     constraint fk_token_pair
         foreign key (token_pair_id)
-        references solana.token_pair(id)
+        references solana.token_pair(id),
+
+    constraint unique_signature
+        unique (token_pair_id, signature)
+
  )  partition by hash (token_pair_id);
  
  create index trade_token_pair_idx on pumpfun.trade(token_pair_id);

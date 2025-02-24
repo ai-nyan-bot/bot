@@ -28,15 +28,15 @@ impl LoadCurveInfo for Rpc {
         };
 
         if let Ok(Some(curve_account)) = self.client.get_account(curve_pda).await {
-            let reader = ByteReader::new(&curve_account.data);
+            let reader = ByteReader::new(&curve_account.account.data);
             let curve = CurveAccount::decode(&reader);
 
             Some(CurveInfo {
-                virtual_token_reserves: curve.virtual_token_reserves.into(),
-                virtual_sol_reserves: curve.virtual_sol_reserves.into(),
-                real_token_reserves: curve.real_token_reserves.into(),
-                real_sol_reserves: curve.real_sol_reserves.into(),
-                token_total_supply: curve.token_total_supply.into(),
+                virtual_base_reserves: curve.virtual_base_reserves.into(),
+                virtual_quote_reserves: curve.virtual_quote_reserves.into(),
+                real_base_reserves: curve.real_base_reserves.into(),
+                real_quote_reserves: curve.real_quote_reserves.into(),
+                total_supply: curve.total_supply.into(),
                 complete: curve.complete,
             })
         } else {
@@ -49,11 +49,11 @@ impl LoadCurveInfo for Rpc {
 #[derive(Debug, Clone)]
 struct CurveAccount {
     pub discriminator: u64,
-    pub virtual_token_reserves: u64,
-    pub virtual_sol_reserves: u64,
-    pub real_token_reserves: u64,
-    pub real_sol_reserves: u64,
-    pub token_total_supply: u64,
+    pub virtual_base_reserves: u64,
+    pub virtual_quote_reserves: u64,
+    pub real_base_reserves: u64,
+    pub real_quote_reserves: u64,
+    pub total_supply: u64,
     pub complete: bool,
 }
 
@@ -61,11 +61,11 @@ impl CurveAccount {
     fn decode(reader: &ByteReader) -> Self {
         Self {
             discriminator: reader.read_u64().unwrap(),
-            virtual_token_reserves: reader.read_u64().unwrap(),
-            virtual_sol_reserves: reader.read_u64().unwrap(),
-            real_token_reserves: reader.read_u64().unwrap(),
-            real_sol_reserves: reader.read_u64().unwrap(),
-            token_total_supply: reader.read_u64().unwrap(),
+            virtual_base_reserves: reader.read_u64().unwrap(),
+            virtual_quote_reserves: reader.read_u64().unwrap(),
+            real_base_reserves: reader.read_u64().unwrap(),
+            real_quote_reserves: reader.read_u64().unwrap(),
+            total_supply: reader.read_u64().unwrap(),
             complete: reader.read_u8().unwrap() != 0,
         }
     }
@@ -84,11 +84,11 @@ impl CurveAccount {
     ) -> Self {
         Self {
             discriminator,
-            virtual_token_reserves,
-            virtual_sol_reserves,
-            real_token_reserves,
-            real_sol_reserves,
-            token_total_supply,
+            virtual_base_reserves: virtual_token_reserves,
+            virtual_quote_reserves: virtual_sol_reserves,
+            real_base_reserves: real_token_reserves,
+            real_quote_reserves: real_sol_reserves,
+            total_supply: token_total_supply,
             complete,
         }
     }
@@ -111,23 +111,23 @@ impl CurveAccount {
         }
 
         // Calculate the product of virtual reserves using u128 to avoid overflow
-        let n: u128 = (self.virtual_sol_reserves as u128) * (self.virtual_token_reserves as u128);
+        let n: u128 = (self.virtual_quote_reserves as u128) * (self.virtual_base_reserves as u128);
 
         // Calculate the new virtual sol reserves after the purchase
-        let i: u128 = (self.virtual_sol_reserves as u128) + (amount as u128);
+        let i: u128 = (self.virtual_quote_reserves as u128) + (amount as u128);
 
         // Calculate the new virtual token reserves after the purchase
         let r: u128 = n / i + 1;
 
         // Calculate the amount of tokens to be purchased
-        let s: u128 = (self.virtual_token_reserves as u128) - r;
+        let s: u128 = (self.virtual_base_reserves as u128) - r;
 
         // Convert back to u64 and return the minimum of calculated tokens and real reserves
         let s_u64 = s as u64;
-        Ok(if s_u64 < self.real_token_reserves {
+        Ok(if s_u64 < self.real_base_reserves {
             s_u64
         } else {
-            self.real_token_reserves
+            self.real_base_reserves
         })
     }
 
@@ -150,8 +150,8 @@ impl CurveAccount {
         }
 
         // Calculate the proportional amount of virtual sol reserves to be received using u128
-        let n: u128 = ((amount as u128) * (self.virtual_sol_reserves as u128))
-            / ((self.virtual_token_reserves as u128) + (amount as u128));
+        let n: u128 = ((amount as u128) * (self.virtual_quote_reserves as u128))
+            / ((self.virtual_base_reserves as u128) + (amount as u128));
 
         // Calculate the fee amount in the same units
         let a: u128 = (n * (fee_basis_points as u128)) / 10000;
@@ -162,12 +162,12 @@ impl CurveAccount {
 
     /// Calculates the current market cap in SOL
     pub fn get_market_cap_sol(&self) -> u64 {
-        if self.virtual_token_reserves == 0 {
+        if self.virtual_base_reserves == 0 {
             return 0;
         }
 
-        ((self.token_total_supply as u128) * (self.virtual_sol_reserves as u128)
-            / (self.virtual_token_reserves as u128)) as u64
+        ((self.total_supply as u128) * (self.virtual_quote_reserves as u128)
+            / (self.virtual_base_reserves as u128)) as u64
     }
 
     /// Calculates the final market cap in SOL after all tokens are sold
@@ -176,16 +176,16 @@ impl CurveAccount {
     /// * `fee_basis_points` - Fee in basis points (1/100th of a percent)
     pub fn get_final_market_cap_sol(&self, fee_basis_points: u64) -> u64 {
         let total_sell_value: u128 =
-            self.get_buy_out_price(self.real_token_reserves, fee_basis_points) as u128;
-        let total_virtual_value: u128 = (self.virtual_sol_reserves as u128) + total_sell_value;
+            self.get_buy_out_price(self.real_base_reserves, fee_basis_points) as u128;
+        let total_virtual_value: u128 = (self.virtual_quote_reserves as u128) + total_sell_value;
         let total_virtual_tokens: u128 =
-            (self.virtual_token_reserves as u128) - (self.real_token_reserves as u128);
+            (self.virtual_base_reserves as u128) - (self.real_base_reserves as u128);
 
         if total_virtual_tokens == 0 {
             return 0;
         }
 
-        ((self.token_total_supply as u128) * total_virtual_value / total_virtual_tokens) as u64
+        ((self.total_supply as u128) * total_virtual_value / total_virtual_tokens) as u64
     }
 
     /// Calculates the price to buy out all remaining tokens
@@ -195,15 +195,15 @@ impl CurveAccount {
     /// * `fee_basis_points` - Fee in basis points (1/100th of a percent)
     pub fn get_buy_out_price(&self, amount: u64, fee_basis_points: u64) -> u64 {
         // Get the effective amount of sol tokens
-        let sol_tokens: u128 = if amount < self.real_sol_reserves {
-            self.real_sol_reserves as u128
+        let sol_tokens: u128 = if amount < self.real_quote_reserves {
+            self.real_quote_reserves as u128
         } else {
             amount as u128
         };
 
         // Calculate total sell value
-        let total_sell_value: u128 = (sol_tokens * (self.virtual_sol_reserves as u128))
-            / ((self.virtual_token_reserves as u128) - sol_tokens)
+        let total_sell_value: u128 = (sol_tokens * (self.virtual_quote_reserves as u128))
+            / ((self.virtual_base_reserves as u128) - sol_tokens)
             + 1;
 
         // Calculate fee
@@ -211,47 +211,6 @@ impl CurveAccount {
 
         // Return total including fee, converting back to u64
         (total_sell_value + fee) as u64
-    }
-
-    pub fn progress(&self) -> u64 {
-        // totalSupply: 1,000,000,000 (Pump Fun Token)
-        // reservedTokens: 206,900,000
-        // Therefore, initialRealTokenReserves: 793,100,000
-
-        // const reservedTokens=new BN(206900000).mul(new BN(1000_000));
-        let reserved_tokens: u64 = 206900000 * 1000_000;
-        println!("reserved_tokens: {reserved_tokens}");
-        // const initialRealTokenReserves=data.tokenTotalSupply.sub(reservedTokens);
-        let initial_real_token_reserves = self.token_total_supply.sub(reserved_tokens);
-        println!("irtr: {initial_real_token_reserves}");
-        // const bondingCurveProgress= new BN(100).sub(data.realTokenReserves.mul(new BN(100)).div(initialRealTokenReserves))
-        let progress = 100.sub(
-            self.real_token_reserves
-                .mul(100)
-                .div(initial_real_token_reserves),
-        );
-        println!("progress {progress}");
-        // return bondingCurveProgress.toString(10)
-
-        // Formula: BondingCurveProgress = 100 - ((leftTokens * 100) / initialRealTokenReserves)
-        // Where:
-        //     leftTokens = realTokenReserves - reservedTokens
-        // initialRealTokenReserves = totalSupply - reservedTokens
-        //
-        // Definitions:
-        //     initialRealTokenReserves = totalSupply - reservedTokens
-
-        // leftTokens = realTokenReserves - reservedTokens
-        // realTokenReserves: Token balance at the market address.
-
-        // Simplified Formula: BondingCurveProgress = 100 - (((balance - 206900000) * 100) / 793100000)
-
-        // println!("{}", self.real_token_reserves);
-        // let temp = ((((self.virtual_token_reserves - self.real_token_reserves) / 1000000) - 206900000) * 100) / 793100000;
-        // println!("{}", temp);
-
-        // let progress = 100 - temp;
-        return progress;
     }
 }
 
@@ -292,7 +251,7 @@ mod tests {
 
         let buy_price = bonding_curve.get_buy_price(100).unwrap();
         assert!(buy_price > 0);
-        assert!(buy_price <= bonding_curve.real_token_reserves);
+        assert!(buy_price <= bonding_curve.real_base_reserves);
 
         // Test sell price calculation
         assert_eq!(bonding_curve.get_sell_price(0, 250).unwrap(), 0);
@@ -348,7 +307,7 @@ mod tests {
         // Test buying with large SOL amount
         let buy_price = bonding_curve.get_buy_price(u64::MAX).unwrap();
         assert!(buy_price > 0);
-        assert!(buy_price <= bonding_curve.real_token_reserves);
+        assert!(buy_price <= bonding_curve.real_base_reserves);
     }
 
     #[test]

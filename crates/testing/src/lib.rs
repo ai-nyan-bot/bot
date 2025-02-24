@@ -20,6 +20,7 @@ pub mod auth;
 mod hash;
 pub mod invocation;
 pub mod notification;
+pub mod pumpfun;
 pub mod rule;
 pub mod token;
 pub mod token_pair;

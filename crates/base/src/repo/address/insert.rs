@@ -27,7 +27,7 @@ impl AddressRepo {
         Ok(sqlx::query(
             r#"with new_wallets AS (
                     insert into solana.address (address)
-                    select * from unnest($1::varchar[])
+                    select * from unnest($1::text[])
                     on conflict (address) do update
                         set address = excluded.address
                     returning

@@ -3,9 +3,12 @@
 
 use fmt::Display;
 use serde::{Deserialize, Serialize};
+use std::cmp::Ordering;
 use std::fmt;
 
-#[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Eq, Hash, Deserialize, Serialize, sqlx::Type)]
+#[derive(
+    Debug, Copy, Clone, PartialEq, PartialOrd, Eq, Hash, Deserialize, Serialize, sqlx::Type,
+)]
 #[sqlx(transparent)]
 pub struct Slot(pub i64);
 
@@ -43,5 +46,17 @@ impl From<u64> for Slot {
 impl PartialEq<i32> for Slot {
     fn eq(&self, other: &i32) -> bool {
         self.0 == *other as i64
+    }
+}
+
+impl PartialEq<i64> for Slot {
+    fn eq(&self, other: &i64) -> bool {
+        self.0 == *other
+    }
+}
+
+impl PartialOrd<i64> for Slot {
+    fn partial_cmp(&self, other: &i64) -> Option<Ordering> {
+        self.0.partial_cmp(other)
     }
 }

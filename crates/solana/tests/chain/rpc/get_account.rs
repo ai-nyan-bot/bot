@@ -19,12 +19,15 @@ async fn test_ok() {
 
     assert!(result.is_some());
     let result = result.unwrap();
-    assert_eq!(result.lamports, 1461600);
-    assert_eq!(result.data.len(), 82);
-    assert_eq!(hash_for_testing(&result.data), 13739370046195003499);
-    assert_eq!(result.owner, "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
-    assert_eq!(result.executable, false);
-    assert_eq!(result.rent_epoch, 18446744073709551615);
+    assert!(result.slot > 322765891);
+
+    let account = result.account;
+    assert_eq!(account.lamports, 1461600);
+    assert_eq!(account.data.len(), 82);
+    assert_eq!(hash_for_testing(&account.data), 13739370046195003499);
+    assert_eq!(account.owner, "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+    assert_eq!(account.executable, false);
+    assert_eq!(account.rent_epoch, 18446744073709551615);
 }
 
 #[test_log::test(tokio::test)]
@@ -40,12 +43,15 @@ async fn test_base64_required() {
 
     assert!(result.is_some());
     let result = result.unwrap();
-    assert_eq!(result.lamports, 2039280);
-    assert_eq!(result.data.len(), 165);
-    assert_eq!(hash_for_testing(&result.data), 16534873344988567128);
-    assert_eq!(result.owner, "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
-    assert_eq!(result.executable, false);
-    assert_eq!(result.rent_epoch, 18446744073709551615);
+    assert!(result.slot > 322765891);
+
+    let account = result.account;
+    assert_eq!(account.lamports, 2039280);
+    assert_eq!(account.data.len(), 165);
+    assert_eq!(hash_for_testing(&account.data), 16534873344988567128);
+    assert_eq!(account.owner, "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+    assert_eq!(account.executable, false);
+    assert_eq!(account.rent_epoch, 18446744073709551615);
 }
 
 #[test_log::test(tokio::test)]

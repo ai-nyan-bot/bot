@@ -1,6 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use crate::model::Slot;
 use base::model::PublicKey;
 use serde::{Deserialize, Serialize};
 
@@ -16,6 +17,11 @@ pub struct AccountInfo {
     pub executable: bool,
     /// the epoch at which this account will next owe rent
     pub rent_epoch: Epoch,
+}
+
+pub struct AccountInfoAtSlot {
+    pub slot: Slot,
+    pub account: AccountInfo,
 }
 
 pub type Epoch = u64;

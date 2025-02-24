@@ -73,7 +73,7 @@ impl AddressRepo {
                 id,
                 address
               from solana.address
-              where address in (select unnest($1::varchar[]))"#,
+              where address in (select unnest($1::text[]))"#,
         )
         .bind(&keys)
         .fetch_all(&mut **tx)

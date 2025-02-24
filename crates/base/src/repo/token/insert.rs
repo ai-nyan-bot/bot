@@ -9,10 +9,19 @@ use crate::repo::TokenRepo;
 use crate::LoadTokenInfo;
 use common::repo::error::RepoError;
 use common::repo::{RepoResult, Tx};
+use log::error;
 use sqlx::Row;
 
 impl<L: LoadTokenInfo> TokenRepo<L> {
-    pub async fn insert_token<'a>(&self, tx: &mut Tx<'a>, token_mints: &[TokenMint]) -> RepoResult<Vec<Token>> {
+    pub async fn insert_token<'a>(
+        &self,
+        tx: &mut Tx<'a>,
+        token_mints: &[TokenMint],
+    ) -> RepoResult<Vec<Token>> {
+        if token_mints.is_empty() {
+            return Ok(vec![]);
+        }
+
         let mut mints = Vec::with_capacity(token_mints.len());
         let mut names = Vec::with_capacity(token_mints.len());
         let mut symbols = Vec::with_capacity(token_mints.len());
@@ -26,6 +35,7 @@ impl<L: LoadTokenInfo> TokenRepo<L> {
                     symbols.push(info.symbol);
                     decimals.push(info.decimals);
                 } else {
+                    error!("unable to load token info for {mint}");
                     return Err(RepoError::NotFound);
                 }
             }
@@ -35,9 +45,9 @@ impl<L: LoadTokenInfo> TokenRepo<L> {
             r#"with new_token as (
             insert into solana.token (mint,name,symbol,decimals)
             select
-                unnest($1::varchar[]) as mint,
-                unnest($2::varchar[]) as name,
-                unnest($3::varchar[]) as symbol,
+                unnest($1::text[]) as mint,
+                unnest($2::text[]) as name,
+                unnest($3::text[]) as symbol,
                 unnest($4::int2[]) as decimals
             on conflict (mint) do update set
                 mint = excluded.mint,

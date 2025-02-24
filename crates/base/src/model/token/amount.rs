@@ -5,9 +5,15 @@ use crate::model::Decimals;
 use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
 
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize, sqlx::Type)]
+#[derive(Copy, Clone, Debug, PartialEq, Deserialize, Serialize, sqlx::Type)]
 #[sqlx(transparent)]
 pub struct Amount(pub i64);
+
+impl From<i32> for Amount {
+    fn from(value: i32) -> Self {
+        Self(value as i64)
+    }
+}
 
 impl From<i64> for Amount {
     fn from(value: i64) -> Self {

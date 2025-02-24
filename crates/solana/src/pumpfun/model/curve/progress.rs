@@ -6,40 +6,36 @@ use base::model::{Amount, Percent};
 use std::ops::{Div, Mul, Sub};
 
 pub trait CalculateProgress {
-    fn token_total_supply(&self) -> Amount;
-    fn real_token_reserves(&self) -> Amount;
+    fn total_supply(&self) -> Amount;
+    fn real_base_reserves(&self) -> Amount;
 
     fn calculate_progress(&self) -> Percent {
         let reserved_tokens: i64 = 206_900_000 * 1_000_000;
-        let token_total_supply = self.token_total_supply().0;
-        let real_token_reserves = self.real_token_reserves().0;
-        let initial_real_token_reserves = token_total_supply.sub(reserved_tokens);
+        let total_supply = self.total_supply().0;
+        let real_base_reserves = self.real_base_reserves().0;
+        let initial_real_base_reserves = total_supply.sub(reserved_tokens);
 
-        Percent::from(
-            100 - real_token_reserves
-                .mul(100)
-                .div(initial_real_token_reserves),
-        )
+        Percent::from(100 - real_base_reserves.mul(100).div(initial_real_base_reserves))
     }
 }
 
 impl CalculateProgress for Curve {
-    fn token_total_supply(&self) -> Amount {
-        self.token_total_supply.clone()
+    fn total_supply(&self) -> Amount {
+        self.total_supply.clone()
     }
 
-    fn real_token_reserves(&self) -> Amount {
-        self.real_token_reserves.clone()
+    fn real_base_reserves(&self) -> Amount {
+        self.real_base_reserves.clone()
     }
 }
 
 impl CalculateProgress for CurveInfo {
-    fn token_total_supply(&self) -> Amount {
-        self.token_total_supply.clone()
+    fn total_supply(&self) -> Amount {
+        self.total_supply.clone()
     }
 
-    fn real_token_reserves(&self) -> Amount {
-        self.real_token_reserves.clone()
+    fn real_base_reserves(&self) -> Amount {
+        self.real_base_reserves.clone()
     }
 }
 
@@ -50,11 +46,11 @@ mod tests {
     #[test]
     fn test_1_percent() {
         let test_instance = CurveInfo {
-            virtual_token_reserves: 1071443444605882i64.into(),
-            virtual_sol_reserves: 30043583654i64.into(),
-            real_token_reserves: 791543444605882i64.into(),
-            real_sol_reserves: 43583654i64.into(),
-            token_total_supply: 1000000000000000i64.into(),
+            virtual_base_reserves: 1071443444605882i64.into(),
+            virtual_quote_reserves: 30043583654i64.into(),
+            real_base_reserves: 791543444605882i64.into(),
+            real_quote_reserves: 43583654i64.into(),
+            total_supply: 1000000000000000i64.into(),
             complete: false,
         };
 
@@ -65,11 +61,11 @@ mod tests {
     #[test]
     fn test_71_percent() {
         let test_instance = CurveInfo {
-            virtual_token_reserves: 512561011366544i64.into(),
-            virtual_sol_reserves: 62802280169i64.into(),
-            real_token_reserves: 232661011366544i64.into(),
-            real_sol_reserves: 32802280169i64.into(),
-            token_total_supply: 1000000000000000i64.into(),
+            virtual_base_reserves: 512561011366544i64.into(),
+            virtual_quote_reserves: 62802280169i64.into(),
+            real_base_reserves: 232661011366544i64.into(),
+            real_quote_reserves: 32802280169i64.into(),
+            total_supply: 1000000000000000i64.into(),
             complete: false,
         };
 
@@ -80,11 +76,11 @@ mod tests {
     #[test]
     fn test_completed() {
         let test_instance = CurveInfo {
-            virtual_token_reserves: 0i64.into(),
-            virtual_sol_reserves: 0i64.into(),
-            real_token_reserves: 0i64.into(),
-            real_sol_reserves: 0i64.into(),
-            token_total_supply: 1000000000000000i64.into(),
+            virtual_base_reserves: 0i64.into(),
+            virtual_quote_reserves: 0i64.into(),
+            real_base_reserves: 0i64.into(),
+            real_quote_reserves: 0i64.into(),
+            total_supply: 1000000000000000i64.into(),
             complete: true,
         };
 

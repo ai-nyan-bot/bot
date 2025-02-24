@@ -15,3 +15,18 @@ create table pumpfun.curve
         foreign key (token_pair_id)
         references solana.token_pair(id)
  );
+
+create table pumpfun.curve_most_recent
+(
+    token_pair_id           int4 primary key,
+    virtual_base_reserves   int8 not null,
+    virtual_quote_reserves  int8 not null,
+    real_base_reserves      int8 not null,
+    real_quote_reserves     int8 not null,
+    progress                real not null,
+    complete                bool not null,
+
+    constraint fk_token_pair
+        foreign key (token_pair_id)
+        references solana.token_pair(id)
+ );

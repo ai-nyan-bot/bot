@@ -4,7 +4,7 @@
 use crate::model::Slot;
 use crate::pumpfun::model::Trade;
 use crate::pumpfun::repo::ReadTradeRepo;
-use base::model::{AddressId, DecimalAmount, PriceAvgQuote, TokenPairId};
+use base::model::{AddressId, Amount, DecimalAmount, PriceQuote, TokenPairId};
 use common::model::Timestamp;
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
@@ -21,9 +21,11 @@ impl ReadTradeRepo {
                 token_pair: r.get::<TokenPairId, _>("token_pair_id"),
                 base_amount: r.get::<DecimalAmount, _>("base_amount"),
                 quote_amount: r.get::<DecimalAmount, _>("quote_amount"),
-                price: r.get::<PriceAvgQuote, _>("price"),
+                price: r.get::<PriceQuote, _>("price"),
                 is_buy: r.get::<bool, _>("is_buy"),
                 timestamp: r.get::<Timestamp, _>("timestamp"),
+                virtual_base_reserves: r.get::<Amount, _>("virtual_base_reserves"),
+                virtual_quote_reserves: r.get::<Amount, _>("virtual_quote_reserves")
             })
             .collect::<Vec<_>>()
             .into_boxed_slice())

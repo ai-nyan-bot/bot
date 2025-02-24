@@ -13,7 +13,7 @@ impl Rpc {
     pub async fn get_global_info(&self) -> GlobalInfo {
         let global = global_pda();
         let account = self.client.get_account(global).await.unwrap().unwrap();
-        let reader = ByteReader::new(&account.data);
+        let reader = ByteReader::new(&account.account.data);
         GlobalInfo::decode(&reader)
     }
 }

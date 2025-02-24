@@ -5,7 +5,7 @@ use common::model::Limit;
 use std::ops::Deref;
 use std::sync::Arc;
 
-use base::repo::{AddressRepo, TokenPairRepo};
+use base::repo::{AddressRepo, TokenPairRepo, TokenRepo};
 use base::LoadTokenInfo;
 pub use insert::{SlotTrade, SlotTrades};
 
@@ -13,7 +13,7 @@ mod count;
 mod insert;
 mod list;
 
-pub struct TradeQuery {
+pub struct TradeQueryAll {
     pub limit: Limit,
 }
 
@@ -35,7 +35,17 @@ pub struct TradePairRepoInner<L: LoadTokenInfo> {
 
 impl<L: LoadTokenInfo> TradeRepo<L> {
     pub fn new(token_pair_repo: TokenPairRepo<L>, address_repo: AddressRepo) -> Self {
-        Self(Arc::new(TradePairRepoInner { token_pair_repo, address_repo }))
+        Self(Arc::new(TradePairRepoInner {
+            token_pair_repo,
+            address_repo,
+        }))
+    }
+
+    pub fn testing(loader: L) -> Self {
+        Self::new(
+            TokenPairRepo::testing(TokenRepo::testing(loader)),
+            AddressRepo::new(),
+        )
     }
 }
 
