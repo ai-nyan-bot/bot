@@ -3,7 +3,7 @@
 
 use crate::jupiter::model::{Instruction, Jupiter6Swap};
 use crate::model::Transaction;
-use crate::venue::{ParseError, ParseResult, Parser};
+use crate::parse::{ParseError, ParseResult, Parser};
 use common::ByteReader;
 use solana_sdk::pubkey::Pubkey;
 
@@ -99,7 +99,7 @@ mod tests {
         use crate::jupiter::model::Instruction;
         use crate::jupiter::parse::tests::transaction;
         use crate::jupiter::parse::JupiterParser;
-        use crate::venue::Parser;
+        use crate::parse::Parser;
 
         #[test]
         fn test_ok() {

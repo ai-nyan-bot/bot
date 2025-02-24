@@ -2,8 +2,8 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::Transaction;
+use crate::parse::{ParseResult, Parser};
 use crate::pumpfun::model::Instruction;
-use crate::venue::{ParseResult, Parser};
 use common::model::Timestamp;
 use common::ByteReader;
 use solana_sdk::pubkey::Pubkey;
@@ -112,10 +112,10 @@ fn decode_trade(reader: &ByteReader) -> Option<Instruction> {
 #[cfg(test)]
 mod tests {
     use crate::convert::convert_transaction;
-    use crate::pumpfun::model::Instruction;
     use crate::model::Transaction;
+    use crate::parse::Parser;
+    use crate::pumpfun::model::Instruction;
     use crate::pumpfun::PumpFunParser;
-    use crate::venue::Parser;
     use lazy_static::lazy_static;
     use solana_transaction_status::EncodedTransactionWithStatusMeta;
     use std::collections::HashMap;
