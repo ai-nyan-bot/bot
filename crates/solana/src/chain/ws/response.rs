@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::{Account, Slot};
+use crate::model::{AccountInfo, Slot};
 use base::model::PublicKey;
 use solana_client::rpc_response::SlotInfo as SdkSlotInfo;
 
@@ -26,5 +26,5 @@ impl From<SdkSlotInfo> for SlotInfo {
 pub struct KeyedAccount {
     pub slot: Slot,
     pub pubkey: PublicKey,
-    pub account: Account,
+    pub account: AccountInfo,
 }

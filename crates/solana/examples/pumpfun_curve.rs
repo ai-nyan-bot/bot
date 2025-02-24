@@ -2,11 +2,12 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use solana::pumpfun::Rpc;
+use solana::rpc::RpcClient;
 use solana_sdk::pubkey;
 
 #[tokio::main]
 async fn main() {
-    let rpc = Rpc::new();
+    let rpc = Rpc::new(RpcClient::new("https://api.mainnet-beta.solana.com"));
 
     // [crates/solana/src/venue/pumpfun/rpc/mod.rs:54:9] &account = Account {
     //     lamports: 32803512089,
@@ -30,12 +31,16 @@ async fn main() {
     // progress 71
     // 71
 
-    let bc = rpc
-        .get_curve_account(pubkey!("CpV7zK77DkyVvbCgGWtWrsqvh2VonFrqPg8cecrTpump"))
-        .await;
-    dbg!(&bc);
+    // let ga = rpc.get_global_account().await;
+    // dbg!(&ga);
+    // 
+    // let ca = rpc
+    //     .get_curve_account(pubkey!("CpV7zK77DkyVvbCgGWtWrsqvh2VonFrqPg8cecrTpump"))
+    //     .await
+    //     .unwrap();
+    // dbg!(&ca);
 
     // println!("{}", bc.get_market_cap_sol());
     // println!("{}", bc.get_final_market_cap_sol(1000));
-    println!("{}", bc.progress());
+    // println!("{}", ca.progress());
 }

@@ -4,30 +4,22 @@
 // This file includes portions of code from https://github.com/nhuxhr/pumpfun-rs (MIT License).
 // Original MIT License Copyright (c) nhuxhr 2024.
 
-use crate::pumpfun::util::get_global_pda;
+use crate::pumpfun::util::global_pda;
 use crate::pumpfun::Rpc;
 use common::ByteReader;
-use solana_rpc_client::nonblocking::rpc_client::RpcClient;
 use solana_sdk::pubkey::Pubkey;
-use std::sync::Arc;
 
 impl Rpc {
-    pub async fn get_global_account(&self) -> GlobalAccount {
-        let global: Pubkey = get_global_pda();
-        let client = Arc::new(RpcClient::new(
-            "https://api.mainnet-beta.solana.com".to_string(),
-        ));
-
-        let account = client.get_account(&global).await.unwrap();
-        // .map_err(error::ClientError::SolanaClientError)?;
-
+    pub async fn get_global_info(&self) -> GlobalInfo {
+        let global = global_pda();
+        let account = self.client.get_account(global).await.unwrap().unwrap();
         let reader = ByteReader::new(&account.data);
-        GlobalAccount::decode(&reader)
+        GlobalInfo::decode(&reader)
     }
 }
 
 #[derive(Debug, Clone)]
-pub struct GlobalAccount {
+pub struct GlobalInfo {
     pub discriminator: u64,
     pub initialized: bool,
     pub authority: Pubkey,
@@ -39,11 +31,11 @@ pub struct GlobalAccount {
     pub fee_basis_points: u64,
 }
 
-impl GlobalAccount {
+impl GlobalInfo {
     pub fn decode(reader: &ByteReader) -> Self {
         Self {
             discriminator: reader.read_u64().unwrap(),
-            initialized: reader.read_u8().unwrap() > 1,
+            initialized: reader.read_u8().unwrap() > 0,
             authority: Pubkey::try_from(reader.read_range(32).unwrap())
                 .unwrap()
                 .into(),

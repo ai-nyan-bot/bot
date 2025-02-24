@@ -8,28 +8,15 @@ use crate::pumpfun::constant::ids::CPI_ID;
 use crate::pumpfun::constant::seeds::{BONDING_CURVE_SEED, GLOBAL_SEED};
 use solana_sdk::pubkey::Pubkey;
 
-/// Gets the Program Derived Address (PDA) for the global state account
-///
-/// # Returns
-///
-/// Returns the PDA public key derived from the GLOBAL_SEED
-pub fn get_global_pda() -> Pubkey {
+pub(crate) fn global_pda() -> Pubkey {
     let seeds: &[&[u8]; 1] = &[GLOBAL_SEED];
     let program_id: &Pubkey = &CPI_ID;
     Pubkey::find_program_address(seeds, program_id).0
 }
 
-/// Gets the Program Derived Address (PDA) for a token's bonding curve account
-///
-/// # Arguments
-///
-/// * `mint` - Public key of the token mint
-///
-/// # Returns
-///
-/// Returns Some(PDA) if derivation succeeds, or None if it fails
-pub(crate) fn get_curve_pda(mint: &Pubkey) -> Option<Pubkey> {
-    let seeds: &[&[u8]; 2] = &[BONDING_CURVE_SEED, mint.as_ref()];
+pub(crate) fn curve_pda(key: impl Into<Pubkey>) -> Option<Pubkey> {
+    let key = key.into();
+    let seeds: &[&[u8]; 2] = &[BONDING_CURVE_SEED, key.as_ref()];
     let program_id: &Pubkey = &CPI_ID;
     let pda: Option<(Pubkey, u8)> = Pubkey::try_find_program_address(seeds, program_id);
     pda.map(|pubkey| pubkey.0)

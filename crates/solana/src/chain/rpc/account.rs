@@ -1,73 +1,71 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::Account;
+use crate::model::AccountInfo;
 use crate::rpc::{RpcClient, RpcResult};
 use base::model::PublicKey;
+use solana_account_decoder_client_types::UiAccountEncoding;
 use solana_client::rpc_config::RpcAccountInfoConfig;
 use solana_sdk::commitment_config::CommitmentConfig;
 
 impl RpcClient {
-    pub async fn get_multiple_accounts(&self, keys: &[PublicKey]) -> RpcResult<Vec<Account>> {
-        let mut result = Vec::with_capacity(keys.len());
-        //
-        // let mut tasks = FuturesOrdered::new();
-        // for chunk in keys.chunks(100) {
-        //     tasks.push_back(async {
-        //         let response = self
-        //             .rpc_client
-        //             .get_multiple_accounts_with_config(
-        //                 chunk,
-        //                 RpcAccountInfoConfig {
-        //                     encoding: None,
-        //                     data_slice: None,
-        //                     commitment: Some(CommitmentConfig::confirmed()),
-        //                     min_context_slot: None,
-        //                 },
-        //             )
-        //             .await?;
-        //
-        //         Ok::<_, anyhow::Error>(response.value)
-        //     });
-        // }
-        //
-        // while let Some(result) = tasks.next().await {
-        //     result.extend(result?);
-        // }
-
-        // let mut handles = Vec::new();
-        // // for chunk in keys.chunks(100) {
-        // handles.push(
-        //     tokio::spawn(async {
-        let response = self
+    pub async fn get_account(&self, key: impl Into<PublicKey>) -> RpcResult<Option<AccountInfo>> {
+        let key = key.into();
+        Ok(self
             .client
-            .get_multiple_accounts_with_config(
-                &*keys.into_iter().map(|k| (k.clone()).into()).collect::<Vec<_>>(),
+            .get_account_with_config(
+                &key.into(),
                 RpcAccountInfoConfig {
-                    encoding: None,
+                    encoding: Some(UiAccountEncoding::Base64Zstd),
                     data_slice: None,
                     commitment: Some(CommitmentConfig::confirmed()),
                     min_context_slot: None,
                 },
             )
-            .await
-            .unwrap();
+            .await?
+            .value
+            .map(|account| AccountInfo {
+                lamports: account.lamports,
+                data: account.data,
+                owner: account.owner.into(),
+                executable: account.executable,
+                rent_epoch: account.rent_epoch,
+            }))
+    }
 
-        for account in response.value {
-            if let Some(account) = account {
-                result.push(Account {
+    pub async fn list_accounts(
+        &self,
+        keys: impl IntoIterator<Item = impl Into<PublicKey>>,
+    ) -> RpcResult<Vec<Option<AccountInfo>>> {
+        let keys = keys.into_iter().map(|id| id.into()).collect::<Vec<_>>();
+
+        Ok(self
+            .client
+            .get_multiple_accounts_with_config(
+                &*keys
+                    .into_iter()
+                    .map(|k| (k.clone()).into())
+                    .collect::<Vec<_>>(),
+                RpcAccountInfoConfig {
+                    encoding: Some(UiAccountEncoding::Base64Zstd),
+                    data_slice: None,
+                    commitment: Some(CommitmentConfig::confirmed()),
+                    min_context_slot: None,
+                },
+            )
+            .await?
+            .value
+            .into_iter()
+            .map(|account| match account {
+                None => None,
+                Some(account) => Some(AccountInfo {
                     lamports: account.lamports,
                     data: account.data,
                     owner: account.owner.into(),
                     executable: account.executable,
                     rent_epoch: account.rent_epoch,
-                })
-            }
-        }
-        // })
-        // );
-        // }
-
-        Ok(result)
+                }),
+            })
+            .collect::<Vec<_>>())
     }
 }

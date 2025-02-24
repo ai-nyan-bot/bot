@@ -9,3 +9,4 @@ pub use trade::{ReadTradeRepo, SlotTrade, SlotTrades, TradeQuery, TradeRepo};
 mod candle;
 mod summary;
 mod trade;
+mod curve;

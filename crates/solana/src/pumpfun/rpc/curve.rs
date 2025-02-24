@@ -1,43 +1,62 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-// This file includes portions of code from https://github.com/nhuxhr/pumpfun-rs (MIT License).
-// Original MIT License Copyright (c) nhuxhr 2024.
-
-use crate::pumpfun::util::get_curve_pda;
+use crate::pumpfun::util::curve_pda;
 use crate::pumpfun::{PumpfunError, PumpfunResult, Rpc};
+use async_trait::async_trait;
+use base::model::{Amount, PublicKey};
 use common::ByteReader;
-use solana_rpc_client::nonblocking::rpc_client::RpcClient;
-use solana_sdk::pubkey::Pubkey;
+use log::error;
 use std::ops::{Div, Mul, Sub};
-use std::sync::Arc;
 
-impl Rpc {
-    pub async fn get_curve_account(&self, mint: impl Into<Pubkey>) -> CurveAccount {
-        let client = Arc::new(RpcClient::new(
-            "https://api.mainnet-beta.solana.com".to_string(),
-        ));
+#[async_trait]
+pub trait LoadCurveInfo: Send + Sync {
+    async fn load_curve_info(&self, key: impl Into<PublicKey> + Send) -> Option<CurveInfo>;
+}
 
-        let mint = mint.into();
-        let bonding_curve_pda =
-            // Self::get_bonding_curve_pda(mint).ok_or(error::ClientError::BondingCurveNotFound)?;
-            get_curve_pda(&mint).unwrap();
+#[derive(Debug, Clone)]
+pub struct CurveInfo {
+    pub virtual_token_reserves: Amount,
+    pub virtual_sol_reserves: Amount,
+    pub real_token_reserves: Amount,
+    pub real_sol_reserves: Amount,
+    pub token_total_supply: Amount,
+    pub complete: bool,
+}
 
-        let account = client.get_account(&bonding_curve_pda).await.unwrap();
-        // .map_err(error::ClientError::SolanaClientError)?;
+#[async_trait]
+impl LoadCurveInfo for Rpc {
+    async fn load_curve_info(&self, key: impl Into<PublicKey> + Send) -> Option<CurveInfo> {
+        let key = key.into();
+        let curve_pda = match curve_pda(key.clone()) {
+            None => {
+                error!("unable to resolve pda for curve {key}");
+                return None;
+            }
+            Some(pda) => pda,
+        };
 
-        // accounts::BondingCurveAccount::try_from_slice(&account.data)
-        //     .map_err(error::ClientError::BorshError)
+        if let Ok(Some(curve_account)) = self.client.get_account(curve_pda).await {
+            let reader = ByteReader::new(&curve_account.data);
+            let curve = CurveAccount::decode(&reader);
 
-        dbg!(&account);
-
-        let reader = ByteReader::new(&account.data);
-        CurveAccount::decode(&reader)
+            Some(CurveInfo {
+                virtual_token_reserves: curve.virtual_token_reserves.into(),
+                virtual_sol_reserves: curve.virtual_sol_reserves.into(),
+                real_token_reserves: curve.real_token_reserves.into(),
+                real_sol_reserves: curve.real_sol_reserves.into(),
+                token_total_supply: curve.token_total_supply.into(),
+                complete: curve.complete,
+            })
+        } else {
+            error!("unable to retrieve curve info {key}");
+            None
+        }
     }
 }
 
 #[derive(Debug, Clone)]
-pub struct CurveAccount {
+struct CurveAccount {
     pub discriminator: u64,
     pub virtual_token_reserves: u64,
     pub virtual_sol_reserves: u64,
@@ -48,7 +67,7 @@ pub struct CurveAccount {
 }
 
 impl CurveAccount {
-    pub fn decode(reader: &ByteReader) -> Self {
+    fn decode(reader: &ByteReader) -> Self {
         Self {
             discriminator: reader.read_u64().unwrap(),
             virtual_token_reserves: reader.read_u64().unwrap(),
@@ -61,6 +80,7 @@ impl CurveAccount {
     }
 }
 
+// FIXME not for curve account
 impl CurveAccount {
     pub fn new(
         discriminator: u64,

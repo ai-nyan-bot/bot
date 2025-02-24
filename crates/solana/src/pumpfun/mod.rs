@@ -6,7 +6,7 @@
 
 pub mod model;
 pub mod repo;
-mod rpc;
+pub mod rpc;
 
 mod buy;
 pub(crate) mod constant;
@@ -16,11 +16,9 @@ mod sell;
 pub(crate) mod util;
 
 pub use crate::pumpfun::parse::PumpFunParser;
-use common::ByteReader;
 pub use rpc::Rpc;
-use solana_sdk::pubkey::Pubkey;
 use std::fmt::{Debug, Display, Formatter, Write};
-use std::ops::{Div, Mul, Sub};
+use std::ops::{Mul, Sub};
 
 pub struct Pumpfun {}
 
@@ -40,4 +38,3 @@ impl Display for PumpfunError {
 impl std::error::Error for PumpfunError {}
 
 pub type PumpfunResult<T> = std::result::Result<T, PumpfunError>;
-

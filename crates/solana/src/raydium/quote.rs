@@ -109,14 +109,14 @@ impl Raydium {
         .map(|k| k.into())
         .collect();
 
-        let accounts = self.rpc_client.get_multiple_accounts(&keys).await.unwrap();
+        let accounts = self.rpc_client.list_accounts(keys).await.unwrap();
 
         // let rsps = crate::utils::get_multiple_account_data(&self.client, &load_pubkeys).await?;
         // let accounts = array_ref![rsps, 0, 7];
         let [
-        amm_account,
-        amm_pc_vault_account,
-        amm_coin_vault_account,
+        Some(amm_account),
+        Some(amm_pc_vault_account),
+        Some(amm_coin_vault_account),
         // amm_open_orders_account,
         // market_account,
         // market_event_q_account,

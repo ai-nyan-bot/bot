@@ -5,7 +5,7 @@ use base::model::PublicKey;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct Account {
+pub struct AccountInfo {
     /// lamports in the account
     pub lamports: u64,
     /// data held in this account

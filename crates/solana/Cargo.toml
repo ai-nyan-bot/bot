@@ -17,6 +17,7 @@ serde = { workspace = true }
 serde_json = { workspace = true }
 
 solana-rpc-client = { version = "2.1.9" }
+solana-account-decoder-client-types = { version = "2.1.9" }
 solana-sdk = { workspace = true }
 solana-transaction-status = { version = "2.1.9" }
 solana-client = { version = "2.1.9" }

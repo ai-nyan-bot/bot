@@ -5,6 +5,7 @@ use crate::user::{get_or_create_another_user, get_or_create_test_user};
 use ::base::model::TokenMint;
 use common::repo::Tx;
 use futures_util::FutureExt;
+pub use hash::hash_for_testing;
 use log::info;
 use rand::{thread_rng, Rng};
 use rule::create_rule_for_another_user;
@@ -16,6 +17,7 @@ use token_pair::get_or_create_token_pair;
 
 pub mod address;
 pub mod auth;
+mod hash;
 pub mod invocation;
 pub mod notification;
 pub mod rule;
@@ -27,7 +29,12 @@ pub mod wallet;
 fn generate_db_name() -> String {
     let mut rng = thread_rng();
     let charset: Vec<char> = ('a'..='z').collect();
-    format!("test_{}", (0..32).map(|_| charset[rng.gen_range(0..charset.len())]).collect::<String>())
+    format!(
+        "test_{}",
+        (0..32)
+            .map(|_| charset[rng.gen_range(0..charset.len())])
+            .collect::<String>()
+    )
 }
 
 pub async fn get_test_pool() -> PgPool {
@@ -44,7 +51,10 @@ pub async fn get_test_pool() -> PgPool {
 
     let db_name = generate_db_name();
 
-    admin_pool.execute(format!("create database {}", db_name).as_str()).await.unwrap();
+    admin_pool
+        .execute(format!("create database {}", db_name).as_str())
+        .await
+        .unwrap();
     info!("Created test database: {}", db_name);
 
     drop(admin_pool);
@@ -151,12 +161,12 @@ where
         let mut tx = pool.begin().await.unwrap();
         initialise_database(&mut tx).await;
         let _ = tx.commit().await;
-        
+
         test(pool.clone()).await;
     })
-        .catch_unwind()
-        .await
-        .err();
+    .catch_unwind()
+    .await
+    .err();
 
     // propagate error if test or preparation failed
     if let Some(err) = result {

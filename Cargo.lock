@@ -4731,6 +4731,7 @@ dependencies = [
  "rand 0.8.5",
  "serde",
  "serde_json",
+ "solana-account-decoder-client-types",
  "solana-client",
  "solana-rpc-client",
  "solana-sdk",

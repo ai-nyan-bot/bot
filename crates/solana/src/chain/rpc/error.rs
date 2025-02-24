@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use solana_client::client_error::ClientErrorKind;
-use std::fmt::Write;
+use std::error;
 
 #[derive(Debug)]
 pub enum RpcClientError {
@@ -21,11 +21,15 @@ impl std::fmt::Display for RpcClientError {
         match self {
             RpcClientError::Io(msg) => f.write_fmt(format_args!("rpc io error: {msg}")),
             RpcClientError::Reqwest(msg) => f.write_fmt(format_args!("rpc reqwest error: {msg}")),
-            RpcClientError::Middleware(msg) => f.write_fmt(format_args!("rpc middleware error: {msg}")),
+            RpcClientError::Middleware(msg) => {
+                f.write_fmt(format_args!("rpc middleware error: {msg}"))
+            }
             RpcClientError::Rpc(msg) => f.write_fmt(format_args!("rpc error: {msg}")),
             RpcClientError::Serde(msg) => f.write_fmt(format_args!("rpc serde error: {msg}")),
             RpcClientError::Signing(msg) => f.write_fmt(format_args!("rpc signing error: {msg}")),
-            RpcClientError::Transaction(msg) => f.write_fmt(format_args!("rpc transaction error: {msg}")),
+            RpcClientError::Transaction(msg) => {
+                f.write_fmt(format_args!("rpc transaction error: {msg}"))
+            }
             RpcClientError::Custom(msg) => f.write_fmt(format_args!("rpc custom error: {msg}")),
         }
     }
@@ -46,4 +50,4 @@ impl From<solana_client::client_error::ClientError> for RpcClientError {
     }
 }
 
-impl std::error::Error for RpcClientError {}
+impl error::Error for RpcClientError {}
