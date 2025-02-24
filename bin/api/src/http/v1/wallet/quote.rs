@@ -12,7 +12,7 @@ use base::model::AuthenticatedUser;
 use base::model::PublicKey;
 use log::debug;
 use serde::{Deserialize, Serialize};
-use solana::venue::raydium::{Raydium, RaydiumSwap, SwapExecutionMode};
+use solana::raydium::{Raydium, RaydiumSwap, SwapExecutionMode};
 
 #[derive(Deserialize, Debug)]
 pub struct QuoteRequest {

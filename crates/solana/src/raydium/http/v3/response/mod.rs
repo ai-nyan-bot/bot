@@ -4,7 +4,7 @@
 // This file includes portions of code from https://github.com/0xcrust/raydium-swap (MIT License).
 // Original MIT License Copyright (c) 0xcrust 2024.
 
-use crate::venue::raydium::http::v3::response::token::Token;
+use crate::raydium::http::v3::response::token::Token;
 use ::serde::{Deserialize, Serialize};
 
 pub mod error;

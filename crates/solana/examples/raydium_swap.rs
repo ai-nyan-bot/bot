@@ -8,7 +8,7 @@ use tracing_subscriber::util::SubscriberInitExt;
 use tracing_subscriber::EnvFilter;
 
 use base::model::PublicKey;
-use solana::venue::raydium::{
+use solana::raydium::{
 	ComputeUnitLimits, PriorityFeeConfig, Raydium, RaydiumSwap, SwapConfigOverrides,
 	SwapExecutionMode,
 };

@@ -4,7 +4,6 @@
 // This file includes portions of code from https://github.com/0xcrust/raydium-swap (MIT License).
 // Original MIT License Copyright (c) 0xcrust 2024.
 
-
 use log::debug;
 use solana_client::nonblocking::rpc_client::RpcClient;
 use solana_client::rpc_config::RpcSimulateTransactionConfig;
@@ -17,9 +16,9 @@ use solana_sdk::signature::Signature;
 use solana_sdk::transaction::VersionedTransaction;
 use solana_sdk::{pubkey, pubkey::Pubkey};
 
-use crate::venue::raydium;
-use crate::venue::raydium::Error::MathError;
-use crate::venue::raydium::{ComputeUnitLimits, PriorityFeeConfig};
+use crate::raydium;
+use crate::raydium::Error::MathError;
+use crate::raydium::{ComputeUnitLimits, PriorityFeeConfig};
 
 // FIXME no unwrap
 

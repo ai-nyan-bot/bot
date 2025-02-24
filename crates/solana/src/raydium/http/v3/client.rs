@@ -8,13 +8,13 @@ use serde::de::DeserializeOwned;
 use solana_client::client_error::reqwest;
 use solana_sdk::pubkey::Pubkey;
 
-use crate::venue::raydium::http::error::HttpError;
-use crate::venue::raydium::http::v3::response::error::ErrorResponse;
-use crate::venue::raydium::http::v3::response::pool::PoolPage;
-use crate::venue::raydium::http::v3::response::pool_keys::PoolKey;
-use crate::venue::raydium::http::v3::response::token::{Token, TokenList};
-use crate::venue::raydium::http::v3::response::Response;
-use crate::venue::raydium::http::v3::PoolType;
+use crate::raydium::http::error::HttpError;
+use crate::raydium::http::v3::response::error::ErrorResponse;
+use crate::raydium::http::v3::response::pool::PoolPage;
+use crate::raydium::http::v3::response::pool_keys::PoolKey;
+use crate::raydium::http::v3::response::token::{Token, TokenList};
+use crate::raydium::http::v3::response::Response;
+use crate::raydium::http::v3::PoolType;
 
 #[derive(Clone, Debug, Default)]
 pub struct ListPoolRequest {

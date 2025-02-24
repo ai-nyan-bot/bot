@@ -5,7 +5,7 @@ use std::fmt::{Display, Formatter, Write};
 
 use base::model::PublicKey;
 
-use crate::venue::raydium::http::HttpError;
+use crate::raydium::http::HttpError;
 
 #[derive(Debug)]
 pub enum Error {

@@ -13,12 +13,11 @@ use base::model::PublicKey;
 use base::repo::{AddressRepo, ReadTokenPairRepo, ReadTokenRepo, TokenPairRepo, TokenRepo};
 use common::repo::pool::setup_pool;
 use common::{ResolveOr, Signal};
+use solana::jupiter::parse::JupiterParser;
 use solana::model::TransactionStatus;
 use solana::pumpfun::PumpFunParser;
-use solana::repo;
 use solana::stream::{BlockStream, RpcBlockStream, RpcBlockStreamConfig, RpcSlotStream};
 use solana::token_info::rpc::RpcTokenInfoLoader;
-use solana::venue::jupiter::JupiterParser;
 use solana::venue::Parser;
 use sqlx::Acquire;
 use tokio::signal::unix::SignalKind;
@@ -51,7 +50,7 @@ pub(crate) fn index_solana(runtime: Runtime, config: Config) {
         let wallet_repo = AddressRepo::new();
 
         let pumpfun_trade_repo = solana::pumpfun::repo::TradeRepo::new(token_pair_repo.clone(), wallet_repo.clone());
-        let jupiter_trade_repo = repo::jupiter::TradeRepo::new(token_pair_repo.clone(), wallet_repo.clone());
+        let jupiter_trade_repo = solana::jupiter::repo::TradeRepo::new(token_pair_repo.clone(), wallet_repo.clone());
 
         let state = State(Arc::new(StateInner {
             pool: pool.clone(),
@@ -100,7 +99,7 @@ pub(crate) fn index_solana(runtime: Runtime, config: Config) {
 
                         // FIXME it would be interesting to see what the time difference is between indexing a block and the actual block time
 
-                        let mut jupiter_slot_trades = repo::jupiter::SlotTrades{
+                        let mut jupiter_slot_trades = solana::jupiter::repo::SlotTrades{
                             slot: block.slot.clone(),
                             timestamp: block.timestamp.clone(),
                             trades: vec![],
@@ -147,13 +146,13 @@ pub(crate) fn index_solana(runtime: Runtime, config: Config) {
                                 if transaction.account_keys.contains(&jupiter_account){
                                       for instruction in  jupiter_parser.parse(&transaction).unwrap(){
                                         match instruction{
-                                            solana::model::jupiter::Instruction::Trade{
+                                            solana::jupiter::model::Instruction::Trade{
                                             swaps,
                                             signer
                                         } => {
                                                 let first = swaps.first().unwrap();
                                                 let last = swaps.last().unwrap();
-                                                jupiter_slot_trades.trades.push(repo::jupiter::SlotTrade{
+                                                jupiter_slot_trades.trades.push(solana::jupiter::repo::SlotTrade{
                                                         input_mint: first.input_mint.clone(),
                                                         input_amount: first.input_amount.clone(),
                                                         output_mint: last.output_mint.clone(),

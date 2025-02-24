@@ -4,11 +4,11 @@
 // This file includes portions of code from https://github.com/0xcrust/raydium-swap (MIT License).
 // Original MIT License Copyright (c) 0xcrust 2024.
 
-use crate::venue::raydium;
-use crate::venue::raydium::amm::*;
-use crate::venue::raydium::http::v3::PoolType;
-use crate::venue::raydium::math::{calc_total_without_take_pnl_no_orderbook, swap_with_slippage};
-use crate::venue::raydium::{
+use crate::raydium;
+use crate::raydium::amm::*;
+use crate::raydium::http::v3::PoolType;
+use crate::raydium::math::{calc_total_without_take_pnl_no_orderbook, swap_with_slippage};
+use crate::raydium::{
     Error, ListPoolRequest, PoolSort, PoolSortOrder, Raydium, RaydiumQuote, RaydiumSwap, SwapDirection, RAYDIUM_LIQUIDITY_POOL_V4_PROGRAM_ID,
 };
 use base::model::PublicKey;
@@ -75,7 +75,7 @@ impl Raydium {
         // } else {
         //     let amm_keys = raydium_library::amm::utils::load_amm_keys(
         //         &self.client,
-        //         &crate::venue::raydium::executor::RAYDIUM_LIQUIDITY_POOL_V4_PROGRAM_ID,
+        //         &crate::raydium::executor::RAYDIUM_LIQUIDITY_POOL_V4_PROGRAM_ID,
         //         &pool_id,
         //     )
         //         .await?;
@@ -146,7 +146,7 @@ impl Raydium {
         //
         //     let amm_authority = Pubkey::find_program_address(
         //         &[raydium_amm::processor::AUTHORITY_AMM],
-        //         &crate::venue::raydium::executor::RAYDIUM_LIQUIDITY_POOL_V4_PROGRAM_ID,
+        //         &crate::raydium::executor::RAYDIUM_LIQUIDITY_POOL_V4_PROGRAM_ID,
         //     ).0;
         //
         //     let lamports = &mut 0;

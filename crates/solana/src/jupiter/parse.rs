@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::jupiter::{Instruction, Jupiter6Swap};
+use crate::jupiter::model::{Instruction, Jupiter6Swap};
 use crate::model::Transaction;
 use crate::venue::{ParseError, ParseResult, Parser};
 use common::ByteReader;
@@ -96,9 +96,9 @@ mod tests {
     use std::collections::HashMap;
 
     mod parse {
-        use crate::model::jupiter::Instruction;
-        use crate::venue::jupiter::parse::tests::transaction;
-        use crate::venue::jupiter::JupiterParser;
+        use crate::jupiter::model::Instruction;
+        use crate::jupiter::parse::tests::transaction;
+        use crate::jupiter::parse::JupiterParser;
         use crate::venue::Parser;
 
         #[test]
@@ -106,7 +106,9 @@ mod tests {
             let test_instance = JupiterParser::new();
             let tx = transaction("4pp3wY3KcAvzV7sL9y1ENtHgV4A43t2tmAzwxuxHRbJAXxbq7CGjjmhtUpd35y76zfKqp5N2mfR9aLHFRC9AZjg2");
 
-            let Instruction::Trade { swaps, signer } = test_instance.parse(&tx).unwrap().pop().unwrap() else {
+            let Instruction::Trade { swaps, signer } =
+                test_instance.parse(&tx).unwrap().pop().unwrap()
+            else {
                 unreachable!()
             };
 
@@ -115,9 +117,15 @@ mod tests {
             assert_eq!(swaps.len(), 1);
             let swap = swaps.first().unwrap();
             assert_eq!(swap.amm, "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc");
-            assert_eq!(swap.input_mint, "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v");
+            assert_eq!(
+                swap.input_mint,
+                "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+            );
             assert_eq!(swap.input_amount, 17143570);
-            assert_eq!(swap.output_mint, "27G8MtK7VtTcCHkpASjSDdkWWYfoqT6ggEuKidVJidD4");
+            assert_eq!(
+                swap.output_mint,
+                "27G8MtK7VtTcCHkpASjSDdkWWYfoqT6ggEuKidVJidD4"
+            );
             assert_eq!(swap.output_amount, 5822752);
         }
 
@@ -126,7 +134,9 @@ mod tests {
             let test_instance = JupiterParser::new();
             let tx = transaction("3Qd7xWYqpuUbYNGrfSLgaWSsmp7QF9un8qz4whJt87wmPfkxZDo8YhrqHpGBdQZZAqnWAVEq5DnS8B3MbBzuSVX1");
 
-            let Instruction::Trade { swaps, signer } = test_instance.parse(&tx).unwrap().pop().unwrap() else {
+            let Instruction::Trade { swaps, signer } =
+                test_instance.parse(&tx).unwrap().pop().unwrap()
+            else {
                 unreachable!()
             };
             assert_eq!(signer, "5cTNAQEaDgEsR7mseeDtay7tJqcQoDMm3LMS6Rkj9Cm3");
@@ -135,8 +145,8 @@ mod tests {
     }
 
     mod parse_swaps {
-        use crate::venue::jupiter::parse::parse_swaps;
-        use crate::venue::jupiter::parse::tests::transaction;
+        use crate::jupiter::parse::parse_swaps;
+        use crate::jupiter::parse::tests::transaction;
 
         #[test]
         fn test_single_swap() {
@@ -147,9 +157,15 @@ mod tests {
 
             let swap = result.pop().unwrap();
             assert_eq!(swap.amm, "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc");
-            assert_eq!(swap.input_mint, "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v");
+            assert_eq!(
+                swap.input_mint,
+                "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+            );
             assert_eq!(swap.input_amount, 17143570);
-            assert_eq!(swap.output_mint, "27G8MtK7VtTcCHkpASjSDdkWWYfoqT6ggEuKidVJidD4");
+            assert_eq!(
+                swap.output_mint,
+                "27G8MtK7VtTcCHkpASjSDdkWWYfoqT6ggEuKidVJidD4"
+            );
             assert_eq!(swap.output_amount, 5822752);
         }
 
@@ -160,27 +176,54 @@ mod tests {
             let result = parse_swaps(&tx).unwrap();
             assert_eq!(result.len(), 4);
             assert_eq!(result[0].amm, "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc");
-            assert_eq!(result[0].input_mint, "Av6qVigkb7USQyPXJkUvAEm4f599WTRvd75PUWBA9eNm");
+            assert_eq!(
+                result[0].input_mint,
+                "Av6qVigkb7USQyPXJkUvAEm4f599WTRvd75PUWBA9eNm"
+            );
             assert_eq!(result[0].input_amount, 7708640607381);
-            assert_eq!(result[0].output_mint, "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v");
+            assert_eq!(
+                result[0].output_mint,
+                "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+            );
             assert_eq!(result[0].output_amount, 137673122);
 
             assert_eq!(result[1].amm, "opnb2LAfJYbRMAHHvqjCwQxanZn7ReEHp1k81EohpZb");
-            assert_eq!(result[1].input_mint, "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v");
+            assert_eq!(
+                result[1].input_mint,
+                "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+            );
             assert_eq!(result[1].input_amount, 82603873);
-            assert_eq!(result[1].output_mint, "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263");
+            assert_eq!(
+                result[1].output_mint,
+                "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"
+            );
             assert_eq!(result[1].output_amount, 338000000000);
 
-            assert_eq!(result[2].amm, "2wT8Yq49kHgDzXuPxZSaeLaH1qbmGXtEyPy64bL7aD3c");
-            assert_eq!(result[2].input_mint, "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v");
+            assert_eq!(
+                result[2].amm,
+                "2wT8Yq49kHgDzXuPxZSaeLaH1qbmGXtEyPy64bL7aD3c"
+            );
+            assert_eq!(
+                result[2].input_mint,
+                "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+            );
             assert_eq!(result[2].input_amount, 55069249);
-            assert_eq!(result[2].output_mint, "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263");
+            assert_eq!(
+                result[2].output_mint,
+                "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"
+            );
             assert_eq!(result[2].output_amount, 225586564345);
 
             assert_eq!(result[3].amm, "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc");
-            assert_eq!(result[3].input_mint, "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263");
+            assert_eq!(
+                result[3].input_mint,
+                "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"
+            );
             assert_eq!(result[3].input_amount, 563586564345);
-            assert_eq!(result[3].output_mint, "So11111111111111111111111111111111111111112");
+            assert_eq!(
+                result[3].output_mint,
+                "So11111111111111111111111111111111111111112"
+            );
             assert_eq!(result[3].output_amount, 1014841680);
         }
     }

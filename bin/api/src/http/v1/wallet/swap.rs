@@ -12,7 +12,7 @@ use base::model::AuthenticatedUser;
 use base::model::PublicKey;
 use log::debug;
 use serde::{Deserialize, Serialize};
-use solana::venue::raydium::{ComputeUnitLimits, PriorityFeeConfig, Raydium, RaydiumSwap, SwapConfigOverrides, SwapExecutionMode};
+use solana::raydium::{ComputeUnitLimits, PriorityFeeConfig, Raydium, RaydiumSwap, SwapConfigOverrides, SwapExecutionMode};
 
 #[derive(Deserialize, Debug)]
 pub struct SwapRequest {

@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::venue::raydium::http::v3::response::pool_keys::PoolKey;
+use crate::raydium::http::v3::response::pool_keys::PoolKey;
 use solana_sdk::pubkey::Pubkey;
 
 #[derive(Debug, Clone)]

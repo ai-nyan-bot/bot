@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::venue::raydium::http::v3::response::error::ErrorResponse;
+use crate::raydium::http::v3::response::error::ErrorResponse;
 use solana_client::client_error::reqwest;
 use solana_client::client_error::reqwest::Error;
 

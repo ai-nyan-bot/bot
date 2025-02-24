@@ -2,7 +2,4 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 pub use parse::*;
-pub mod jupiter;
-pub mod raydium;
-
 mod parse;

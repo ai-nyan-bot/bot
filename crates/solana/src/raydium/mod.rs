@@ -7,7 +7,6 @@
 // This file includes portions of code from https://github.com/raydium-io/raydium-amm (Apache 2.0 License).
 // Original Apache 2.0 License Copyright (c) raydium.io 2024.
 
-
 use base::model::PublicKey;
 use solana_sdk::pubkey;
 use solana_sdk::pubkey::Pubkey;
@@ -15,8 +14,8 @@ use solana_sdk::pubkey::Pubkey;
 pub use error::Error;
 pub use http::v3::client::*;
 
+use crate::raydium::amm::AmmKeys;
 use crate::rpc::RpcClient;
-use crate::venue::raydium::amm::AmmKeys;
 
 mod amm;
 mod error;

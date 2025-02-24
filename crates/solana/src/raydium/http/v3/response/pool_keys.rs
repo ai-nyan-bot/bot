@@ -4,7 +4,7 @@
 use serde::Deserialize;
 use spl_token::solana_program::pubkey::Pubkey;
 
-use crate::venue::raydium::http::v3::serde::field_as_string;
+use crate::raydium::http::v3::serde::field_as_string;
 
 #[derive(Debug, Deserialize)]
 pub struct PoolKey {

@@ -2,7 +2,6 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use base::repo::{AddressRepo, TokenPairRepo, TokenRepo};
-use solana::repo::jupiter;
 use solana::token_info::rpc::RpcTokenInfoLoader;
 use sqlx::PgPool;
 use std::ops::Deref;
@@ -25,5 +24,5 @@ pub struct StateInner {
     pub token_pair_repo: TokenPairRepo<RpcTokenInfoLoader>,
     pub wallet_repo: AddressRepo,
     pub pumpfun_trade_repo: solana::pumpfun::repo::TradeRepo<RpcTokenInfoLoader>,
-    pub jupiter_trade_repo: jupiter::TradeRepo<RpcTokenInfoLoader>,
+    pub jupiter_trade_repo: solana::jupiter::repo::TradeRepo<RpcTokenInfoLoader>,
 }

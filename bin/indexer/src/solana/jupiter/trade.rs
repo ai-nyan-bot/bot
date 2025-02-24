@@ -3,7 +3,7 @@
 
 use crate::solana::state::State;
 use common::repo::Tx;
-use solana::repo::jupiter::SlotTrades;
+use solana::jupiter::repo::SlotTrades;
 
 pub(crate) async fn index_trade<'a>(tx: &mut Tx<'a>, state: State, trades: SlotTrades) {
     let inserted = state.jupiter_trade_repo.insert_trades(tx, trades).await.unwrap();
