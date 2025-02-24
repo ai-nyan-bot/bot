@@ -10,7 +10,7 @@ use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 
 impl ReadTradeRepo {
-    pub async fn count_all<'a>(&self, tx: &mut Tx<'a>, query: TradeQueryAll) -> RepoResult<Count> {
+    pub async fn count_all<'a>(&self, tx: &mut Tx<'a>) -> RepoResult<Count> {
         Ok(sqlx::query("select count(*) from pumpfun.trade;")
             .fetch_one(&mut **tx)
             .await?

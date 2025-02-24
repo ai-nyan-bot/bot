@@ -7,7 +7,7 @@ use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 
 impl NotificationRepo {
-    pub async fn count_all<'a>(&self, tx: &mut Tx<'a>, query: NotificationQueryAll) -> RepoResult<Count> {
+    pub async fn count_all<'a>(&self, tx: &mut Tx<'a>) -> RepoResult<Count> {
         Ok(sqlx::query("select count(*) from nyanbot.notification;")
             .fetch_one(&mut **tx)
             .await?

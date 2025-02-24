@@ -4,14 +4,15 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
-use crate::jupiter::repo::{TradeQueryAll, TradeRepo};
+use crate::jupiter::repo::TradeRepo;
 use base::LoadTokenInfo;
 use common::model::Count;
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 
 impl<L: LoadTokenInfo> TradeRepo<L> {
-    pub async fn count<'a>(&self, tx: &mut Tx<'a>, query: TradeQueryAll) -> RepoResult<Count> {
+    pub async fn count_all<'a>(&self, tx: &mut Tx<'a>)
+     -> RepoResult<Count> {
         Ok(sqlx::query("select count(*) from jupiter.trade;")
             .fetch_one(&mut **tx)
             .await?
