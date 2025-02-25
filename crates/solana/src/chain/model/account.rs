@@ -19,6 +19,7 @@ pub struct AccountInfo {
     pub rent_epoch: Epoch,
 }
 
+#[derive(Clone, Debug)]
 pub struct AccountInfoAtSlot {
     pub slot: Slot,
     pub account: AccountInfo,

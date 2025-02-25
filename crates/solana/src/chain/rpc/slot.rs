@@ -8,6 +8,6 @@ use log::trace;
 impl RpcClient {
     pub async fn slot(&self) -> RpcResult<Slot> {
         trace!("fetch rpc slot");
-        Ok(self.client.get_slot().await?.into())
+        Ok(self.delegate.get_slot().await?.into())
     }
 }

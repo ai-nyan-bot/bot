@@ -4,11 +4,15 @@
 // This file includes portions of code from https://github.com/0xcrust/raydium-swap (MIT License).
 // Original MIT License Copyright (c) 0xcrust 2024.
 
-use std::sync::Arc;
-
+use crate::model::Slot;
+use crate::rpc::block::GetBlockWithConfigFn;
 use crate::rpc::error::RpcClientError;
 use common::model::RpcUrl;
+use solana_client::rpc_config::RpcBlockConfig;
 use solana_rpc_client::nonblocking::rpc_client;
+use std::future::Future;
+use std::ops::Deref;
+use std::sync::Arc;
 
 mod account;
 mod block;
@@ -16,26 +20,56 @@ mod error;
 mod slot;
 
 #[derive(Clone)]
-pub struct RpcClient {
-    client: Arc<rpc_client::RpcClient>,
-}
+pub struct RpcClient(pub Arc<RpcClientInner>);
 
 impl RpcClient {
     pub fn new(rpc_url: impl Into<RpcUrl>) -> Self {
-        Self {
-            client: Arc::new(rpc_client::RpcClient::new(rpc_url.into().to_string())),
-        }
+        Self(Arc::new(RpcClientInner {
+            delegate: Arc::new(rpc_client::RpcClient::new(rpc_url.into().to_string())),
+            get_block_with_config: Arc::new(
+                move |delegate: Arc<rpc_client::RpcClient>, slot: Slot, config: RpcBlockConfig| {
+                    Box::pin(async move {
+                        Ok(delegate
+                            .get_block_with_config(slot.0 as u64, config)
+                            .await?)
+                    })
+                },
+            ),
+        }))
     }
 }
 
 impl Default for RpcClient {
     fn default() -> Self {
-        Self {
-            client: Arc::new(rpc_client::RpcClient::new("https://api.mainnet-beta.solana.com".to_string())),
-        }
+        Self(Arc::new(RpcClientInner {
+            delegate: Arc::new(rpc_client::RpcClient::new(
+                "https://api.mainnet-beta.solana.com".to_string(),
+            )),
+            get_block_with_config: Arc::new(
+                move |delegate: Arc<rpc_client::RpcClient>, slot: Slot, config: RpcBlockConfig| {
+                    Box::pin(async move {
+                        Ok(delegate
+                            .get_block_with_config(slot.0 as u64, config)
+                            .await?)
+                    })
+                },
+            ),
+        }))
     }
 }
 
-pub type RpcResult<T> = Result<T, RpcClientError>;
+impl Deref for RpcClient {
+    type Target = RpcClientInner;
 
-impl RpcClient {}
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+#[derive(Clone)]
+pub struct RpcClientInner {
+    pub(crate) delegate: Arc<rpc_client::RpcClient>,
+    pub(crate) get_block_with_config: Arc<GetBlockWithConfigFn>,
+}
+
+pub type RpcResult<T> = Result<T, RpcClientError>;

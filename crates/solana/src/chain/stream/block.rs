@@ -94,7 +94,7 @@ impl BlockStream for RpcBlockStream {
                                     slots_to_download.push(current);
                                 }
                                 previous_slot = current;
-                                
+
                                 debug!("slots to download {slots_to_download:#?}");
                                 downloader.download_and_send_blocks(slots_to_download).await;
                             }
@@ -139,11 +139,12 @@ impl DownloadAndSendBlock {
                 let _permit = semaphore.acquire().await.unwrap();
                 debug!("Downloading block of slot: {}", slot);
 
-                match rpc.block(slot).await {
-                    Ok(block) => {
+                match rpc.get_block(slot).await {
+                    Ok(Some(block)) => {
                         let mut res = results.lock().await;
                         res.insert(slot, block);
                     }
+                    Ok(None) => {}
                     Err(err) => {
                         error!("Failed to fetch block for slot: {} - {}", slot, err);
                         signal.terminate("RpcBlockStream failed to fetch block");

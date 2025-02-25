@@ -16,7 +16,7 @@ impl RpcClient {
         let key = key.into();
 
         let response = self
-            .client
+            .delegate
             .get_account_with_config(
                 &key.into(),
                 RpcAccountInfoConfig {
@@ -49,7 +49,7 @@ impl RpcClient {
         let keys = keys.into_iter().map(|id| id.into()).collect::<Vec<_>>();
 
         let response = self
-            .client
+            .delegate
             .get_multiple_accounts_with_config(
                 &*keys
                     .into_iter()

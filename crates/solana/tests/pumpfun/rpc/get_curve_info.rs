@@ -18,10 +18,10 @@ async fn test_ok() {
         .await
         .unwrap();
 
-    assert_eq!(result.virtual_base_reserves, 1071443444605882);
-    assert_eq!(result.virtual_quote_reserves, 30043583654);
-    assert_eq!(result.real_base_reserves, 791543444605882);
-    assert_eq!(result.real_quote_reserves, 43583654);
+    assert_eq!(result.virtual_base_reserves, 1071762963469721);
+    assert_eq!(result.virtual_quote_reserves, 30034626924);
+    assert_eq!(result.real_base_reserves, 791862963469721);
+    assert_eq!(result.real_quote_reserves, 34626924);
     assert_eq!(result.total_supply, 1000000000000000);
     assert_eq!(result.complete, false);
 }

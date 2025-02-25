@@ -3,3 +3,4 @@
 
 mod get_account;
 mod list_accounts;
+mod get_block;
