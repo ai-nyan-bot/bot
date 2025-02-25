@@ -11,6 +11,8 @@ create table pumpfun.curve_log
     complete                bool not null,
     created_at              timestamptz default (timezone('utc', now())),
 
+    primary key (id, slot),
+
     constraint fk_token_pair
         foreign key (id)
         references solana.token_pair(id)
@@ -30,3 +32,47 @@ create table pumpfun.curve
         foreign key (id)
         references solana.token_pair(id)
  );
+
+create trigger set_updated_at
+before update on pumpfun.curve
+
+for each row
+execute function update_updated_at_column();
+
+create function pumpfun.curve_log_trigger_fn()
+returns trigger as $$
+begin
+    insert into pumpfun.curve_log (
+        id,
+        slot,
+        virtual_base_reserves,
+        virtual_quote_reserves,
+        progress,
+        complete,
+        created_at
+    )
+    values (
+        new.id,
+        new.slot,
+        new.virtual_base_reserves,
+        new.virtual_quote_reserves,
+        new.progress,
+        new.complete,
+        timezone('utc', now())
+    )
+    on conflict (id, slot) do update
+    set
+        virtual_base_reserves = excluded.virtual_base_reserves,
+        virtual_quote_reserves = excluded.virtual_quote_reserves,
+        progress = excluded.progress,
+        complete = excluded.complete,
+        created_at = timezone('utc', now());
+    return new;
+end;
+$$ language plpgsql;
+
+
+create trigger curve_log
+after insert or update on pumpfun.curve
+for each row
+execute function pumpfun.curve_log_trigger_fn();

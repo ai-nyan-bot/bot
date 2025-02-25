@@ -2,7 +2,6 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use dotenv::dotenv;
-use solana::pumpfun::rpc::LoadCurveInfo;
 use solana::pumpfun::Rpc;
 use solana::rpc::RpcClient;
 use std::env;
@@ -15,7 +14,7 @@ async fn test_ok() {
     ));
 
     let result = test_instance
-        .load_curve_info("CpV7zK77DkyVvbCgGWtWrsqvh2VonFrqPg8cecrTpump")
+        .get_curve_info("CpV7zK77DkyVvbCgGWtWrsqvh2VonFrqPg8cecrTpump")
         .await
         .unwrap();
 
@@ -35,7 +34,7 @@ async fn test_not_found() {
     ));
 
     let result = test_instance
-        .load_curve_info("22222222222222222222222222222222222222222222")
+        .get_curve_info("22222222222222222222222222222222222222222222")
         .await;
 
     assert!(result.is_none());

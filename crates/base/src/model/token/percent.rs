@@ -2,6 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use serde::{Deserialize, Serialize};
+use std::cmp::Ordering;
 use std::fmt::{Display, Formatter};
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize, sqlx::Type)]
@@ -23,6 +24,12 @@ impl From<i64> for Percent {
 impl PartialEq<f32> for Percent {
     fn eq(&self, other: &f32) -> bool {
         self.0 == *other
+    }
+}
+
+impl PartialOrd<f32> for Percent {
+    fn partial_cmp(&self, other: &f32) -> Option<Ordering> {
+        self.0.partial_cmp(other)
     }
 }
 

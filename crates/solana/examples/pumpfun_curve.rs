@@ -2,7 +2,6 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use solana::pumpfun::model::CalculateProgress;
-use solana::pumpfun::rpc::LoadCurveInfo;
 use solana::pumpfun::Rpc;
 use solana::rpc::RpcClient;
 
@@ -36,7 +35,7 @@ async fn main() {
     // dbg!(&ga);
     //
     let ca = rpc
-        .load_curve_info("A1cVyb8WAFpgdh82AF7BoHtNkPpqFTRTdfPkSkDwpump")
+        .get_curve_info("A1cVyb8WAFpgdh82AF7BoHtNkPpqFTRTdfPkSkDwpump")
         .await
         .unwrap();
     dbg!(&ca);

@@ -1,0 +1,57 @@
+// Copyright (c) nyanbot.com 2025.
+// This file is licensed under the AGPL-3.0-or-later.
+
+use crate::model::Slot;
+use crate::pumpfun::model::{CalculateProgress, Curve, Trade};
+use crate::pumpfun::repo::curve::CurveRepo;
+use base::model::{Amount, Percent, TokenPairId};
+use common::repo::{RepoResult, Tx};
+use sqlx::Row;
+
+impl CurveRepo {
+    pub async fn upsert<'a>(&self, tx: &mut Tx<'a>, trade: Trade) -> RepoResult<Curve> {
+        let mut curve = Curve {
+            id: trade.token_pair,
+            slot: trade.slot,
+            virtual_base_reserves: trade.virtual_base_reserves,
+            virtual_quote_reserves: trade.virtual_quote_reserves,
+            progress: Percent(0.0),
+            complete: false,
+        };
+
+        curve.progress = curve.calculate_progress();
+        curve.complete = curve.progress >= 100.0;
+
+        let query = r#"
+            insert into pumpfun.curve (
+                id, slot, virtual_base_reserves, virtual_quote_reserves, progress, complete
+            )
+            values ($1, $2, $3, $4, $5, $6)
+            on conflict (id) do update set
+                slot = excluded.slot,
+                virtual_base_reserves = excluded.virtual_base_reserves,
+                virtual_quote_reserves = excluded.virtual_quote_reserves,
+                progress = excluded.progress,
+                complete = excluded.complete
+            returning id, slot, virtual_base_reserves, virtual_quote_reserves, progress, complete
+        "#;
+
+        Ok(sqlx::query(query)
+            .bind(curve.id)
+            .bind(curve.slot)
+            .bind(curve.virtual_base_reserves)
+            .bind(curve.virtual_quote_reserves)
+            .bind(curve.progress)
+            .bind(curve.complete)
+            .fetch_one(&mut **tx)
+            .await
+            .map(|r| Curve {
+                id: r.get::<TokenPairId, _>("id"),
+                slot: r.get::<Slot, _>("slot"),
+                virtual_base_reserves: r.get::<Amount, _>("virtual_base_reserves"),
+                virtual_quote_reserves: r.get::<Amount, _>("virtual_quote_reserves"),
+                progress: r.get::<Percent, _>("progress"),
+                complete: r.get::<bool, _>("complete"),
+            })?)
+    }
+}

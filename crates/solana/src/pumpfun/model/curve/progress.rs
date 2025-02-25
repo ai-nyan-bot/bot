@@ -6,7 +6,6 @@ use base::model::{Amount, Percent};
 use std::ops::{Mul, Sub};
 
 pub trait CalculateProgress {
-    fn total_supply(&self) -> Amount;
     fn virtual_base_reserves(&self) -> Amount;
 
     fn calculate_progress(&self) -> Percent {
@@ -18,20 +17,12 @@ pub trait CalculateProgress {
 }
 
 impl CalculateProgress for Curve {
-    fn total_supply(&self) -> Amount {
-        self.total_supply.clone()
-    }
-
     fn virtual_base_reserves(&self) -> Amount {
         self.virtual_base_reserves.clone()
     }
 }
 
 impl CalculateProgress for CurveInfo {
-    fn total_supply(&self) -> Amount {
-        self.total_supply.clone()
-    }
-
     fn virtual_base_reserves(&self) -> Amount {
         self.virtual_base_reserves.clone()
     }

@@ -13,9 +13,15 @@ pub struct Curve {
     pub slot: Slot,
     pub virtual_base_reserves: Amount,
     pub virtual_quote_reserves: Amount,
-    pub real_base_reserves: Amount,
-    pub real_quote_reserves: Amount,
-    pub total_supply: Amount,
+    pub progress: Percent,
+    pub complete: bool,
+}
+
+pub struct CurveLog {
+    pub id: TokenPairId,
+    pub slot: Slot,
+    pub virtual_base_reserves: Amount,
+    pub virtual_quote_reserves: Amount,
     pub progress: Percent,
     pub complete: bool,
 }

@@ -4,20 +4,13 @@
 use crate::pumpfun::model::CurveInfo;
 use crate::pumpfun::util::curve_pda;
 use crate::pumpfun::{PumpfunError, PumpfunResult, Rpc};
-use async_trait::async_trait;
-use base::model::{Amount, PublicKey};
+use base::model::PublicKey;
 use common::ByteReader;
 use log::error;
-use std::ops::{Div, Mul, Sub};
+use std::ops::{Mul, Sub};
 
-#[async_trait]
-pub trait LoadCurveInfo: Send + Sync {
-    async fn load_curve_info(&self, key: impl Into<PublicKey> + Send) -> Option<CurveInfo>;
-}
-
-#[async_trait]
-impl LoadCurveInfo for Rpc {
-    async fn load_curve_info(&self, key: impl Into<PublicKey> + Send) -> Option<CurveInfo> {
+impl Rpc {
+    pub async fn get_curve_info(&self, key: impl Into<PublicKey> + Send) -> Option<CurveInfo> {
         let key = key.into();
         let curve_pda = match curve_pda(key.clone()) {
             None => {
