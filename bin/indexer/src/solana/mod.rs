@@ -58,6 +58,7 @@ pub(crate) fn index_solana(runtime: Runtime, config: Config) {
             token_pair_repo: token_pair_repo,
             wallet_repo: wallet_repo,
             pumpfun_trade_repo,
+            pumpfun_curve_repo: solana::pumpfun::repo::CurveRepo::new(),
             jupiter_trade_repo,
         }));
 

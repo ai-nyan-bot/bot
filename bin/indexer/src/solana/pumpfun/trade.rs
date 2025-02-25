@@ -16,6 +16,10 @@ pub(crate) async fn index_trade<'a>(tx: &mut Tx<'a>, state: State, trades: SlotT
         .await
         .unwrap();
 
+    for trade in inserted {
+        state.pumpfun_curve_repo.upsert(tx, trade).await.unwrap();
+    }
+
     // group trades by token_pair_id
     // list or populate bonding curves
     // use trades to update bonding curves
