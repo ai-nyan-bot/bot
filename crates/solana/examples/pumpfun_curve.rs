@@ -1,6 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use solana::pumpfun::model::CalculateProgress;
 use solana::pumpfun::rpc::LoadCurveInfo;
 use solana::pumpfun::Rpc;
 use solana::rpc::RpcClient;
@@ -35,12 +36,12 @@ async fn main() {
     // dbg!(&ga);
     //
     let ca = rpc
-        .load_curve_info("HSFKU1bSRKgFEzdV8dZYwXS3U113rg7ui4zxk8Qypump")
+        .load_curve_info("A1cVyb8WAFpgdh82AF7BoHtNkPpqFTRTdfPkSkDwpump")
         .await
         .unwrap();
     dbg!(&ca);
 
     // println!("{}", bc.get_market_cap_sol());
     // println!("{}", bc.get_final_market_cap_sol(1000));
-    // println!("{}", ca.progress());
+    println!("{}", ca.calculate_progress());
 }

@@ -2,6 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use serde::{Deserialize, Serialize};
+use std::fmt::{Display, Formatter};
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize, sqlx::Type)]
 #[sqlx(transparent)]
@@ -28,5 +29,11 @@ impl PartialEq<f32> for Percent {
 impl PartialEq<i64> for Percent {
     fn eq(&self, other: &i64) -> bool {
         self.0 == Percent::from(*other).0
+    }
+}
+
+impl Display for Percent {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        Display::fmt(&self.0, f)
     }
 }

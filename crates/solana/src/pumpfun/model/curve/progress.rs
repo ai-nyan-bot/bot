@@ -3,19 +3,17 @@
 
 use crate::pumpfun::model::{Curve, CurveInfo};
 use base::model::{Amount, Percent};
-use std::ops::{Div, Mul, Sub};
+use std::ops::{Mul, Sub};
 
 pub trait CalculateProgress {
     fn total_supply(&self) -> Amount;
-    fn real_base_reserves(&self) -> Amount;
+    fn virtual_base_reserves(&self) -> Amount;
 
     fn calculate_progress(&self) -> Percent {
-        let reserved_tokens: i64 = 206_900_000 * 1_000_000;
-        let total_supply = self.total_supply().0;
-        let real_base_reserves = self.real_base_reserves().0;
-        let initial_real_base_reserves = total_supply.sub(reserved_tokens);
-
-        Percent::from(100 - real_base_reserves.mul(100).div(initial_real_base_reserves))
+        let base_reserve = self.virtual_base_reserves().0 / 1_000_000;
+        let progress = ((((1_073_000_000) - base_reserve) * 100) as f64) / (793_100_000) as f64;
+        let progress = progress.clamp(0.0, 100.0) as f32;
+        Percent::from(progress)
     }
 }
 
@@ -24,8 +22,8 @@ impl CalculateProgress for Curve {
         self.total_supply.clone()
     }
 
-    fn real_base_reserves(&self) -> Amount {
-        self.real_base_reserves.clone()
+    fn virtual_base_reserves(&self) -> Amount {
+        self.virtual_base_reserves.clone()
     }
 }
 
@@ -34,8 +32,8 @@ impl CalculateProgress for CurveInfo {
         self.total_supply.clone()
     }
 
-    fn real_base_reserves(&self) -> Amount {
-        self.real_base_reserves.clone()
+    fn virtual_base_reserves(&self) -> Amount {
+        self.virtual_base_reserves.clone()
     }
 }
 
@@ -44,7 +42,7 @@ mod tests {
     use crate::pumpfun::model::{CalculateProgress, CurveInfo};
 
     #[test]
-    fn test_1_percent() {
+    fn test_close_to_0_percent() {
         let test_instance = CurveInfo {
             virtual_base_reserves: 1071443444605882i64.into(),
             virtual_quote_reserves: 30043583654i64.into(),
@@ -55,11 +53,26 @@ mod tests {
         };
 
         let result = test_instance.calculate_progress();
-        assert_eq!(result, 1);
+        assert_eq!(result, 0.19626226);
     }
 
     #[test]
-    fn test_71_percent() {
+    fn test_40_percent() {
+        let test_instance = CurveInfo {
+            virtual_base_reserves: 757214460226289i64.into(),
+            virtual_quote_reserves: 42511074286i64.into(),
+            real_base_reserves: 477314460226289i64.into(),
+            real_quote_reserves: 12511074286i64.into(),
+            total_supply: 1000000000000000i64.into(),
+            complete: false,
+        };
+
+        let result = test_instance.calculate_progress();
+        assert_eq!(result, 39.816612);
+    }
+
+    #[test]
+    fn test_70_percent() {
         let test_instance = CurveInfo {
             virtual_base_reserves: 512561011366544i64.into(),
             virtual_quote_reserves: 62802280169i64.into(),
@@ -70,7 +83,7 @@ mod tests {
         };
 
         let result = test_instance.calculate_progress();
-        assert_eq!(result, 71);
+        assert_eq!(result, 70.66435);
     }
 
     #[test]

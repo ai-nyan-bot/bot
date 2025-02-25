@@ -9,7 +9,7 @@ use std::ops::{Div, Mul, Sub};
 mod progress;
 
 pub struct Curve {
-    pub token_pair: TokenPairId,
+    pub id: TokenPairId,
     pub slot: Slot,
     pub virtual_base_reserves: Amount,
     pub virtual_quote_reserves: Amount,
