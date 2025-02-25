@@ -7,16 +7,22 @@ use crate::stream::SlotStream;
 use async_trait::async_trait;
 use common::model::RpcUrl;
 use common::{Signal, SignalKind};
+use futures_util::future::join_all;
 use log::{debug, error, warn};
+use std::collections::BTreeMap;
 use std::sync::Arc;
 use tokio::select;
 use tokio::sync::mpsc::{Receiver, Sender};
-use tokio::sync::Semaphore;
+use tokio::sync::{Mutex, Semaphore};
 use tokio::task::JoinHandle;
 
 #[async_trait]
 pub trait BlockStream: Send {
-    async fn stream<S: SlotStream>(self, slot_stream: S, signal: Signal) -> (Receiver<Block>, JoinHandle<()>);
+    async fn stream<S: SlotStream>(
+        self,
+        slot_stream: S,
+        signal: Signal,
+    ) -> (Receiver<Block>, JoinHandle<()>);
 }
 
 pub struct RpcBlockStreamConfig {
@@ -48,10 +54,15 @@ impl Default for RpcBlockStream {
 
 #[async_trait]
 impl BlockStream for RpcBlockStream {
-    async fn stream<S: SlotStream>(self, slot_stream: S, mut signal: Signal) -> (Receiver<Block>, JoinHandle<()>) {
+    async fn stream<S: SlotStream>(
+        self,
+        slot_stream: S,
+        mut signal: Signal,
+    ) -> (Receiver<Block>, JoinHandle<()>) {
         let rpc = RpcClient::new(self.cfg.url);
 
-        let downloader = DownloadAndSendBlock::new(rpc.clone(), self.tx, self.cfg.concurrency, signal.clone());
+        let downloader =
+            DownloadAndSendBlock::new(rpc.clone(), self.tx, self.cfg.concurrency, signal.clone());
 
         let mut previous_slot = Slot(0);
 
@@ -62,13 +73,13 @@ impl BlockStream for RpcBlockStream {
                 loop {
                     select! {
                         signal = signal.recv() => {
-                            match signal{
-                            SignalKind::Shutdown => {
-                                debug!("{signal}");
-                            }
-                            SignalKind::Terminate(_) => {
-                                warn!("{signal}")
-                            }
+                            match signal {
+                                SignalKind::Shutdown => {
+                                    debug!("{signal}");
+                                }
+                                SignalKind::Terminate(_) => {
+                                    warn!("{signal}")
+                                }
                             }
                             break
                         }
@@ -76,13 +87,15 @@ impl BlockStream for RpcBlockStream {
                             if current > previous_slot {
                                 let mut slots_to_download = vec![];
                                 if previous_slot != 0 {
-                                    for slot in previous_slot.0 + 1 .. current.0 + 1{
+                                    for slot in previous_slot.0 + 1..=current.0 {
                                         slots_to_download.push(Slot(slot));
                                     }
-                                }else{
+                                } else {
                                     slots_to_download.push(current);
                                 }
                                 previous_slot = current;
+                                
+                                debug!("slots to download {slots_to_download:#?}");
                                 downloader.download_and_send_blocks(slots_to_download).await;
                             }
                         }
@@ -109,15 +122,17 @@ impl DownloadAndSendBlock {
             signal,
         }
     }
+}
 
+impl DownloadAndSendBlock {
     pub async fn download_and_send_blocks(&self, slots: Vec<Slot>) {
         let mut handles = Vec::new();
+        let results = Arc::new(Mutex::new(BTreeMap::new()));
 
         for slot in slots {
             let rpc = self.rpc.clone();
-            let tx = self.tx.clone();
             let semaphore = Arc::clone(&self.semaphore);
-
+            let results = Arc::clone(&results);
             let signal = self.signal.clone();
 
             let handle = tokio::spawn(async move {
@@ -126,18 +141,28 @@ impl DownloadAndSendBlock {
 
                 match rpc.block(slot).await {
                     Ok(block) => {
-                        if let Err(_) = tx.send(block).await {
-                            error!("Failed to send block to channel");
-                            signal.terminate("RpcBlockStream failed to send to channel");
-                        }
+                        let mut res = results.lock().await;
+                        res.insert(slot, block);
                     }
                     Err(err) => {
                         error!("Failed to fetch block for slot: {} - {}", slot, err);
+                        signal.terminate("RpcBlockStream failed to fetch block");
                     }
                 }
             });
 
             handles.push(handle);
+        }
+
+        join_all(handles).await;
+
+        let mut res = results.lock().await;
+        while let Some((_slot, block)) = res.pop_first() {
+            if let Err(_) = self.tx.send(block).await {
+                error!("Failed to send block to channel");
+                self.signal
+                    .terminate("RpcBlockStream failed to send to channel");
+            }
         }
     }
 }

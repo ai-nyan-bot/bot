@@ -7,7 +7,7 @@ use std::cmp::Ordering;
 use std::fmt;
 
 #[derive(
-    Debug, Copy, Clone, PartialEq, PartialOrd, Eq, Hash, Deserialize, Serialize, sqlx::Type,
+    Debug, Copy, Clone, PartialEq, PartialOrd, Ord, Eq, Hash, Deserialize, Serialize, sqlx::Type,
 )]
 #[sqlx(transparent)]
 pub struct Slot(pub i64);

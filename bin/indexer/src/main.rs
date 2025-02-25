@@ -13,13 +13,21 @@ mod solana;
 
 pub fn main() {
     tracing_subscriber::registry()
-        .with(EnvFilter::try_from_default_env().unwrap_or_else(|_| format!("{}=debug,web3=trace,repo=trace", env!("CARGO_CRATE_NAME")).into()))
+        .with(
+            EnvFilter::try_from_default_env().unwrap_or_else(|_| {
+                format!("{}=debug,solana=debug", env!("CARGO_CRATE_NAME")).into()
+            }),
+        )
         .with(tracing_subscriber::fmt::layer())
         .init();
 
     let config = Config::load();
 
-    let runtime = Builder::new_multi_thread().worker_threads(4).enable_all().build().unwrap();
+    let runtime = Builder::new_multi_thread()
+        .worker_threads(4)
+        .enable_all()
+        .build()
+        .unwrap();
 
     index_solana(runtime, config)
 }

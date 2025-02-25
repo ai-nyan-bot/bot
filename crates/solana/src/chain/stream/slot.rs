@@ -6,7 +6,7 @@ use crate::rpc::RpcClient;
 use async_trait::async_trait;
 use common::model::RpcUrl;
 use common::{Signal, SignalKind};
-use log::{debug, error, warn};
+use log::{debug, error, trace, warn};
 use std::time::Duration;
 use tokio::select;
 use tokio::sync::mpsc::{channel, Receiver, Sender};
@@ -46,35 +46,33 @@ impl SlotStream for RpcSlotStream {
         (
             self.rx,
             tokio::spawn(async move {
-                let max = Slot::from(0);
+                let mut max = Slot::from(0);
                 loop {
                     select! {
                         signal = signal.recv() => {
                             match signal{
-                            SignalKind::Shutdown => {
-                                debug!("{signal}");
-                            }
-                            SignalKind::Terminate(_) => {
-                                warn!("{signal}")
-                            }
+                                SignalKind::Shutdown => {
+                                    debug!("{signal}");
+                                }
+                                SignalKind::Terminate(_) => {
+                                    warn!("{signal}")
+                                }
                             }
                             break
                         }
                         _ = sleep(Duration::from_millis(400)) => {
                             match rpc.slot().await {
                                 Ok(current) => {
-                                    // if current > max {
-                                    //     max = current;
-                                        debug!("{current}");
-                                        // tx.send_async(current).await.unwrap();
-                                        // tx.send(current).await.unwrap();
-                                        match tx.send_timeout(current, Duration::from_millis(1)).await {
+                                    if current > max {
+                                        max = current;
+                                        trace!("{current}");
+                                        match tx.send_timeout(current, Duration::from_millis(100)).await {
                                             Ok(_) => {}
-                                            Err(err) => {
+                                            Err(_) => {
                                                 warn!("downstream did not pick up message after 100ms")
                                             }
                                         }
-                                    // }
+                                    }
                                 }
                                 Err(err) => {
                                     error!("failed to retrieve slot: {err}")

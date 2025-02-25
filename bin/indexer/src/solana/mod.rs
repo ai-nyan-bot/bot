@@ -21,6 +21,7 @@ use solana::stream::{BlockStream, RpcBlockStream, RpcBlockStreamConfig, RpcSlotS
 use solana::token_info::rpc::RpcTokenInfoLoader;
 use sqlx::Acquire;
 use tokio::signal::unix::SignalKind;
+use tokio::time::Instant;
 use tracing::{debug, info};
 
 pub mod indexer;
@@ -111,6 +112,8 @@ pub(crate) fn index_solana(runtime: Runtime, config: Config) {
                             timestamp: block.timestamp.clone(),
                             trades: vec![],
                         };
+                        
+                        let tx_parsing_start = Instant::now();
 
                         for transaction in block.transactions{
                             if transaction.status == TransactionStatus::Success {
@@ -167,12 +170,18 @@ pub(crate) fn index_solana(runtime: Runtime, config: Config) {
                                 }
                             }
                         }
+                        let tx_parsing_done = Instant::now();
+                        debug!("transaction parsing took {} ms", tx_parsing_done.duration_since(tx_parsing_start).as_millis());
+                        
 
                         let mut tx = pool.begin().await.unwrap();
                         let slot = block.slot.clone();
 
+                        let indexing_start = Instant::now();
                         pumpfun::index_trade(&mut tx, state.clone(), pumpfun_slot_trades).await;
                         jupiter::index_trade(&mut tx, state.clone(), jupiter_slot_trades).await;
+                        let indexing_done = Instant::now();
+                        debug!("indexing took {} ms", indexing_done.duration_since(indexing_start).as_millis());
 
                         indexer_repo.set(&mut tx, slot).await.unwrap();
                         let _ = tx.commit().await.unwrap();
