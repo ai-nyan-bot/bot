@@ -16,6 +16,7 @@ pub(crate) async fn download_blocks(
     rpc_client: RpcClient,
     slots: Vec<Slot>,
     concurrency: usize,
+    signal: Signal,
 ) -> Vec<Block> {
     let semaphore = Arc::new(Semaphore::new(concurrency));
 
@@ -26,6 +27,7 @@ pub(crate) async fn download_blocks(
         let rpc_client = rpc_client.clone();
         let semaphore = semaphore.clone();
         let blocks = blocks.clone();
+        let signal = signal.clone();
 
         let handle = tokio::spawn(async move {
             let _permit = semaphore.acquire().await.unwrap();
@@ -39,7 +41,7 @@ pub(crate) async fn download_blocks(
                 Ok(None) => {}
                 Err(err) => {
                     error!("Failed to fetch block for slot: {} - {}", slot, err);
-                    // signal.terminate("RpcBlockStream failed to fetch block");
+                    signal.terminate("RpcBlockStream failed to fetch block");
                 }
             }
         });
@@ -48,14 +50,6 @@ pub(crate) async fn download_blocks(
     }
 
     join_all(handles).await;
-
-    // let mut res = results.lock().await;
-    // while let Some((_slot, block)) = res.pop_first() {
-    //     if let Err(_) = self.tx.send(block).await {
-    //         error!("Failed to send block to channel");
-    //         // self.signal.terminate("RpcBlockStream failed to send to channel");
-    //     }
-    // }
 
     let mut blocks = blocks.lock().await;
     let mut result = Vec::with_capacity(blocks.len());

@@ -2,22 +2,20 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 mod download;
+mod slot;
 
 use crate::model::{Block, Slot};
 use crate::rpc::RpcClient;
 use crate::stream::block::download::download_blocks;
+use crate::stream::block::slot::SlotsToDownload;
 use crate::stream::SlotStream;
 use async_trait::async_trait;
 use common::model::RpcUrl;
-use common::{Signal, SignalKind};
-use futures_util::future::join_all;
-use log::{debug, error, warn};
-use std::collections::BTreeMap;
-use std::sync::Arc;
-use tokio::select;
+use common::Signal;
+use log::error;
 use tokio::sync::mpsc::{Receiver, Sender};
-use tokio::sync::{Mutex, Semaphore};
 use tokio::task::JoinHandle;
+use tokio::{select, try_join};
 
 #[async_trait]
 pub trait BlockStream: Send {
@@ -39,10 +37,8 @@ pub struct RpcBlockStream<S: SlotStream> {
 
 impl<S: SlotStream> RpcBlockStream<S> {
     pub fn new(cfg: RpcBlockStreamConfig, slot_stream: S, previous_slot: Option<Slot>) -> Self {
-        let (tx, rx) = tokio::sync::mpsc::channel(100);
+        let (tx, rx) = tokio::sync::mpsc::channel(25);
         Self {
-            // rpc_client: RpcClient::new(cfg.url),
-            // concurrency: cfg.concurrency,
             cfg,
             slot_stream,
             tx,
@@ -55,56 +51,51 @@ impl<S: SlotStream> RpcBlockStream<S> {
 #[async_trait]
 impl<S: SlotStream> BlockStream for RpcBlockStream<S> {
     async fn stream(self, mut signal: Signal) -> (Receiver<Block>, JoinHandle<()>) {
-        let rpc_client = RpcClient::new(self.cfg.url);
+        let slots_to_download = SlotsToDownload::new(self.cfg.concurrency, self.previous_slot);
 
-        let mut previous_slot = self.previous_slot.unwrap_or(Slot(0));
+        let mut slot_signal = signal.clone();
+        let updater = slots_to_download.clone();
+        let slot_handle = tokio::spawn(async move {
+            let (mut rx, _) = self.slot_stream.stream(slot_signal.clone()).await;
+            loop {
+                select! {
+                    _ = slot_signal.recv() => { break }
+                    Some(current) = rx.recv() => { updater.update(current).await }
+                }
+            }
+        });
 
-        let (mut rx, _) = self.slot_stream.stream(signal.clone()).await;
+        let slots_to_download = slots_to_download.clone();
+        let block_handle = tokio::spawn(async move {
+            let rpc_client = RpcClient::new(self.cfg.url);
+            let concurrency = self.cfg.concurrency;
+            let mut signal = signal.clone();
+
+            loop {
+                if let Some(_) = signal.recv_maybe().await {
+                    break;
+                }
+
+                let rpc_client = rpc_client.clone();
+
+                let slots_to_download = slots_to_download.next_slots().await;
+                let blocks =
+                    download_blocks(rpc_client, slots_to_download, concurrency, signal.clone())
+                        .await;
+
+                for block in blocks {
+                    if let Err(_) = self.tx.send(block).await {
+                        error!("Failed to send block to channel");
+                        signal.terminate("RpcBlockStream failed to send to channel");
+                    }
+                }
+            }
+        });
+
         (
             self.rx,
             tokio::spawn(async move {
-                loop {
-                    select! {
-                        signal = signal.recv() => {
-                            match signal {
-                                SignalKind::Shutdown => {
-                                    debug!("{signal}");
-                                }
-                                SignalKind::Terminate(_) => {
-                                    warn!("{signal}")
-                                }
-                            }
-                            break
-                        }
-                        Some(current) = rx.recv() => {
-                            if current > previous_slot {
-                                let mut slots_to_download = vec![];
-                                if previous_slot != 0 {
-                                    for slot in previous_slot.0 + 1..=current.0 {
-                                        slots_to_download.push(Slot(slot));
-                                        previous_slot = slot.into();
-                                        if slots_to_download.len() >= 4{
-                                            break
-                                        }
-                                    }
-                                } else {
-                                    slots_to_download.push(current);
-                                    previous_slot = current;
-                                }
-
-                                debug!("slots to download {slots_to_download:#?}");
-                                let blocks = download_blocks(rpc_client.clone(),slots_to_download, self.cfg.concurrency).await;
-
-                                for block in blocks{
-                                        if let Err(_) = self.tx.send(block).await {
-                                            error!("Failed to send block to channel");
-                                            signal.terminate("RpcBlockStream failed to send to channel");
-                                        }
-                                }
-                            }
-                        }
-                    }
-                }
+                let _ = try_join!(slot_handle, block_handle);
             }),
         )
     }

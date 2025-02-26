@@ -7,14 +7,16 @@ use tokio::sync::broadcast::{Receiver, Sender};
 #[derive(Clone, Debug, PartialEq)]
 pub enum SignalKind {
     Shutdown,
-    Terminate(String)
+    Terminate(String),
 }
 
 impl Display for SignalKind {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             SignalKind::Shutdown => f.write_str("shutdown signal"),
-            SignalKind::Terminate(reason) => f.write_fmt(format_args!("termination signal: {reason}"))
+            SignalKind::Terminate(reason) => {
+                f.write_fmt(format_args!("termination signal: {reason}"))
+            }
         }
     }
 }
@@ -50,22 +52,27 @@ impl Signal {
     }
 
     pub fn terminate(&self, reason: impl Into<String>) {
-        self.sender.send(SignalKind::Terminate(reason.into())).unwrap();
+        self.sender
+            .send(SignalKind::Terminate(reason.into()))
+            .unwrap();
     }
 
     pub async fn recv(&mut self) -> SignalKind {
         self.receiver.recv().await.unwrap()
     }
-}
 
+    pub async fn recv_maybe(&mut self) -> Option<SignalKind> {
+        self.receiver.try_recv().ok()
+    }
+}
 
 #[cfg(test)]
 mod tests {
-	use super::*;
-	use tokio::task;
-	use tokio::time::{self, Duration};
+    use super::*;
+    use tokio::task;
+    use tokio::time::{self, Duration};
 
-	#[tokio::test]
+    #[tokio::test]
     async fn test_signal_shutdown() {
         let signal = Signal::new();
         let mut receiver = signal.clone();
@@ -92,7 +99,10 @@ mod tests {
         });
 
         let received = receiver.recv().await;
-        assert_eq!(received, SignalKind::Terminate("For that reason".to_string()));
+        assert_eq!(
+            received,
+            SignalKind::Terminate("For that reason".to_string())
+        );
 
         sender_task.await.unwrap();
     }
