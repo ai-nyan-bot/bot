@@ -19,7 +19,6 @@ use solana::parse::Parser;
 use solana::pumpfun::PumpFunParser;
 use solana::stream::{BlockStream, RpcBlockStream, RpcBlockStreamConfig, RpcSlotStream};
 use solana::token_info::rpc::RpcTokenInfoLoader;
-use sqlx::Acquire;
 use tokio::signal::unix::SignalKind;
 use tokio::time::Instant;
 use tracing::{debug, info};
@@ -29,17 +28,17 @@ mod jupiter;
 mod pumpfun;
 mod state;
 
-pub(crate) fn index_solana(runtime: Runtime, config: Config) {
+pub fn index_solana(runtime: Runtime, config: Config) {
     runtime.block_on(async move {
         let signal = Signal::new();
 
         let pool = setup_pool(&config.postgres).await;
 
-        let mut tx = pool.begin().await.unwrap();
+        // let mut tx = pool.begin().await.unwrap();
         let indexer_repo = IndexerRepo::default();
-        let indexer = indexer_repo.get(&mut tx).await.unwrap();
+        // let indexer = indexer_repo.get(&mut tx).await.unwrap();
 
-        tx.commit().await.unwrap();
+        // tx.commit().await.unwrap();
 
         let token_info_loader = RpcTokenInfoLoader::new(config.rpc.url.resolve());
         let read_token_repo = ReadTokenRepo::new();
@@ -51,16 +50,16 @@ pub(crate) fn index_solana(runtime: Runtime, config: Config) {
         let wallet_repo = AddressRepo::new();
 
         let pumpfun_trade_repo = solana::pumpfun::repo::TradeRepo::new(token_pair_repo.clone(), wallet_repo.clone());
-        let jupiter_trade_repo = solana::jupiter::repo::TradeRepo::new(token_pair_repo.clone(), wallet_repo.clone());
+        // let jupiter_trade_repo = solana::jupiter::repo::TradeRepo::new(token_pair_repo.clone(), wallet_repo.clone());
 
         let state = State(Arc::new(StateInner {
-            pool: pool.clone(),
-            token_repo: token_repo.clone(),
-            token_pair_repo,
-            wallet_repo,
+            // pool: pool.clone(),
+            // token_repo: token_repo.clone(),
+            // token_pair_repo,
+            // wallet_repo,
             pumpfun_trade_repo,
             pumpfun_curve_repo: solana::pumpfun::repo::CurveRepo::new(),
-            jupiter_trade_repo,
+            // jupiter_trade_repo,
         }));
 
         let jupiter_parser = JupiterParser::new();

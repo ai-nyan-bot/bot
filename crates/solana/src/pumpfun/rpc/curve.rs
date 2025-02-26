@@ -40,7 +40,6 @@ impl Rpc {
 
 #[derive(Debug, Clone)]
 struct CurveAccount {
-    pub discriminator: u64,
     pub virtual_base_reserves: u64,
     pub virtual_quote_reserves: u64,
     pub real_base_reserves: u64,
@@ -51,8 +50,8 @@ struct CurveAccount {
 
 impl CurveAccount {
     fn decode(reader: &ByteReader) -> Self {
+        let _discriminator = reader.read_u64().unwrap();
         Self {
-            discriminator: reader.read_u64().unwrap(),
             virtual_base_reserves: reader.read_u64().unwrap(),
             virtual_quote_reserves: reader.read_u64().unwrap(),
             real_base_reserves: reader.read_u64().unwrap(),
@@ -64,9 +63,9 @@ impl CurveAccount {
 }
 
 // FIXME not for curve account
+#[allow(unused)]
 impl CurveAccount {
     pub fn new(
-        discriminator: u64,
         virtual_token_reserves: u64,
         virtual_sol_reserves: u64,
         real_token_reserves: u64,
@@ -75,7 +74,6 @@ impl CurveAccount {
         complete: bool,
     ) -> Self {
         Self {
-            discriminator,
             virtual_base_reserves: virtual_token_reserves,
             virtual_quote_reserves: virtual_sol_reserves,
             real_base_reserves: real_token_reserves,
@@ -212,7 +210,6 @@ mod tests {
 
     fn get_bonding_curve() -> CurveAccount {
         CurveAccount::new(
-            1,     // discriminator
             1000,  // virtual_token_reserves
             1000,  // virtual_sol_reserves
             500,   // real_token_reserves
@@ -224,7 +221,6 @@ mod tests {
 
     fn get_large_bonding_curve() -> CurveAccount {
         CurveAccount::new(
-            1,            // discriminator
             u64::MAX / 2, // virtual_token_reserves
             u64::MAX / 2, // virtual_sol_reserves
             u64::MAX / 4, // real_token_reserves

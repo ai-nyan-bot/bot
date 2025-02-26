@@ -9,7 +9,6 @@ use log::{debug, error, info};
 use mpl_token_metadata::accounts::Metadata;
 use serde::{Deserialize, Serialize};
 use solana_rpc_client::nonblocking::rpc_client::RpcClient;
-use solana_sdk::account::ReadableAccount;
 use solana_sdk::commitment_config::CommitmentConfig;
 use solana_sdk::pubkey::Pubkey;
 use spl_token::solana_program::program_pack::Pack;
@@ -89,7 +88,8 @@ impl LoadTokenInfo for RpcTokenInfoLoader {
 
                 match account.owner {
                     spl_token::ID => {
-                        let Ok(unpacked_mint) = Mint::unpack_from_slice(account.data.as_slice()) else {
+                        let Ok(unpacked_mint) = Mint::unpack_from_slice(account.data.as_slice())
+                        else {
                             error!("unable to unpack mint: {mint}");
                             return None;
                         };
@@ -111,7 +111,11 @@ impl LoadTokenInfo for RpcTokenInfoLoader {
                         })
                     }
                     spl_token_2022::ID => {
-                        let Ok(unpacked_mint) = StateWithExtensions::<spl_token_2022::state::Mint>::unpack(account.data.as_slice()) else {
+                        let Ok(unpacked_mint) =
+                            StateWithExtensions::<spl_token_2022::state::Mint>::unpack(
+                                account.data.as_slice(),
+                            )
+                        else {
                             error!("unable to unpack mint: {mint}");
                             return None;
                         };
@@ -156,10 +160,13 @@ fn sanitize_value(value: &str) -> String {
 
 #[cfg(test)]
 mod tests {
-	use crate::token_info::rpc::sanitize_value;
+    use crate::token_info::rpc::sanitize_value;
 
-	#[test]
+    #[test]
     fn sanitize_value_success() {
-        assert_eq!(sanitize_value(" BOMBO \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"), "BOMBO")
+        assert_eq!(
+            sanitize_value(" BOMBO \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"),
+            "BOMBO"
+        )
     }
 }

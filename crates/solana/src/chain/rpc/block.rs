@@ -44,7 +44,7 @@ impl RpcClient {
                 },
             )
             .await;
-            
+
             match result {
                 Ok(block) => {
                     return Ok(Some(Block {
@@ -135,7 +135,9 @@ mod tests {
         let test_instance = RpcClient(Arc::new(RpcClientInner {
             delegate: Arc::new(rpc_client::RpcClient::new("https://".to_string())),
             get_block_with_config: Arc::new(
-                move |delegate: Arc<rpc_client::RpcClient>, slot: Slot, config: RpcBlockConfig| {
+                move |_delegate: Arc<rpc_client::RpcClient>,
+                      _slot: Slot,
+                      _config: RpcBlockConfig| {
                     Box::pin(async move {
                         Ok(UiConfirmedBlock {
                             previous_blockhash: "".to_string(),
@@ -163,7 +165,9 @@ mod tests {
         let test_instance = RpcClient(Arc::new(RpcClientInner {
             delegate: Arc::new(rpc_client::RpcClient::new("https://".to_string())),
             get_block_with_config: Arc::new(
-                move |delegate: Arc<rpc_client::RpcClient>, slot: Slot, config: RpcBlockConfig| {
+                move |_delegate: Arc<rpc_client::RpcClient>,
+                      slot: Slot,
+                      _config: RpcBlockConfig| {
                     Box::pin(async move {
                         Err(ClientError::from(RpcError::RpcResponseError {
                             code: -32004,
@@ -184,7 +188,9 @@ mod tests {
         let test_instance = RpcClient(Arc::new(RpcClientInner {
             delegate: Arc::new(rpc_client::RpcClient::new("https://".to_string())),
             get_block_with_config: Arc::new(
-                move |delegate: Arc<rpc_client::RpcClient>, slot: Slot, config: RpcBlockConfig| {
+                move |_delegate: Arc<rpc_client::RpcClient>,
+                      slot: Slot,
+                      _config: RpcBlockConfig| {
                     Box::pin(async move {
                         Err(
                             ClientError::from(RpcError::RpcResponseError {
@@ -207,7 +213,9 @@ mod tests {
         let test_instance = RpcClient(Arc::new(RpcClientInner {
             delegate: Arc::new(rpc_client::RpcClient::new("https://".to_string())),
             get_block_with_config: Arc::new(
-                move |delegate: Arc<rpc_client::RpcClient>, slot: Slot, config: RpcBlockConfig| {
+                move |_delegate: Arc<rpc_client::RpcClient>,
+                      slot: Slot,
+                      _config: RpcBlockConfig| {
                     Box::pin(async move {
                         Err(ClientError::from(RpcError::RpcResponseError {
                             code: -32009,

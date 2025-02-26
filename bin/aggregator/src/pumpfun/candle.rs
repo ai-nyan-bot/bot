@@ -3,7 +3,6 @@
 
 use common::model::Partition;
 use solana::pumpfun::repo::CandleRepo;
-use base::repo::ReadTokenPairRepo;
 use sqlx::PgPool;
 use std::sync::Arc;
 use std::time::Duration;
@@ -15,10 +14,10 @@ pub struct RefreshCandles {
 }
 
 impl RefreshCandles {
-    pub fn new(pool: PgPool, read_token_pair_repo: ReadTokenPairRepo) -> Self {
+    pub fn new(pool: PgPool) -> Self {
         Self {
             pool,
-            repo: Arc::new(CandleRepo::new(read_token_pair_repo)),
+            repo: Arc::new(CandleRepo::new()),
         }
     }
 

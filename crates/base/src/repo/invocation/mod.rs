@@ -1,7 +1,6 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::UserId;
 use common::model::Limit;
 pub use create::*;
 
@@ -13,11 +12,6 @@ mod create;
 mod get;
 
 pub struct InvocationQueryAll {
-    pub limit: Limit,
-}
-
-pub struct InvocationQueryUser {
-    pub user: UserId,
     pub limit: Limit,
 }
 

@@ -9,7 +9,11 @@ use base::repo::{AuthCreateCmd, AuthQueryAll, AuthRepo};
 
 const AUTH_REPO: AuthRepo = AuthRepo {};
 
-pub async fn create_auth<'a>(tx: &mut Tx<'a>, id: impl Into<UserId>, token: impl Into<AuthToken>) -> RepoResult<Auth> {
+pub async fn create_auth<'a>(
+    tx: &mut Tx<'a>,
+    id: impl Into<UserId>,
+    token: impl Into<AuthToken>,
+) -> RepoResult<Auth> {
     AUTH_REPO
         .create(
             tx,
@@ -22,9 +26,17 @@ pub async fn create_auth<'a>(tx: &mut Tx<'a>, id: impl Into<UserId>, token: impl
 }
 
 pub async fn count_all<'a>(tx: &mut Tx<'a>) -> Count {
-    AUTH_REPO.count(tx, AuthQueryAll { limit: Limit::max() }).await.unwrap()
+    AUTH_REPO.count(tx).await.unwrap()
 }
 
 pub async fn list_all<'a>(tx: &mut Tx<'a>) -> Box<[Auth]> {
-    AUTH_REPO.list(tx, AuthQueryAll { limit: Limit::max() }).await.unwrap()
+    AUTH_REPO
+        .list(
+            tx,
+            AuthQueryAll {
+                limit: Limit::max(),
+            },
+        )
+        .await
+        .unwrap()
 }

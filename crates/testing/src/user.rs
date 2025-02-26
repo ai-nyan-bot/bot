@@ -36,7 +36,10 @@ pub async fn get_or_create_another_user<'a>(tx: &mut Tx<'a>) -> User {
     }
 }
 
-pub async fn create_telegram_user<'a>(tx: &mut Tx<'a>, telegram_id: impl Into<TelegramId>) -> RepoResult<User> {
+pub async fn create_telegram_user<'a>(
+    tx: &mut Tx<'a>,
+    telegram_id: impl Into<TelegramId>,
+) -> RepoResult<User> {
     USER_REPO
         .create_telegram(
             tx,
@@ -48,9 +51,17 @@ pub async fn create_telegram_user<'a>(tx: &mut Tx<'a>, telegram_id: impl Into<Te
 }
 
 pub async fn count_all<'a>(tx: &mut Tx<'a>) -> Count {
-    USER_REPO.count(tx, UserQueryAll { limit: Limit::max() }).await.unwrap()
+    USER_REPO.count(tx).await.unwrap()
 }
 
 pub async fn list_all<'a>(tx: &mut Tx<'a>) -> Box<[User]> {
-    USER_REPO.list(tx, UserQueryAll { limit: Limit::max() }).await.unwrap()
+    USER_REPO
+        .list(
+            tx,
+            UserQueryAll {
+                limit: Limit::max(),
+            },
+        )
+        .await
+        .unwrap()
 }

@@ -1,8 +1,8 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use std::ops::Neg;
 use crate::model::{Operator, Value};
+use std::ops::Neg;
 
 pub(crate) fn compare(fact: &Value, operator: &Operator, rule: &Value) -> bool {
     match (fact, rule) {
@@ -29,7 +29,6 @@ pub(crate) fn compare(fact: &Value, operator: &Operator, rule: &Value) -> bool {
             Operator::MoreThanEqual => fact >= rule,
             Operator::LessThan => fact < rule,
             Operator::LessThanEqual => fact <= rule,
-            _ => false,
         },
         (Value::Percent(fact), Value::Percent(rule)) => match operator {
             Operator::Equal => fact == rule,
@@ -49,7 +48,6 @@ pub(crate) fn compare(fact: &Value, operator: &Operator, rule: &Value) -> bool {
             Operator::MoreThanEqual => fact >= rule,
             Operator::LessThan => fact < rule,
             Operator::LessThanEqual => fact <= rule,
-            _ => false,
         },
         (Value::Quote(fact), Value::Quote(rule)) => match operator {
             Operator::Equal => fact == rule,
@@ -69,7 +67,6 @@ pub(crate) fn compare(fact: &Value, operator: &Operator, rule: &Value) -> bool {
             Operator::MoreThanEqual => fact >= rule,
             Operator::LessThan => fact < rule,
             Operator::LessThanEqual => fact <= rule,
-            _ => false,
         },
         (Value::String(fact), Value::String(rule)) => match operator {
             Operator::Equal => fact == rule,
@@ -94,7 +91,6 @@ pub(crate) fn compare(fact: &Value, operator: &Operator, rule: &Value) -> bool {
             Operator::MoreThanEqual => fact >= rule,
             Operator::LessThan => fact < rule,
             Operator::LessThanEqual => fact <= rule,
-            _ => false,
         },
         _ => false,
     }
@@ -104,7 +100,8 @@ pub(crate) fn compare(fact: &Value, operator: &Operator, rule: &Value) -> bool {
 mod tests {
     use super::*;
     use crate::model::Operator::{
-        DecreasedByLessThan, DecreasedByLessThanEqual, DecreasedByMoreThan, DecreasedByMoreThanEqual, IncreasedByLessThan, IncreasedByLessThanEqual,
+        DecreasedByLessThan, DecreasedByLessThanEqual, DecreasedByMoreThan,
+        DecreasedByMoreThanEqual, IncreasedByLessThan, IncreasedByLessThanEqual,
         IncreasedByMoreThan, IncreasedByMoreThanEqual,
     };
     use crate::model::Value::{Count, Quote, Usd};
@@ -146,14 +143,30 @@ mod tests {
         assert!(compare(&Percent(3.0), &NotEqual, &Percent(5.0)));
 
         assert!(compare(&Percent(5.0), &IncreasedByMoreThan, &Percent(3.0)));
-        assert!(compare(&Percent(5.0), &IncreasedByMoreThanEqual, &Percent(5.0)));
+        assert!(compare(
+            &Percent(5.0),
+            &IncreasedByMoreThanEqual,
+            &Percent(5.0)
+        ));
         assert!(compare(&Percent(3.0), &IncreasedByLessThan, &Percent(5.0)));
-        assert!(compare(&Percent(3.0), &IncreasedByLessThanEqual, &Percent(3.0)));
+        assert!(compare(
+            &Percent(3.0),
+            &IncreasedByLessThanEqual,
+            &Percent(3.0)
+        ));
 
         assert!(compare(&Percent(-3.0), &DecreasedByMoreThan, &Percent(5.0)));
-        assert!(compare(&Percent(-5.0), &DecreasedByMoreThanEqual, &Percent(5.0)));
+        assert!(compare(
+            &Percent(-5.0),
+            &DecreasedByMoreThanEqual,
+            &Percent(5.0)
+        ));
         assert!(compare(&Percent(-5.0), &DecreasedByLessThan, &Percent(3.0)));
-        assert!(compare(&Percent(-3.0), &DecreasedByLessThanEqual, &Percent(3.0)));
+        assert!(compare(
+            &Percent(-3.0),
+            &DecreasedByLessThanEqual,
+            &Percent(3.0)
+        ));
 
         assert!(compare(&Percent(5.0), &MoreThan, &Percent(3.0)));
         assert!(compare(&Percent(5.0), &MoreThanEqual, &Percent(5.0)));
@@ -172,9 +185,17 @@ mod tests {
         assert!(compare(&Quote(3.0), &IncreasedByLessThanEqual, &Quote(3.0)));
 
         assert!(compare(&Quote(-3.0), &DecreasedByMoreThan, &Quote(5.0)));
-        assert!(compare(&Quote(-5.0), &DecreasedByMoreThanEqual, &Quote(5.0)));
+        assert!(compare(
+            &Quote(-5.0),
+            &DecreasedByMoreThanEqual,
+            &Quote(5.0)
+        ));
         assert!(compare(&Quote(-5.0), &DecreasedByLessThan, &Quote(3.0)));
-        assert!(compare(&Quote(-3.0), &DecreasedByLessThanEqual, &Quote(3.0)));
+        assert!(compare(
+            &Quote(-3.0),
+            &DecreasedByLessThanEqual,
+            &Quote(3.0)
+        ));
 
         assert!(compare(&Quote(5.0), &MoreThan, &Quote(3.0)));
         assert!(compare(&Quote(5.0), &MoreThanEqual, &Quote(5.0)));
@@ -184,9 +205,21 @@ mod tests {
 
     #[test]
     fn test_string_comparisons() {
-        assert!(compare(&Value::String("hello".to_string()), &Equal, &Value::String("hello".to_string())));
-        assert!(!compare(&Value::String("hello".to_string()), &Equal, &Value::String("world".to_string())));
-        assert!(compare(&Value::String("hello".to_string()), &NotEqual, &Value::String("world".to_string())));
+        assert!(compare(
+            &Value::String("hello".to_string()),
+            &Equal,
+            &Value::String("hello".to_string())
+        ));
+        assert!(!compare(
+            &Value::String("hello".to_string()),
+            &Equal,
+            &Value::String("world".to_string())
+        ));
+        assert!(compare(
+            &Value::String("hello".to_string()),
+            &NotEqual,
+            &Value::String("world".to_string())
+        ));
     }
 
     #[test]

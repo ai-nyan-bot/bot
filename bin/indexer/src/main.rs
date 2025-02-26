@@ -1,6 +1,8 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+#![deny(warnings)]
+
 use crate::config::Config;
 use crate::solana::index_solana;
 use tokio::runtime::Builder;

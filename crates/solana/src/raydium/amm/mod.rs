@@ -4,7 +4,6 @@
 // This file includes portions of code from https://github.com/raydium-io/raydium-amm (Apache 2.0 License).
 // Original Apache 2.0 License Copyright (c) raydium.io 2024.
 
-
 use solana_sdk::pubkey::Pubkey;
 
 pub use key::AmmKeys;
@@ -14,6 +13,7 @@ mod status;
 
 // #[repr(C)]
 // #[derive(Copy, Clone, Debug)]
+#[allow(unused)]
 pub struct Amm {
     /// Initialized status.
     pub status: u64,
@@ -90,7 +90,7 @@ pub struct Amm {
 // unsafe impl Pod for Amm {}
 
 impl Amm {
-    pub fn decode(account: &[u8]) -> Result<&Self, ()> {
+    pub fn decode(_account: &[u8]) -> Result<&Self, ()> {
         // if account.len() != size_of::<Self>() {
         //     return Err(AmmError::ExpectedAccount.into());
         // }
@@ -105,6 +105,7 @@ impl Amm {
     }
 }
 
+#[allow(unused)]
 #[derive(Copy, Clone, Debug)]
 pub struct StateData {
     /// delay to take pnl coin
@@ -137,6 +138,7 @@ pub struct StateData {
     pub swap_acc_coin_fee: u64,
 }
 
+#[allow(unused)]
 #[derive(Copy, Clone, Debug)]
 pub struct Fees {
     /// numerator of the min_separate

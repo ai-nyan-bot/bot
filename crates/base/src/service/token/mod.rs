@@ -12,29 +12,30 @@ mod get;
 pub struct TokenService(pub Arc<TokenServiceInner>);
 
 impl Deref for TokenService {
-	type Target = TokenServiceInner;
-	fn deref(&self) -> &Self::Target {
-		self.0.deref()
-	}
+    type Target = TokenServiceInner;
+    fn deref(&self) -> &Self::Target {
+        self.0.deref()
+    }
 }
 
 #[derive(Debug)]
 pub struct TokenServiceInner {
-	pool: PgPool,
-	token_repo: ReadTokenRepo,
-	token_pair_repo: ReadTokenPairRepo,
+    pool: PgPool,
+    token_pair_repo: ReadTokenPairRepo,
 }
 
 impl TokenService {
-	pub fn new(pool: PgPool, token_repo: ReadTokenRepo, token_pair_repo: ReadTokenPairRepo) -> Self {
-		Self(Arc::new(TokenServiceInner { pool, token_repo, token_pair_repo }))
-	}
+    pub fn new(pool: PgPool, token_pair_repo: ReadTokenPairRepo) -> Self {
+        Self(Arc::new(TokenServiceInner {
+            pool,
+            token_pair_repo,
+        }))
+    }
 
-	pub fn testing(pool: PgPool) -> Self {
-		Self(Arc::new(TokenServiceInner {
-			pool,
-			token_repo: ReadTokenRepo::new(),
-			token_pair_repo: ReadTokenPairRepo::new(ReadTokenRepo::new()),
-		}))
-	}
+    pub fn testing(pool: PgPool) -> Self {
+        Self(Arc::new(TokenServiceInner {
+            pool,
+            token_pair_repo: ReadTokenPairRepo::new(ReadTokenRepo::new()),
+        }))
+    }
 }

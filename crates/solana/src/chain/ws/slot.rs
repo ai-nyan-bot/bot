@@ -15,7 +15,7 @@ impl WsClient {
         let client = self.client.clone();
 
         let handle = tokio::spawn(async move {
-            let (mut stream, unsubscribe) = client.slot_subscribe().await.unwrap();
+            let (mut stream, _unsubscribe) = client.slot_subscribe().await.unwrap();
             while let Some(slot_info) = stream.next().await {
                 trace!("received: {:?}", slot_info);
                 let _ = tx.send(slot_info.into()).await;

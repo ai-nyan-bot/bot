@@ -1,17 +1,12 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-mod upsert;
 mod count;
 mod list;
+mod upsert;
 
-use common::model::Limit;
 use std::ops::Deref;
 use std::sync::Arc;
-
-pub struct CurveQuery {
-    pub limit: Limit,
-}
 
 #[derive(Debug, Clone)]
 pub struct CurveRepo(pub Arc<CurveRepoInner>);

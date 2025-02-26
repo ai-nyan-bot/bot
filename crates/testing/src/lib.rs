@@ -1,6 +1,8 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+#![deny(warnings)]
+
 use crate::user::{get_or_create_another_user, get_or_create_test_user};
 use ::base::model::TokenMint;
 use common::repo::Tx;

@@ -1,7 +1,6 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use std::future::Future;
 #[cfg(test)]
 use crate::config::{Config, TelegramConfig};
 #[cfg(test)]
@@ -17,9 +16,11 @@ use axum::response::Response;
 #[cfg(test)]
 use axum::{http, Router};
 #[cfg(test)]
-use base::repo::RuleRepo;
+use base::service::AuthService;
 #[cfg(test)]
 use base::service::{RuleService, UserService};
+#[cfg(test)]
+use common::repo::Tx;
 #[cfg(test)]
 use common::ConfigValue;
 #[cfg(test)]
@@ -27,15 +28,15 @@ use serde::de::DeserializeOwned;
 #[cfg(test)]
 use sqlx::PgPool;
 #[cfg(test)]
+use std::future::Future;
+#[cfg(test)]
 use std::sync::Arc;
 #[cfg(test)]
 use testing::get_test_pool;
 #[cfg(test)]
-use tower::ServiceExt;
-use base::repo::AuthRepo;
-use base::service::AuthService;
-use common::repo::Tx;
 use testing::initialise_database;
+#[cfg(test)]
+use tower::ServiceExt;
 
 #[cfg(test)]
 pub(crate) struct Test {
@@ -47,23 +48,7 @@ pub(crate) struct Test {
 impl Test {
     pub(crate) async fn new_empty_db() -> Self {
         let pool = get_test_pool().await;
-        Self {
-            router: router::setup_v1(AppState(Arc::new(AppStateInner {
-                config: Config {
-                    server: Default::default(),
-                    postgres: Default::default(),
-                    telegram: TelegramConfig {
-                        token: ConfigValue::Value("7212584558:AAFyZo37lw4VPHPIdbynqKtMacHPwF0uMGE".to_string()),
-                    },
-                },
-                service: Service {
-                    auth: AuthService::new(pool.clone(), AuthRepo::new()),
-                    rule: RuleService::new(pool.clone(), RuleRepo::new()),
-                    user: UserService::new(pool.clone()),
-                },
-            }))),
-            pool,
-        }
+        Self::setup(pool)
     }
 
     pub(crate) async fn new() -> Self {
@@ -73,18 +58,24 @@ impl Test {
         initialise_database(&mut tx).await;
         tx.commit().await.unwrap();
 
+        Self::setup(pool)
+    }
+
+    fn setup(pool: PgPool) -> Self {
         Self {
             router: router::setup_v1(AppState(Arc::new(AppStateInner {
                 config: Config {
                     server: Default::default(),
                     postgres: Default::default(),
                     telegram: TelegramConfig {
-                        token: ConfigValue::Value("7212584558:AAFyZo37lw4VPHPIdbynqKtMacHPwF0uMGE".to_string()),
+                        token: ConfigValue::Value(
+                            "7212584558:AAFyZo37lw4VPHPIdbynqKtMacHPwF0uMGE".to_string(),
+                        ),
                     },
                 },
                 service: Service {
-                    auth: AuthService::new(pool.clone(), AuthRepo::new()),
-                    rule: RuleService::new(pool.clone(), RuleRepo::new()),
+                    auth: AuthService::testing(pool.clone()),
+                    rule: RuleService::testing(pool.clone()),
                     user: UserService::new(pool.clone()),
                 },
             }))),
@@ -102,7 +93,11 @@ impl Test {
     }
 
     pub(crate) async fn get_unauthenticated(&self, url: &str) -> Response {
-        let req = axum::http::Request::builder().uri(url).method("GET").body(Body::empty()).unwrap();
+        let req = axum::http::Request::builder()
+            .uri(url)
+            .method("GET")
+            .body(Body::empty())
+            .unwrap();
         self.router.clone().oneshot(req).await.unwrap()
     }
 
@@ -129,7 +124,11 @@ impl Test {
     }
 
     pub(crate) async fn post_no_content_unauthenticated(&self, url: &str) -> Response {
-        let req = axum::http::Request::builder().uri(url).method("POST").body(Body::empty()).unwrap();
+        let req = axum::http::Request::builder()
+            .uri(url)
+            .method("POST")
+            .body(Body::empty())
+            .unwrap();
         self.router.clone().oneshot(req).await.unwrap()
     }
 
@@ -143,7 +142,11 @@ impl Test {
         self.router.clone().oneshot(req).await.unwrap()
     }
 
-    pub(crate) async fn post_json_as_test_user(&self, url: &str, json: impl Into<String>) -> Response {
+    pub(crate) async fn post_json_as_test_user(
+        &self,
+        url: &str,
+        json: impl Into<String>,
+    ) -> Response {
         let req = axum::http::Request::builder()
             .uri(url)
             .method("POST")
@@ -155,7 +158,11 @@ impl Test {
         self.router.clone().oneshot(req).await.unwrap()
     }
 
-    pub(crate) async fn post_unauthenticated_json(&self, url: &str, json: impl Into<String>) -> Response {
+    pub(crate) async fn post_unauthenticated_json(
+        &self,
+        url: &str,
+        json: impl Into<String>,
+    ) -> Response {
         let req = axum::http::Request::builder()
             .uri(url)
             .method("POST")
@@ -163,11 +170,6 @@ impl Test {
             .body(Body::new(json.into()))
             .unwrap();
 
-        self.router.clone().oneshot(req).await.unwrap()
-    }
-
-    pub(crate) async fn patch_no_content_unauthenticated(&self, url: &str) -> Response {
-        let req = axum::http::Request::builder().uri(url).method("PATCH").body(Body::empty()).unwrap();
         self.router.clone().oneshot(req).await.unwrap()
     }
 
@@ -181,7 +183,11 @@ impl Test {
         self.router.clone().oneshot(req).await.unwrap()
     }
 
-    pub(crate) async fn patch_json_as_test_user(&self, url: &str, json: impl Into<String>) -> Response {
+    pub(crate) async fn patch_json_as_test_user(
+        &self,
+        url: &str,
+        json: impl Into<String>,
+    ) -> Response {
         let req = axum::http::Request::builder()
             .uri(url)
             .method("PATCH")
@@ -193,7 +199,11 @@ impl Test {
         self.router.clone().oneshot(req).await.unwrap()
     }
 
-    pub(crate) async fn patch_unauthenticated_json(&self, url: &str, json: impl Into<String>) -> Response {
+    pub(crate) async fn patch_unauthenticated_json(
+        &self,
+        url: &str,
+        json: impl Into<String>,
+    ) -> Response {
         let req = axum::http::Request::builder()
             .uri(url)
             .method("PATCH")
@@ -206,7 +216,9 @@ impl Test {
 }
 
 #[cfg(test)]
-pub(crate) async fn extract<T>(response: http::Response<Body>) -> Result<T, Box<dyn std::error::Error>>
+pub(crate) async fn extract<T>(
+    response: http::Response<Body>,
+) -> Result<T, Box<dyn std::error::Error>>
 where
     T: DeserializeOwned,
 {

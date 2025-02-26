@@ -1,3 +1,5 @@
+#![deny(warnings)]
+
 use crate::model::{Decimals, TokenMint, TokenName, TokenSymbol};
 use async_trait::async_trait;
 

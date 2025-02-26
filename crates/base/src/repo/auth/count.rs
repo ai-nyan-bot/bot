@@ -4,12 +4,11 @@
 use common::model::Count;
 use sqlx::Row;
 
-use crate::repo::auth::AuthQueryAll;
 use crate::repo::AuthRepo;
 use common::repo::{RepoResult, Tx};
 
 impl AuthRepo {
-    pub async fn count<'a>(&self, tx: &mut Tx<'a>, query: AuthQueryAll) -> RepoResult<Count> {
+    pub async fn count<'a>(&self, tx: &mut Tx<'a>) -> RepoResult<Count> {
         Ok(sqlx::query("select count(*) from nyanbot.auth")
             .fetch_one(&mut **tx)
             .await?

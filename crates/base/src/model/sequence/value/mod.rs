@@ -5,7 +5,7 @@ use crate::model::{PriceAvgQuote, Trades};
 use ::serde::{Deserialize, Serialize};
 pub(crate) use compare::*;
 pub(crate) use serde::*;
-use std::fmt::{Display, Formatter, Write};
+use std::fmt::{Display, Formatter};
 
 mod compare;
 mod serde;

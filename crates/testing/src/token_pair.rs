@@ -2,9 +2,9 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use base::model::{TokenMint, TokenPair};
-use base::repo::{ReadTokenPairRepo, ReadTokenRepo, TokenPairQuery, TokenPairRepo, TokenRepo};
+use base::repo::{ReadTokenPairRepo, ReadTokenRepo, TokenPairRepo, TokenRepo};
 use base::test::SuccessfulTokenInfoLoader;
-use common::model::{Count, Limit};
+use common::model::Count;
 use common::repo::Tx;
 
 pub async fn get_or_create_token_pair<'a>(
@@ -25,12 +25,5 @@ pub async fn get_or_create_token_pair<'a>(
 
 pub async fn count_all<'a>(tx: &mut Tx<'a>) -> Count {
     let repo = ReadTokenPairRepo::new(ReadTokenRepo::new());
-    repo.count(
-        tx,
-        TokenPairQuery {
-            limit: Limit::max(),
-        },
-    )
-    .await
-    .unwrap()
+    repo.count(tx).await.unwrap()
 }

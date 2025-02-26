@@ -25,10 +25,10 @@ impl Pumpfun {
     /// Returns the transaction signature if successful, or a ClientError if the operation fails
     pub async fn sell(
         &self,
-        keypair: KeyPair,
-        mint: TokenMint,
-        amount: Option<u64>,
-        slippage_basis_points: Option<u64>,
+        _keypair: KeyPair,
+        _mint: TokenMint,
+        _amount: Option<u64>,
+        _slippage_basis_points: Option<u64>,
         // priority_fee: Option<PriorityFee>,
         // ) -> Result<Signature, error::ClientError> {
     ) -> pumpfun::PumpfunResult<Signature> {

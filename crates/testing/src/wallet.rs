@@ -24,9 +24,17 @@ pub async fn create_wallet<'a>(tx: &mut Tx<'a>, user_id: impl Into<UserId>) -> R
 }
 
 pub async fn count_all<'a>(tx: &mut Tx<'a>) -> Count {
-    WALLET_REPO.count(tx, WalletQueryAll { limit: Limit::max() }).await.unwrap()
+    WALLET_REPO.count(tx).await.unwrap()
 }
 
 pub async fn list_all<'a>(tx: &mut Tx<'a>) -> Box<[Wallet]> {
-    WALLET_REPO.list(tx, WalletQueryAll { limit: Limit::max() }).await.unwrap()
+    WALLET_REPO
+        .list(
+            tx,
+            WalletQueryAll {
+                limit: Limit::max(),
+            },
+        )
+        .await
+        .unwrap()
 }

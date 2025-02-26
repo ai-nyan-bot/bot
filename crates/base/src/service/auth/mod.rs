@@ -28,4 +28,11 @@ impl AuthService {
     pub fn new(pool: PgPool, auth_repo: AuthRepo) -> Self {
         Self(Arc::new(AuthServiceInner { pool, auth_repo }))
     }
+
+    pub fn testing(pool: PgPool) -> Self {
+        Self(Arc::new(AuthServiceInner {
+            pool,
+            auth_repo: AuthRepo::new(),
+        }))
+    }
 }

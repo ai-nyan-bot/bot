@@ -8,24 +8,21 @@ mod slot;
 
 use crate::ws::error::WsClientError;
 use common::model::WsUrl;
-use futures_util::future::BoxFuture;
 use solana_client::nonblocking::pubsub_client::PubsubClient;
 use std::sync::Arc;
-use tokio::sync::oneshot::Sender;
-use tokio::task::JoinHandle;
 
 pub struct WsClient {
     client: Arc<PubsubClient>,
     // FIXME keep list of subscriptions
 }
 
-type UnsubscribeFn = Box<dyn FnOnce() -> BoxFuture<'static, ()> + Send>;
+// type UnsubscribeFn = Box<dyn FnOnce() -> BoxFuture<'static, ()> + Send>;
 
-struct Subscription {
-    handle: JoinHandle<()>,
-    exit_tx: Sender<()>,
-    unsubscribe_fn: UnsubscribeFn,
-}
+// struct Subscription {
+//     handle: JoinHandle<()>,
+//     exit_tx: Sender<()>,
+// unsubscribe_fn: UnsubscribeFn,
+// }
 
 // FIXME impl drop for subscription
 

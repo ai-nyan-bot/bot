@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use std::fmt::{Display, Formatter, Write};
+use std::fmt::{Display, Formatter};
 use tokio::sync::broadcast::{Receiver, Sender};
 
 #[derive(Clone, Debug, PartialEq)]

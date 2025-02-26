@@ -4,8 +4,8 @@
 // This file includes portions of code from https://github.com/raydium-io/raydium-amm (Apache 2.0 License).
 // Original Apache 2.0 License Copyright (c) raydium.io 2024.
 
-
 #[repr(u64)]
+#[allow(unused)]
 pub enum AmmStatus {
     Uninitialized = 0u64,
     Initialized = 1u64,
@@ -21,6 +21,7 @@ pub enum AmmStatus {
     WaitingTrade = 7u64,
 }
 
+#[allow(unused)]
 impl AmmStatus {
     pub fn from_u64(status: u64) -> Self {
         match status {

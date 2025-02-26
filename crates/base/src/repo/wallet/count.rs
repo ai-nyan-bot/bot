@@ -5,11 +5,11 @@ use sqlx::Row;
 
 use common::model::Count;
 
-use crate::repo::wallet::{WalletQueryAll, WalletRepo};
+use crate::repo::wallet::WalletRepo;
 use common::repo::{RepoResult, Tx};
 
 impl WalletRepo {
-    pub async fn count<'a>(&self, tx: &mut Tx<'a>, query: WalletQueryAll) -> RepoResult<Count> {
+    pub async fn count<'a>(&self, tx: &mut Tx<'a>) -> RepoResult<Count> {
         Ok(sqlx::query("select count(*) from nyanbot.wallet;")
             .fetch_one(&mut **tx)
             .await?

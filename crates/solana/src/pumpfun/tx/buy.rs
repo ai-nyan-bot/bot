@@ -9,12 +9,6 @@ use crate::pumpfun;
 use crate::pumpfun::Pumpfun;
 use base::model::KeyPair;
 use base::model::TokenMint;
-use solana_rpc_client::nonblocking::rpc_client::RpcClient;
-use solana_sdk::pubkey::Pubkey;
-use solana_sdk::signature::{Keypair, Signer};
-use solana_sdk::transaction::Transaction;
-use spl_associated_token_account::{get_associated_token_address, instruction};
-use std::str::FromStr;
 
 impl Pumpfun {
     /// Buys tokens from a bonding curve by spending SOL
@@ -31,10 +25,10 @@ impl Pumpfun {
     /// Returns the transaction signature if successful, or a ClientError if the operation fails
     pub async fn buy(
         &self,
-        payer: KeyPair,
-        mint: TokenMint,
-        amount_sol: u64,
-        slippage_basis_points: Option<u64>,
+        _payer: KeyPair,
+        _mint: TokenMint,
+        _amount_sol: u64,
+        _slippage_basis_points: Option<u64>,
         // priority_fee: Option<PriorityFee>,
     ) -> pumpfun::PumpfunResult<Signature> {
         // let client = Arc::new(RpcClient::new("https://api.mainnet-beta.solana.com".to_string()));
@@ -173,49 +167,49 @@ impl Pumpfun {
     }
 }
 
-async fn create_ata_if_not_exists(
-    client: &RpcClient,
-    payer: &Keypair,
-    wallet_address: &Pubkey,
-    token_mint: &Pubkey,
-) -> Pubkey {
-    let token_program_id = Pubkey::from_str("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA").unwrap();
-
-    // Get the associated token address for the wallet and mint
-    let ata = get_associated_token_address(wallet_address, token_mint);
-
-    // Check if the associated token account already exists
-    if client.get_account(&ata).await.is_ok() {
-        println!("Associated Token Account already exists: {}", ata);
-        return ata;
-    }
-
-    // Create instruction to initialize the ATA
-    let instruction = instruction::create_associated_token_account(
-        &payer.pubkey(),
-        wallet_address,
-        token_mint,
-        &token_program_id,
-    );
-
-    // Create and send the transaction
-    let recent_blockhash = client.get_latest_blockhash().await.unwrap();
-    println!("{recent_blockhash}");
-
-    let transaction = Transaction::new_signed_with_payer(
-        &[instruction],
-        Some(&payer.pubkey()),
-        &[payer],
-        recent_blockhash,
-    );
-
-    println!("before sending and confirming");
-
-    client
-        .send_and_confirm_transaction(&transaction)
-        .await
-        .expect("Failed to create associated token account");
-
-    println!("Created Associated Token Account: {}", ata);
-    ata
-}
+// async fn create_ata_if_not_exists(
+//     client: &RpcClient,
+//     payer: &Keypair,
+//     wallet_address: &Pubkey,
+//     token_mint: &Pubkey,
+// ) -> Pubkey {
+//     let token_program_id = Pubkey::from_str("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA").unwrap();
+//
+//     // Get the associated token address for the wallet and mint
+//     let ata = get_associated_token_address(wallet_address, token_mint);
+//
+//     // Check if the associated token account already exists
+//     if client.get_account(&ata).await.is_ok() {
+//         println!("Associated Token Account already exists: {}", ata);
+//         return ata;
+//     }
+//
+//     // Create instruction to initialize the ATA
+//     let instruction = instruction::create_associated_token_account(
+//         &payer.pubkey(),
+//         wallet_address,
+//         token_mint,
+//         &token_program_id,
+//     );
+//
+//     // Create and send the transaction
+//     let recent_blockhash = client.get_latest_blockhash().await.unwrap();
+//     println!("{recent_blockhash}");
+//
+//     let transaction = Transaction::new_signed_with_payer(
+//         &[instruction],
+//         Some(&payer.pubkey()),
+//         &[payer],
+//         recent_blockhash,
+//     );
+//
+//     println!("before sending and confirming");
+//
+//     client
+//         .send_and_confirm_transaction(&transaction)
+//         .await
+//         .expect("Failed to create associated token account");
+//
+//     println!("Created Associated Token Account: {}", ata);
+//     ata
+// }

@@ -22,10 +22,6 @@ impl HttpError {
         Self::BadRequest(message.into())
     }
 
-    pub fn conflict(message: impl Into<String>) -> Self {
-        Self::Conflict(message.into())
-    }
-
     pub fn internal_server(message: impl Into<String>) -> Self {
         Self::InternalServer(message.into())
     }
@@ -43,7 +39,9 @@ impl From<ServiceError> for HttpError {
     fn from(value: ServiceError) -> Self {
         match value {
             ServiceError::Conflict(message) => HttpError::Conflict(message),
-            ServiceError::Internal(_) => HttpError::InternalServer("Internal server error".to_string()),
+            ServiceError::Internal(_) => {
+                HttpError::InternalServer("Internal server error".to_string())
+            }
             ServiceError::NotFound(message) => HttpError::NotFound(message),
         }
     }

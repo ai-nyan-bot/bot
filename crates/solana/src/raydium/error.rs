@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use std::fmt::{Display, Formatter, Write};
+use std::fmt::{Display, Formatter};
 
 use base::model::PublicKey;
 
@@ -23,7 +23,9 @@ impl Display for Error {
             Error::HttpError { message } => f.write_fmt(format_args!("{message}")),
             Error::MarketNotFoundError => f.write_str("Market not found"),
             Error::MathError => f.write_str("Math error"),
-            Error::PoolKeysNotFoundError { market } => f.write_fmt(format_args!("Failed to get pool keys for {}", market)),
+            Error::PoolKeysNotFoundError { market } => {
+                f.write_fmt(format_args!("Failed to get pool keys for {}", market))
+            }
         }
     }
 }
@@ -32,6 +34,8 @@ impl std::error::Error for Error {}
 
 impl From<HttpError> for Error {
     fn from(value: HttpError) -> Self {
-        Self::HttpError { message: value.to_string() }
+        Self::HttpError {
+            message: value.to_string(),
+        }
     }
 }

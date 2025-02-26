@@ -5,12 +5,11 @@ use sqlx::Row;
 
 use common::model::Count;
 
-use crate::repo::user::UserQueryAll;
 use crate::repo::UserRepo;
 use common::repo::{RepoResult, Tx};
 
 impl UserRepo {
-    pub async fn count<'a>(&self, tx: &mut Tx<'a>, query: UserQueryAll) -> RepoResult<Count> {
+    pub async fn count<'a>(&self, tx: &mut Tx<'a>) -> RepoResult<Count> {
         Ok(sqlx::query("select count(*) from nyanbot.user;")
             .fetch_one(&mut **tx)
             .await?

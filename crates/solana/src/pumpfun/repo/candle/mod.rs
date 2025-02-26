@@ -5,8 +5,6 @@ use common::model::Limit;
 use std::ops::Deref;
 use std::sync::Arc;
 
-use base::repo::ReadTokenPairRepo;
-
 mod calculate;
 mod count;
 
@@ -25,12 +23,10 @@ impl Deref for CandleRepo {
 }
 
 #[derive(Debug)]
-pub struct CandlePairRepoInner {
-    token_pair_repo: ReadTokenPairRepo,
-}
+pub struct CandlePairRepoInner {}
 
 impl CandleRepo {
-    pub fn new(token_pair_repo: ReadTokenPairRepo) -> Self {
-        Self(Arc::new(CandlePairRepoInner { token_pair_repo }))
+    pub fn new() -> Self {
+        Self(Arc::new(CandlePairRepoInner {}))
     }
 }

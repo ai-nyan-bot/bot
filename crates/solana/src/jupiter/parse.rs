@@ -106,11 +106,7 @@ mod tests {
             let test_instance = JupiterParser::new();
             let tx = transaction("4pp3wY3KcAvzV7sL9y1ENtHgV4A43t2tmAzwxuxHRbJAXxbq7CGjjmhtUpd35y76zfKqp5N2mfR9aLHFRC9AZjg2");
 
-            let Instruction::Trade { swaps, signer } =
-                test_instance.parse(&tx).unwrap().pop().unwrap()
-            else {
-                unreachable!()
-            };
+            let Instruction::Trade { swaps, signer } = test_instance.parse(&tx).unwrap().pop().unwrap();
 
             assert_eq!(signer, "ACHPeLHfDUcXQC5pa4NTB2R9TDQtAnwgfszhX2udq7S2");
 
@@ -134,11 +130,7 @@ mod tests {
             let test_instance = JupiterParser::new();
             let tx = transaction("3Qd7xWYqpuUbYNGrfSLgaWSsmp7QF9un8qz4whJt87wmPfkxZDo8YhrqHpGBdQZZAqnWAVEq5DnS8B3MbBzuSVX1");
 
-            let Instruction::Trade { swaps, signer } =
-                test_instance.parse(&tx).unwrap().pop().unwrap()
-            else {
-                unreachable!()
-            };
+            let Instruction::Trade { swaps, signer } = test_instance.parse(&tx).unwrap().pop().unwrap();
             assert_eq!(signer, "5cTNAQEaDgEsR7mseeDtay7tJqcQoDMm3LMS6Rkj9Cm3");
             assert_eq!(swaps.len(), 4);
         }

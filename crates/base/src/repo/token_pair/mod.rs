@@ -13,10 +13,10 @@ mod list_or_populate;
 mod shared;
 
 use crate::model::{TokenId, TokenPair, TokenPairId, TokenPairMint};
+use crate::repo::cache::Cache;
 use crate::repo::{ReadTokenRepo, TokenRepo};
 use crate::LoadTokenInfo;
 use common::model::Limit;
-use crate::repo::cache::Cache;
 
 pub struct TokenPairQuery {
     pub limit: Limit,
@@ -25,7 +25,6 @@ pub struct TokenPairQuery {
 #[derive(Debug, Clone)]
 pub struct CachedTokenPair {
     pub id: TokenPairId,
-    pub mint: TokenPairMint,
     pub base_id: TokenId,
     pub quote_id: TokenId,
 }
@@ -93,7 +92,6 @@ impl ReadTokenPairRepo {
                     (pair.base.mint.clone(), pair.quote.mint.clone()),
                     CachedTokenPair {
                         id: pair.id,
-                        mint: (pair.base.mint.clone(), pair.quote.mint.clone()),
                         base_id: pair.base.id,
                         quote_id: pair.quote.id,
                     },

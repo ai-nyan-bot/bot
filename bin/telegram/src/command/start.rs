@@ -45,10 +45,16 @@ pub(crate) async fn start(bot: Bot, msg: Message, state: AppState) -> HandlerRes
         if !user.is_bot {
             // println!("User {user:#?} started");
             // println!("{:#?}", state.config);
-            let (user, wallet, created) = state.user_service().get_or_create_telegram_user(user.id.0).await.unwrap();
+            let (_user, _wallet, _created) = state
+                .user_service()
+                .get_or_create_telegram_user(user.id.0)
+                .await
+                .unwrap();
         }
     }
 
-    bot.send_message(msg.chat.id, "Nyanbot").reply_markup(options).await?;
+    bot.send_message(msg.chat.id, "Nyanbot")
+        .reply_markup(options)
+        .await?;
     Ok(())
 }

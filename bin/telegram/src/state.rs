@@ -69,7 +69,7 @@ impl AppState {
             service: Service {
                 notification: NotificationService::new(pool.clone(), NotificationRepo::new()),
                 rule: RuleService::new(pool.clone(), RuleRepo::new()),
-                token: TokenService::new(pool.clone(), token_repo.clone(), token_pair_repo.clone()),
+                token: TokenService::new(pool.clone(), token_pair_repo.clone()),
                 user: UserService::new(pool),
             },
         }))

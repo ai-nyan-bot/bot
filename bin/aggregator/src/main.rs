@@ -1,10 +1,11 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+#![deny(warnings)]
+
 use crate::config::Config;
 use crate::pumpfun::{RefreshCandles, RefreshSummary};
 use common::repo::pool::setup_pool;
-use base::repo::{ReadTokenPairRepo, ReadTokenRepo};
 use tokio::runtime::Builder;
 use tokio::try_join;
 use tracing::error;
@@ -24,14 +25,16 @@ fn main() {
 
     let config = Config::load();
 
-    let runtime = Builder::new_multi_thread().worker_threads(4).enable_all().build().unwrap();
+    let runtime = Builder::new_multi_thread()
+        .worker_threads(4)
+        .enable_all()
+        .build()
+        .unwrap();
 
     runtime.block_on(async {
         let pg_pool = setup_pool(&config.postgres).await;
 
-        let token_pair_repo = ReadTokenPairRepo::new(ReadTokenRepo::new());
-
-        let refresh_candles = RefreshCandles::new(pg_pool.clone(), token_pair_repo.clone());
+        let refresh_candles = RefreshCandles::new(pg_pool.clone());
         let refresh_summary = RefreshSummary::new(pg_pool.clone());
 
         let _ = try_join!(

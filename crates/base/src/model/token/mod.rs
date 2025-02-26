@@ -8,7 +8,7 @@ pub use mint::{determine_mints, TokenMint, TokenPairMint};
 pub use name::TokenName;
 pub use percent::Percent;
 pub use price::*;
-use std::fmt::{Display, Formatter, Write};
+use std::fmt::{Display, Formatter};
 pub use symbol::TokenSymbol;
 pub use trades::*;
 pub use uri::TokenUri;

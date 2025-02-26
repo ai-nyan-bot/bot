@@ -4,13 +4,13 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
-use crate::repo::{ReadTokenRepo, TokenQuery};
+use crate::repo::ReadTokenRepo;
 use common::model::Count;
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 
 impl ReadTokenRepo {
-    pub async fn count<'a>(&self, tx: &mut Tx<'a>, query: TokenQuery) -> RepoResult<Count> {
+    pub async fn count<'a>(&self, tx: &mut Tx<'a>) -> RepoResult<Count> {
         Ok(sqlx::query("select count(*) from solana.token;")
             .fetch_one(&mut **tx)
             .await?

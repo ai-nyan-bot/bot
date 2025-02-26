@@ -28,7 +28,7 @@ pub(crate) async fn rule_matched(
         let rule = state.rule_service().get_by_id(rule_id).await?;
         let rule_name = rule.name;
 
-        let x = state
+        let _x = state
             .bot
             .send_message(
                 Recipient::Id(ChatId(telegram_id.0.parse::<i64>().unwrap())),

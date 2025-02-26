@@ -2,9 +2,10 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use serde::Deserialize;
-use std::fmt::{Display, Formatter, Write};
+use std::fmt::{Display, Formatter};
 use tokio::fs;
 
+#[allow(unused)]
 pub enum Language {
     De,
     En,
@@ -23,18 +24,19 @@ impl Display for Language {
 #[serde(rename_all = "snake_case")]
 pub struct I18N {
     pub button_text_balance: String,
-    pub button_text_receive: String,
-    pub button_text_send: String,
-    pub button_text_wallet: String,
+    // pub button_text_receive: String,
+    // pub button_text_send: String,
+    // pub button_text_wallet: String,
 
-    pub start: String,
-    pub help: String,
+    // pub start: String,
+    // pub help: String,
 }
 
 impl I18N {
     pub async fn load(language: Language) -> Self {
         // FIXME wrap in once
-        let content = match fs::read_to_string(format!("/app/telegram/i18n/{language}.json")).await {
+        let content = match fs::read_to_string(format!("/app/telegram/i18n/{language}.json")).await
+        {
             Ok(content) => content,
             Err(_) => fs::read_to_string(format!(
                 "{}/i18n/{language}.json",

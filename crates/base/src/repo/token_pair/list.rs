@@ -29,7 +29,6 @@ impl ReadTokenPairRepo {
                     (pair.base.mint.clone(), pair.quote.mint.clone()),
                     CachedTokenPair {
                         id: pair.id,
-                        mint: (pair.base.mint.clone(), pair.quote.mint.clone()),
                         base_id: pair.base.id,
                         quote_id: pair.quote.id,
                     },
@@ -63,7 +62,6 @@ impl ReadTokenPairRepo {
                     (pair.base.mint.clone(), pair.quote.mint.clone()),
                     CachedTokenPair {
                         id: pair.id,
-                        mint: (pair.base.mint.clone(), pair.quote.mint.clone()),
                         base_id: pair.base.id,
                         quote_id: pair.quote.id,
                     },

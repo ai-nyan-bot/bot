@@ -12,9 +12,9 @@ use solana_sdk::compute_budget::ComputeBudgetInstruction;
 use solana_sdk::hash::Hash;
 use solana_sdk::instruction::Instruction;
 use solana_sdk::message::{Message, VersionedMessage};
+use solana_sdk::pubkey::Pubkey;
 use solana_sdk::signature::Signature;
 use solana_sdk::transaction::VersionedTransaction;
-use solana_sdk::{pubkey, pubkey::Pubkey};
 
 use crate::raydium;
 use crate::raydium::Error::MathError;
@@ -33,12 +33,12 @@ pub struct SwapInstructionsBuilder {
     pub setup_instructions: Vec<Instruction>,
     pub swap_instruction: Option<Instruction>,
     pub cleanup_instruction: Option<Instruction>,
-    pub address_lookup_table_addresses: Vec<Pubkey>,
+    // pub address_lookup_table_addresses: Vec<Pubkey>,
 }
 
 pub struct UserAssociatedTokenAccounts {
-    pub input_ata: Pubkey,
-    pub output_ata: Pubkey,
+    // pub input_ata: Pubkey,
+    // pub output_ata: Pubkey,
 }
 
 impl SwapInstructionsBuilder {
@@ -125,8 +125,8 @@ impl SwapInstructionsBuilder {
         }
 
         Ok(UserAssociatedTokenAccounts {
-            input_ata: user_input_ata,
-            output_ata: user_output_ata,
+            // input_ata: user_input_ata,
+            // output_ata: user_output_ata,
         })
     }
 
@@ -134,7 +134,6 @@ impl SwapInstructionsBuilder {
         &mut self,
         priority_fee_config: Option<PriorityFeeConfig>,
         compute_units: Option<u32>,
-        funder: Pubkey,
     ) -> raydium::Result<()> {
         let compute_units = compute_units.unwrap_or(DEFAULT_INSTRUCTION_COMPUTE_UNIT);
         debug!("Prioritization fee config: {priority_fee_config:#?}");
@@ -218,7 +217,7 @@ impl SwapInstructionsBuilder {
             setup_instructions,
             swap_instruction,
             cleanup_instruction,
-            address_lookup_table_addresses: _,
+            // address_lookup_table_addresses: _,
         } = self;
 
         final_instructions.extend(compute_budget_instructions);
@@ -261,16 +260,16 @@ fn calculate_cu_price(priority_fee: u64, compute_units: u32) -> u64 {
     u64::try_from(cu_price).unwrap_or(u64::MAX)
 }
 
-const JITO_TIP_ACCOUNTS: [Pubkey; 8] = [
-    pubkey!("96gYZGLnJYVFmbjzopPSU6QiEV5fGqZNyN9nmNhvrZU5"),
-    pubkey!("HFqU5x63VTqvQss8hp11i4wVV8bD44PvwucfZ2bU7gRe"),
-    pubkey!("Cw8CFyM9FkoMi7K7Crf6HNQqf4uEMzpKw6QNghXLvLkY"),
-    pubkey!("ADaUMid9yfUytqMBgopwjb2DTLSokTSzL1zt6iGPaS49"),
-    pubkey!("DfXygSm4jCyNCybVYYK6DwvWqjKee8pbDmJGcLWNDXjh"),
-    pubkey!("ADuUkR4vqLUMWXxW9gh6D6L8pMSawimctcNZ5pGwDcEt"),
-    pubkey!("DttWaMuVvTiduZRnguLF7jNxTgiMBZ1hyAumKUiL2KRL"),
-    pubkey!("3AVi9Tg9Uo68tJfuvoKvqKNWKkC5wPdSSdeBnizKZ6jT"),
-];
+// const JITO_TIP_ACCOUNTS: [Pubkey; 8] = [
+//     pubkey!("96gYZGLnJYVFmbjzopPSU6QiEV5fGqZNyN9nmNhvrZU5"),
+//     pubkey!("HFqU5x63VTqvQss8hp11i4wVV8bD44PvwucfZ2bU7gRe"),
+//     pubkey!("Cw8CFyM9FkoMi7K7Crf6HNQqf4uEMzpKw6QNghXLvLkY"),
+//     pubkey!("ADaUMid9yfUytqMBgopwjb2DTLSokTSzL1zt6iGPaS49"),
+//     pubkey!("DfXygSm4jCyNCybVYYK6DwvWqjKee8pbDmJGcLWNDXjh"),
+//     pubkey!("ADuUkR4vqLUMWXxW9gh6D6L8pMSawimctcNZ5pGwDcEt"),
+//     pubkey!("DttWaMuVvTiduZRnguLF7jNxTgiMBZ1hyAumKUiL2KRL"),
+//     pubkey!("3AVi9Tg9Uo68tJfuvoKvqKNWKkC5wPdSSdeBnizKZ6jT"),
+// ];
 
 // fn build_jito_tip_ix(from: &Pubkey, tip: u64) -> Instruction {
 //     let random_recipient =
