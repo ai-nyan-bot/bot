@@ -6,7 +6,7 @@
 
 use crate::model::{Decimals, Token, TokenId, TokenMint, TokenName, TokenSymbol};
 use crate::repo::TokenRepo;
-use crate::LoadTokenInfo;
+use crate::{load_all, LoadTokenInfo};
 use common::repo::error::RepoError;
 use common::repo::{RepoResult, Tx};
 use log::error;
@@ -27,17 +27,15 @@ impl<L: LoadTokenInfo> TokenRepo<L> {
         let mut symbols = Vec::with_capacity(token_mints.len());
         let mut decimals = Vec::with_capacity(token_mints.len());
 
-        for mint in token_mints {
-            if !mints.contains(mint) {
-                if let Some(info) = self.info_loader.load(mint.clone()).await {
-                    mints.push(info.mint);
-                    names.push(info.name);
-                    symbols.push(info.symbol);
-                    decimals.push(info.decimals);
-                } else {
-                    error!("unable to load token info for {mint}");
-                    return Err(RepoError::NotFound);
-                }
+        for info in load_all(&self.info_loader, token_mints).await {
+            if let Some(info) = info {
+                mints.push(info.mint);
+                names.push(info.name);
+                symbols.push(info.symbol);
+                decimals.push(info.decimals);
+            } else {
+                error!("unable to load token info");
+                return Err(RepoError::NotFound);
             }
         }
 
