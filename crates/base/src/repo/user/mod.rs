@@ -14,10 +14,6 @@ pub struct UserQueryAll {
 }
 
 #[derive(Clone)]
+#[derive(Default)]
 pub struct UserRepo {}
 
-impl Default for UserRepo {
-    fn default() -> Self {
-        Self {}
-    }
-}

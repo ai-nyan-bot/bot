@@ -1,9 +1,8 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::Slot;
 use base::model::{
-    AddressId, Amount, DecimalAmount, PriceAvgQuote, PublicKey, TokenMint, TokenName, TokenPairId,
+    Amount, PublicKey, TokenMint, TokenName,
     TokenSymbol, TokenUri,
 };
 use common::model::Timestamp;

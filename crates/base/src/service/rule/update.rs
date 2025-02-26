@@ -30,7 +30,7 @@ impl RuleService {
             .update(
                 &mut tx,
                 repo::RuleUpdateCmd {
-                    id: id.into(),
+                    id,
                     user: user.id,
                     name: cmd.name.unwrap_or(rule.name),
                     sequence: cmd.sequence.unwrap_or(rule.sequence),

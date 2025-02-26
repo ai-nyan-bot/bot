@@ -11,7 +11,7 @@ async fn test_creates_user() {
 
         let (user, wallet, created) = test_instance.get_or_create_telegram_user("123").await.unwrap();
 
-        assert_eq!(created, true);
+        assert!(created);
 
         assert_eq!(user.id, 1);
         assert_eq!(user.telegram_id.unwrap(), "123");
@@ -31,7 +31,7 @@ async fn test_gets_existing_user() {
 
         let (user, wallet, created) = test_instance.get_or_create_telegram_user("123").await.unwrap();
 
-        assert_eq!(created, false);
+        assert!(!created);
         assert_eq!(user.id, 1);
         assert_eq!(user.telegram_id.unwrap(), "123");
 

@@ -3,7 +3,6 @@
 
 use crate::pumpfun::model::{Curve, CurveInfo};
 use base::model::{Amount, Percent};
-use std::ops::{Mul, Sub};
 
 pub trait CalculateProgress {
     fn virtual_base_reserves(&self) -> Amount;
@@ -18,13 +17,13 @@ pub trait CalculateProgress {
 
 impl CalculateProgress for Curve {
     fn virtual_base_reserves(&self) -> Amount {
-        self.virtual_base_reserves.clone()
+        self.virtual_base_reserves
     }
 }
 
 impl CalculateProgress for CurveInfo {
     fn virtual_base_reserves(&self) -> Amount {
-        self.virtual_base_reserves.clone()
+        self.virtual_base_reserves
     }
 }
 

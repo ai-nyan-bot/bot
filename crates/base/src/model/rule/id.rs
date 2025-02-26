@@ -10,7 +10,7 @@ pub struct RuleId(pub i32);
 
 impl AsRef<RuleId> for RuleId {
     fn as_ref(&self) -> &RuleId {
-        &self
+        self
     }
 }
 

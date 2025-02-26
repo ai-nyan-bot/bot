@@ -41,7 +41,7 @@ impl Raydium {
                     page_size: 100,
                     page: 1,
                     mint_one: input_mint,
-                    mint_two: output_mint.into(),
+                    mint_two: output_mint,
                 })
                 .await?;
 
@@ -52,7 +52,7 @@ impl Raydium {
                     || pool.mint_a.address == output_mint && pool.mint_b.address == input_mint && pool.program_id == RAYDIUM_LIQUIDITY_POOL_V4_PROGRAM_ID
                 {
                     debug!("Most liquid pool: {}", &pool.id);
-                    Some(pool.id.clone())
+                    Some(pool.id)
                 } else {
                     None
                 }
@@ -187,7 +187,7 @@ impl Raydium {
         //     (amm_pool_pc_vault_amount, amm_pool_coin_vault_amount)
         // } else {
         let (amm_pool_pc_vault_amount, amm_pool_coin_vault_amount) =
-            calc_total_without_take_pnl_no_orderbook(amm_pc_vault.amount, amm_coin_vault.amount, &amm)?;
+            calc_total_without_take_pnl_no_orderbook(amm_pc_vault.amount, amm_coin_vault.amount, amm)?;
         //     (amm_pool_pc_vault_amount, amm_pool_coin_vault_amount)
         // };
 
@@ -238,8 +238,8 @@ impl Raydium {
 
         Ok(RaydiumQuote {
             market: pool_id,
-            input_mint: input_mint.into(),
-            output_mint: output_mint.into(),
+            input_mint,
+            output_mint,
             input_amount: input.amount,
             output_amount,
             output_amount_with_slippage,

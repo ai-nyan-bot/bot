@@ -7,7 +7,6 @@ use crate::pumpfun::{PumpfunError, PumpfunResult, Rpc};
 use base::model::PublicKey;
 use common::ByteReader;
 use log::error;
-use std::ops::{Mul, Sub};
 
 impl Rpc {
     pub async fn get_curve_info(&self, key: impl Into<PublicKey> + Send) -> Option<CurveInfo> {

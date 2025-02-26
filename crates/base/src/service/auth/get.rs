@@ -16,7 +16,7 @@ impl AuthService {
                 _ => Err(err.into()),
             },
         };
-        let _ = tx.commit().await?;
+        tx.commit().await?;
         Ok(result.user)
     }
 }

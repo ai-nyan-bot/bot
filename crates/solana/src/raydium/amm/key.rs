@@ -56,16 +56,16 @@ impl From<PoolKey> for AmmKeys {
         //     .expect("market keys should be present for amm");
 
         AmmKeys {
-            pool: value.id.clone(),
-            coin_mint: value.mint_a.address.clone(),
-            pc_mint: value.mint_b.address.clone(),
+            pool: value.id,
+            coin_mint: value.mint_a.address,
+            pc_mint: value.mint_b.address,
             // amm_authority: value.keys.authority.clone(),
             // amm_target: value
             //     .keys
             //     .target_orders
             //     .expect("target orders should be present for amm"),
-            coin_vault: value.vault.a.clone(),
-            pc_vault: value.vault.b.clone(),
+            coin_vault: value.vault.a,
+            pc_vault: value.vault.b,
             // amm_lp_mint: value.keys.mint_lp.address.clone(),
             // amm_open_order: value
             //     .keys

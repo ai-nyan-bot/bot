@@ -35,6 +35,12 @@ impl Deref for NotificationRepo {
 #[derive(Debug)]
 pub struct NotificationRepoInner {}
 
+impl Default for NotificationRepo {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl NotificationRepo {
     pub fn new() -> Self {
         Self(Arc::new(NotificationRepoInner {}))

@@ -63,7 +63,7 @@ pub fn create_buy_instruction(
     fee_recipient: &Pubkey,
     args: BuyInstructionArgs,
 ) -> Instruction {
-    let bonding_curve: Pubkey = curve_pda(mint.clone()).unwrap();
+    let bonding_curve: Pubkey = curve_pda(*mint).unwrap();
 
     // let expected_size = 1 + 8 + 8;
     let mut data = Vec::with_capacity(24);
@@ -122,7 +122,7 @@ pub fn create_sell_instruction(
     fee_recipient: &Pubkey,
     args: SellInstructionArgs,
 ) -> Instruction {
-    let bonding_curve: Pubkey = curve_pda(mint.clone()).unwrap();
+    let bonding_curve: Pubkey = curve_pda(*mint).unwrap();
 
     // let expected_size = 1 + 8 + 8;
     let mut data = Vec::with_capacity(24);

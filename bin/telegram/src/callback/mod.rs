@@ -4,9 +4,8 @@
 use crate::callback::action_button::action_button;
 use crate::{AppState, HandlerResult};
 use base::model::TelegramActionButtonConfig;
-use serde::{Deserialize, Serialize};
 pub use store::CallbackStore;
-use teloxide::payloads::{AnswerCallbackQuerySetters, EditMessageReplyMarkupSetters};
+use teloxide::payloads::EditMessageReplyMarkupSetters;
 use teloxide::prelude::CallbackQuery;
 use teloxide::prelude::Requester;
 use teloxide::types::InlineKeyboardMarkup;
@@ -24,7 +23,7 @@ pub struct CallbackActionButton {
     pub config: TelegramActionButtonConfig,
 }
 
-pub const IGNORE_CALLBACK: &'static str = "@!IGNORE!@";
+pub const IGNORE_CALLBACK: &str = "@!IGNORE!@";
 
 pub(crate) async fn callback(state: AppState, query: CallbackQuery) -> HandlerResult {
     if let Some(data) = query.data.as_ref() {
@@ -37,28 +36,26 @@ pub(crate) async fn callback(state: AppState, query: CallbackQuery) -> HandlerRe
             match callback {
                 Callback::ActionButton(cb) => action_button(state, cb, query).await?,
             }
-        } else {
-            if let Some(msg) = &query.message {
-                let bot = state.bot.clone();
+        } else if let Some(msg) = &query.message {
+                        let bot = state.bot.clone();
 
-                bot.answer_callback_query(query.id.clone()).await?;
+                        bot.answer_callback_query(query.id.clone()).await?;
 
-                bot.edit_message_text(
-                    msg.chat().id,
-                    msg.id(),
-                    r#"
-⚠️ Button Expired!
-This button was valid for 15 minutes to help prevent accidental actions.
-            "#
-                    .to_string(),
-                )
-                .await?;
+                        bot.edit_message_text(
+                            msg.chat().id,
+                            msg.id(),
+                            r#"
+        ⚠️ Button Expired!
+        This button was valid for 15 minutes to help prevent accidental actions.
+                    "#
+                            .to_string(),
+                        )
+                        .await?;
 
-                bot.edit_message_reply_markup(msg.chat().id, msg.id())
-                    .reply_markup(InlineKeyboardMarkup::default())
-                    .await?;
-            }
-        }
+                        bot.edit_message_reply_markup(msg.chat().id, msg.id())
+                            .reply_markup(InlineKeyboardMarkup::default())
+                            .await?;
+                    }
     }
 
     Ok(())

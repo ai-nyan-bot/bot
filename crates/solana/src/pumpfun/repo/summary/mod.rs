@@ -28,6 +28,12 @@ impl Deref for SummaryRepo {
 #[derive(Debug)]
 pub struct SummaryRepoInner {}
 
+impl Default for SummaryRepo {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl SummaryRepo {
     pub fn new() -> Self {
         Self(Arc::new(SummaryRepoInner {}))

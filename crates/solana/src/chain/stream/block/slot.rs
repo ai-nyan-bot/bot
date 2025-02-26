@@ -35,7 +35,7 @@ impl SlotsToDownload {
     pub(crate) async fn next_slots(&self) -> Vec<Slot> {
         let inner_lock = self.0.lock().await;
         let mut inner = inner_lock.borrow_mut();
-        let latest = inner.latest_slot.clone();
+        let latest = inner.latest_slot;
 
         if inner.previous_slot == latest || inner.concurrency == 0 {
             return vec![];

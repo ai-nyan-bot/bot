@@ -62,6 +62,12 @@ impl Deref for ReadTradeRepo {
 #[derive(Debug)]
 pub struct ReadTradeRepoInner {}
 
+impl Default for ReadTradeRepo {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ReadTradeRepo {
     pub fn new() -> Self {
         Self(Arc::new(ReadTradeRepoInner {}))

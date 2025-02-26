@@ -14,10 +14,6 @@ pub struct WalletQueryAll {
 }
 
 #[derive(Clone)]
+#[derive(Default)]
 pub struct WalletRepo {}
 
-impl Default for WalletRepo {
-    fn default() -> Self {
-        Self {}
-    }
-}

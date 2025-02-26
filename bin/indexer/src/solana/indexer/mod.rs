@@ -5,10 +5,6 @@ mod get;
 mod set;
 
 #[derive(Clone)]
+#[derive(Default)]
 pub struct IndexerRepo {}
 
-impl Default for IndexerRepo {
-    fn default() -> Self {
-        Self {}
-    }
-}

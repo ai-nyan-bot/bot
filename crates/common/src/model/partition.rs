@@ -21,7 +21,7 @@ impl Display for Partition {
 
 impl AsRef<Partition> for Partition {
     fn as_ref(&self) -> &Partition {
-        &self
+        self
     }
 }
 

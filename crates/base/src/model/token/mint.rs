@@ -9,9 +9,9 @@ use serde::{Deserialize, Serialize};
 use solana_sdk::pubkey::Pubkey;
 use std::fmt::{Display, Formatter};
 
-pub const USDC_MINT_STR: &'static str = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
-pub const USDT_MINT_STR: &'static str = "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB";
-pub const WSOL_MINT_STR: &'static str = "So11111111111111111111111111111111111111112";
+pub const USDC_MINT_STR: &str = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
+pub const USDT_MINT_STR: &str = "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB";
+pub const WSOL_MINT_STR: &str = "So11111111111111111111111111111111111111112";
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize, sqlx::Type)]
 #[sqlx(transparent)]
@@ -37,7 +37,7 @@ impl PartialEq<&TokenMint> for TokenMint {
 
 impl AsRef<TokenMint> for TokenMint {
     fn as_ref(&self) -> &TokenMint {
-        &self
+        self
     }
 }
 
@@ -161,6 +161,6 @@ mod tests {
             assert_eq!(result, None)
         }
 
-        const BONK_MINT_STR: &'static str = "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263";
+        const BONK_MINT_STR: &str = "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263";
     }
 }

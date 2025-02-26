@@ -31,7 +31,7 @@ pub struct SlotTrade {
 
 impl<L: LoadTokenInfo> TradeRepo<L> {
     pub async fn insert_trades<'a>(&self, tx: &mut Tx<'a>, slot: SlotTrades) -> RepoResult<Count> {
-        if slot.trades.len() == 0 {
+        if slot.trades.is_empty() {
             return Ok(Count(0));
         }
 
@@ -138,14 +138,14 @@ fn calculate_price_amount_and_side(trade: &SlotTrade, base_token: &Token, quote_
         &quote_token.decimals
     };
 
-    let input_amount = DecimalAmount::new(trade.input_amount.clone(), input_decimals.clone());
-    let output_amount = DecimalAmount::new(trade.output_amount.clone(), output_decimals.clone());
+    let input_amount = DecimalAmount::new(trade.input_amount, input_decimals.clone());
+    let output_amount = DecimalAmount::new(trade.output_amount, output_decimals.clone());
 
     if trade.input_mint == base_token.mint {
         assert!(input_amount > 0.0, "Input amount must not be 0");
-        (PriceAvgQuote(output_amount.0 as f64 / input_amount.0 as f64), input_amount, false)
+        (PriceAvgQuote(output_amount.0 / input_amount.0), input_amount, false)
     } else {
         assert!(output_amount > 0.0, "Output amount must not be 0");
-        (PriceAvgQuote(input_amount.0 as f64 / output_amount.0 as f64), output_amount, true)
+        (PriceAvgQuote(input_amount.0 / output_amount.0), output_amount, true)
     }
 }

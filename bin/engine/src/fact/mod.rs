@@ -80,10 +80,10 @@ impl FactService {
 				facts.set_timeframe_value(Fact::TradesSellChangePercent, Value::Percent(percent.0 as f64), Timeframe::M1).unwrap();
 			}
 
-			result.push((summary.token_pair.clone(), facts));
+			result.push((summary.token_pair, facts));
 		}
 
-		let _ = tx.commit().await.unwrap();
+		tx.commit().await.unwrap();
 
 		result.into_boxed_slice()
 	}

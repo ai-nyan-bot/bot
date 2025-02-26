@@ -9,9 +9,9 @@ impl Condition {
 	pub fn applicable(&self) -> bool {
 		match self {
 			Condition::Compare { .. } => Fact::try_from(self).is_ok(),
-			Condition::And { conditions } => !conditions.is_empty() && conditions.iter().find(|c| c.applicable() == false).is_none(),
-			Condition::Or { conditions } => !conditions.is_empty() && conditions.iter().find(|c| c.applicable() == false).is_none(),
-			Condition::AndNot { conditions } => !conditions.is_empty() && conditions.iter().find(|c| c.applicable() == false).is_none(),
+			Condition::And { conditions } => !conditions.is_empty() && !conditions.iter().any(|c| !c.applicable()),
+			Condition::Or { conditions } => !conditions.is_empty() && !conditions.iter().any(|c| !c.applicable()),
+			Condition::AndNot { conditions } => !conditions.is_empty() && !conditions.iter().any(|c| !c.applicable()),
 		}
 	}
 }
@@ -29,7 +29,7 @@ mod tests {
 		#[test]
 		fn empty() {
 			let test_instance = Condition::And { conditions: vec![] };
-			assert_eq!(test_instance.applicable(), false)
+			assert!(!test_instance.applicable())
 		}
 
 		#[test]
@@ -42,7 +42,7 @@ mod tests {
 					timeframe: None,
 				}],
 			};
-			assert_eq!(test_instance.applicable(), true)
+			assert!(test_instance.applicable())
 		}
 
 		#[test]
@@ -55,7 +55,7 @@ mod tests {
 					timeframe: None,
 				}],
 			};
-			assert_eq!(test_instance.applicable(), false)
+			assert!(!test_instance.applicable())
 		}
 
 		#[test]
@@ -76,7 +76,7 @@ mod tests {
 					},
 				],
 			};
-			assert_eq!(test_instance.applicable(), true)
+			assert!(test_instance.applicable())
 		}
 
 		#[test]
@@ -99,7 +99,7 @@ mod tests {
 					},
 				],
 			};
-			assert_eq!(test_instance.applicable(), false)
+			assert!(!test_instance.applicable())
 		}
 
 		#[test]
@@ -111,7 +111,7 @@ mod tests {
 					Condition::AndNot { conditions: vec![] },
 				],
 			};
-			assert_eq!(test_instance.applicable(), false)
+			assert!(!test_instance.applicable())
 		}
 	}
 
@@ -127,7 +127,7 @@ mod tests {
 		#[test]
 		fn empty() {
 			let test_instance = Or { conditions: vec![] };
-			assert_eq!(test_instance.applicable(), false)
+			assert!(!test_instance.applicable())
 		}
 
 		#[test]
@@ -140,7 +140,7 @@ mod tests {
 					timeframe: None,
 				}],
 			};
-			assert_eq!(test_instance.applicable(), true)
+			assert!(test_instance.applicable())
 		}
 
 		#[test]
@@ -153,7 +153,7 @@ mod tests {
 					timeframe: None,
 				}],
 			};
-			assert_eq!(test_instance.applicable(), false)
+			assert!(!test_instance.applicable())
 		}
 
 		#[test]
@@ -174,7 +174,7 @@ mod tests {
 					},
 				],
 			};
-			assert_eq!(test_instance.applicable(), true)
+			assert!(test_instance.applicable())
 		}
 
 		#[test]
@@ -197,7 +197,7 @@ mod tests {
 					},
 				],
 			};
-			assert_eq!(test_instance.applicable(), false)
+			assert!(!test_instance.applicable())
 		}
 
 		#[test]
@@ -209,7 +209,7 @@ mod tests {
 					Condition::AndNot { conditions: vec![] },
 				],
 			};
-			assert_eq!(test_instance.applicable(), false)
+			assert!(!test_instance.applicable())
 		}
 	}
 
@@ -225,7 +225,7 @@ mod tests {
 		#[test]
 		fn empty() {
 			let test_instance = AndNot { conditions: vec![] };
-			assert_eq!(test_instance.applicable(), false)
+			assert!(!test_instance.applicable())
 		}
 
 		#[test]
@@ -238,7 +238,7 @@ mod tests {
 					timeframe: None,
 				}],
 			};
-			assert_eq!(test_instance.applicable(), true)
+			assert!(test_instance.applicable())
 		}
 
 		#[test]
@@ -251,7 +251,7 @@ mod tests {
 					timeframe: None,
 				}],
 			};
-			assert_eq!(test_instance.applicable(), false)
+			assert!(!test_instance.applicable())
 		}
 
 		#[test]
@@ -272,7 +272,7 @@ mod tests {
 					},
 				],
 			};
-			assert_eq!(test_instance.applicable(), true)
+			assert!(test_instance.applicable())
 		}
 
 		#[test]
@@ -295,7 +295,7 @@ mod tests {
 					},
 				],
 			};
-			assert_eq!(test_instance.applicable(), false)
+			assert!(!test_instance.applicable())
 		}
 
 		#[test]
@@ -303,7 +303,7 @@ mod tests {
 			let test_instance = AndNot {
 				conditions: vec![And { conditions: vec![] }, Or { conditions: vec![] }, AndNot { conditions: vec![] }],
 			};
-			assert_eq!(test_instance.applicable(), false)
+			assert!(!test_instance.applicable())
 		}
 	}
 }

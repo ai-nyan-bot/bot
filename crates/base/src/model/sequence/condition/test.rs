@@ -76,33 +76,31 @@ mod tests {
 
 		#[test]
 		fn test_equal_true() {
-			assert_eq!(
+			assert!(
 				Compare {
 					field: Price,
 					operator: MoreThanEqual,
 					value: Quote(1.0),
 					timeframe: None,
-				}.test(&facts()),
-				true
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_equal_false() {
-			assert_eq!(
-				Compare {
+			assert!(
+				!Compare {
 					field: Price,
 					operator: MoreThanEqual,
 					value: Quote(1337.0),
 					timeframe: None,
-				}.test(&facts()),
-				false
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_and_both_true() {
-			assert_eq!(
+			assert!(
 				And {
 					conditions: vec![
 						Compare {
@@ -118,15 +116,14 @@ mod tests {
 							timeframe: None,
 						}
 					]
-				}.test(&facts()),
-				true
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_and_left_true() {
-			assert_eq!(
-				And {
+			assert!(
+				!And {
 					conditions: vec![
 						Compare {
 							field: Price,
@@ -141,15 +138,14 @@ mod tests {
 							timeframe: None,
 						}
 					]
-				}.test(&facts()),
-				false
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_and_right_true() {
-			assert_eq!(
-				And {
+			assert!(
+				!And {
 					conditions: vec![
 						Compare {
 							field: Price,
@@ -164,15 +160,14 @@ mod tests {
 							timeframe: None,
 						}
 					]
-				}.test(&facts()),
-				false
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_and_both_false() {
-			assert_eq!(
-				And {
+			assert!(
+				!And {
 					conditions: vec![
 						Compare {
 							field: Price,
@@ -187,14 +182,13 @@ mod tests {
 							timeframe: None,
 						}
 					]
-				}.test(&facts()),
-				false
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_or_both_true() {
-			assert_eq!(
+			assert!(
 				Or {
 					conditions: vec![
 						Compare {
@@ -210,14 +204,13 @@ mod tests {
 							timeframe: None,
 						}
 					]
-				}.test(&facts()),
-				true
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_or_left_true() {
-			assert_eq!(
+			assert!(
 				Or {
 					conditions: vec![
 						Compare {
@@ -233,14 +226,13 @@ mod tests {
 							timeframe: None,
 						}
 					]
-				}.test(&facts()),
-				true
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_or_right_true() {
-			assert_eq!(
+			assert!(
 				Or {
 					conditions: vec![
 						Compare {
@@ -256,15 +248,14 @@ mod tests {
 							timeframe: None,
 						}
 					]
-				}.test(&facts()),
-				true
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_or_both_false() {
-			assert_eq!(
-				Or {
+			assert!(
+				!Or {
 					conditions: vec![
 						Compare {
 							field: Price,
@@ -279,15 +270,14 @@ mod tests {
 							timeframe: None,
 						}
 					]
-				}.test(&facts()),
-				false
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_and_not_both_true() {
-			assert_eq!(
-				AndNot {
+			assert!(
+				!AndNot {
 					conditions: vec![
 						Compare {
 							field: Price,
@@ -302,15 +292,14 @@ mod tests {
 							timeframe: None,
 						}
 					]
-				}.test(&facts()),
-				false
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_and_not_left_true() {
-			assert_eq!(
-				AndNot {
+			assert!(
+				!AndNot {
 					conditions: vec![
 						Compare {
 							field: Price,
@@ -325,15 +314,14 @@ mod tests {
 							timeframe: None,
 						}
 					]
-				}.test(&facts()),
-				false
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_and_not_right_true() {
-			assert_eq!(
-				AndNot {
+			assert!(
+				!AndNot {
 					conditions: vec![
 						Compare {
 							field: Price,
@@ -348,14 +336,13 @@ mod tests {
 							timeframe: None,
 						}
 					]
-				}.test(&facts()),
-				false
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_and_not_both_false() {
-			assert_eq!(
+			assert!(
 				AndNot {
 					conditions: vec![
 						Compare {
@@ -371,8 +358,7 @@ mod tests {
 							timeframe: None,
 						}
 					]
-				}.test(&facts()),
-				true
+				}.test(&facts())
 			)
 		}
 	}
@@ -390,33 +376,31 @@ mod tests {
 
 		#[test]
 		fn test_equal_true() {
-			assert_eq!(
+			assert!(
 				Compare {
 					field: Volume,
 					operator: IncreasedByMoreThanEqual,
 					value: Quote(3.0),
 					timeframe: Some(S1),
-				}.test(&facts()),
-				true
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_equal_false() {
-			assert_eq!(
-				Compare {
+			assert!(
+				!Compare {
 					field: Volume,
 					operator: IncreasedByMoreThanEqual,
 					value: Quote(1337.0),
 					timeframe: Some(M1),
-				}.test(&facts()),
-				false
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_and_both_true() {
-			assert_eq!(
+			assert!(
 				And {
 					conditions: vec![
 						Compare {
@@ -432,15 +416,14 @@ mod tests {
 							timeframe: Some(M1),
 						}
 					]
-				}.test(&facts()),
-				true
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_and_left_true() {
-			assert_eq!(
-				And {
+			assert!(
+				!And {
 					conditions: vec![
 						Compare {
 							field: Volume,
@@ -455,15 +438,14 @@ mod tests {
 							timeframe: Some(M1),
 						}
 					]
-				}.test(&facts()),
-				false
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_and_right_true() {
-			assert_eq!(
-				And {
+			assert!(
+				!And {
 					conditions: vec![
 						Compare {
 							field: Volume,
@@ -478,15 +460,14 @@ mod tests {
 							timeframe: Some(M1),
 						}
 					]
-				}.test(&facts()),
-				false
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_and_both_false() {
-			assert_eq!(
-				And {
+			assert!(
+				!And {
 					conditions: vec![
 						Compare {
 							field: Volume,
@@ -501,14 +482,13 @@ mod tests {
 							timeframe: Some(M1),
 						}
 					]
-				}.test(&facts()),
-				false
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_or_both_true() {
-			assert_eq!(
+			assert!(
 				Or {
 					conditions: vec![
 						Compare {
@@ -524,14 +504,13 @@ mod tests {
 							timeframe: Some(M1),
 						}
 					]
-				}.test(&facts()),
-				true
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_or_left_true() {
-			assert_eq!(
+			assert!(
 				Or {
 					conditions: vec![
 						Compare {
@@ -547,14 +526,13 @@ mod tests {
 							timeframe: Some(M1),
 						}
 					]
-				}.test(&facts()),
-				true
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_or_right_true() {
-			assert_eq!(
+			assert!(
 				Or {
 					conditions: vec![
 						Compare {
@@ -570,15 +548,14 @@ mod tests {
 							timeframe: Some(M1),
 						}
 					]
-				}.test(&facts()),
-				true
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_or_both_false() {
-			assert_eq!(
-				Or {
+			assert!(
+				!Or {
 					conditions: vec![
 						Compare {
 							field: Volume,
@@ -593,15 +570,14 @@ mod tests {
 							timeframe: Some(M1),
 						}
 					]
-				}.test(&facts()),
-				false
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_and_not_both_true() {
-			assert_eq!(
-				AndNot {
+			assert!(
+				!AndNot {
 					conditions: vec![
 						Compare {
 							field: Volume,
@@ -616,15 +592,14 @@ mod tests {
 							timeframe: Some(M1),
 						}
 					]
-				}.test(&facts()),
-				false
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_and_not_left_true() {
-			assert_eq!(
-				AndNot {
+			assert!(
+				!AndNot {
 					conditions: vec![
 						Compare {
 							field: Volume,
@@ -639,15 +614,14 @@ mod tests {
 							timeframe: Some(M1),
 						}
 					]
-				}.test(&facts()),
-				false
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_and_not_right_true() {
-			assert_eq!(
-				AndNot {
+			assert!(
+				!AndNot {
 					conditions: vec![
 						Compare {
 							field: Volume,
@@ -662,14 +636,13 @@ mod tests {
 							timeframe: Some(M1),
 						}
 					]
-				}.test(&facts()),
-				false
+				}.test(&facts())
 			)
 		}
 
 		#[test]
 		fn test_and_not_both_false() {
-			assert_eq!(
+			assert!(
 				AndNot {
 					conditions: vec![
 						Compare {
@@ -685,8 +658,7 @@ mod tests {
 							timeframe: Some(M1),
 						}
 					]
-				}.test(&facts()),
-				true
+				}.test(&facts())
 			)
 		}
 	}

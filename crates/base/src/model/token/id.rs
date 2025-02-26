@@ -10,7 +10,7 @@ pub struct TokenId(pub i32);
 
 impl AsRef<TokenId> for TokenId {
     fn as_ref(&self) -> &TokenId {
-        &self
+        self
     }
 }
 

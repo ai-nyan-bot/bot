@@ -16,7 +16,7 @@ async fn test_ok() {
     // It is not expected that those value ever change, hence those values will be hardcoded instead of
     // calling the rpc endpoint every time, enjoy it a lot if this test ever breaks :-*
     let result = test_instance.get_global_info().await;
-    assert_eq!(result.initialized, true);
+    assert!(result.initialized);
     assert_eq!(result.initial_virtual_token_reserves, 1073000000000000);
     assert_eq!(result.initial_virtual_sol_reserves, 30000000000);
     assert_eq!(result.initial_real_token_reserves, 793100000000000);

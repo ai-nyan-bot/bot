@@ -29,8 +29,8 @@ pub struct Sequence {
 
 impl From<Sequence> for JsonValue {
     fn from(value: Sequence) -> Self {
-        let json_value = serde_json::to_value(value).expect("Failed to serialize Sequence");
-        JsonValue::from(json_value)
+        
+        serde_json::to_value(value).expect("Failed to serialize Sequence")
     }
 }
 

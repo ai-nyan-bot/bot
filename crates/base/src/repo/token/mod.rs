@@ -65,6 +65,12 @@ pub struct ReadTokenRepoInner {
     cache: Cache<TokenId, TokenMint, Token>,
 }
 
+impl Default for ReadTokenRepo {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ReadTokenRepo {
     pub fn new() -> Self {
         Self(Arc::new(ReadTokenRepoInner { cache: Cache::default() }))
@@ -73,6 +79,6 @@ impl ReadTokenRepo {
 
 impl ReadTokenRepo {
     pub async fn populate_cache(&self, tokens: impl Iterator<Item = &Token>) {
-        self.cache.put_all(tokens.map(|t| (t.id.clone(), t.mint.clone(), t.clone()))).await
+        self.cache.put_all(tokens.map(|t| (t.id, t.mint.clone(), t.clone()))).await
     }
 }

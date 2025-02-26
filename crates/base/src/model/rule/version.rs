@@ -9,7 +9,7 @@ pub struct RuleVersion(pub i16);
 
 impl AsRef<RuleVersion> for RuleVersion {
     fn as_ref(&self) -> &RuleVersion {
-        &self
+        self
     }
 }
 

@@ -76,7 +76,7 @@ impl Leb128 for i32 {
                     result |= !0 << shift;
                 }
 
-                return Ok((result as i32, idx + 1));
+                return Ok((result, idx + 1));
             }
 
             // If we exceed the maximum shift for a 32-bit integer, return an error
@@ -208,7 +208,7 @@ mod tests {
             (vec![0x80, 0x7f], -128, 2),
             (vec![0x80, 0x80, 0x80, 0x80, 0x78], i32::MIN, 5),
         ] {
-            let (result, consumed) = i32::read_leb128(&given).expect(format!(" {:#04X?}", given).as_ref());
+            let (result, consumed) = i32::read_leb128(&given).unwrap_or_else(|_| panic!(" {:#04X?}", given));
             assert_eq!(result, expected, "expected {} but got {} for {:#04X?}", expected, result, given);
             assert_eq!(
                 consumed, expected_consumption,
@@ -283,7 +283,7 @@ mod tests {
             (vec![0x7F], -1i64, 1),
             (vec![0x80, 0x7F], -128i64, 2),
         ] {
-            let (result, consumed) = i64::read_leb128(&given).expect(format!(" {:#04X?}", given).as_ref());
+            let (result, consumed) = i64::read_leb128(&given).unwrap_or_else(|_| panic!(" {:#04X?}", given));
             assert_eq!(result, expected, "expected {} but got {} for {:#04X?}", expected, result, given);
             assert_eq!(
                 consumed, expected_consumption,

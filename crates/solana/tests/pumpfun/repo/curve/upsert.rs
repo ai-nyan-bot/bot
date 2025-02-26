@@ -22,7 +22,7 @@ async fn test_creates_curve() {
         assert_eq!(result.virtual_base_reserves, 512561011366544);
         assert_eq!(result.virtual_quote_reserves, 62802280169);
         assert_eq!(result.progress, 70.66435);
-        assert_eq!(result.complete, false);
+        assert!(!result.complete);
 
         let count = count_all_curves(&mut tx).await;
         assert_eq!(count, 1);
@@ -59,7 +59,7 @@ async fn test_update_curve() {
         assert_eq!(result.virtual_base_reserves, 0);
         assert_eq!(result.virtual_quote_reserves, 0);
         assert_eq!(result.progress, 100);
-        assert_eq!(result.complete, true);
+        assert!(result.complete);
 
         let count = count_all_curves(&mut tx).await;
         assert_eq!(count, 1);
@@ -103,7 +103,7 @@ async fn test_curve_updated_at_same_slot() {
         assert_eq!(result.virtual_base_reserves, 757214460226289i64);
         assert_eq!(result.virtual_quote_reserves, 42511074286i64);
         assert_eq!(result.progress, 39.816612);
-        assert_eq!(result.complete, false);
+        assert!(!result.complete);
     })
     .await;
 }

@@ -14,6 +14,7 @@ pub struct AuthQueryAll {
 }
 
 #[derive(Clone)]
+#[derive(Default)]
 pub struct AuthRepo {}
 
 impl AuthRepo {
@@ -22,8 +23,3 @@ impl AuthRepo {
     }
 }
 
-impl Default for AuthRepo {
-    fn default() -> Self {
-        Self {}
-    }
-}

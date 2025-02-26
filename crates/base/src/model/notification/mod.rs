@@ -28,7 +28,7 @@ pub struct Notification {
 }
 
 impl Notification {
-    pub fn payload<'a, T: DeserializeOwned>(&self, index: &'a str) -> Option<T> {
+    pub fn payload<T: DeserializeOwned>(&self, index: &str) -> Option<T> {
         let value = self.payload.0.get(index)?;
         serde_json::from_value::<T>(value.clone()).ok()
     }

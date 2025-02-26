@@ -26,7 +26,7 @@ async fn test_ok() {
     assert_eq!(account.data.len(), 82);
     assert_eq!(hash_for_testing(&account.data), 13739370046195003499);
     assert_eq!(account.owner, "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
-    assert_eq!(account.executable, false);
+    assert!(!account.executable);
     assert_eq!(account.rent_epoch, 18446744073709551615);
 }
 
@@ -50,7 +50,7 @@ async fn test_base64_required() {
     assert_eq!(account.data.len(), 165);
     assert_eq!(hash_for_testing(&account.data), 3251868673157599629);
     assert_eq!(account.owner, "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
-    assert_eq!(account.executable, false);
+    assert!(!account.executable);
     assert_eq!(account.rent_epoch, 18446744073709551615);
 }
 

@@ -16,7 +16,7 @@ impl AddressRepo {
 
         let to_read = self.find_missing_ids(&ids, &result);
         let mut read = self.read_address_ids_from_db(tx, &to_read).await?;
-        self.cache.put_all(read.iter().map(|t| (t.id.clone(), t.address.clone(), t.clone()))).await;
+        self.cache.put_all(read.iter().map(|t| (t.id, t.address.clone(), t.clone()))).await;
         result.append(&mut read);
         Ok(result)
     }
@@ -27,7 +27,7 @@ impl AddressRepo {
 
         let to_read = self.find_missing_keys(&keys, &result);
         let mut read = self.read_wallet_addresses_from_db(tx, &to_read).await?;
-        self.cache.put_all(read.iter().map(|t| (t.id.clone(), t.address.clone(), t.clone()))).await;
+        self.cache.put_all(read.iter().map(|t| (t.id, t.address.clone(), t.clone()))).await;
         result.append(&mut read);
 
         Ok(result)

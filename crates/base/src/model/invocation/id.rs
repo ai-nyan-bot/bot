@@ -9,7 +9,7 @@ pub struct InvocationId(pub i32);
 
 impl AsRef<InvocationId> for InvocationId {
     fn as_ref(&self) -> &InvocationId {
-        &self
+        self
     }
 }
 

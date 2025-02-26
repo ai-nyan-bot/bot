@@ -30,7 +30,7 @@ impl Parser<Instruction> for PumpFunParser {
             for instruction in &inner.instructions {
                 let data = &instruction.instruction.data;
                 if data.len() > 16 {
-                    let reader = ByteReader::new(&data);
+                    let reader = ByteReader::new(data);
                     reader.seek(8).unwrap(); // skip anchor method identifier
                     let disc = reader.read_range(8).unwrap();
 
@@ -144,7 +144,7 @@ mod tests {
         assert_eq!(mint, "G3TpcmEy28TbzbyjL7TQy5noZbXrFBzJ5Vw5PqhTpump");
         assert_eq!(sol_amount, 800000147);
         assert_eq!(token_amount, 27870134831168);
-        assert_eq!(is_buy, true);
+        assert!(is_buy);
         assert_eq!(user, "HcvYEizKBqExpW4uJBnEqDKFtCBUKmuLpExwzcRWdbQE");
         assert_eq!(timestamp.to_string(), "2025-02-02T02:23:39Z");
         assert_eq!(virtual_sol_reserves, 30800000147);
@@ -199,7 +199,7 @@ mod tests {
         assert_eq!(mint, "5iA1jhWN6kJRZaASzNZ4K7vvwiR3XykUiJKiAgWSpump");
         assert_eq!(sol_amount, 212700228);
         assert_eq!(token_amount, 967931120978);
-        assert_eq!(is_buy, false);
+        assert!(!is_buy);
         assert_eq!(user, "7PQ3nyAJHXiFQd5c8HgRBMYLF748MQKgq3uYfTuFioHX");
         assert_eq!(timestamp.to_string(), "2025-02-01T07:31:30Z");
         assert_eq!(virtual_sol_reserves, 83998799473);
@@ -231,7 +231,7 @@ mod tests {
         assert_eq!(mint, "CdX4emxnT1y1cZqDcTrmFBDPhEnmyWooAKSwJoqbpump");
         assert_eq!(sol_amount, 300000053);
         assert_eq!(token_amount, 1040025448826);
-        assert_eq!(is_buy, true);
+        assert!(is_buy);
         assert_eq!(user, "EtHx7bqNL5MRs2oVwyxtEXWDQ5L257EZkAcGVzfjDYuB");
         assert_eq!(timestamp.to_string(), "2025-02-01T18:15:23Z");
         assert_eq!(virtual_sol_reserves, 96510644837);

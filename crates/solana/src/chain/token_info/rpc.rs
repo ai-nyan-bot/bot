@@ -82,7 +82,7 @@ impl LoadTokenInfo for RpcTokenInfoLoader {
             Ok(response) => {
                 let accounts = response.value;
 
-                let Some(Some(account)) = accounts.get(0) else {
+                let Some(Some(account)) = accounts.first() else {
                     error!("account not found: {mint}");
                     return None;
                 };

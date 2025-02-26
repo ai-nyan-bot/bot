@@ -8,7 +8,6 @@ use crate::model::{
     Decimals, Token, TokenId, TokenMint, TokenName, TokenPair, TokenPairId, TokenPairMint,
     TokenSymbol,
 };
-use crate::repo::cache::Cache;
 use crate::repo::ReadTokenPairRepo;
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
@@ -40,7 +39,7 @@ pub(crate) fn find_missing_ids(ids: &[TokenPairId], token_pairs: &[TokenPair]) -
     let mut result: Vec<TokenPairId> = Vec::with_capacity(ids.len() - token_pairs.len());
     for id in ids {
         if !token_ids.contains(id) {
-            result.push(id.clone());
+            result.push(*id);
         }
     }
 
@@ -56,7 +55,7 @@ impl ReadTokenPairRepo {
         let mut result = Vec::with_capacity(ids.len());
 
         for id in ids {
-            if let Some(token) = self.cache.get_by_id(id.clone()).await {
+            if let Some(token) = self.cache.get_by_id(*id).await {
                 result.push(token)
             }
         }
@@ -69,7 +68,7 @@ impl ReadTokenPairRepo {
 
 		let tokens = self.token_repo.list_by_ids(tx, all_ids).await?;
 		let tokens: HashMap<TokenId, Token> =
-			tokens.into_iter().map(|t| (t.id.clone(), t)).collect();
+			tokens.into_iter().map(|t| (t.id, t)).collect();
 
 		Ok(result
 			.into_iter()
@@ -101,7 +100,7 @@ impl ReadTokenPairRepo {
 
         let tokens = self.token_repo.list_by_ids(tx, all_ids).await?;
         let tokens: HashMap<TokenId, Token> =
-            tokens.into_iter().map(|t| (t.id.clone(), t)).collect();
+            tokens.into_iter().map(|t| (t.id, t)).collect();
 
         Ok(result
             .into_iter()

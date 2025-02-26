@@ -7,7 +7,6 @@ use base::service::{NotificationError, NotificationService};
 use common::service::ServiceError;
 use serde_json::Map;
 use sqlx::types::JsonValue;
-use std::fmt::Display;
 use testing::notification::{count_all, create_notification_for_another_user, create_notification_for_test_user};
 use testing::run_test_with_pool_on_empty_db;
 use JsonValue::Object;
@@ -62,7 +61,7 @@ async fn test_one() {
 			.await
 			.unwrap();
 
-		let _ = tx.commit().await.unwrap();
+		tx.commit().await.unwrap();
 
 		let test_instance = NotificationService::new(pool.clone(), NotificationRepo::new());
 
@@ -127,7 +126,7 @@ async fn test_many() {
 			.await
 			.unwrap();
 
-		let _ = tx.commit().await.unwrap();
+		tx.commit().await.unwrap();
 
 		let test_instance = NotificationService::new(pool.clone(), NotificationRepo::new());
 
@@ -200,7 +199,7 @@ async fn test_rolls_back_if_any_fails() {
 			.await
 			.unwrap();
 
-		let _ = tx.commit().await.unwrap();
+		tx.commit().await.unwrap();
 
 		let test_instance = NotificationService::new(pool.clone(), NotificationRepo::new());
 
@@ -209,7 +208,7 @@ async fn test_rolls_back_if_any_fails() {
 				if notification.id == 2 {
 					return Err(NotificationError("some error".to_string()));
 				}
-				return Ok(notification);
+				Ok(notification)
 			})
 			.await;
 

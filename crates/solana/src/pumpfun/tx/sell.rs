@@ -9,7 +9,6 @@ use crate::pumpfun;
 use crate::pumpfun::Pumpfun;
 use base::model::KeyPair;
 use base::model::TokenMint;
-use solana_sdk::signature::Signer;
 
 impl Pumpfun {
     /// Sells tokens back to the bonding curve in exchange for SOL

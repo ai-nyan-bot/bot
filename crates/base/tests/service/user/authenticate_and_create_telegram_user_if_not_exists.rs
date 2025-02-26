@@ -37,11 +37,11 @@ async fn test_user_already_exists() {
             static mut COUNTER: u8 = 0;
             unsafe {
                 COUNTER += 1;
-                return if COUNTER == 1 {
+                if COUNTER == 1 {
                     "token-1".into()
                 } else {
                     "token-2".into()
-                };
+                }
             }
         });
 

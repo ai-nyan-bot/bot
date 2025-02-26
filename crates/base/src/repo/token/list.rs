@@ -16,7 +16,7 @@ impl ReadTokenRepo {
 
         let to_read = find_missing_ids(&ids, &result);
         let mut read = self.read_token_ids_from_db(tx, &to_read).await?;
-        self.cache.put_all(read.iter().map(|t| (t.id.clone(), t.mint.clone(), t.clone()))).await;
+        self.cache.put_all(read.iter().map(|t| (t.id, t.mint.clone(), t.clone()))).await;
         result.append(&mut read);
         Ok(result)
     }
@@ -29,7 +29,7 @@ impl ReadTokenRepo {
 
         let to_read = find_missing_mints(&mints, &result);
         let mut read = self.read_token_mints_from_db(tx, &to_read).await?;
-        self.cache.put_all(read.iter().map(|t| (t.id.clone(), t.mint.clone(), t.clone()))).await;
+        self.cache.put_all(read.iter().map(|t| (t.id, t.mint.clone(), t.clone()))).await;
         result.append(&mut read);
 
         Ok(result)

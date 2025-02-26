@@ -42,7 +42,7 @@ impl ReadTokenRepo {
         let mut result = Vec::with_capacity(ids.len());
 
         for id in ids {
-            if let Some(token) = cache.get_by_id(id.clone()).await {
+            if let Some(token) = cache.get_by_id(*id).await {
                 result.push(token)
             }
         }
@@ -77,7 +77,7 @@ impl ReadTokenRepo {
               from solana.token
               where mint in (select unnest($1::varchar[]))"#,
         )
-        .bind(&mints)
+        .bind(mints)
         .fetch_all(&mut **tx)
         .await?
         .into_iter()
@@ -106,7 +106,7 @@ impl ReadTokenRepo {
               from solana.token
               where id in (select unnest($1::int4[]))"#,
         )
-        .bind(&ids)
+        .bind(ids)
         .fetch_all(&mut **tx)
         .await?
         .into_iter()

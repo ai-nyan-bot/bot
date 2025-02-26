@@ -3,7 +3,6 @@
 
 use common::Signal;
 use log::info;
-use std::fmt::Display;
 use telegram::{run, AppState, Config};
 use tokio::runtime::Builder;
 use tokio::{select, signal};

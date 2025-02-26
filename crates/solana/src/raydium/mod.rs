@@ -104,6 +104,7 @@ pub struct SwapConfigOverrides {
 
 pub type Result<T> = std::result::Result<T, Error>;
 
+#[derive(Default)]
 pub struct Raydium {
     http_client: HttpClient,
     rpc_client: RpcClient,
@@ -118,12 +119,3 @@ pub struct SwapConfig {
     pub as_legacy_transaction: Option<bool>,
 }
 
-impl Default for Raydium {
-    fn default() -> Self {
-        Self {
-            http_client: HttpClient::default(),
-            rpc_client: RpcClient::default(),
-            config: SwapConfig::default(),
-        }
-    }
-}

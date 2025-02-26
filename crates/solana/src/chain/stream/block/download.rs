@@ -3,13 +3,11 @@
 
 use crate::model::{Block, Slot};
 use crate::rpc::RpcClient;
-use crate::stream::{RpcBlockStream, SlotStream};
 use common::Signal;
 use futures_util::future::join_all;
 use log::{debug, error};
 use std::collections::BTreeMap;
 use std::sync::Arc;
-use tokio::sync::mpsc::Sender;
 use tokio::sync::{Mutex, Semaphore};
 
 pub(crate) async fn download_blocks(

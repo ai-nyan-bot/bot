@@ -1,6 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use std::future::Future;
 #[cfg(test)]
 use crate::config::{Config, TelegramConfig};
 #[cfg(test)]
@@ -15,28 +16,26 @@ use axum::body::{to_bytes, Body};
 use axum::response::Response;
 #[cfg(test)]
 use axum::{http, Router};
-use base::repo::AuthRepo;
 #[cfg(test)]
 use base::repo::RuleRepo;
-use base::service::AuthService;
 #[cfg(test)]
 use base::service::{RuleService, UserService};
-use common::repo::Tx;
 #[cfg(test)]
 use common::ConfigValue;
 #[cfg(test)]
 use serde::de::DeserializeOwned;
-use sqlx::Connection;
 #[cfg(test)]
 use sqlx::PgPool;
-use std::future::Future;
 #[cfg(test)]
 use std::sync::Arc;
 #[cfg(test)]
 use testing::get_test_pool;
-use testing::initialise_database;
 #[cfg(test)]
 use tower::ServiceExt;
+use base::repo::AuthRepo;
+use base::service::AuthService;
+use common::repo::Tx;
+use testing::initialise_database;
 
 #[cfg(test)]
 pub(crate) struct Test {

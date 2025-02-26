@@ -41,7 +41,7 @@ impl Config {
         let config_path = if args.len() == 2 {
             PathBuf::from_str(args.get(1).unwrap()).unwrap()
         } else {
-            let path = PathBuf::from_str(args.get(0).unwrap()).unwrap();
+            let path = PathBuf::from_str(args.first().unwrap()).unwrap();
             path.parent().unwrap().join("config.toml")
         };
 

@@ -25,10 +25,10 @@ impl ReadTokenPairRepo {
         self.cache
             .put_all(read.iter().map(|pair| {
                 (
-                    pair.id.clone(),
+                    pair.id,
                     (pair.base.mint.clone(), pair.quote.mint.clone()),
                     CachedTokenPair {
-                        id: pair.id.clone(),
+                        id: pair.id,
                         mint: (pair.base.mint.clone(), pair.quote.mint.clone()),
                         base_id: pair.base.id,
                         quote_id: pair.quote.id,
@@ -59,10 +59,10 @@ impl ReadTokenPairRepo {
         self.cache
             .put_all(read.iter().map(|pair| {
                 (
-                    pair.id.clone(),
+                    pair.id,
                     (pair.base.mint.clone(), pair.quote.mint.clone()),
                     CachedTokenPair {
-                        id: pair.id.clone(),
+                        id: pair.id,
                         mint: (pair.base.mint.clone(), pair.quote.mint.clone()),
                         base_id: pair.base.id,
                         quote_id: pair.quote.id,

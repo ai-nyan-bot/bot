@@ -101,7 +101,7 @@ impl TryFrom<(Slot, EncodedTransactionWithStatusMeta)> for TransactionToParse {
         let account_keys = vtx.message.static_account_keys().to_vec();
 
         Ok(TransactionToParse {
-            slot: slot.into(),
+            slot,
             signature: Signature(vtx.signatures[0].to_string()),
             account_keys,
             instructions,

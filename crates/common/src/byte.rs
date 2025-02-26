@@ -211,7 +211,7 @@ impl<'a> ByteReader<'a> {
         let mut pos = self.pos.borrow_mut();
         let new_pos = if offset.is_negative() {
             // Ensure we do not go below 0
-            pos.saturating_sub(offset.abs() as usize)
+            pos.saturating_sub(offset.unsigned_abs())
         } else {
             // Ensure we do not go beyond the end of the data
             pos.saturating_add(offset as usize)
@@ -337,9 +337,9 @@ mod tests {
         let data: &[u8] = &[0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08];
         let test_instance = ByteReader::new(data);
 
-        assert_eq!(test_instance.read_range(4).unwrap().as_ref(), [0x01, 0x02, 0x03, 0x04]);
+        assert_eq!(test_instance.read_range(4).unwrap(), [0x01, 0x02, 0x03, 0x04]);
         assert_eq!(test_instance.read_u8().unwrap(), 0x05);
-        assert_eq!(test_instance.read_range(2).unwrap().as_ref(), [0x06, 0x07]);
+        assert_eq!(test_instance.read_range(2).unwrap(), [0x06, 0x07]);
         assert_eq!(test_instance.read_u8().unwrap(), 0x08);
     }
 

@@ -51,7 +51,7 @@ impl RpcClient {
         let response = self
             .delegate
             .get_multiple_accounts_with_config(
-                &*keys
+                &keys
                     .into_iter()
                     .map(|k| (k.clone()).into())
                     .collect::<Vec<_>>(),

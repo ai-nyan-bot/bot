@@ -35,7 +35,7 @@ impl<L: LoadTokenInfo> TradeRepo<L> {
     pub fn new(token_pair_repo: TokenPairRepo<L>, address_repo: AddressRepo) -> Self {
         Self(Arc::new(TradePairRepoInner {
             token_pair_repo,
-            address_repo: address_repo,
+            address_repo,
         }))
     }
 }

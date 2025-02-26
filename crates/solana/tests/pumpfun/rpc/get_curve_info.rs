@@ -23,7 +23,7 @@ async fn test_ok() {
     assert_eq!(result.real_base_reserves, 791862963469721);
     assert_eq!(result.real_quote_reserves, 34626924);
     assert_eq!(result.total_supply, 1000000000000000);
-    assert_eq!(result.complete, false);
+    assert!(!result.complete);
 }
 
 #[test_log::test(tokio::test)]

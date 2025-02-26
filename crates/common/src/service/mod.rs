@@ -41,7 +41,7 @@ impl From<RepoError> for ServiceError {
 impl From<serde_json::Error> for ServiceError {
 	fn from(value: serde_json::Error) -> Self {
 		error!("{value:#?}");
-		ServiceError::Internal(format!("serde error: {}", value.to_string()))
+		ServiceError::Internal(format!("serde error: {}", value))
 	}
 }
 

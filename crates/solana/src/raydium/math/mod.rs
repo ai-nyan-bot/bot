@@ -76,15 +76,15 @@ fn swap_exact_amount(
 
         let swap_in_after_deduct_fee = U128::from(input_amount).checked_sub(swap_fee).unwrap();
 
-        let swap_amount_out = swap_token_amount_base_in(
+        
+
+        swap_token_amount_base_in(
             swap_in_after_deduct_fee,
             pc_vault_amount.into(),
             coin_vault_amount.into(),
             swap_direction,
         )?
-        .as_u64();
-
-        swap_amount_out
+        .as_u64()
     } else {
         assert_eq!(mode, SwapExecutionMode::ExactOut);
 
@@ -95,7 +95,9 @@ fn swap_exact_amount(
             swap_direction,
         );
 
-        let swap_in_after_add_fee = swap_in_before_add_fee?
+        
+
+        swap_in_before_add_fee?
             .checked_mul(swap_fee_denominator.into())
             .unwrap()
             .checked_ceil_div(
@@ -106,9 +108,7 @@ fn swap_exact_amount(
             )
             .unwrap()
             .0
-            .as_u64();
-
-        swap_in_after_add_fee
+            .as_u64()
     };
 
     Ok(output_amount)

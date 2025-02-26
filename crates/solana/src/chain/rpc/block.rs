@@ -3,9 +3,9 @@
 
 use crate::convert::convert_transaction;
 use crate::model::{Block, Slot};
-use crate::rpc::{RpcClient, RpcClientInner, RpcResult};
+use crate::rpc::{RpcClient, RpcResult};
 use common::model::Timestamp;
-use log::{error, info, trace, warn};
+use log::{error, trace, warn};
 use solana_client::client_error::ClientError;
 use solana_client::rpc_config::RpcBlockConfig;
 use solana_client::rpc_request::RpcError;

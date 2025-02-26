@@ -34,6 +34,12 @@ impl Deref for InvocationRepo {
 #[derive(Debug)]
 pub struct InvocationRepoInner {}
 
+impl Default for InvocationRepo {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl InvocationRepo {
     pub fn new() -> Self {
         Self(Arc::new(InvocationRepoInner {}))

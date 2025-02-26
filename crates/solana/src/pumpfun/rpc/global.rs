@@ -37,11 +37,9 @@ impl GlobalInfo {
             discriminator: reader.read_u64().unwrap(),
             initialized: reader.read_u8().unwrap() > 0,
             authority: Pubkey::try_from(reader.read_range(32).unwrap())
-                .unwrap()
-                .into(),
+                .unwrap(),
             fee_recipient: Pubkey::try_from(reader.read_range(32).unwrap())
-                .unwrap()
-                .into(),
+                .unwrap(),
             initial_virtual_token_reserves: reader.read_u64().unwrap(),
             initial_virtual_sol_reserves: reader.read_u64().unwrap(),
             initial_real_token_reserves: reader.read_u64().unwrap(),

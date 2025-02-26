@@ -26,6 +26,12 @@ impl Deref for CurveRepo {
 #[derive(Debug)]
 pub struct CurveRepoInner {}
 
+impl Default for CurveRepo {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl CurveRepo {
     pub fn new() -> Self {
         Self(Arc::new(CurveRepoInner {}))

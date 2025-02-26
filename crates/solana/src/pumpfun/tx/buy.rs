@@ -182,7 +182,7 @@ async fn create_ata_if_not_exists(
     let token_program_id = Pubkey::from_str("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA").unwrap();
 
     // Get the associated token address for the wallet and mint
-    let ata = get_associated_token_address(&wallet_address, &token_mint);
+    let ata = get_associated_token_address(wallet_address, token_mint);
 
     // Check if the associated token account already exists
     if client.get_account(&ata).await.is_ok() {
@@ -193,8 +193,8 @@ async fn create_ata_if_not_exists(
     // Create instruction to initialize the ATA
     let instruction = instruction::create_associated_token_account(
         &payer.pubkey(),
-        &wallet_address,
-        &token_mint,
+        wallet_address,
+        token_mint,
         &token_program_id,
     );
 

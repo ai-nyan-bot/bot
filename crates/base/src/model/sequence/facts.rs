@@ -11,6 +11,12 @@ pub struct Facts {
 	timeframe_values: HashMap<Fact, HashMap<Timeframe, Value>>,
 }
 
+impl Default for Facts {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Facts {
 	pub fn new() -> Self {
 		Self {
@@ -58,7 +64,7 @@ impl Facts {
 
 		if fact.has_timeframe() {
 			if let Some(timeframe) = timeframe {
-				self.timeframe_values.entry(fact).or_insert_with(HashMap::new).insert(timeframe, value);
+				self.timeframe_values.entry(fact).or_default().insert(timeframe, value);
 			} else {
 				return Err(FactError::TimeframeRequired(fact));
 			}

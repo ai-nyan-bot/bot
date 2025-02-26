@@ -4,7 +4,7 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
-use crate::pumpfun::repo::{ReadTradeRepo, TradeQueryAll};
+use crate::pumpfun::repo::ReadTradeRepo;
 use common::model::Count;
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;

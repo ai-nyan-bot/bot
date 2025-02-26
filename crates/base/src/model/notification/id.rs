@@ -9,7 +9,7 @@ pub struct NotificationId(pub i32);
 
 impl AsRef<NotificationId> for NotificationId {
     fn as_ref(&self) -> &NotificationId {
-        &self
+        self
     }
 }
 

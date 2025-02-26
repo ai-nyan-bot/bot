@@ -37,6 +37,12 @@ impl Deref for RuleRepo {
 #[derive(Debug)]
 pub struct RuleRepoInner {}
 
+impl Default for RuleRepo {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl RuleRepo {
     pub fn new() -> Self {
         Self(Arc::new(RuleRepoInner {}))

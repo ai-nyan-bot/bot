@@ -9,7 +9,7 @@ pub struct AddressId(pub i32);
 
 impl AsRef<AddressId> for AddressId {
     fn as_ref(&self) -> &AddressId {
-        &self
+        self
     }
 }
 

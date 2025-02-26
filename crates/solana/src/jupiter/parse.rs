@@ -45,14 +45,14 @@ impl Default for JupiterParser {
 
 impl Parser<Instruction> for JupiterParser {
     fn parse(&self, tx: &Transaction) -> ParseResult<Instruction> {
-        let swaps = parse_swaps(&tx)?;
+        let swaps = parse_swaps(tx)?;
         if swaps.is_empty() {
             return Ok(vec![]);
         }
 
         Ok(vec![Instruction::Trade {
             swaps,
-            signer: tx.account_keys[0].clone().into(),
+            signer: tx.account_keys[0].clone(),
         }])
     }
 }

@@ -44,7 +44,7 @@ async fn test_ok() {
         assert_eq!(result.base_amount.0, 1.0);
         assert_eq!(result.quote_amount.0, 2.0);
         assert_eq!(result.price, 2.0);
-        assert_eq!(result.is_buy, true);
+        assert!(result.is_buy);
         assert_eq!(result.virtual_base_reserves, 3_000);
         assert_eq!(result.virtual_quote_reserves, 4_000);
 
@@ -100,7 +100,7 @@ async fn test_multiple() {
         assert_eq!(first.base_amount.0, 5.0);
         assert_eq!(first.quote_amount.0, 6.0);
         assert_eq!(first.price, 1.2);
-        assert_eq!(first.is_buy, false);
+        assert!(!first.is_buy);
         assert_eq!(first.virtual_base_reserves, 7_000);
         assert_eq!(first.virtual_quote_reserves, 8_000);
 
@@ -112,7 +112,7 @@ async fn test_multiple() {
         assert_eq!(second.base_amount.0, 1.0);
         assert_eq!(second.quote_amount.0, 2.0);
         assert_eq!(second.price, 2.0);
-        assert_eq!(second.is_buy, true);
+        assert!(second.is_buy);
         assert_eq!(second.virtual_base_reserves, 3_000);
         assert_eq!(second.virtual_quote_reserves, 4_000);
 

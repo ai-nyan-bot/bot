@@ -38,13 +38,9 @@ impl LoadTokenInfo for SuccessfulTokenInfoLoader {
     }
 }
 
+#[derive(Default)]
 pub struct FailingTokenInfoLoader {}
 
-impl Default for FailingTokenInfoLoader {
-    fn default() -> Self {
-        Self {}
-    }
-}
 
 #[async_trait]
 impl LoadTokenInfo for FailingTokenInfoLoader {

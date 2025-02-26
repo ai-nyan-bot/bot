@@ -21,13 +21,13 @@ impl AddressRepo {
 
         let to_read = self.find_missing_keys(&keys, &result);
         let mut read = self.read_wallet_addresses_from_db(tx, &to_read).await?;
-        self.cache.put_all(read.iter().map(|t| (t.id.clone(), t.address.clone(), t.clone()))).await;
+        self.cache.put_all(read.iter().map(|t| (t.id, t.address.clone(), t.clone()))).await;
         result.append(&mut read);
 
         let to_insert = self.find_missing_keys(&keys, &result);
         let mut inserted = self.insert_wallets(tx, &to_insert).await?;
 
-        self.cache.put_all(read.iter().map(|t| (t.id.clone(), t.address.clone(), t.clone()))).await;
+        self.cache.put_all(read.iter().map(|t| (t.id, t.address.clone(), t.clone()))).await;
         result.append(&mut inserted);
 
         result.sort_by(|l, r| l.id.cmp(&r.id));

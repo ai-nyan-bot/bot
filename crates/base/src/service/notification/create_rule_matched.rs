@@ -40,7 +40,7 @@ impl NotificationService {
 							let mut map = Map::new();
 							map.insert("rule".to_string(), serde_json::to_value(rule)?);
 							map.insert("token_pair".to_string(), serde_json::to_value(token_pair)?);
-							map.insert("button_0".to_string(), serde_json::to_value(buttons.get(0).unwrap_or(&TelegramActionButtonConfig::None)).unwrap());
+							map.insert("button_0".to_string(), serde_json::to_value(buttons.first().unwrap_or(&TelegramActionButtonConfig::None)).unwrap());
 							map.insert("button_1".to_string(), serde_json::to_value(buttons.get(1).unwrap_or(&TelegramActionButtonConfig::None)).unwrap());
 							map.insert("button_2".to_string(), serde_json::to_value(buttons.get(2).unwrap_or(&TelegramActionButtonConfig::None)).unwrap());
 							map.insert("button_3".to_string(), serde_json::to_value(buttons.get(3).unwrap_or(&TelegramActionButtonConfig::None)).unwrap());

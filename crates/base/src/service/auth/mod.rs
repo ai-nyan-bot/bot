@@ -5,7 +5,6 @@ use std::ops::Deref;
 use std::sync::Arc;
 
 use crate::repo::AuthRepo;
-use rand::Rng;
 use sqlx::PgPool;
 
 mod get;

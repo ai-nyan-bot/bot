@@ -35,7 +35,7 @@ async fn test_curve_inserted() {
         assert_eq!(log.virtual_base_reserves, 512561011366544);
         assert_eq!(log.virtual_quote_reserves, 62802280169);
         assert_eq!(log.progress, 70.66435);
-        assert_eq!(log.complete, false);
+        assert!(!log.complete);
     })
     .await;
 }
@@ -75,7 +75,7 @@ async fn test_curve_updated() {
         assert_eq!(second.virtual_base_reserves, 512561011366544);
         assert_eq!(second.virtual_quote_reserves, 62802280169);
         assert_eq!(second.progress, 70.66435);
-        assert_eq!(second.complete, false);
+        assert!(!second.complete);
 
         let first = logs.pop().unwrap();
         assert_eq!(first.id, 1000);
@@ -83,7 +83,7 @@ async fn test_curve_updated() {
         assert_eq!(first.virtual_base_reserves, 0);
         assert_eq!(first.virtual_quote_reserves, 0);
         assert_eq!(first.progress, 100);
-        assert_eq!(first.complete, true);
+        assert!(first.complete);
     })
     .await;
 }
@@ -129,7 +129,7 @@ async fn test_curve_updated_at_same_slot() {
         assert_eq!(first.virtual_base_reserves, 757214460226289i64);
         assert_eq!(first.virtual_quote_reserves, 42511074286i64);
         assert_eq!(first.progress, 39.816612);
-        assert_eq!(first.complete, false);
+        assert!(!first.complete);
     })
     .await;
 }

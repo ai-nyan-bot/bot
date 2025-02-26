@@ -4,7 +4,6 @@
 use crate::model::Slot;
 use base::model::{Amount, Percent, TokenPairId};
 pub use progress::CalculateProgress;
-use std::ops::{Div, Mul, Sub};
 
 mod progress;
 

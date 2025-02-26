@@ -35,6 +35,12 @@ pub struct AddressRepoInner {
     cache: Cache<AddressId, PublicKey, Address>,
 }
 
+impl Default for AddressRepo {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl AddressRepo {
     pub fn new() -> Self {
         Self(Arc::new(AddressRepoInner { cache: Cache::default() }))

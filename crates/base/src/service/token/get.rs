@@ -21,7 +21,7 @@ impl TokenService {
                 }
             }
         };
-        let _ = tx.commit().await?;
+        tx.commit().await?;
         Ok(result)
     }
 }

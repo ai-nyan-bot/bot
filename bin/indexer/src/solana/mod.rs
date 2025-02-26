@@ -39,7 +39,7 @@ pub(crate) fn index_solana(runtime: Runtime, config: Config) {
         let indexer_repo = IndexerRepo::default();
         let indexer = indexer_repo.get(&mut tx).await.unwrap();
 
-        let _ = tx.commit().await.unwrap();
+        tx.commit().await.unwrap();
 
         let token_info_loader = RpcTokenInfoLoader::new(config.rpc.url.resolve());
         let read_token_repo = ReadTokenRepo::new();
@@ -56,8 +56,8 @@ pub(crate) fn index_solana(runtime: Runtime, config: Config) {
         let state = State(Arc::new(StateInner {
             pool: pool.clone(),
             token_repo: token_repo.clone(),
-            token_pair_repo: token_pair_repo,
-            wallet_repo: wallet_repo,
+            token_pair_repo,
+            wallet_repo,
             pumpfun_trade_repo,
             pumpfun_curve_repo: solana::pumpfun::repo::CurveRepo::new(),
             jupiter_trade_repo,
@@ -106,14 +106,14 @@ pub(crate) fn index_solana(runtime: Runtime, config: Config) {
                         // FIXME it would be interesting to see what the time difference is between indexing a block and the actual block time
 
                         let mut jupiter_slot_trades = solana::jupiter::repo::SlotTrades{
-                            slot: block.slot.clone(),
-                            timestamp: block.timestamp.clone(),
+                            slot: block.slot,
+                            timestamp: block.timestamp,
                             trades: vec![],
                         };
 
                         let mut pumpfun_slot_trades = solana::pumpfun::repo::SlotTrades{
-                            slot: block.slot.clone(),
-                            timestamp: block.timestamp.clone(),
+                            slot: block.slot,
+                            timestamp: block.timestamp,
                             trades: vec![],
                         };
                         
@@ -162,9 +162,9 @@ pub(crate) fn index_solana(runtime: Runtime, config: Config) {
                                                 let last = swaps.last().unwrap();
                                                 jupiter_slot_trades.trades.push(solana::jupiter::repo::SlotTrade{
                                                         input_mint: first.input_mint.clone(),
-                                                        input_amount: first.input_amount.clone(),
+                                                        input_amount: first.input_amount,
                                                         output_mint: last.output_mint.clone(),
-                                                        output_amount: last.output_amount.clone(),
+                                                        output_amount: last.output_amount,
                                                         wallet: signer,
                                                         signature: transaction.signature.clone()
                                                 });
@@ -179,7 +179,7 @@ pub(crate) fn index_solana(runtime: Runtime, config: Config) {
                         
 
                         let mut tx = pool.begin().await.unwrap();
-                        let slot = block.slot.clone();
+                        let slot = block.slot;
 
                         let indexing_start = Instant::now();
                         pumpfun::index_trade(&mut tx, state.clone(), pumpfun_slot_trades).await;
@@ -188,7 +188,7 @@ pub(crate) fn index_solana(runtime: Runtime, config: Config) {
                         debug!("indexing took {} ms", indexing_done.duration_since(indexing_start).as_millis());
 
                         indexer_repo.set(&mut tx, slot).await.unwrap();
-                        let _ = tx.commit().await.unwrap();
+                        tx.commit().await.unwrap();
                      },
                     _ = signal.recv() => {
                         break
@@ -199,7 +199,7 @@ pub(crate) fn index_solana(runtime: Runtime, config: Config) {
 
         //
         //
-        let _ = join!(async { block_stream_handle.await }, async { handle.await });
+        let _ = join!(block_stream_handle, handle);
 
         // let (rx, handle) = RpcBlockStream::new(RpcBlockStreamConfig {
         //     url: config.rpc.url_1.resolve().into(),

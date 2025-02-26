@@ -10,7 +10,6 @@ use crate::rpc::error::RpcClientError;
 use common::model::RpcUrl;
 use solana_client::rpc_config::RpcBlockConfig;
 use solana_rpc_client::nonblocking::rpc_client;
-use std::future::Future;
 use std::ops::Deref;
 use std::sync::Arc;
 
@@ -29,9 +28,9 @@ impl RpcClient {
             get_block_with_config: Arc::new(
                 move |delegate: Arc<rpc_client::RpcClient>, slot: Slot, config: RpcBlockConfig| {
                     Box::pin(async move {
-                        Ok(delegate
+                        delegate
                             .get_block_with_config(slot.0 as u64, config)
-                            .await?)
+                            .await
                     })
                 },
             ),
@@ -48,9 +47,9 @@ impl Default for RpcClient {
             get_block_with_config: Arc::new(
                 move |delegate: Arc<rpc_client::RpcClient>, slot: Slot, config: RpcBlockConfig| {
                     Box::pin(async move {
-                        Ok(delegate
+                        delegate
                             .get_block_with_config(slot.0 as u64, config)
-                            .await?)
+                            .await
                     })
                 },
             ),

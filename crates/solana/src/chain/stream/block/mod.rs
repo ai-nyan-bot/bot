@@ -50,7 +50,7 @@ impl<S: SlotStream> RpcBlockStream<S> {
 
 #[async_trait]
 impl<S: SlotStream> BlockStream for RpcBlockStream<S> {
-    async fn stream(self, mut signal: Signal) -> (Receiver<Block>, JoinHandle<()>) {
+    async fn stream(self, signal: Signal) -> (Receiver<Block>, JoinHandle<()>) {
         let slots_to_download = SlotsToDownload::new(self.cfg.concurrency, self.previous_slot);
 
         let mut slot_signal = signal.clone();

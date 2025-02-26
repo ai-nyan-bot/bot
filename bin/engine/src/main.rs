@@ -53,7 +53,7 @@ fn main() {
 				println!("test rule - {}", rule.id.0);
 
 				for (token_pair_id, facts) in &pumpfun_facts {
-					if rule.sequence.condition.test(&facts) {
+					if rule.sequence.condition.test(facts) {
 						let mut tx = pool.begin().await.unwrap();
 
 						match InvocationRepo::new().create(
@@ -61,7 +61,7 @@ fn main() {
 							InvocationCreateCmd {
 								user: rule.user,
 								rule: rule.id,
-								token_pair: token_pair_id.clone(),
+								token_pair: *token_pair_id,
 								next: None,
 							},
 						).await {
@@ -77,7 +77,7 @@ fn main() {
 											NotificationRuleMatched::Telegram {
 												user: rule.user,
 												rule: rule.id,
-												token_pair: token_pair_id.clone(),
+												token_pair: *token_pair_id,
 												buttons: buttons.clone(),
 											},
 										).await;
@@ -85,11 +85,11 @@ fn main() {
 									Action::Sell => {}
 								}
 
-								let _ = tx.commit().await.unwrap();
+								tx.commit().await.unwrap();
 							}
 							Err(_) => {
 								// FIXME cache already invoked strategies - otherwise this might be heavy on the database
-								let _ = tx.rollback().await.unwrap();
+								tx.rollback().await.unwrap();
 							}
 						}
 					}

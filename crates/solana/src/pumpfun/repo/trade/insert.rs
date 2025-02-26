@@ -8,10 +8,10 @@ use crate::model::{Signature, Slot};
 use crate::pumpfun::model::Trade;
 use crate::pumpfun::repo::TradeRepo;
 use base::model::{
-    AddressId, Amount, DecimalAmount, PriceAvgQuote, PriceQuote, PublicKey, TokenMint, TokenPairId,
+    AddressId, Amount, DecimalAmount, PriceQuote, PublicKey, TokenMint, TokenPairId,
 };
 use base::LoadTokenInfo;
-use common::model::{Count, Timestamp};
+use common::model::Timestamp;
 use common::repo::{RepoResult, Tx};
 use log::trace;
 use sqlx::Row;
