@@ -14,7 +14,7 @@ use tokio::task::JoinHandle;
 use tokio::time::sleep;
 
 #[async_trait]
-pub trait SlotStream: Send {
+pub trait SlotStream: Send + Sync + 'static {
     async fn stream(self, signal: Signal) -> (Receiver<Slot>, JoinHandle<()>);
 }
 

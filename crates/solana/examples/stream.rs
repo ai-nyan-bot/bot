@@ -2,7 +2,9 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use common::Signal;
-use solana::stream::{BlockStream, RpcBlockStream, RpcBlockStreamConfig, RpcSlotStream, SlotStream};
+use solana::stream::{
+    BlockStream, RpcBlockStream, RpcBlockStreamConfig, RpcSlotStream, SlotStream,
+};
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
 use tracing_subscriber::EnvFilter;
@@ -90,11 +92,15 @@ async fn main() {
 
     let signal = Signal::new();
 
-    let (mut rx, handle) = RpcBlockStream::new(RpcBlockStreamConfig {
-        url: "http://api.mainnet-beta.solana.com".into(),
-        concurrency: 1,
-    })
-    .stream(RpcSlotStream::default(), signal.clone())
+    let (mut rx, handle) = RpcBlockStream::new(
+        RpcBlockStreamConfig {
+            url: "http://api.mainnet-beta.solana.com".into(),
+            concurrency: 1,
+        },
+        RpcSlotStream::default(),
+        None,
+    )
+    .stream(signal.clone())
     .await;
 
     while let Some(block) = rx.recv().await {

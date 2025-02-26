@@ -80,12 +80,16 @@ pub(crate) fn index_solana(runtime: Runtime, config: Config) {
 
         let slot_stream = RpcSlotStream::new(config.slotstream.url.resolve_or("http://api.mainnet-beta.solana.com".to_string()));
 
-        // FIXME ensure blocks arriving in chronological order
+
+        let mut tx = pool.begin().await.unwrap();
+        let previous_slot = indexer_repo.get(&mut tx).await.unwrap().slot;
+        tx.commit().await.unwrap();
+
         let (mut blocks, block_stream_handle) = RpcBlockStream::new(RpcBlockStreamConfig {
             url: config.blockstream.url.resolve_or("http://api.mainnet-beta.solana.com".to_string()).into(),
             concurrency: config.blockstream.concurrency.resolve_or(1usize),
-        })
-        .stream(slot_stream, signal.clone())
+        }, slot_stream, Some(previous_slot))
+        .stream(signal.clone())
         .await;
 
         let pumpfun_account = PublicKey::from_str("6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P").unwrap();
