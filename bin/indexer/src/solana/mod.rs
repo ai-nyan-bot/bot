@@ -81,13 +81,13 @@ pub fn index_solana(runtime: Runtime, config: Config) {
 
 
         let mut tx = pool.begin().await.unwrap();
-        let previous_slot = indexer_repo.get(&mut tx).await.unwrap().slot;
+        let previous_slot = indexer_repo.get(&mut tx).await.map(|i| i.slot).ok();
         tx.commit().await.unwrap();
 
         let (mut blocks, block_stream_handle) = RpcBlockStream::new(RpcBlockStreamConfig {
             url: config.blockstream.url.resolve_or("http://api.mainnet-beta.solana.com".to_string()).into(),
             concurrency: config.blockstream.concurrency.resolve_or(1usize),
-        }, slot_stream, Some(previous_slot))
+        }, slot_stream, previous_slot)
         .stream(signal.clone())
         .await;
 
