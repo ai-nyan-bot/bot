@@ -37,7 +37,7 @@ pub struct RpcBlockStream<S: SlotStream> {
 
 impl<S: SlotStream> RpcBlockStream<S> {
     pub fn new(cfg: RpcBlockStreamConfig, slot_stream: S, previous_slot: Option<Slot>) -> Self {
-        let (tx, rx) = tokio::sync::mpsc::channel(25);
+        let (tx, rx) = tokio::sync::mpsc::channel(1_000);
         Self {
             cfg,
             slot_stream,

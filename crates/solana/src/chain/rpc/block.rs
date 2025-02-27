@@ -49,7 +49,7 @@ impl RpcClient {
                 Ok(block) => {
                     return Ok(Some(Block {
                         slot,
-                        timestamp: Timestamp::from_solana_time(block.block_time.unwrap()),
+                        timestamp: Timestamp::from_epoch_second(block.block_time.unwrap()),
                         transactions: block
                             .transactions
                             .map(|t| t.into_iter().map(convert_transaction).collect())
@@ -157,7 +157,7 @@ mod tests {
 
         let result = test_instance.get_block(1).await.unwrap();
         let result = result.unwrap();
-        assert_eq!(result.timestamp, Timestamp::from_solana_time(1737344750))
+        assert_eq!(result.timestamp, Timestamp::from_epoch_second(1737344750))
     }
 
     #[tokio::test]

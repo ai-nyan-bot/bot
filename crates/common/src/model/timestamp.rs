@@ -56,7 +56,9 @@ impl<'de> Deserialize<'de> for Timestamp {
     {
         let s: String = Deserialize::deserialize(deserializer)?;
 
-        if let Ok(date_time) = OffsetDateTime::parse(&s, &time::format_description::well_known::Rfc3339) {
+        if let Ok(date_time) =
+            OffsetDateTime::parse(&s, &time::format_description::well_known::Rfc3339)
+        {
             return Ok(Timestamp(date_time));
         }
 
@@ -64,7 +66,9 @@ impl<'de> Deserialize<'de> for Timestamp {
             return Ok(Timestamp::from_epoch_second(timestamp));
         }
 
-        Err(serde::de::Error::custom("Expected ISO8601 or Unix timestamp"))
+        Err(serde::de::Error::custom(
+            "Expected ISO8601 or Unix timestamp",
+        ))
     }
 }
 
@@ -78,8 +82,15 @@ impl Timestamp {
     }
 
     pub fn from_epoch_micros(epoch_micros: i64) -> Self {
-        assert!(epoch_micros >= 1_000_000_000_000, "timestamp does not look like micros, was <{}>", epoch_micros);
-        Self(OffsetDateTime::from_unix_timestamp_nanos(epoch_micros as i128 * 1_000).expect("timestamp conversion"))
+        assert!(
+            epoch_micros >= 1_000_000_000_000,
+            "timestamp does not look like micros, was <{}>",
+            epoch_micros
+        );
+        Self(
+            OffsetDateTime::from_unix_timestamp_nanos(epoch_micros as i128 * 1_000)
+                .expect("timestamp conversion"),
+        )
     }
 
     pub fn from_epoch_second(epoch_second: i64) -> Self {
@@ -87,13 +98,15 @@ impl Timestamp {
     }
 
     pub fn from_epoch_millis(epoch_millis: i64) -> Self {
-        assert!(epoch_millis >= 1_000_000_000_000, "timestamp does not look like millis, was <{}>", epoch_millis);
-        Self(OffsetDateTime::from_unix_timestamp_nanos((epoch_millis * 1_000_000) as i128).expect("timestamp conversion"))
-    }
-
-    /// alias with solana_program::clock::UnixTimestamp
-    pub fn from_solana_time(solana_time_secs: i64) -> Self {
-        Self::from_epoch_millis(solana_time_secs * 1000)
+        assert!(
+            epoch_millis >= 1_000_000_000_000,
+            "timestamp does not look like millis, was <{}>",
+            epoch_millis
+        );
+        Self(
+            OffsetDateTime::from_unix_timestamp_nanos((epoch_millis * 1_000_000) as i128)
+                .expect("timestamp conversion"),
+        )
     }
 
     pub fn to_offset_date_time(&self) -> OffsetDateTime {
@@ -110,15 +123,24 @@ impl Timestamp {
 }
 
 pub fn unix_seconds_now() -> u64 {
-    SystemTime::now().duration_since(UNIX_EPOCH).expect("Time went backwards").as_secs()
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .expect("Time went backwards")
+        .as_secs()
 }
 
 pub fn unix_millis_now() -> u128 {
-    SystemTime::now().duration_since(UNIX_EPOCH).expect("Time went backwards").as_millis()
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .expect("Time went backwards")
+        .as_millis()
 }
 
 pub fn unix_micros_now() -> u128 {
-    SystemTime::now().duration_since(UNIX_EPOCH).expect("Time went backwards").as_micros()
+    SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .expect("Time went backwards")
+        .as_micros()
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Ord, PartialOrd, Eq, sqlx::Type)]
