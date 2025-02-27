@@ -16,14 +16,14 @@ async fn test_ok() {
 
         assert_eq!(result.base.id, 3);
         assert_eq!(result.base.mint, Mint::usdc());
-        assert_eq!(result.base.name, "USD Coin");
-        assert_eq!(result.base.symbol, "USDC");
+        assert_eq!(result.base.name.unwrap(), "USD Coin");
+        assert_eq!(result.base.symbol.unwrap(), "USDC");
         assert_eq!(result.base.decimals, 6);
 
         assert_eq!(result.quote.id, 2);
         assert_eq!(result.quote.mint, Mint::usdt());
-        assert_eq!(result.quote.name, "USDT");
-        assert_eq!(result.quote.symbol, "USDT");
+        assert_eq!(result.quote.name.unwrap(), "USDT");
+        assert_eq!(result.quote.symbol.unwrap(), "USDT");
         assert_eq!(result.quote.decimals, 6);
     })
     .await

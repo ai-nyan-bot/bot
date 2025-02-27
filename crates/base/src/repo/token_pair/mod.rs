@@ -12,7 +12,7 @@ mod list;
 mod list_or_populate;
 mod shared;
 
-use crate::model::{TokenId, TokenPair, TokenPairId, TokenPairMint};
+use crate::model::{Mint, TokenId, TokenPair, TokenPairId, TokenPairMint};
 use crate::repo::cache::Cache;
 use crate::repo::{ReadTokenRepo, TokenRepo};
 use crate::LoadTokenInfo;
@@ -30,9 +30,9 @@ pub struct CachedTokenPair {
 }
 
 #[derive(Debug, Clone)]
-pub struct TokenPairRepo<L: LoadTokenInfo>(pub Arc<TokenPairRepoInner<L>>);
+pub struct TokenPairRepo<L: LoadTokenInfo<Mint>>(pub Arc<TokenPairRepoInner<L>>);
 
-impl<L: LoadTokenInfo> Deref for TokenPairRepo<L> {
+impl<L: LoadTokenInfo<Mint>> Deref for TokenPairRepo<L> {
     type Target = TokenPairRepoInner<L>;
     fn deref(&self) -> &Self::Target {
         self.0.deref()
@@ -40,12 +40,12 @@ impl<L: LoadTokenInfo> Deref for TokenPairRepo<L> {
 }
 
 #[derive(Debug)]
-pub struct TokenPairRepoInner<L: LoadTokenInfo> {
+pub struct TokenPairRepoInner<L: LoadTokenInfo<Mint>> {
     token_repo: TokenRepo<L>,
     read: ReadTokenPairRepo,
 }
 
-impl<L: LoadTokenInfo> TokenPairRepo<L> {
+impl<L: LoadTokenInfo<Mint>> TokenPairRepo<L> {
     pub fn new(token_repo: TokenRepo<L>, read: ReadTokenPairRepo) -> Self {
         Self(Arc::new(TokenPairRepoInner { token_repo, read }))
     }

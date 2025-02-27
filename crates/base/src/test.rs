@@ -23,17 +23,17 @@ impl Default for SuccessfulTokenInfoLoader {
 }
 
 #[async_trait]
-impl LoadTokenInfo for SuccessfulTokenInfoLoader {
+impl LoadTokenInfo<Mint> for SuccessfulTokenInfoLoader {
     async fn load(&self, mint: impl Into<Mint> + Send) -> Option<TokenInfo> {
         let mut lock = self.0.counter.lock().unwrap();
         let counter = lock.get_mut();
         *counter += 1;
 
         Some(TokenInfo {
-            mint: mint.into(),
-            name: Name::new(counter.to_string()),
-            symbol: Symbol::new(counter.to_string()),
-            decimals: Decimals(*counter as i16),
+            mint: Some(mint.into()),
+            name: Some(Name::new(counter.to_string())),
+            symbol: Some(Symbol::new(counter.to_string())),
+            decimals: Some(Decimals(*counter as i16)),
             supply: Some(Supply(*counter as i64)),
             description: Some(Description(format!("Token-Description-{counter}"))),
             metadata: Some(Uri(format!("http://metadata-{counter}"))),
@@ -47,7 +47,7 @@ impl LoadTokenInfo for SuccessfulTokenInfoLoader {
 pub struct FailingTokenInfoLoader {}
 
 #[async_trait]
-impl LoadTokenInfo for FailingTokenInfoLoader {
+impl LoadTokenInfo<Mint> for FailingTokenInfoLoader {
     async fn load(&self, _mint: impl Into<Mint> + Send) -> Option<TokenInfo> {
         None
     }
@@ -56,7 +56,7 @@ impl LoadTokenInfo for FailingTokenInfoLoader {
 pub struct NeverCalledTokenInfoLoader {}
 
 #[async_trait]
-impl LoadTokenInfo for NeverCalledTokenInfoLoader {
+impl LoadTokenInfo<Mint> for NeverCalledTokenInfoLoader {
     async fn load(&self, _mint: impl Into<Mint> + Send) -> Option<TokenInfo> {
         panic!("This function shall never be called")
     }

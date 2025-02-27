@@ -12,7 +12,7 @@ use common::repo::{RepoResult, Tx};
 use log::error;
 use sqlx::Row;
 
-impl<L: LoadTokenInfo> TokenRepo<L> {
+impl<L: LoadTokenInfo<Mint>> TokenRepo<L> {
     pub async fn insert_token<'a>(
         &self,
         tx: &mut Tx<'a>,
@@ -34,11 +34,11 @@ impl<L: LoadTokenInfo> TokenRepo<L> {
 
         for info in load_all(&self.info_loader, token_mints).await {
             if let Some(info) = info {
-                mints.push(info.mint);
-                names.push(info.name);
-                symbols.push(info.symbol);
-                decimals.push(info.decimals);
-                supplies.push(info.supply);
+                mints.push(info.mint.expect("token mint required"));
+                names.push(info.name.unwrap_or("null_value".into()));
+                symbols.push(info.symbol.unwrap_or("null_value".into()));
+                decimals.push(info.decimals.expect("token decimals required"));
+                supplies.push(info.supply.unwrap_or(Supply::from(-1)));
                 metadata.push(info.metadata.unwrap_or("null_value".into()));
                 descriptions.push(info.description.unwrap_or("null_value".into()));
                 images.push(info.image.unwrap_or("null_value".into()));
@@ -54,14 +54,14 @@ impl<L: LoadTokenInfo> TokenRepo<L> {
             insert into solana.token (mint,name,symbol,decimals,supply,metadata,description,image,website)
             select
                 unnest($1::text[]) as mint,
-                unnest($2::text[]) as name,
-                unnest($3::text[]) as symbol,
+                unnest(array_replace($2::text[], 'null_value', null)) as name,
+                unnest(array_replace($3::text[], 'null_value', null)) as symbol,
                 unnest($4::int2[]) as decimals,
-                unnest($5::int2[]) as supply,
-                unnest(array_replace($6::varchar[], 'null_value', null)) as metadata,
-                unnest(array_replace($7::varchar[], 'null_value', null)) as description,
-                unnest(array_replace($8::varchar[], 'null_value', null)) as image,
-                unnest(array_replace($9::varchar[], 'null_value', null)) as website
+                unnest(array_replace($5::int8[], -1, null)) as supply,
+                unnest(array_replace($6::text[], 'null_value', null)) as metadata,
+                unnest(array_replace($7::text[], 'null_value', null)) as description,
+                unnest(array_replace($8::text[], 'null_value', null)) as image,
+                unnest(array_replace($9::text[], 'null_value', null)) as website
             on conflict (mint) do update set
                 mint = excluded.mint,
                 name = excluded.name,
@@ -101,8 +101,8 @@ impl<L: LoadTokenInfo> TokenRepo<L> {
         .map(|r| Token {
             id: r.get::<TokenId, _>("id"),
             mint: r.get::<Mint, _>("mint"),
-            name: r.get::<Name, _>("name"),
-            symbol: r.get::<Symbol, _>("symbol"),
+            name: r.try_get::<Name, _>("name").ok(),
+            symbol: r.try_get::<Symbol, _>("symbol").ok(),
             decimals: r.get::<Decimals, _>("decimals"),
             supply: r.try_get::<Supply, _>("supply").ok(),
             description: r.try_get::<Description, _>("description").ok(),

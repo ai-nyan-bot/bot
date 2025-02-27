@@ -4,16 +4,23 @@
 create table solana.token
 (
     id          serial   primary key,
+    version     int2     not null default (0),
     mint        text     not null,
-    name        text     not null,
-    symbol      text     not null,
+    name        text,
+    symbol      text,
     decimals    int2     not null,
     supply      int8,
     metadata    text,
     description text,
     image       text,
-    website     text
+    website     text,
+    updated_at  timestamptz default (timezone('utc', now()))
 );
+
+create trigger set_updated_at
+before update on solana.token
+for each row
+execute function solana.update_updated_at_column();
 
 
 insert into solana.token (id, mint, name, symbol, decimals) values

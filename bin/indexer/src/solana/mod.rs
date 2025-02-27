@@ -18,7 +18,7 @@ use solana::model::TransactionStatus;
 use solana::parse::Parser;
 use solana::pumpfun::PumpFunParser;
 use solana::stream::{BlockStream, RpcBlockStream, RpcBlockStreamConfig, RpcSlotStream};
-use solana::token_info::rpc::RpcTokenInfoLoader;
+use solana::token_info::rpc::TokenInfoRpcLoader;
 use tokio::signal::unix::SignalKind;
 use tokio::time::Instant;
 use tracing::{debug, info};
@@ -40,7 +40,7 @@ pub fn index_solana(runtime: Runtime, config: Config) {
 
         // tx.commit().await.unwrap();
 
-        let token_info_loader = RpcTokenInfoLoader::new(config.rpc.url.resolve());
+        let token_info_loader = TokenInfoRpcLoader::new(config.rpc.url.resolve());
         let read_token_repo = ReadTokenRepo::new();
         let token_repo = TokenRepo::new(token_info_loader, read_token_repo.clone());
 

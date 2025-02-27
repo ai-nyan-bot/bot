@@ -1,9 +1,9 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::{Token, TokenId, Mint};
-use common::model::Limit;
+use crate::model::{Mint, Token, TokenId};
 use crate::repo::cache::Cache;
+use common::model::Limit;
 use std::ops::Deref;
 use std::sync::Arc;
 
@@ -22,9 +22,9 @@ pub struct TokenQuery {
 }
 
 #[derive(Debug, Clone)]
-pub struct TokenRepo<L: LoadTokenInfo>(pub Arc<TokenRepoInner<L>>);
+pub struct TokenRepo<L: LoadTokenInfo<Mint>>(pub Arc<TokenRepoInner<L>>);
 
-impl<L: LoadTokenInfo> Deref for TokenRepo<L> {
+impl<L: LoadTokenInfo<Mint>> Deref for TokenRepo<L> {
     type Target = TokenRepoInner<L>;
     fn deref(&self) -> &Self::Target {
         self.0.deref()
@@ -32,12 +32,12 @@ impl<L: LoadTokenInfo> Deref for TokenRepo<L> {
 }
 
 #[derive(Debug)]
-pub struct TokenRepoInner<L: LoadTokenInfo> {
+pub struct TokenRepoInner<L: LoadTokenInfo<Mint>> {
     info_loader: L,
     read: ReadTokenRepo,
 }
 
-impl<L: LoadTokenInfo> TokenRepo<L> {
+impl<L: LoadTokenInfo<Mint>> TokenRepo<L> {
     pub fn new(info_loader: L, read: ReadTokenRepo) -> Self {
         Self(Arc::new(TokenRepoInner { info_loader, read }))
     }
@@ -73,12 +73,16 @@ impl Default for ReadTokenRepo {
 
 impl ReadTokenRepo {
     pub fn new() -> Self {
-        Self(Arc::new(ReadTokenRepoInner { cache: Cache::default() }))
+        Self(Arc::new(ReadTokenRepoInner {
+            cache: Cache::default(),
+        }))
     }
 }
 
 impl ReadTokenRepo {
     pub async fn populate_cache(&self, tokens: impl Iterator<Item = &Token>) {
-        self.cache.put_all(tokens.map(|t| (t.id, t.mint.clone(), t.clone()))).await
+        self.cache
+            .put_all(tokens.map(|t| (t.id, t.mint.clone(), t.clone())))
+            .await
     }
 }

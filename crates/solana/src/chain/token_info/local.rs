@@ -4,9 +4,9 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
-use crate::token_info::ipfs::rewrite_ipfs;
+use crate::token_info::{rewrite_ipfs, sanitize_value};
 use async_trait::async_trait;
-use base::model::{Decimals, Mint, Symbol, Uri};
+use base::model::{Decimals, Mint, Uri};
 use base::{LoadTokenInfo, TokenInfo};
 use log::warn;
 use serde::{Deserialize, Serialize};
@@ -14,12 +14,12 @@ use std::borrow::Cow;
 use std::collections::HashMap;
 
 /// Legacy token list for Solana from solana-labs repo and kana, merge data if required
-pub struct LocalMetadataLoader {
+pub struct TokenInfoLocalLoader {
     metadata: HashMap<Mint, TokenInfo>,
 }
 
 #[async_trait]
-impl LoadTokenInfo for LocalMetadataLoader {
+impl LoadTokenInfo<Mint> for TokenInfoLocalLoader {
     async fn load(&self, mint: impl Into<Mint> + Send) -> Option<TokenInfo> {
         self.metadata.get(&mint.into()).map(|t| t.clone())
     }
@@ -64,7 +64,7 @@ struct KanaTokenMetadata {
     pub logo_uri: String,
 }
 
-impl LocalMetadataLoader {
+impl TokenInfoLocalLoader {
     pub fn new() -> Self {
         let token_info_solana = Self::load_legacy_file();
         let token_info_kana = Self::load_kana_file();
@@ -73,7 +73,7 @@ impl LocalMetadataLoader {
         for mint_addr in itertools::merge(token_info_solana.keys(), token_info_kana.keys()) {
             let solana_labs = token_info_solana.get(mint_addr);
             let kana = token_info_kana.get(mint_addr);
-            let merged = merge_token_metadata(solana_labs, kana);
+            let merged = merge_token_info(solana_labs, kana);
             merged_map.insert(mint_addr.clone(), merged.into_owned());
         }
 
@@ -90,21 +90,23 @@ impl LocalMetadataLoader {
         for token in tokens.tokens {
             let mint: Mint = token.mint.into();
             let mapped = TokenInfo {
-                mint: mint.clone(),
-                symbol: token.symbol.into(),
-                name: token.name.into(),
-                decimals: token.decimals.into(),
+                mint: Some(mint.clone()),
+                symbol: Some(sanitize_value(token.symbol).into()),
+                name: Some(sanitize_value(token.name).into()),
+                decimals: Some(token.decimals.into()),
                 supply: None,
                 metadata: None,
-                image: Some(token.logo_uri.into()),
-                description: token
-                    .extensions
-                    .as_ref()
-                    .and_then(|e| e.description.clone().map(|desc| desc.into())),
-                website: token
-                    .extensions
-                    .as_ref()
-                    .and_then(|e| e.website.clone().map(|twitter| twitter.into())),
+                image: Some(rewrite_ipfs(Uri::from(sanitize_value(token.logo_uri)))),
+                description: token.extensions.as_ref().and_then(|e| {
+                    e.description
+                        .clone()
+                        .map(|desc| sanitize_value(desc).into())
+                }),
+                website: token.extensions.as_ref().and_then(|e| {
+                    e.website
+                        .clone()
+                        .map(|website| rewrite_ipfs(Uri::from(sanitize_value(website))))
+                }),
             };
 
             result.insert(mint, mapped);
@@ -121,13 +123,13 @@ impl LocalMetadataLoader {
         for token in tokens {
             let mint: Mint = token.address.into();
             let mapped = TokenInfo {
-                mint: mint.clone(),
-                symbol: token.symbol.into(),
-                name: token.name.into(),
-                decimals: token.decimals.into(),
+                mint: Some(mint.clone()),
+                symbol: Some(sanitize_value(token.symbol).into()),
+                name: Some(sanitize_value(token.name).into()),
+                decimals: Some(token.decimals.into()),
                 supply: None,
                 metadata: None,
-                image: Some(rewrite_ipfs(token.logo_uri)),
+                image: Some(rewrite_ipfs(sanitize_value(token.logo_uri))),
                 // not provided in token list json
                 description: None,
                 // not provided in token list json
@@ -145,7 +147,7 @@ impl LocalMetadataLoader {
     }
 }
 
-fn merge_token_metadata<'a>(
+fn merge_token_info<'a>(
     solana_labs: Option<&'a TokenInfo>,
     kana: Option<&'a TokenInfo>,
 ) -> Cow<'a, TokenInfo> {
@@ -159,9 +161,9 @@ fn merge_token_metadata<'a>(
                 && from_labs.website == from_kana.website;
 
             let merged_decimals = merge_decimals(
-                from_labs.decimals,
-                from_kana.decimals,
-                &from_labs.mint.0 .0.as_str(),
+                from_labs.decimals.unwrap(),
+                from_kana.decimals.unwrap(),
+                &from_labs.mint.as_ref().unwrap().0 .0.as_str(),
             );
 
             if !same_values {
@@ -170,7 +172,7 @@ fn merge_token_metadata<'a>(
                     symbol: from_labs.symbol.clone(),
                     name: from_kana.name.clone(),
                     // be careful, some from_labs data is wrong
-                    decimals: merged_decimals,
+                    decimals: Some(merged_decimals),
                     supply: None,
                     metadata: None,
                     image: from_labs.image.clone(),
@@ -219,27 +221,27 @@ pub(crate) fn merge_decimals(from_legacy: Decimals, from_kana: Decimals, mint: &
 
 #[cfg(test)]
 mod tests {
-    use crate::token_info::local::{merge_decimals, LocalMetadataLoader};
+    use crate::token_info::local::{merge_decimals, TokenInfoLocalLoader};
 
     #[test]
     pub fn load_legacy_token_list() {
-        let test_instance = LocalMetadataLoader::new();
+        let test_instance = TokenInfoLocalLoader::new();
         let token_info = test_instance
             .load("HCXXtXPasqcF4BVsrPQPfHMQPUofoCbDbjsTUANFSHDR")
             .unwrap();
-        assert_eq!(token_info.symbol, "MONKE");
-        assert_eq!(token_info.name, "MONKE TOKEN");
+        assert_eq!(token_info.symbol.unwrap(), "MONKE");
+        assert_eq!(token_info.name.unwrap(), "MONKE TOKEN");
         assert_eq!(token_info.image.unwrap(), "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/HCXXtXPasqcF4BVsrPQPfHMQPUofoCbDbjsTUANFSHDR/logo.png");
     }
 
     #[test]
     pub fn token_only_in_kana() {
-        let test_instance = LocalMetadataLoader::new();
+        let test_instance = TokenInfoLocalLoader::new();
         let token_info = test_instance
             .load("7atgF8KQo4wJrD5ATGX7t1V2zVvykPJbFfNeVf1icFv1")
             .unwrap();
-        assert_eq!(token_info.symbol, "$CWIF");
-        assert_eq!(token_info.name, "catwifhat");
+        assert_eq!(token_info.symbol.unwrap(), "$CWIF");
+        assert_eq!(token_info.name.unwrap(), "catwifhat");
         assert_eq!(
             token_info.image.unwrap(),
             "https://i.postimg.cc/d1QD417z/200x200logo-copy.jpg"
@@ -248,11 +250,11 @@ mod tests {
 
     #[test]
     pub fn merge_coingecko_description() {
-        let test_instance = LocalMetadataLoader::new();
+        let test_instance = TokenInfoLocalLoader::new();
         let token_info = test_instance
             .load("PRiME7gDoiG1vGr95a3CRMv9xHY7UGjd4JKvfSkmQu2")
             .unwrap();
-        assert_eq!(token_info.symbol, "PRIME");
+        assert_eq!(token_info.symbol.unwrap(), "PRIME");
 
         assert_eq!(token_info.description.unwrap(), "SolanaPrime utility token");
     }

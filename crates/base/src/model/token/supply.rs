@@ -7,12 +7,6 @@ use serde::{Deserialize, Serialize};
 #[sqlx(transparent)]
 pub struct Supply(pub i64);
 
-impl Supply {
-    pub fn infinite() -> Self {
-        Self(-1)
-    }
-}
-
 impl From<i32> for Supply {
     fn from(value: i32) -> Self {
         Self(value as i64)

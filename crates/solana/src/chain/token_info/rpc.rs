@@ -4,6 +4,7 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
+use crate::token_info::{rewrite_ipfs, sanitize_value};
 use async_trait::async_trait;
 use base::model::{Decimals, Mint as TokenMint, Name, Supply, Symbol};
 use base::{LoadTokenInfo, TokenInfo};
@@ -22,11 +23,11 @@ use std::fmt::{Debug, Formatter};
 use std::sync::Arc;
 
 #[derive(Clone)]
-pub struct RpcTokenInfoLoader {
+pub struct TokenInfoRpcLoader {
     rpc_client: Arc<RpcClient>,
 }
 
-impl RpcTokenInfoLoader {
+impl TokenInfoRpcLoader {
     pub fn new(rpc_url: impl Into<RpcUrl>) -> Self {
         Self {
             rpc_client: Arc::new(RpcClient::new(rpc_url.into().to_string())),
@@ -34,7 +35,7 @@ impl RpcTokenInfoLoader {
     }
 }
 
-impl Debug for RpcTokenInfoLoader {
+impl Debug for TokenInfoRpcLoader {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         f.write_str("RpcTokenInfoLoader")
     }
@@ -68,7 +69,7 @@ pub struct TokenMetadata {
 }
 
 #[async_trait]
-impl LoadTokenInfo for RpcTokenInfoLoader {
+impl LoadTokenInfo<TokenMint> for TokenInfoRpcLoader {
     async fn load(&self, mint: impl Into<TokenMint> + Send) -> Option<TokenInfo> {
         let mint = mint.into();
         debug!("Load token info: {mint}");
@@ -97,20 +98,29 @@ impl LoadTokenInfo for RpcTokenInfoLoader {
                             return None;
                         };
 
-                        let Some(Some(pda)) = accounts.get(1) else {
-                            error!("pda not found: {mint}");
-                            return None;
-                        };
+                        if let Some(Some(pda)) = accounts.get(1) {
+                            if let Ok(metadata) = Metadata::from_bytes(pda.data.as_slice()) {
+                                return Some(TokenInfo {
+                                    mint: Some(mint),
+                                    name: Some(Name(sanitize_value(metadata.name.as_str()))),
+                                    symbol: Some(Symbol(sanitize_value(metadata.symbol.as_str()))),
+                                    decimals: Some(Decimals(unpacked_mint.decimals as i16)),
+                                    supply: Some(Supply(unpacked_mint.supply as i64)),
+                                    description: None,
+                                    metadata: Some(
+                                        rewrite_ipfs(sanitize_value(metadata.uri)).into(),
+                                    ),
+                                    image: None,
+                                    website: None,
+                                });
+                            };
+                        }
 
-                        let Ok(metadata) = Metadata::from_bytes(pda.data.as_slice()) else {
-                            error!("metadata not found: {mint}");
-                            return None;
-                        };
                         Some(TokenInfo {
-                            mint,
-                            name: Name(sanitize_value(metadata.name.as_str())),
-                            symbol: Symbol(sanitize_value(metadata.symbol.as_str())),
-                            decimals: Decimals(unpacked_mint.decimals as i16),
+                            mint: Some(mint),
+                            name: None,
+                            symbol: None,
+                            decimals: Some(Decimals(unpacked_mint.decimals as i16)),
                             supply: Some(Supply(unpacked_mint.supply as i64)),
                             description: None,
                             metadata: None,
@@ -134,10 +144,10 @@ impl LoadTokenInfo for RpcTokenInfoLoader {
                         else {
                             info!("unable to unpack extension: {mint}");
                             return Some(TokenInfo {
-                                mint,
-                                name: "".into(),
-                                symbol: "".into(),
-                                decimals: Decimals(unpacked_mint.base.decimals as i16),
+                                mint: Some(mint),
+                                name: None,
+                                symbol: None,
+                                decimals: Some(Decimals(unpacked_mint.base.decimals as i16)),
                                 supply: Some(Supply(unpacked_mint.base.supply as i64)),
                                 description: None,
                                 metadata: None,
@@ -147,13 +157,13 @@ impl LoadTokenInfo for RpcTokenInfoLoader {
                         };
 
                         Some(TokenInfo {
-                            mint,
-                            name: Name(sanitize_value(metadata.name.as_str())),
-                            symbol: Symbol(sanitize_value(metadata.symbol.as_str())),
-                            decimals: Decimals(unpacked_mint.base.decimals as i16),
+                            mint: Some(mint),
+                            name: Some(Name(sanitize_value(metadata.name.as_str()))),
+                            symbol: Some(Symbol(sanitize_value(metadata.symbol.as_str()))),
+                            decimals: Some(Decimals(unpacked_mint.base.decimals as i16)),
                             supply: Some(Supply(unpacked_mint.base.supply as i64)),
                             description: None,
-                            metadata: None,
+                            metadata: Some(rewrite_ipfs(sanitize_value(metadata.uri)).into()),
                             image: None,
                             website: None,
                         })
@@ -169,22 +179,5 @@ impl LoadTokenInfo for RpcTokenInfoLoader {
                 None
             }
         }
-    }
-}
-
-fn sanitize_value(value: &str) -> String {
-    value.replace("\0", "").trim().to_string()
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::token_info::rpc::sanitize_value;
-
-    #[test]
-    fn sanitize_value_success() {
-        assert_eq!(
-            sanitize_value(" BOMBO \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"),
-            "BOMBO"
-        )
     }
 }

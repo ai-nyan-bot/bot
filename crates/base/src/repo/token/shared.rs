@@ -95,8 +95,8 @@ impl ReadTokenRepo {
         .map(|r| Token {
             id: r.get::<TokenId, _>("id"),
             mint: r.get::<Mint, _>("mint"),
-            name: r.get::<Name, _>("name"),
-            symbol: r.get::<Symbol, _>("symbol"),
+            name: r.try_get::<Name, _>("name").ok(),
+            symbol: r.try_get::<Symbol, _>("symbol").ok(),
             decimals: r.get::<Decimals, _>("decimals"),
             supply: r.try_get::<Supply, _>("supply").ok(),
             description: r.try_get::<Description, _>("description").ok(),
@@ -133,8 +133,8 @@ impl ReadTokenRepo {
         .map(|r| Token {
             id: r.get::<TokenId, _>("id"),
             mint: r.get::<Mint, _>("mint"),
-            name: r.get::<Name, _>("name"),
-            symbol: r.get::<Symbol, _>("symbol"),
+            name: r.try_get::<Name, _>("name").ok(),
+            symbol: r.try_get::<Symbol, _>("symbol").ok(),
             decimals: r.get::<Decimals, _>("decimals"),
             supply: r.try_get::<Supply, _>("supply").ok(),
             description: r.try_get::<Description, _>("description").ok(),

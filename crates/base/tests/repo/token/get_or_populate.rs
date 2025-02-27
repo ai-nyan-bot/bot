@@ -20,8 +20,8 @@ async fn test_wsol() {
 
         assert_eq!(result.id, 1);
         assert_eq!(result.mint, Mint::wsol());
-        assert_eq!(result.name, "Wrapped SOL");
-        assert_eq!(result.symbol, "WSOL");
+        assert_eq!(result.name.unwrap(), "Wrapped SOL");
+        assert_eq!(result.symbol.unwrap(), "WSOL");
         assert_eq!(result.decimals, 9);
 
         let count = count_all(&mut tx).await;
@@ -39,8 +39,8 @@ async fn test_usdt() {
 
         assert_eq!(result.id, 2);
         assert_eq!(result.mint, Mint::usdt());
-        assert_eq!(result.name, "USDT");
-        assert_eq!(result.symbol, "USDT");
+        assert_eq!(result.name.unwrap(), "USDT");
+        assert_eq!(result.symbol.unwrap(), "USDT");
         assert_eq!(result.decimals, 6);
 
         let count = count_all(&mut tx).await;
@@ -58,8 +58,8 @@ async fn test_usdc() {
 
         assert_eq!(result.id, 3);
         assert_eq!(result.mint, Mint::usdc());
-        assert_eq!(result.name, "USD Coin");
-        assert_eq!(result.symbol, "USDC");
+        assert_eq!(result.name.unwrap(), "USD Coin");
+        assert_eq!(result.symbol.unwrap(), "USDC");
         assert_eq!(result.decimals, 6);
 
         let count = count_all(&mut tx).await;
@@ -79,8 +79,8 @@ async fn test_in_db() {
 
         assert_eq!(result.id, 1000);
         assert_eq!(result.mint, bonk_mint());
-        assert_eq!(result.name, "1000");
-        assert_eq!(result.symbol, "1000");
+        assert_eq!(result.name.unwrap(), "1000");
+        assert_eq!(result.symbol.unwrap(), "1000");
         assert_eq!(result.decimals, 1000);
 
         let count = count_all(&mut tx).await;
@@ -98,8 +98,8 @@ async fn test_in_cache() {
         let result = test_instance.get_or_populate(&mut tx, bonk_mint()).await.unwrap();
         assert_eq!(result.id, 1000);
         assert_eq!(result.mint, bonk_mint());
-        assert_eq!(result.name, "1000");
-        assert_eq!(result.symbol, "1000");
+        assert_eq!(result.name.unwrap(), "1000");
+        assert_eq!(result.symbol.unwrap(), "1000");
         assert_eq!(result.decimals, 1000);
 
         let count = count_all(&mut tx).await;
@@ -116,8 +116,8 @@ async fn test_insert() {
 
         assert_eq!(result.id, 1000);
         assert_eq!(result.mint, bonk_mint());
-        assert_eq!(result.name, "1000");
-        assert_eq!(result.symbol, "1000");
+        assert_eq!(result.name.unwrap(), "1000");
+        assert_eq!(result.symbol.unwrap(), "1000");
         assert_eq!(result.decimals, 1000);
 
         let count = count_all(&mut tx).await;

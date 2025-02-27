@@ -139,17 +139,3 @@ price
 image
 image
 image
-
-#############################################################################################
-
-pda not found
-
-2025-02-06T10:52:37.214001Z TRACE web3::solana::rpc::block: get block for 318839359    
-2025-02-06T10:52:37.669286Z DEBUG web3::solana::token_info::rpc: Load token info: SLNDpmoWTVADgEdndyvWzroNL7zSi1dF9PC3xHGtPwp    
-2025-02-06T10:52:37.879337Z ERROR web3::solana::token_info::rpc: pda not found: SLNDpmoWTVADgEdndyvWzroNL7zSi1dF9PC3xHGtPwp    
-thread 'tokio-runtime-worker' panicked at bin/indexer/src/solana/jupiter/trade.rs:9:77:
-called `Result::unwrap()` on an `Err` value: NotFound
-stack backtrace:
-2025-02-06T10:52:37.890737Z DEBUG web3::solana::stream::slot: 318839518
-
-#############################################################################################

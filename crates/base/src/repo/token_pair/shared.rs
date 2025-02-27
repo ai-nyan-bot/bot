@@ -178,8 +178,8 @@ join input_pairs ip on base.mint = ip.base_mint and quote.mint = ip.quote_mint;
             base: Token {
                 id: r.get::<TokenId, _>("base_id"),
                 mint: r.get::<Mint, _>("base_mint"),
-                name: r.get::<Name, _>("base_name"),
-                symbol: r.get::<Symbol, _>("base_symbol"),
+                name: r.try_get::<Name, _>("base_name").ok(),
+                symbol: r.try_get::<Symbol, _>("base_symbol").ok(),
                 decimals: r.get::<Decimals, _>("base_decimals"),
                 supply: r.try_get::<Supply, _>("base_supply").ok(),
                 description: r.try_get::<Description, _>("base_description").ok(),
@@ -190,8 +190,8 @@ join input_pairs ip on base.mint = ip.base_mint and quote.mint = ip.quote_mint;
             quote: Token {
                 id: r.get::<TokenId, _>("quote_id"),
                 mint: r.get::<Mint, _>("quote_mint"),
-                name: r.get::<Name, _>("quote_name"),
-                symbol: r.get::<Symbol, _>("quote_symbol"),
+                name: r.try_get::<Name, _>("quote_name").ok(),
+                symbol: r.try_get::<Symbol, _>("quote_symbol").ok(),
                 decimals: r.get::<Decimals, _>("quote_decimals"),
                 supply: r.try_get::<Supply, _>("quote_supply").ok(),
                 description: r.try_get::<Description, _>("quote_description").ok(),
@@ -251,8 +251,8 @@ where tp.id in (select unnest($1::int4[]));
             base: Token {
                 id: r.get::<TokenId, _>("base_id"),
                 mint: r.get::<Mint, _>("base_mint"),
-                name: r.get::<Name, _>("base_name"),
-                symbol: r.get::<Symbol, _>("base_symbol"),
+                name: r.try_get::<Name, _>("base_name").ok(),
+                symbol: r.try_get::<Symbol, _>("base_symbol").ok(),
                 decimals: r.get::<Decimals, _>("base_decimals"),
                 supply: r.try_get::<Supply, _>("base_supply").ok(),
                 description: r.try_get::<Description, _>("base_description").ok(),
@@ -263,8 +263,8 @@ where tp.id in (select unnest($1::int4[]));
             quote: Token {
                 id: r.get::<TokenId, _>("quote_id"),
                 mint: r.get::<Mint, _>("quote_mint"),
-                name: r.get::<Name, _>("quote_name"),
-                symbol: r.get::<Symbol, _>("quote_symbol"),
+                name: r.try_get::<Name, _>("quote_name").ok(),
+                symbol: r.try_get::<Symbol, _>("quote_symbol").ok(),
                 decimals: r.get::<Decimals, _>("quote_decimals"),
                 supply: r.try_get::<Supply, _>("quote_supply").ok(),
                 description: r.try_get::<Description, _>("quote_description").ok(),

@@ -36,7 +36,7 @@ pub struct SlotTrade {
     pub signature: Signature,
 }
 
-impl<L: LoadTokenInfo> TradeRepo<L> {
+impl<L: LoadTokenInfo<Mint>> TradeRepo<L> {
     pub async fn insert_trades<'a>(
         &self,
         tx: &mut Tx<'a>,

@@ -1,6 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use base::model::Mint;
 use base::repo::{AddressRepo, TokenPairRepo};
 use base::LoadTokenInfo;
 use common::model::Limit;
@@ -16,9 +17,9 @@ pub struct TradeQueryAll {
 }
 
 #[derive(Debug, Clone)]
-pub struct TradeRepo<L: LoadTokenInfo>(pub Arc<TradePairRepoInner<L>>);
+pub struct TradeRepo<L: LoadTokenInfo<Mint>>(pub Arc<TradePairRepoInner<L>>);
 
-impl<L: LoadTokenInfo> Deref for TradeRepo<L> {
+impl<L: LoadTokenInfo<Mint>> Deref for TradeRepo<L> {
     type Target = TradePairRepoInner<L>;
     fn deref(&self) -> &Self::Target {
         self.0.deref()
@@ -26,12 +27,12 @@ impl<L: LoadTokenInfo> Deref for TradeRepo<L> {
 }
 
 #[derive(Debug)]
-pub struct TradePairRepoInner<L: LoadTokenInfo> {
+pub struct TradePairRepoInner<L: LoadTokenInfo<Mint>> {
     token_pair_repo: TokenPairRepo<L>,
     address_repo: AddressRepo,
 }
 
-impl<L: LoadTokenInfo> TradeRepo<L> {
+impl<L: LoadTokenInfo<Mint>> TradeRepo<L> {
     pub fn new(token_pair_repo: TokenPairRepo<L>, address_repo: AddressRepo) -> Self {
         Self(Arc::new(TradePairRepoInner {
             token_pair_repo,

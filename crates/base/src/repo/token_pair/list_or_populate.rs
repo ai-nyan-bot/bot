@@ -10,7 +10,7 @@ use crate::repo::TokenPairRepo;
 use crate::LoadTokenInfo;
 use common::repo::{RepoResult, Tx};
 
-impl<L: LoadTokenInfo> TokenPairRepo<L> {
+impl<L: LoadTokenInfo<Mint>> TokenPairRepo<L> {
     pub async fn list_or_populate<'a>(
 		&self,
 		tx: &mut Tx<'a>,

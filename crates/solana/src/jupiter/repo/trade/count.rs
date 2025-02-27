@@ -5,14 +5,14 @@
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
 use crate::jupiter::repo::TradeRepo;
+use base::model::Mint;
 use base::LoadTokenInfo;
 use common::model::Count;
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 
-impl<L: LoadTokenInfo> TradeRepo<L> {
-    pub async fn count_all<'a>(&self, tx: &mut Tx<'a>)
-     -> RepoResult<Count> {
+impl<L: LoadTokenInfo<Mint>> TradeRepo<L> {
+    pub async fn count_all<'a>(&self, tx: &mut Tx<'a>) -> RepoResult<Count> {
         Ok(sqlx::query("select count(*) from jupiter.trade;")
             .fetch_one(&mut **tx)
             .await?

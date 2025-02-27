@@ -10,7 +10,7 @@ use crate::LoadTokenInfo;
 use common::repo::error::RepoError;
 use common::repo::{RepoResult, Tx};
 
-impl<L: LoadTokenInfo> TokenPairRepo<L> {
+impl<L: LoadTokenInfo<Mint>> TokenPairRepo<L> {
     pub async fn get_or_populate<'a>(
 		&self,
 		tx: &mut Tx<'a>,

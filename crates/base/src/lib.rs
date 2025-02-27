@@ -10,11 +10,11 @@ pub mod service;
 pub mod test;
 
 #[async_trait]
-pub trait LoadTokenInfo: Send + Sync {
-    async fn load(&self, mint: impl Into<Mint> + Send) -> Option<TokenInfo>;
+pub trait LoadTokenInfo<T>: Send + Sync {
+    async fn load(&self, target: impl Into<T> + Send) -> Option<TokenInfo>;
 }
 
-pub async fn load_all<L: LoadTokenInfo>(
+pub async fn load_all<L: LoadTokenInfo<Mint>>(
     loader: &L,
     mints: impl IntoIterator<Item = impl Into<Mint>>,
 ) -> Vec<Option<TokenInfo>> {
@@ -27,10 +27,10 @@ pub async fn load_all<L: LoadTokenInfo>(
 
 #[derive(Debug, Clone)]
 pub struct TokenInfo {
-    pub mint: Mint,
-    pub name: Name,
-    pub symbol: Symbol,
-    pub decimals: Decimals,
+    pub mint: Option<Mint>,
+    pub name: Option<Name>,
+    pub symbol: Option<Symbol>,
+    pub decimals: Option<Decimals>,
     pub supply: Option<Supply>,
     pub description: Option<Description>,
     pub metadata: Option<Uri>,

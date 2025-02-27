@@ -10,7 +10,7 @@ use crate::LoadTokenInfo;
 use common::repo::error::RepoError;
 use common::repo::{RepoResult, Tx};
 
-impl<L: LoadTokenInfo> TokenRepo<L> {
+impl<L: LoadTokenInfo<Mint>> TokenRepo<L> {
     pub async fn get_or_populate<'a>(&self, tx: &mut Tx<'a>, mint: impl Into<Mint> + Send) -> RepoResult<Token> {
         let mut result = self.list_or_populate(tx, vec![mint.into()]).await?;
         if result.is_empty() {

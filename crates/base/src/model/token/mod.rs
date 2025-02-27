@@ -34,8 +34,8 @@ mod volume;
 pub struct Token {
     pub id: TokenId,
     pub mint: Mint,
-    pub name: Name,
-    pub symbol: Symbol,
+    pub name: Option<Name>,
+    pub symbol: Option<Symbol>,
     pub decimals: Decimals,
     pub supply: Option<Supply>,
     pub description: Option<Description>,
@@ -53,6 +53,10 @@ pub struct TokenPair {
 
 impl Display for TokenPair {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.write_fmt(format_args!("{}/{}", self.base.symbol, self.quote.symbol))
+        f.write_fmt(format_args!(
+            "{}/{}",
+            self.base.symbol.as_ref().unwrap(),
+            self.quote.symbol.as_ref().unwrap()
+        ))
     }
 }

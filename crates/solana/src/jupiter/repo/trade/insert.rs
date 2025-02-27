@@ -4,9 +4,12 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
-use crate::model::{Signature, Slot};
 use crate::jupiter::repo::TradeRepo;
-use base::model::{determine_mints, AddressId, Amount, DecimalAmount, PriceAvgQuote, PublicKey, Token, Mint, TokenPair, TokenPairMint};
+use crate::model::{Signature, Slot};
+use base::model::{
+    determine_mints, AddressId, Amount, DecimalAmount, Mint, PriceAvgQuote, PublicKey, Token,
+    TokenPair, TokenPairMint,
+};
 use base::LoadTokenInfo;
 use common::model::{Count, Timestamp};
 use common::repo::{RepoResult, Tx};
@@ -29,7 +32,7 @@ pub struct SlotTrade {
     pub signature: Signature,
 }
 
-impl<L: LoadTokenInfo> TradeRepo<L> {
+impl<L: LoadTokenInfo<Mint>> TradeRepo<L> {
     pub async fn insert_trades<'a>(&self, tx: &mut Tx<'a>, slot: SlotTrades) -> RepoResult<Count> {
         if slot.trades.is_empty() {
             return Ok(Count(0));
@@ -39,7 +42,11 @@ impl<L: LoadTokenInfo> TradeRepo<L> {
 
         let len = slot.trades.len();
 
-        let addresses = slot.trades.iter().map(|trade| trade.wallet.clone()).collect::<Vec<_>>();
+        let addresses = slot
+            .trades
+            .iter()
+            .map(|trade| trade.wallet.clone())
+            .collect::<Vec<_>>();
 
         let keys: HashMap<PublicKey, AddressId> = self
             .address_repo
@@ -51,7 +58,9 @@ impl<L: LoadTokenInfo> TradeRepo<L> {
 
         let mut token_pairs = Vec::with_capacity(len);
         for trade in &slot.trades {
-            if let Some((base_mint, quote_mint)) = determine_mints(trade.input_mint.clone(), trade.output_mint.clone()) {
+            if let Some((base_mint, quote_mint)) =
+                determine_mints(trade.input_mint.clone(), trade.output_mint.clone())
+            {
                 let pair = (base_mint, quote_mint);
                 if !token_pairs.contains(&pair) {
                     token_pairs.push(pair);
@@ -77,10 +86,13 @@ impl<L: LoadTokenInfo> TradeRepo<L> {
         let mut signatures = Vec::with_capacity(len);
 
         for trade in slot.trades {
-            if let Some((base_mint, quote_mint)) = determine_mints(trade.input_mint.clone(), trade.output_mint.clone()) {
+            if let Some((base_mint, quote_mint)) =
+                determine_mints(trade.input_mint.clone(), trade.output_mint.clone())
+            {
                 let token_pair = token_pairs.get(&(base_mint, quote_mint)).unwrap();
 
-                let (price, amount, is_buy) = calculate_price_amount_and_side(&trade, &token_pair.base, &token_pair.base);
+                let (price, amount, is_buy) =
+                    calculate_price_amount_and_side(&trade, &token_pair.base, &token_pair.base);
                 slots.push(slot.slot);
                 address_ids.push(keys.get(&trade.wallet).unwrap());
                 token_pair_ids.push(token_pair.id);
@@ -126,7 +138,11 @@ impl<L: LoadTokenInfo> TradeRepo<L> {
     }
 }
 
-fn calculate_price_amount_and_side(trade: &SlotTrade, base_token: &Token, quote_token: &Token) -> (PriceAvgQuote, DecimalAmount, bool) {
+fn calculate_price_amount_and_side(
+    trade: &SlotTrade,
+    base_token: &Token,
+    quote_token: &Token,
+) -> (PriceAvgQuote, DecimalAmount, bool) {
     let input_decimals = if trade.input_mint == base_token.mint {
         &base_token.decimals
     } else {
@@ -143,9 +159,17 @@ fn calculate_price_amount_and_side(trade: &SlotTrade, base_token: &Token, quote_
 
     if trade.input_mint == base_token.mint {
         assert!(input_amount > 0.0, "Input amount must not be 0");
-        (PriceAvgQuote(output_amount.0 / input_amount.0), input_amount, false)
+        (
+            PriceAvgQuote(output_amount.0 / input_amount.0),
+            input_amount,
+            false,
+        )
     } else {
         assert!(output_amount > 0.0, "Output amount must not be 0");
-        (PriceAvgQuote(input_amount.0 / output_amount.0), output_amount, true)
+        (
+            PriceAvgQuote(input_amount.0 / output_amount.0),
+            output_amount,
+            true,
+        )
     }
 }

@@ -25,14 +25,14 @@ async fn test_wsol_usdt() {
 
         assert_eq!(result.base.id, 1);
         assert_eq!(result.base.mint, Mint::wsol());
-        assert_eq!(result.base.name, "Wrapped SOL");
-        assert_eq!(result.base.symbol, "WSOL");
+        assert_eq!(result.base.name.unwrap(), "Wrapped SOL");
+        assert_eq!(result.base.symbol.unwrap(), "WSOL");
         assert_eq!(result.base.decimals, 9);
 
         assert_eq!(result.quote.id, 2);
         assert_eq!(result.quote.mint, Mint::usdt());
-        assert_eq!(result.quote.name, "USDT");
-        assert_eq!(result.quote.symbol, "USDT");
+        assert_eq!(result.quote.name.unwrap(), "USDT");
+        assert_eq!(result.quote.symbol.unwrap(), "USDT");
         assert_eq!(result.quote.decimals, 6);
 
         let count = token_pair::count_all(&mut tx).await;
@@ -60,14 +60,14 @@ async fn test_wsol_usdc() {
 
         assert_eq!(result.base.id, 1);
         assert_eq!(result.base.mint, Mint::wsol());
-        assert_eq!(result.base.name, "Wrapped SOL");
-        assert_eq!(result.base.symbol, "WSOL");
+        assert_eq!(result.base.name.unwrap(), "Wrapped SOL");
+        assert_eq!(result.base.symbol.unwrap(), "WSOL");
         assert_eq!(result.base.decimals, 9);
 
         assert_eq!(result.quote.id, 3);
         assert_eq!(result.quote.mint, Mint::usdc());
-        assert_eq!(result.quote.name, "USD Coin");
-        assert_eq!(result.quote.symbol, "USDC");
+        assert_eq!(result.quote.name.unwrap(), "USD Coin");
+        assert_eq!(result.quote.symbol.unwrap(), "USDC");
         assert_eq!(result.quote.decimals, 6);
 
         let count = token_pair::count_all(&mut tx).await;
@@ -95,14 +95,14 @@ async fn test_usdc_usdt() {
 
         assert_eq!(result.base.id, 3);
         assert_eq!(result.base.mint, Mint::usdc());
-        assert_eq!(result.base.name, "USD Coin");
-        assert_eq!(result.base.symbol, "USDC");
+        assert_eq!(result.base.name.unwrap(), "USD Coin");
+        assert_eq!(result.base.symbol.unwrap(), "USDC");
         assert_eq!(result.base.decimals, 6);
 
         assert_eq!(result.quote.id, 2);
         assert_eq!(result.quote.mint, Mint::usdt());
-        assert_eq!(result.quote.name, "USDT");
-        assert_eq!(result.quote.symbol, "USDT");
+        assert_eq!(result.quote.name.unwrap(), "USDT");
+        assert_eq!(result.quote.symbol.unwrap(), "USDT");
         assert_eq!(result.quote.decimals, 6);
 
         let count = token_pair::count_all(&mut tx).await;
@@ -135,13 +135,13 @@ async fn test_already_in_db() {
         assert_eq!(result.id, 1000);
 
         assert_eq!(result.base.mint, "Av6qVigkb7USQyPXJkUvAEm4f599WTRvd75PUWBA9eNm");
-        assert_eq!(result.base.name, "1000");
-        assert_eq!(result.base.symbol, "1000");
+        assert_eq!(result.base.name.unwrap(), "1000");
+        assert_eq!(result.base.symbol.unwrap(), "1000");
         assert_eq!(result.base.decimals, 1000);
 
         assert_eq!(result.quote.mint, "So11111111111111111111111111111111111111112");
-        assert_eq!(result.quote.name, "Wrapped SOL");
-        assert_eq!(result.quote.symbol, "WSOL");
+        assert_eq!(result.quote.name.unwrap(), "Wrapped SOL");
+        assert_eq!(result.quote.symbol.unwrap(), "WSOL");
         assert_eq!(result.quote.decimals, 9);
 
         let count = token_pair::count_all(&mut tx).await;
@@ -172,14 +172,14 @@ async fn test_already_in_cache() {
         assert_eq!(result.id, 1000);
         assert_eq!(result.base.id, 1000);
         assert_eq!(result.base.mint, "Av6qVigkb7USQyPXJkUvAEm4f599WTRvd75PUWBA9eNm");
-        assert_eq!(result.base.name, "1000");
-        assert_eq!(result.base.symbol, "1000");
+        assert_eq!(result.base.name.unwrap(), "1000");
+        assert_eq!(result.base.symbol.unwrap(), "1000");
         assert_eq!(result.base.decimals, 1000);
 
         assert_eq!(result.quote.id, 1);
         assert_eq!(result.quote.mint, "So11111111111111111111111111111111111111112");
-        assert_eq!(result.quote.name, "Wrapped SOL");
-        assert_eq!(result.quote.symbol, "WSOL");
+        assert_eq!(result.quote.name.unwrap(), "Wrapped SOL");
+        assert_eq!(result.quote.symbol.unwrap(), "WSOL");
         assert_eq!(result.quote.decimals, 9);
 
         let count = token_pair::count_all(&mut tx).await;
@@ -207,14 +207,14 @@ async fn test_insert_one() {
         assert_eq!(result.id, 1000);
         assert_eq!(result.base.id, 1000);
         assert_eq!(result.base.mint, "Av6qVigkb7USQyPXJkUvAEm4f599WTRvd75PUWBA9eNm");
-        assert_eq!(result.base.name, "1000");
-        assert_eq!(result.base.symbol, "1000");
+        assert_eq!(result.base.name.unwrap(), "1000");
+        assert_eq!(result.base.symbol.unwrap(), "1000");
         assert_eq!(result.base.decimals, 1000);
 
         assert_eq!(result.quote.id, 1);
         assert_eq!(result.quote.mint, "So11111111111111111111111111111111111111112");
-        assert_eq!(result.quote.name, "Wrapped SOL");
-        assert_eq!(result.quote.symbol, "WSOL");
+        assert_eq!(result.quote.name.unwrap(), "Wrapped SOL");
+        assert_eq!(result.quote.symbol.unwrap(), "WSOL");
         assert_eq!(result.quote.decimals, 9);
 
         let count = token_pair::count_all(&mut tx).await;
