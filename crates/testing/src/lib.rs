@@ -21,6 +21,7 @@ pub mod address;
 pub mod auth;
 mod hash;
 pub mod invocation;
+pub mod jupiter;
 pub mod notification;
 pub mod pumpfun;
 pub mod rule;

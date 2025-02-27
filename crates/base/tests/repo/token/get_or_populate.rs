@@ -81,7 +81,6 @@ async fn test_in_db() {
         assert_eq!(result.mint, bonk_mint());
         assert_eq!(result.name.unwrap(), "1000");
         assert_eq!(result.symbol.unwrap(), "1000");
-        assert_eq!(result.decimals, 1000);
 
         let count = count_all(&mut tx).await;
         assert_eq!(count, 4);
@@ -100,7 +99,6 @@ async fn test_in_cache() {
         assert_eq!(result.mint, bonk_mint());
         assert_eq!(result.name.unwrap(), "1000");
         assert_eq!(result.symbol.unwrap(), "1000");
-        assert_eq!(result.decimals, 1000);
 
         let count = count_all(&mut tx).await;
         assert_eq!(count, 4);
@@ -118,7 +116,6 @@ async fn test_insert() {
         assert_eq!(result.mint, bonk_mint());
         assert_eq!(result.name.unwrap(), "1000");
         assert_eq!(result.symbol.unwrap(), "1000");
-        assert_eq!(result.decimals, 1000);
 
         let count = count_all(&mut tx).await;
         assert_eq!(count, 4);

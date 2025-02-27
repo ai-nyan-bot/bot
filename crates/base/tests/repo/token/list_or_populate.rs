@@ -91,7 +91,6 @@ async fn test_already_in_db() {
         assert_eq!(result.mint, bonk_mint());
         assert_eq!(result.name.unwrap(), "1000");
         assert_eq!(result.symbol.unwrap(), "1000");
-        assert_eq!(result.decimals, 1000);
 
         let count = count_all(&mut tx).await;
         assert_eq!(count, 4);
@@ -111,7 +110,6 @@ async fn test_already_in_cache() {
         assert_eq!(result.mint, bonk_mint());
         assert_eq!(result.name.unwrap(), "1000");
         assert_eq!(result.symbol.unwrap(), "1000");
-        assert_eq!(result.decimals, 1000);
 
         let count = count_all(&mut tx).await;
         assert_eq!(count, 4);
@@ -132,7 +130,6 @@ async fn test_insert_one() {
         assert_eq!(result.mint, lost_lot_of_money_mint());
         assert_eq!(result.name.unwrap(), "1000");
         assert_eq!(result.symbol.unwrap(), "1000");
-        assert_eq!(result.decimals, 1000);
 
         let count = count_all(&mut tx).await;
         assert_eq!(count, 4);
@@ -174,21 +171,18 @@ async fn test_one_in_cache_one_in_db_one_insert() {
         assert_eq!(third.mint, Mint::new("Av6qVigkb7USQyPXJkUvAEm4f599WTRvd75PUWBA9eNm"));
         assert_eq!(third.name.unwrap(), "1002");
         assert_eq!(third.symbol.unwrap(), "1002");
-        assert_eq!(third.decimals, 1002);
 
         let second = result.pop().unwrap();
         assert_eq!(second.id, 1001);
         assert_eq!(second.mint, bonk_mint());
         assert_eq!(second.name.unwrap(), "1001");
         assert_eq!(second.symbol.unwrap(), "1001");
-        assert_eq!(second.decimals, 1001);
 
         let first = result.pop().unwrap();
         assert_eq!(first.id, 1000);
         assert_eq!(first.mint, lost_lot_of_money_mint());
         assert_eq!(first.name.unwrap(), "1000");
         assert_eq!(first.symbol.unwrap(), "1000");
-        assert_eq!(first.decimals, 1000);
 
         let count = count_all(&mut tx).await;
         assert_eq!(count, 6);

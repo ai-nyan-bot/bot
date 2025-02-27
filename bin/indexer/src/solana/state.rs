@@ -23,5 +23,5 @@ pub struct StateInner {
     // pub wallet_repo: AddressRepo,
     pub pumpfun_trade_repo: solana::pumpfun::repo::TradeRepo<TokenInfoRpcLoader>,
     pub pumpfun_curve_repo: solana::pumpfun::repo::CurveRepo,
-    // pub jupiter_trade_repo: solana::jupiter::repo::TradeRepo<RpcTokenInfoLoader>,
+    pub jupiter_trade_repo: solana::jupiter::repo::TradeRepo<TokenInfoRpcLoader>,
 }

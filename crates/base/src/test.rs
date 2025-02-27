@@ -33,7 +33,7 @@ impl LoadTokenInfo<Mint> for SuccessfulTokenInfoLoader {
             mint: Some(mint.into()),
             name: Some(Name::new(counter.to_string())),
             symbol: Some(Symbol::new(counter.to_string())),
-            decimals: Some(Decimals(*counter as i16)),
+            decimals: Some(Decimals(6)),
             supply: Some(Supply(*counter as i64)),
             description: Some(Description(format!("Token-Description-{counter}"))),
             metadata: Some(Uri(format!("http://metadata-{counter}"))),

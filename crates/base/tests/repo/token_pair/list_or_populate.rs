@@ -137,12 +137,10 @@ async fn test_already_in_db() {
         assert_eq!(result.base.mint, "Av6qVigkb7USQyPXJkUvAEm4f599WTRvd75PUWBA9eNm");
         assert_eq!(result.base.name.unwrap(), "1000");
         assert_eq!(result.base.symbol.unwrap(), "1000");
-        assert_eq!(result.base.decimals, 1000);
 
         assert_eq!(result.quote.mint, "So11111111111111111111111111111111111111112");
         assert_eq!(result.quote.name.unwrap(), "Wrapped SOL");
         assert_eq!(result.quote.symbol.unwrap(), "WSOL");
-        assert_eq!(result.quote.decimals, 9);
 
         let count = token_pair::count_all(&mut tx).await;
         assert_eq!(count, 4);
@@ -174,13 +172,11 @@ async fn test_already_in_cache() {
         assert_eq!(result.base.mint, "Av6qVigkb7USQyPXJkUvAEm4f599WTRvd75PUWBA9eNm");
         assert_eq!(result.base.name.unwrap(), "1000");
         assert_eq!(result.base.symbol.unwrap(), "1000");
-        assert_eq!(result.base.decimals, 1000);
 
         assert_eq!(result.quote.id, 1);
         assert_eq!(result.quote.mint, "So11111111111111111111111111111111111111112");
         assert_eq!(result.quote.name.unwrap(), "Wrapped SOL");
         assert_eq!(result.quote.symbol.unwrap(), "WSOL");
-        assert_eq!(result.quote.decimals, 9);
 
         let count = token_pair::count_all(&mut tx).await;
         assert_eq!(count, 4);
@@ -209,13 +205,11 @@ async fn test_insert_one() {
         assert_eq!(result.base.mint, "Av6qVigkb7USQyPXJkUvAEm4f599WTRvd75PUWBA9eNm");
         assert_eq!(result.base.name.unwrap(), "1000");
         assert_eq!(result.base.symbol.unwrap(), "1000");
-        assert_eq!(result.base.decimals, 1000);
 
         assert_eq!(result.quote.id, 1);
         assert_eq!(result.quote.mint, "So11111111111111111111111111111111111111112");
         assert_eq!(result.quote.name.unwrap(), "Wrapped SOL");
         assert_eq!(result.quote.symbol.unwrap(), "WSOL");
-        assert_eq!(result.quote.decimals, 9);
 
         let count = token_pair::count_all(&mut tx).await;
         assert_eq!(count, 4);

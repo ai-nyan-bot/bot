@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use base::model::Mint;
-use base::repo::{AddressRepo, TokenPairRepo};
+use base::repo::{AddressRepo, TokenPairRepo, TokenRepo};
 use base::LoadTokenInfo;
 use common::model::Limit;
 pub use insert::{SlotTrade, SlotTrades};
@@ -38,5 +38,37 @@ impl<L: LoadTokenInfo<Mint>> TradeRepo<L> {
             token_pair_repo,
             address_repo,
         }))
+    }
+
+    pub fn testing(loader: L) -> Self {
+        Self::new(
+            TokenPairRepo::testing(TokenRepo::testing(loader)),
+            AddressRepo::new(),
+        )
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct ReadTradeRepo(pub Arc<ReadTradeRepoInner>);
+
+impl Deref for ReadTradeRepo {
+    type Target = ReadTradeRepoInner;
+    fn deref(&self) -> &Self::Target {
+        self.0.deref()
+    }
+}
+
+#[derive(Debug)]
+pub struct ReadTradeRepoInner {}
+
+impl Default for ReadTradeRepo {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl ReadTradeRepo {
+    pub fn new() -> Self {
+        Self(Arc::new(ReadTradeRepoInner {}))
     }
 }

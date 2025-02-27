@@ -10,11 +10,7 @@ pub(crate) async fn index_trade<'a>(tx: &mut Tx<'a>, state: State, trades: SlotT
 
     // use returned trades to update curves
 
-    let inserted = state
-        .pumpfun_trade_repo
-        .insert_trades(tx, trades)
-        .await
-        .unwrap();
+    let inserted = state.pumpfun_trade_repo.insert_trades(tx, trades).await.unwrap();
 
     for trade in inserted {
         state.pumpfun_curve_repo.upsert(tx, trade).await.unwrap();

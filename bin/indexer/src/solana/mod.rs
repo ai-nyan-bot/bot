@@ -50,7 +50,8 @@ pub fn index_solana(runtime: Runtime, config: Config) {
         let wallet_repo = AddressRepo::new();
 
         let pumpfun_trade_repo = solana::pumpfun::repo::TradeRepo::new(token_pair_repo.clone(), wallet_repo.clone());
-        // let jupiter_trade_repo = solana::jupiter::repo::TradeRepo::new(token_pair_repo.clone(), wallet_repo.clone());
+        let jupiter_trade_repo = solana::jupiter::repo::TradeRepo::new(token_pair_repo.clone(), wallet_repo.clone());
+
 
         let state = State(Arc::new(StateInner {
             // pool: pool.clone(),
@@ -59,7 +60,7 @@ pub fn index_solana(runtime: Runtime, config: Config) {
             // wallet_repo,
             pumpfun_trade_repo,
             pumpfun_curve_repo: solana::pumpfun::repo::CurveRepo::new(),
-            // jupiter_trade_repo,
+            jupiter_trade_repo,
         }));
 
         let jupiter_parser = JupiterParser::new();
