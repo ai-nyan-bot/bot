@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use base::model::TokenMint;
+use base::model::Mint;
 use base::repo::{ReadTokenPairRepo, ReadTokenRepo};
 use testing::run_test_on_empty_db;
 
@@ -17,13 +17,13 @@ async fn test_wsol_usdt() {
         assert_eq!(result.id, 1);
 
         assert_eq!(result.base.id, 1);
-        assert_eq!(result.base.mint, TokenMint::wsol());
+        assert_eq!(result.base.mint, Mint::wsol());
         assert_eq!(result.base.name, "Wrapped SOL");
         assert_eq!(result.base.symbol, "WSOL");
         assert_eq!(result.base.decimals, 9);
 
         assert_eq!(result.quote.id, 2);
-        assert_eq!(result.quote.mint, TokenMint::usdt());
+        assert_eq!(result.quote.mint, Mint::usdt());
         assert_eq!(result.quote.name, "USDT");
         assert_eq!(result.quote.symbol, "USDT");
         assert_eq!(result.quote.decimals, 6);
@@ -43,13 +43,13 @@ async fn test_wsol_usdc() {
         assert_eq!(result.id, 2);
 
         assert_eq!(result.base.id, 1);
-        assert_eq!(result.base.mint, TokenMint::wsol());
+        assert_eq!(result.base.mint, Mint::wsol());
         assert_eq!(result.base.name, "Wrapped SOL");
         assert_eq!(result.base.symbol, "WSOL");
         assert_eq!(result.base.decimals, 9);
 
         assert_eq!(result.quote.id, 3);
-        assert_eq!(result.quote.mint, TokenMint::usdc());
+        assert_eq!(result.quote.mint, Mint::usdc());
         assert_eq!(result.quote.name, "USD Coin");
         assert_eq!(result.quote.symbol, "USDC");
         assert_eq!(result.quote.decimals, 6);
@@ -69,13 +69,13 @@ async fn test_usdc_usdt() {
         assert_eq!(result.id, 3);
 
         assert_eq!(result.base.id, 3);
-        assert_eq!(result.base.mint, TokenMint::usdc());
+        assert_eq!(result.base.mint, Mint::usdc());
         assert_eq!(result.base.name, "USD Coin");
         assert_eq!(result.base.symbol, "USDC");
         assert_eq!(result.base.decimals, 6);
 
         assert_eq!(result.quote.id, 2);
-        assert_eq!(result.quote.mint, TokenMint::usdt());
+        assert_eq!(result.quote.mint, Mint::usdt());
         assert_eq!(result.quote.name, "USDT");
         assert_eq!(result.quote.symbol, "USDT");
         assert_eq!(result.quote.decimals, 6);
@@ -96,13 +96,13 @@ async fn test_already_in_cache() {
         assert_eq!(result.id, 3);
 
         assert_eq!(result.base.id, 3);
-        assert_eq!(result.base.mint, TokenMint::usdc());
+        assert_eq!(result.base.mint, Mint::usdc());
         assert_eq!(result.base.name, "USD Coin");
         assert_eq!(result.base.symbol, "USDC");
         assert_eq!(result.base.decimals, 6);
 
         assert_eq!(result.quote.id, 2);
-        assert_eq!(result.quote.mint, TokenMint::usdt());
+        assert_eq!(result.quote.mint, Mint::usdt());
         assert_eq!(result.quote.name, "USDT");
         assert_eq!(result.quote.symbol, "USDT");
         assert_eq!(result.quote.decimals, 6);

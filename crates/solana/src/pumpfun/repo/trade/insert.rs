@@ -8,7 +8,7 @@ use crate::model::{Signature, Slot};
 use crate::pumpfun::model::Trade;
 use crate::pumpfun::repo::TradeRepo;
 use base::model::{
-    AddressId, Amount, DecimalAmount, PriceQuote, PublicKey, TokenMint, TokenPairId,
+	AddressId, Amount, DecimalAmount, PriceQuote, PublicKey, Mint, TokenPairId,
 };
 use base::LoadTokenInfo;
 use common::model::Timestamp;
@@ -26,7 +26,7 @@ pub struct SlotTrades {
 
 #[derive(Debug, Clone)]
 pub struct SlotTrade {
-    pub mint: TokenMint,
+    pub mint: Mint,
     pub base_amount: Amount,
     pub quote_amount: Amount,
     pub is_buy: bool,
@@ -66,13 +66,13 @@ impl<L: LoadTokenInfo> TradeRepo<L> {
 
         let mut token_pairs = Vec::with_capacity(len);
         for trade in &slot.trades {
-            let pair = (trade.mint.clone(), TokenMint::wsol());
+            let pair = (trade.mint.clone(), Mint::wsol());
             if !token_pairs.contains(&pair) {
                 token_pairs.push(pair);
             }
         }
 
-        let token_pairs: HashMap<TokenMint, TokenPairId> = self
+        let token_pairs: HashMap<Mint, TokenPairId> = self
             .token_pair_repo
             .list_or_populate(tx, token_pairs)
             .await?

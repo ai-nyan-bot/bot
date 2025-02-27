@@ -1,8 +1,11 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+// This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
+// Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
+
 use async_trait::async_trait;
-use base::model::{Decimals, TokenMint, TokenName, TokenSymbol};
+use base::model::{Decimals, Mint as TokenMint, Name, Supply, Symbol};
 use base::{LoadTokenInfo, TokenInfo};
 use common::model::RpcUrl;
 use log::{debug, error, info};
@@ -105,9 +108,14 @@ impl LoadTokenInfo for RpcTokenInfoLoader {
                         };
                         Some(TokenInfo {
                             mint,
-                            name: TokenName(sanitize_value(metadata.name.as_str())),
-                            symbol: TokenSymbol(sanitize_value(metadata.symbol.as_str())),
+                            name: Name(sanitize_value(metadata.name.as_str())),
+                            symbol: Symbol(sanitize_value(metadata.symbol.as_str())),
                             decimals: Decimals(unpacked_mint.decimals as i16),
+                            supply: Supply(unpacked_mint.supply as i64),
+                            description: None,
+                            metadata: None,
+                            image: None,
+                            website: None,
                         })
                     }
                     spl_token_2022::ID => {
@@ -130,14 +138,24 @@ impl LoadTokenInfo for RpcTokenInfoLoader {
                                 name: "".into(),
                                 symbol: "".into(),
                                 decimals: Decimals(unpacked_mint.base.decimals as i16),
+                                supply: Supply(unpacked_mint.base.supply as i64),
+                                description: None,
+                                metadata: None,
+                                image: None,
+                                website: None,
                             });
                         };
 
                         Some(TokenInfo {
                             mint,
-                            name: TokenName(sanitize_value(metadata.name.as_str())),
-                            symbol: TokenSymbol(sanitize_value(metadata.symbol.as_str())),
+                            name: Name(sanitize_value(metadata.name.as_str())),
+                            symbol: Symbol(sanitize_value(metadata.symbol.as_str())),
                             decimals: Decimals(unpacked_mint.base.decimals as i16),
+                            supply: Supply(unpacked_mint.base.supply as i64),
+                            description: None,
+                            metadata: None,
+                            image: None,
+                            website: None,
                         })
                     }
                     _ => {

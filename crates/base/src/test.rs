@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::{Decimals, TokenMint, TokenName, TokenSymbol};
+use crate::model::{Decimals, Description, Mint, Name, Supply, Symbol, Uri};
 use crate::{LoadTokenInfo, TokenInfo};
 use async_trait::async_trait;
 use std::cell::UnsafeCell;
@@ -24,16 +24,21 @@ impl Default for SuccessfulTokenInfoLoader {
 
 #[async_trait]
 impl LoadTokenInfo for SuccessfulTokenInfoLoader {
-    async fn load(&self, mint: impl Into<TokenMint> + Send) -> Option<TokenInfo> {
+    async fn load(&self, mint: impl Into<Mint> + Send) -> Option<TokenInfo> {
         let mut lock = self.0.counter.lock().unwrap();
         let counter = lock.get_mut();
         *counter += 1;
 
         Some(TokenInfo {
             mint: mint.into(),
-            name: TokenName::new(counter.to_string()),
-            symbol: TokenSymbol::new(counter.to_string()),
+            name: Name::new(counter.to_string()),
+            symbol: Symbol::new(counter.to_string()),
             decimals: Decimals(*counter as i16),
+            supply: Supply(*counter as i64),
+            description: Some(Description(format!("Token-Description-{counter}"))),
+            metadata: Some(Uri(format!("http://metadata-{counter}"))),
+            image: Some(Uri(format!("http://image-{counter}"))),
+            website: Some(Uri(format!("http://website-{counter}"))),
         })
     }
 }
@@ -41,10 +46,9 @@ impl LoadTokenInfo for SuccessfulTokenInfoLoader {
 #[derive(Default)]
 pub struct FailingTokenInfoLoader {}
 
-
 #[async_trait]
 impl LoadTokenInfo for FailingTokenInfoLoader {
-    async fn load(&self, _mint: impl Into<TokenMint> + Send) -> Option<TokenInfo> {
+    async fn load(&self, _mint: impl Into<Mint> + Send) -> Option<TokenInfo> {
         None
     }
 }
@@ -53,7 +57,7 @@ pub struct NeverCalledTokenInfoLoader {}
 
 #[async_trait]
 impl LoadTokenInfo for NeverCalledTokenInfoLoader {
-    async fn load(&self, _mint: impl Into<TokenMint> + Send) -> Option<TokenInfo> {
+    async fn load(&self, _mint: impl Into<Mint> + Send) -> Option<TokenInfo> {
         panic!("This function shall never be called")
     }
 }

@@ -1,10 +1,10 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-#![deny(warnings)]
+#![cfg_attr(not(debug_assertions), deny(warnings))]
 
 use crate::user::{get_or_create_another_user, get_or_create_test_user};
-use ::base::model::TokenMint;
+use ::base::model::Mint;
 use common::repo::Tx;
 use futures_util::FutureExt;
 pub use hash::hash_for_testing;
@@ -111,7 +111,7 @@ pub async fn initialise_database<'a>(tx: &mut Tx<'a>) {
     create_rule_for_another_user(tx, "Rule B").await;
     create_rule_for_another_user(tx, "Rule C").await;
 
-    get_or_create_token_pair(tx, TokenMint::usdc(), TokenMint::usdt()).await;
+    get_or_create_token_pair(tx, Mint::usdc(), Mint::usdt()).await;
 }
 
 pub async fn run_test_on_empty_db<'a, T, TFut>(test: T)

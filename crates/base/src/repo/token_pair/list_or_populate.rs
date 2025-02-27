@@ -4,7 +4,7 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
-use crate::model::{TokenMint, TokenPair};
+use crate::model::{Mint, TokenPair};
 use crate::repo::token_pair::shared::find_missing_mints;
 use crate::repo::TokenPairRepo;
 use crate::LoadTokenInfo;
@@ -12,9 +12,9 @@ use common::repo::{RepoResult, Tx};
 
 impl<L: LoadTokenInfo> TokenPairRepo<L> {
     pub async fn list_or_populate<'a>(
-        &self,
-        tx: &mut Tx<'a>,
-        mints: impl IntoIterator<Item = (impl Into<TokenMint>, impl Into<TokenMint>)> + Send,
+		&self,
+		tx: &mut Tx<'a>,
+		mints: impl IntoIterator<Item = (impl Into<Mint>, impl Into<Mint>)> + Send,
     ) -> RepoResult<Vec<TokenPair>> {
         let mints = mints.into_iter().map(|(base, quote)| (base.into(), quote.into())).collect::<Vec<_>>();
 

@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::{Token, TokenId, TokenMint};
+use crate::model::{Token, TokenId, Mint};
 use common::model::Limit;
 use crate::repo::cache::Cache;
 use std::ops::Deref;
@@ -62,7 +62,7 @@ impl Deref for ReadTokenRepo {
 
 #[derive(Debug)]
 pub struct ReadTokenRepoInner {
-    cache: Cache<TokenId, TokenMint, Token>,
+    cache: Cache<TokenId, Mint, Token>,
 }
 
 impl Default for ReadTokenRepo {

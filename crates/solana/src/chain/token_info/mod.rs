@@ -2,4 +2,6 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 pub mod rpc;
+mod ipfs;
+mod legacy;
 

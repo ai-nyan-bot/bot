@@ -6,7 +6,7 @@
 
 use crate::model::{Signature, Slot};
 use crate::jupiter::repo::TradeRepo;
-use base::model::{determine_mints, AddressId, Amount, DecimalAmount, PriceAvgQuote, PublicKey, Token, TokenMint, TokenPair, TokenPairMint};
+use base::model::{determine_mints, AddressId, Amount, DecimalAmount, PriceAvgQuote, PublicKey, Token, Mint, TokenPair, TokenPairMint};
 use base::LoadTokenInfo;
 use common::model::{Count, Timestamp};
 use common::repo::{RepoResult, Tx};
@@ -21,9 +21,9 @@ pub struct SlotTrades {
 
 #[derive(Debug)]
 pub struct SlotTrade {
-    pub input_mint: TokenMint,
+    pub input_mint: Mint,
     pub input_amount: Amount,
-    pub output_mint: TokenMint,
+    pub output_mint: Mint,
     pub output_amount: Amount,
     pub wallet: PublicKey,
     pub signature: Signature,

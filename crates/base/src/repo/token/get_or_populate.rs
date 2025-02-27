@@ -4,14 +4,14 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
-use crate::model::{Token, TokenMint};
+use crate::model::{Token, Mint};
 use crate::repo::TokenRepo;
 use crate::LoadTokenInfo;
 use common::repo::error::RepoError;
 use common::repo::{RepoResult, Tx};
 
 impl<L: LoadTokenInfo> TokenRepo<L> {
-    pub async fn get_or_populate<'a>(&self, tx: &mut Tx<'a>, mint: impl Into<TokenMint> + Send) -> RepoResult<Token> {
+    pub async fn get_or_populate<'a>(&self, tx: &mut Tx<'a>, mint: impl Into<Mint> + Send) -> RepoResult<Token> {
         let mut result = self.list_or_populate(tx, vec![mint.into()]).await?;
         if result.is_empty() {
             return Err(RepoError::NotFound);

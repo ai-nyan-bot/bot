@@ -105,12 +105,12 @@ where
 
 #[cfg(test)]
 mod tests {
-	use crate::model::{Decimals, TokenId, TokenMint};
+	use crate::model::{Decimals, TokenId, Mint};
 	use crate::repo::cache::Cache;
 
 	#[tokio::test]
     async fn test_put_and_get() {
-        let test_instance: Cache<TokenId, TokenMint, Decimals> = Cache::default();
+        let test_instance: Cache<TokenId, Mint, Decimals> = Cache::default();
         test_instance.put(23, "nyan", 42).await;
         let result = test_instance.get_by_key("nyan").await;
         assert_eq!(result.unwrap(), 42);
@@ -120,7 +120,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_put_all_and_get() {
-        let test_instance: Cache<TokenId, TokenMint, Decimals> = Cache::default();
+        let test_instance: Cache<TokenId, Mint, Decimals> = Cache::default();
         test_instance.put_all(vec![(1, "2", 3), (4, "5", 6)]).await;
 
         let value = test_instance.get_by_id(1).await;
@@ -140,7 +140,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_non_existent_key() {
-        let test_instance: Cache<TokenId, TokenMint, Decimals> = Cache::default();
+        let test_instance: Cache<TokenId, Mint, Decimals> = Cache::default();
         test_instance.put(23, "nyan", 42).await;
 
         let result = test_instance.get_by_key("nayn").await;
@@ -149,7 +149,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_non_existent_id() {
-        let test_instance: Cache<TokenId, TokenMint, Decimals> = Cache::default();
+        let test_instance: Cache<TokenId, Mint, Decimals> = Cache::default();
         test_instance.put(23, "nyan", 42).await;
 
         let result = test_instance.get_by_id(1336).await;
@@ -158,7 +158,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_overwrite_existing_value() {
-        let test_instance: Cache<TokenId, TokenMint, Decimals> = Cache::default();
+        let test_instance: Cache<TokenId, Mint, Decimals> = Cache::default();
 
         test_instance.put(23, "nyan", 23).await;
         test_instance.put(23, "nyan", 32).await;
@@ -171,7 +171,7 @@ mod tests {
 
     #[tokio::test]
     async fn multiple_entries() {
-        let test_instance: Cache<TokenId, TokenMint, Decimals> = Cache::default();
+        let test_instance: Cache<TokenId, Mint, Decimals> = Cache::default();
 
         test_instance.put(1, "key_one", 42).await;
         test_instance.put(2, "key_two", 100).await;

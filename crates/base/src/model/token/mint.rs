@@ -15,69 +15,69 @@ pub const WSOL_MINT_STR: &str = "So11111111111111111111111111111111111111112";
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize, sqlx::Type)]
 #[sqlx(transparent)]
-pub struct TokenMint(pub PublicKey);
+pub struct Mint(pub PublicKey);
 
-impl Display for TokenMint {
+impl Display for Mint {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         self.0.fmt(f)
     }
 }
 
-impl PartialEq<&str> for TokenMint {
+impl PartialEq<&str> for Mint {
     fn eq(&self, other: &&str) -> bool {
         self.0 == *other
     }
 }
 
-impl PartialEq<&TokenMint> for TokenMint {
-    fn eq(&self, other: &&TokenMint) -> bool {
+impl PartialEq<&Mint> for Mint {
+    fn eq(&self, other: &&Mint) -> bool {
         self.0 == other.0
     }
 }
 
-impl AsRef<TokenMint> for TokenMint {
-    fn as_ref(&self) -> &TokenMint {
+impl AsRef<Mint> for Mint {
+    fn as_ref(&self) -> &Mint {
         self
     }
 }
 
-impl TokenMint {
+impl Mint {
     pub fn new(value: impl Into<String>) -> Self {
         Self(PublicKey(value.into()))
     }
 }
 
-impl From<String> for TokenMint {
+impl From<String> for Mint {
     fn from(value: String) -> Self {
         Self(PublicKey(value))
     }
 }
 
-impl From<&str> for TokenMint {
+impl From<&str> for Mint {
     fn from(value: &str) -> Self {
         Self(PublicKey(value.to_string()))
     }
 }
 
-impl From<Pubkey> for TokenMint {
+impl From<Pubkey> for Mint {
     fn from(value: Pubkey) -> Self {
         Self(PublicKey(value.to_string()))
     }
 }
 
-impl From<TokenMint> for Pubkey {
-    fn from(value: TokenMint) -> Self {
+impl From<Mint> for Pubkey {
+    fn from(value: Mint) -> Self {
         value.0.into()
     }
 }
 
-impl From<&TokenMint> for TokenMint {
-    fn from(value: &TokenMint) -> Self {
+impl From<&Mint> for Mint {
+    fn from(value: &Mint) -> Self {
         value.clone()
     }
 }
 
-impl TokenMint {
+impl Mint {
     pub fn usdc() -> Self {
         USDC_MINT_STR.to_string().into()
     }
@@ -91,9 +91,9 @@ impl TokenMint {
     }
 }
 
-pub type TokenPairMint = (TokenMint, TokenMint);
+pub type TokenPairMint = (Mint, Mint);
 
-pub fn determine_mints(a: impl Into<TokenMint>, b: impl Into<TokenMint>) -> Option<(TokenMint, TokenMint)> {
+pub fn determine_mints(a: impl Into<Mint>, b: impl Into<Mint>) -> Option<(Mint, Mint)> {
     let a = a.into();
     let b = b.into();
     if a == USDC_MINT_STR {

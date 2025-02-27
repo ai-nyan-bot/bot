@@ -4,7 +4,7 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
-use base::model::TokenMint;
+use base::model::Mint;
 use base::repo::TokenRepo;
 use base::test::{FailingTokenInfoLoader, SuccessfulTokenInfoLoader};
 use common::repo::error::RepoError;
@@ -17,12 +17,12 @@ async fn test_wsol() {
     // already exists
     run_test_on_empty_db(|mut tx| async move {
         let test_instance = TokenRepo::testing(SuccessfulTokenInfoLoader::default());
-        let mut result = test_instance.list_or_populate(&mut tx, vec![TokenMint::wsol()]).await.unwrap();
+        let mut result = test_instance.list_or_populate(&mut tx, vec![Mint::wsol()]).await.unwrap();
         assert_eq!(result.len(), 1);
         let result = result.pop().unwrap();
 
         assert_eq!(result.id, 1);
-        assert_eq!(result.mint, TokenMint::wsol());
+        assert_eq!(result.mint, Mint::wsol());
         assert_eq!(result.name, "Wrapped SOL");
         assert_eq!(result.symbol, "WSOL");
         assert_eq!(result.decimals, 9);
@@ -38,12 +38,12 @@ async fn test_usdt() {
     // already exists
     run_test_on_empty_db(|mut tx| async move {
         let test_instance = TokenRepo::testing(SuccessfulTokenInfoLoader::default());
-        let mut result = test_instance.list_or_populate(&mut tx, vec![TokenMint::usdt()]).await.unwrap();
+        let mut result = test_instance.list_or_populate(&mut tx, vec![Mint::usdt()]).await.unwrap();
         assert_eq!(result.len(), 1);
         let result = result.pop().unwrap();
 
         assert_eq!(result.id, 2);
-        assert_eq!(result.mint, TokenMint::usdt());
+        assert_eq!(result.mint, Mint::usdt());
         assert_eq!(result.name, "USDT");
         assert_eq!(result.symbol, "USDT");
         assert_eq!(result.decimals, 6);
@@ -59,12 +59,12 @@ async fn test_usdc() {
     // already exists
     run_test_on_empty_db(|mut tx| async move {
         let test_instance = TokenRepo::testing(SuccessfulTokenInfoLoader::default());
-        let mut result = test_instance.list_or_populate(&mut tx, vec![TokenMint::usdc()]).await.unwrap();
+        let mut result = test_instance.list_or_populate(&mut tx, vec![Mint::usdc()]).await.unwrap();
         assert_eq!(result.len(), 1);
         let result = result.pop().unwrap();
 
         assert_eq!(result.id, 3);
-        assert_eq!(result.mint, TokenMint::usdc());
+        assert_eq!(result.mint, Mint::usdc());
         assert_eq!(result.name, "USD Coin");
         assert_eq!(result.symbol, "USDC");
         assert_eq!(result.decimals, 6);
@@ -160,9 +160,9 @@ async fn test_one_in_cache_one_in_db_one_insert() {
             .list_or_populate(
                 &mut tx,
                 vec![
-                    TokenMint::new("Av6qVigkb7USQyPXJkUvAEm4f599WTRvd75PUWBA9eNm"),
-                    bonk_mint(),
-                    lost_lot_of_money_mint(),
+					Mint::new("Av6qVigkb7USQyPXJkUvAEm4f599WTRvd75PUWBA9eNm"),
+					bonk_mint(),
+					lost_lot_of_money_mint(),
                 ],
             )
             .await
@@ -185,7 +185,7 @@ async fn test_one_in_cache_one_in_db_one_insert() {
 
         let third = result.last().unwrap();
         assert_eq!(third.id, 1002);
-        assert_eq!(third.mint, TokenMint::new("Av6qVigkb7USQyPXJkUvAEm4f599WTRvd75PUWBA9eNm"));
+        assert_eq!(third.mint, Mint::new("Av6qVigkb7USQyPXJkUvAEm4f599WTRvd75PUWBA9eNm"));
         assert_eq!(third.name, "1002");
         assert_eq!(third.symbol, "1002");
         assert_eq!(third.decimals, 1002);
@@ -237,7 +237,7 @@ async fn test_unable_to_load() {
     run_test_on_empty_db(|mut tx| async move {
         let test_instance = TokenRepo::testing(FailingTokenInfoLoader {});
 
-        let result = test_instance.list_or_populate(&mut tx, vec![TokenMint::new("Does_Not_Exists")]).await;
+        let result = test_instance.list_or_populate(&mut tx, vec![Mint::new("Does_Not_Exists")]).await;
         assert_eq!(result.err().unwrap(), RepoError::NotFound);
 
         let count = count_all(&mut tx).await;
@@ -246,10 +246,10 @@ async fn test_unable_to_load() {
     .await
 }
 
-fn bonk_mint() -> TokenMint {
+fn bonk_mint() -> Mint {
     "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263".into()
 }
 
-fn lost_lot_of_money_mint() -> TokenMint {
+fn lost_lot_of_money_mint() -> Mint {
     "44J6Um1tTiTbtL9nd4hU6MqDyPppeWtGr3rMFQ6ppump".into()
 }

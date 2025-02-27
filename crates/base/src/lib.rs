@@ -1,6 +1,6 @@
-#![deny(warnings)]
+#![cfg_attr(not(debug_assertions), deny(warnings))]
 
-use crate::model::{Decimals, TokenMint, TokenName, TokenSymbol};
+use crate::model::{Decimals, Description, Mint, Name, Supply, Symbol, Uri};
 use async_trait::async_trait;
 use futures_util::future::join_all;
 
@@ -11,12 +11,12 @@ pub mod test;
 
 #[async_trait]
 pub trait LoadTokenInfo: Send + Sync {
-    async fn load(&self, mint: impl Into<TokenMint> + Send) -> Option<TokenInfo>;
+    async fn load(&self, mint: impl Into<Mint> + Send) -> Option<TokenInfo>;
 }
 
 pub async fn load_all<L: LoadTokenInfo>(
     loader: &L,
-    mints: impl IntoIterator<Item = impl Into<TokenMint>>,
+    mints: impl IntoIterator<Item = impl Into<Mint>>,
 ) -> Vec<Option<TokenInfo>> {
     let handles = mints
         .into_iter()
@@ -27,8 +27,13 @@ pub async fn load_all<L: LoadTokenInfo>(
 
 #[derive(Debug, Clone)]
 pub struct TokenInfo {
-    pub mint: TokenMint,
-    pub name: TokenName,
-    pub symbol: TokenSymbol,
+    pub mint: Mint,
+    pub name: Name,
+    pub symbol: Symbol,
     pub decimals: Decimals,
+    pub supply: Supply,
+    pub description: Option<Description>,
+    pub metadata: Option<Uri>,
+    pub image: Option<Uri>,
+    pub website: Option<Uri>,
 }

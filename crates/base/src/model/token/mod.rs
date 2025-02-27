@@ -3,24 +3,28 @@
 
 pub use amount::*;
 pub use decimals::Decimals;
+pub use description::Description;
 pub use id::{TokenId, TokenPairId};
-pub use mint::{determine_mints, TokenMint, TokenPairMint};
-pub use name::TokenName;
+pub use mint::{determine_mints, Mint, TokenPairMint};
+pub use name::Name;
 pub use percent::Percent;
 pub use price::*;
 use std::fmt::{Display, Formatter};
-pub use symbol::TokenSymbol;
+pub use supply::Supply;
+pub use symbol::Symbol;
 pub use trades::*;
-pub use uri::TokenUri;
+pub use uri::Uri;
 pub use volume::*;
 
 mod amount;
 mod decimals;
+mod description;
 mod id;
 mod mint;
 mod name;
 mod percent;
 mod price;
+mod supply;
 mod symbol;
 mod trades;
 mod uri;
@@ -29,10 +33,15 @@ mod volume;
 #[derive(Debug, Clone)]
 pub struct Token {
     pub id: TokenId,
-    pub mint: TokenMint,
-    pub name: TokenName,
-    pub symbol: TokenSymbol,
+    pub mint: Mint,
+    pub name: Name,
+    pub symbol: Symbol,
     pub decimals: Decimals,
+    pub supply: Supply,
+    pub description: Option<Description>,
+    pub metadata: Option<Uri>,
+    pub image: Option<Uri>,
+    pub website: Option<Uri>,
 }
 
 #[derive(Debug, Clone)]

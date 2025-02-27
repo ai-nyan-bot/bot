@@ -4,7 +4,7 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
-use crate::model::{TokenMint, TokenPair, TokenPairId};
+use crate::model::{Mint, TokenPair, TokenPairId};
 use crate::repo::token_pair::shared::{find_missing_ids, find_missing_mints};
 use crate::repo::token_pair::CachedTokenPair;
 use crate::repo::ReadTokenPairRepo;
@@ -42,9 +42,9 @@ impl ReadTokenPairRepo {
     }
 
     pub async fn list_by_mints<'a>(
-        &self,
-        tx: &mut Tx<'a>,
-        mints: impl IntoIterator<Item = (impl Into<TokenMint>, impl Into<TokenMint>)> + Send,
+		&self,
+		tx: &mut Tx<'a>,
+		mints: impl IntoIterator<Item = (impl Into<Mint>, impl Into<Mint>)> + Send,
     ) -> RepoResult<Vec<TokenPair>> {
         let mints = mints
             .into_iter()

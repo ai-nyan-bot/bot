@@ -7,14 +7,19 @@ create table solana.token
     mint        text     not null,
     name        text     not null,
     symbol      text     not null,
-    decimals    int2    not null
+    decimals    int2     not null,
+    supply      int8     not null,
+    metadata    text,
+    description text,
+    image       text,
+    website     text
 );
 
 
-insert into solana.token (id, mint, name, symbol, decimals) values
-(1, 'So11111111111111111111111111111111111111112', 'Wrapped SOL', 'WSOL', 9),
-(2, 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB', 'USDT', 'USDT', 6),
-(3, 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 'USD Coin', 'USDC', 6);
+insert into solana.token (id, mint, name, symbol, decimals, supply) values
+(1, 'So11111111111111111111111111111111111111112', 'Wrapped SOL', 'WSOL', 9, -1),
+(2, 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB', 'USDT', 'USDT', 6, -1),
+(3, 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 'USD Coin', 'USDC', 6, -1);
 
 alter sequence solana.token_id_seq restart with 1000;
 

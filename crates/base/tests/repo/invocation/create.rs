@@ -4,7 +4,7 @@
 use base::model::Condition::Compare;
 use base::model::Field::PriceAvg;
 use base::model::Operator::MoreThan;
-use base::model::{Action, Sequence, TokenMint, Value};
+use base::model::{Action, Sequence, Mint, Value};
 use base::repo::{InvocationCreateCmd, InvocationRepo};
 use common::repo::error::RepoError;
 use sqlx::Acquire;
@@ -19,7 +19,7 @@ async fn test_create() {
     run_test(|mut tx| async move {
         let user = get_or_create_test_user(&mut tx).await;
         let rule = create_rule_for_test_user(&mut tx, "MoneyMaker").await;
-        let token_pair = get_or_create_token_pair(&mut tx, TokenMint::usdc(), TokenMint::usdt()).await;
+        let token_pair = get_or_create_token_pair(&mut tx, Mint::usdc(), Mint::usdt()).await;
 
         let test_instance = InvocationRepo::new();
         let result = test_instance
@@ -71,7 +71,7 @@ async fn test_next_is_none() {
     run_test(|mut tx| async move {
         let user = get_or_create_test_user(&mut tx).await;
         let rule = create_rule_for_test_user(&mut tx, "MoneyMaker").await;
-        let token_pair = get_or_create_token_pair(&mut tx, TokenMint::usdc(), TokenMint::usdt()).await;
+        let token_pair = get_or_create_token_pair(&mut tx, Mint::usdc(), Mint::usdt()).await;
 
         let test_instance = InvocationRepo::new();
         let result = test_instance
@@ -105,7 +105,7 @@ async fn test_invocation_requires_existing_user() {
         let test_instance = InvocationRepo::new();
 
         let rule = create_rule_for_test_user(&mut tx, "MoneyMaker").await;
-        let token_pair = get_or_create_token_pair(&mut tx, TokenMint::usdc(), TokenMint::usdt()).await;
+        let token_pair = get_or_create_token_pair(&mut tx, Mint::usdc(), Mint::usdt()).await;
 
         let result = test_instance
             .create(
@@ -140,7 +140,7 @@ async fn test_invocation_requires_existing_rule() {
         let test_instance = InvocationRepo::new();
 
         let user = get_or_create_test_user(&mut tx).await;
-        let token_pair = get_or_create_token_pair(&mut tx, TokenMint::usdc(), TokenMint::usdt()).await;
+        let token_pair = get_or_create_token_pair(&mut tx, Mint::usdc(), Mint::usdt()).await;
 
         let result = test_instance
             .create(

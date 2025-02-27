@@ -4,7 +4,7 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
-use crate::model::{Decimals, Token, TokenId, TokenMint, TokenName, TokenPair, TokenPairId, TokenPairMint, TokenSymbol};
+use crate::model::{Decimals, Token, TokenId, Mint, Name, TokenPair, TokenPairId, TokenPairMint, Symbol, Supply, Description, Uri};
 use crate::repo::TokenPairRepo;
 use crate::LoadTokenInfo;
 use common::repo::{RepoResult, Tx};
@@ -29,7 +29,7 @@ impl<L: LoadTokenInfo> TokenPairRepo<L> {
         }
 
         let tokens: Vec<Token> = self.token_repo.list_or_populate(tx, token_mints).await?;
-        let tokens: HashMap<TokenMint, Token> = tokens.into_iter().map(|token| (token.mint.clone(), token)).collect();
+        let tokens: HashMap<Mint, Token> = tokens.into_iter().map(|token| (token.mint.clone(), token)).collect();
 
         let mut base_ids = Vec::with_capacity(mints.len());
         let mut quote_ids = Vec::with_capacity(mints.len());
@@ -64,11 +64,21 @@ impl<L: LoadTokenInfo> TokenPairRepo<L> {
                 base.name as base_name,
                 base.symbol as base_symbol,
                 base.decimals as base_decimals,
+                base.supply as base_supply,
+                base.metadata as base_metadata,
+                base.description as base_description,
+                base.image as base_image,
+                base.website as base_website,
                 quote.id as quote_id,
                 quote.mint as quote_mint,
                 quote.name as quote_name,
                 quote.symbol as quote_symbol,
-                quote.decimals as quote_decimals
+                quote.decimals as quote_decimals,
+                quote.supply as quote_supply,
+                quote.metadata as quote_metadata,
+                quote.description as quote_description,
+                quote.image as quote_image,
+                quote.website as quote_website
             from new_token_pairs tp
             left join solana.token base on tp.base_id = base.id
             left join solana.token quote on tp.quote_id = quote.id
@@ -80,23 +90,33 @@ impl<L: LoadTokenInfo> TokenPairRepo<L> {
         .fetch_all(&mut **tx)
         .await?
         .into_iter()
-        .map(|r| TokenPair {
-            id: r.get::<TokenPairId, _>("id"),
-            base: Token {
-                id: r.get::<TokenId, _>("base_id"),
-                mint: r.get::<TokenMint, _>("base_mint"),
-                name: r.get::<TokenName, _>("base_name"),
-                symbol: r.get::<TokenSymbol, _>("base_symbol"),
-                decimals: r.get::<Decimals, _>("base_decimals"),
-            },
-            quote: Token {
-                id: r.get::<TokenId, _>("quote_id"),
-                mint: r.get::<TokenMint, _>("quote_mint"),
-                name: r.get::<TokenName, _>("quote_name"),
-                symbol: r.get::<TokenSymbol, _>("quote_symbol"),
-                decimals: r.get::<Decimals, _>("quote_decimals"),
-            },
-        })
+            .map(|r| TokenPair {
+                id: r.get::<TokenPairId, _>("id"),
+                base: Token {
+                    id: r.get::<TokenId, _>("base_id"),
+                    mint: r.get::<Mint, _>("base_mint"),
+                    name: r.get::<Name, _>("base_name"),
+                    symbol: r.get::<Symbol, _>("base_symbol"),
+                    decimals: r.get::<Decimals, _>("base_decimals"),
+                    supply: r.get::<Supply, _>("base_supply"),
+                    description: r.try_get::<Description, _>("base_description").ok(),
+                    metadata: r.try_get::<Uri, _>("base_metadata").ok(),
+                    image: r.try_get::<Uri, _>("base_image").ok(),
+                    website: r.try_get::<Uri, _>("base_website").ok(),
+                },
+                quote: Token {
+                    id: r.get::<TokenId, _>("quote_id"),
+                    mint: r.get::<Mint, _>("quote_mint"),
+                    name: r.get::<Name, _>("quote_name"),
+                    symbol: r.get::<Symbol, _>("quote_symbol"),
+                    decimals: r.get::<Decimals, _>("quote_decimals"),
+                    supply: r.get::<Supply, _>("quote_supply"),
+                    description: r.try_get::<Description, _>("quote_description").ok(),
+                    metadata: r.try_get::<Uri, _>("quote_metadata").ok(),
+                    image: r.try_get::<Uri, _>("quote_image").ok(),
+                    website: r.try_get::<Uri, _>("quote_website").ok(),
+                },
+            })
         .collect::<Vec<_>>())
     }
 }

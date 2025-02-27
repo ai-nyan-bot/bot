@@ -2,23 +2,23 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use base::model::{
-    Amount, PublicKey, TokenMint, TokenName,
-    TokenSymbol, TokenUri,
+    Amount, PublicKey, Mint, Name,
+    Symbol, Uri,
 };
 use common::model::Timestamp;
 
 #[derive(Debug)]
 pub enum Instruction {
     Create {
-        name: TokenName,
-        symbol: TokenSymbol,
-        uri: TokenUri,
-        mint: TokenMint,
+        name: Name,
+        symbol: Symbol,
+        uri: Uri,
+        mint: Mint,
         bonding_curve: PublicKey,
         user: PublicKey,
     },
     Trade {
-        mint: TokenMint,
+        mint: Mint,
         sol_amount: Amount,
         token_amount: Amount,
         is_buy: bool,

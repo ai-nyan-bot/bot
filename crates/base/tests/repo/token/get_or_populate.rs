@@ -4,7 +4,7 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
-use base::model::TokenMint;
+use base::model::Mint;
 use base::repo::TokenRepo;
 use base::test::{FailingTokenInfoLoader, SuccessfulTokenInfoLoader};
 use common::repo::error::RepoError::NotFound;
@@ -16,10 +16,10 @@ async fn test_wsol() {
     // already exists
     run_test_on_empty_db(|mut tx| async move {
         let test_instance = TokenRepo::testing(SuccessfulTokenInfoLoader::default());
-        let result = test_instance.get_or_populate(&mut tx, TokenMint::wsol()).await.unwrap();
+        let result = test_instance.get_or_populate(&mut tx, Mint::wsol()).await.unwrap();
 
         assert_eq!(result.id, 1);
-        assert_eq!(result.mint, TokenMint::wsol());
+        assert_eq!(result.mint, Mint::wsol());
         assert_eq!(result.name, "Wrapped SOL");
         assert_eq!(result.symbol, "WSOL");
         assert_eq!(result.decimals, 9);
@@ -35,10 +35,10 @@ async fn test_usdt() {
     // already exists
     run_test_on_empty_db(|mut tx| async move {
         let test_instance = TokenRepo::testing(SuccessfulTokenInfoLoader::default());
-        let result = test_instance.get_or_populate(&mut tx, TokenMint::usdt()).await.unwrap();
+        let result = test_instance.get_or_populate(&mut tx, Mint::usdt()).await.unwrap();
 
         assert_eq!(result.id, 2);
-        assert_eq!(result.mint, TokenMint::usdt());
+        assert_eq!(result.mint, Mint::usdt());
         assert_eq!(result.name, "USDT");
         assert_eq!(result.symbol, "USDT");
         assert_eq!(result.decimals, 6);
@@ -54,10 +54,10 @@ async fn test_usdc() {
     // already exists
     run_test_on_empty_db(|mut tx| async move {
         let test_instance = TokenRepo::testing(SuccessfulTokenInfoLoader::default());
-        let result = test_instance.get_or_populate(&mut tx, TokenMint::usdc()).await.unwrap();
+        let result = test_instance.get_or_populate(&mut tx, Mint::usdc()).await.unwrap();
 
         assert_eq!(result.id, 3);
-        assert_eq!(result.mint, TokenMint::usdc());
+        assert_eq!(result.mint, Mint::usdc());
         assert_eq!(result.name, "USD Coin");
         assert_eq!(result.symbol, "USDC");
         assert_eq!(result.decimals, 6);
@@ -131,7 +131,7 @@ async fn unable_to_load() {
     run_test_on_empty_db(|mut tx| async move {
         let test_instance = TokenRepo::testing(FailingTokenInfoLoader {});
 
-        let result = test_instance.get_or_populate(&mut tx, TokenMint::new("Does_Not_Exists")).await;
+        let result = test_instance.get_or_populate(&mut tx, Mint::new("Does_Not_Exists")).await;
         assert_eq!(result.err().unwrap(), NotFound);
 
         let count = count_all(&mut tx).await;
@@ -140,6 +140,6 @@ async fn unable_to_load() {
     .await
 }
 
-fn bonk_mint() -> TokenMint {
+fn bonk_mint() -> Mint {
     "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263".into()
 }
