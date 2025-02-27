@@ -11,6 +11,4 @@ pub(crate) async fn index_trade<'a>(tx: &mut Tx<'a>, state: State, trades: SlotT
         .insert_trades(tx, trades)
         .await
         .unwrap();
-
-    println!("done")
 }
