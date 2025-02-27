@@ -8,9 +8,9 @@ create schema pumpfun;
 
 create table pumpfun.trade
 (
-    slot                    bigint not null,
-    address_id              int not null,
-    token_pair_id           int not null,
+    slot                    int8 not null,
+    address_id              int4 not null,
+    token_pair_id           int4 not null,
     base_amount             double precision not null,
     quote_amount            double precision not null,
     price                   double precision not null,

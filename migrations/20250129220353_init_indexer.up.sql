@@ -3,8 +3,8 @@
 
 create table solana.indexer
 (
-    id          smallint primary key,
-    slot        bigint not null,
+    id          int2 primary key,
+    slot        int8 not null,
     updated_at  timestamptz default (timezone('utc', now()))
 );
 

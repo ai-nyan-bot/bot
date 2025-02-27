@@ -7,7 +7,7 @@ create table solana.token
     mint        text     not null,
     name        text     not null,
     symbol      text     not null,
-    decimals    smallint not null
+    decimals    int2    not null
 );
 
 
@@ -24,8 +24,8 @@ create unique index token_unique_mint_idx on solana.token(mint);
 create table solana.token_pair
 (
     id          serial   primary key,
-    base_id     int     not null,
-    quote_id    int     not null,
+    base_id     int4     not null,
+    quote_id    int4     not null,
 
     constraint fk_base
         foreign key (base_id)

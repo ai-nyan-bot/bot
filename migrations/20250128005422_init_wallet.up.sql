@@ -4,7 +4,7 @@
 create table nyanbot.wallet
 (
     id                  serial primary key,
-    user_id             int not null,
+    user_id             int4 not null,
     solana_public_key   text not null,
     solana_private_key  text not null,
     created_at          timestamptz default (timezone('utc', now())),

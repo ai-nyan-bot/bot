@@ -4,9 +4,9 @@
 create table solana.rule
 (
     id          serial primary key,
-    version     smallint not null,
+    version     int2 not null,
     name        text not null,
-    user_id     int not null,
+    user_id     int4 not null,
     sequence    jsonb not null,
     created_at  timestamptz default (timezone('utc', now())),
     updated_at  timestamptz default (timezone('utc', now())),

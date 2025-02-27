@@ -28,7 +28,7 @@ execute function update_updated_at_column();
 create table nyanbot.auth
 (
     id          serial  primary key,
-    user_id     int not null,
+    user_id     int4 not null,
     token       text not null,
     created_at  timestamptz default (timezone('utc', now())),
     updated_at  timestamptz default (timezone('utc', now())),

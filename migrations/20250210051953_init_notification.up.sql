@@ -3,9 +3,9 @@
 
 create table nyanbot.notification (
     id serial   primary key,
-    user_id     int not null,
-    type        smallint not null,
-    channel     smallint not null,
+    user_id     int4 not null,
+    type        int2 not null,
+    channel     int2 not null,
     payload     json not null,
     created_at  timestamptz default (timezone('utc', now())),
 

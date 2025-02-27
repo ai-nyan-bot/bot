@@ -6,7 +6,7 @@
 
 create table pumpfun.candle_1s
 (
-    token_pair_id  int                      not null,
+    token_pair_id  int4                      not null,
     timestamp      timestamptz              not null,
     open           double precision         not null,
     high           double precision         not null,
@@ -55,7 +55,7 @@ create index candle_1s_timestamp ON pumpfun.candle_1s (timestamp desc);
 
 create table pumpfun.candle_1s_most_recent
 (
-    token_pair_id  int                      not null,
+    token_pair_id  int4                      not null,
     timestamp      timestamptz              not null,
     open           double precision         not null,
     high           double precision         not null,
@@ -93,7 +93,7 @@ for each row execute function pumpfun.candle_1s_update_most_recent();
 
 create table pumpfun.candle_1m
 (
-    token_pair_id  int                      not null,
+    token_pair_id  int4                      not null,
     timestamp      timestamptz              not null,
     open           double precision         not null,
     high           double precision         not null,
@@ -142,7 +142,7 @@ create index candle_1m_timestamp ON pumpfun.candle_1m (timestamp desc);
 
 create table pumpfun.candle_1m_most_recent
 (
-    token_pair_id  int                      not null,
+    token_pair_id  int4                      not null,
     timestamp      timestamptz              not null,
     open           double precision         not null,
     high           double precision         not null,
@@ -179,7 +179,7 @@ for each row execute function pumpfun.candle_1m_update_most_recent();
 
 create table pumpfun.candle_5m
 (
-    token_pair_id  int                      not null,
+    token_pair_id  int4                      not null,
     timestamp      timestamptz              not null,
     open           double precision         not null,
     high           double precision         not null,
@@ -228,7 +228,7 @@ create index candle_5m_timestamp ON pumpfun.candle_5m (timestamp desc);
 
 create table pumpfun.candle_5m_most_recent
 (
-    token_pair_id  int                      not null,
+    token_pair_id  int4                      not null,
     timestamp      timestamptz              not null,
     open           double precision         not null,
     high           double precision         not null,
@@ -265,7 +265,7 @@ for each row execute function pumpfun.candle_5m_update_most_recent();
 
 create table pumpfun.candle_15m
 (
-    token_pair_id  int                      not null,
+    token_pair_id  int4                      not null,
     timestamp      timestamptz              not null,
     open           double precision         not null,
     high           double precision         not null,
@@ -314,7 +314,7 @@ create index candle_15m_timestamp ON pumpfun.candle_15m (timestamp desc);
 
 create table pumpfun.candle_15m_most_recent
 (
-    token_pair_id  int                      not null,
+    token_pair_id  int4                      not null,
     timestamp      timestamptz              not null,
     open           double precision         not null,
     high           double precision         not null,
@@ -351,7 +351,7 @@ for each row execute function pumpfun.candle_15m_update_most_recent();
 
 create table pumpfun.candle_1h
 (
-    token_pair_id  int                      not null,
+    token_pair_id  int4                      not null,
     timestamp      timestamptz              not null,
     open           double precision         not null,
     high           double precision         not null,
@@ -400,7 +400,7 @@ create index candle_1h_timestamp ON pumpfun.candle_1h (timestamp desc);
 
 create table pumpfun.candle_1h_most_recent
 (
-    token_pair_id  int                      not null,
+    token_pair_id  int4                      not null,
     timestamp      timestamptz              not null,
     open           double precision         not null,
     high           double precision         not null,
@@ -437,7 +437,7 @@ for each row execute function pumpfun.candle_1h_update_most_recent();
 
 create table pumpfun.candle_4h
 (
-    token_pair_id  int                      not null,
+    token_pair_id  int4                      not null,
     timestamp      timestamptz              not null,
     open           double precision         not null,
     high           double precision         not null,
@@ -486,7 +486,7 @@ create index candle_4h_timestamp ON pumpfun.candle_4h (timestamp desc);
 
 create table pumpfun.candle_4h_most_recent
 (
-    token_pair_id  int                      not null,
+    token_pair_id  int4                      not null,
     timestamp      timestamptz              not null,
     open           double precision         not null,
     high           double precision         not null,
@@ -523,7 +523,7 @@ for each row execute function pumpfun.candle_4h_update_most_recent();
 
 create table pumpfun.candle_1d
 (
-    token_pair_id  int                      not null,
+    token_pair_id  int4                      not null,
     timestamp      timestamptz              not null,
     open           double precision         not null,
     high           double precision         not null,
@@ -572,7 +572,7 @@ create index candle_1d_timestamp ON pumpfun.candle_1d (timestamp desc);
 
 create table pumpfun.candle_1d_most_recent
 (
-    token_pair_id  int                      not null,
+    token_pair_id  int4                      not null,
     timestamp      timestamptz              not null,
     open           double precision         not null,
     high           double precision         not null,
