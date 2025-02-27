@@ -5,11 +5,10 @@
 
 pub use byte::*;
 pub use config::*;
-pub use signal::{Signal, SignalKind};
+pub use signal::{Signal, SignalType};
 
 mod byte;
 mod config;
-mod leb128;
 pub mod model;
 pub mod repo;
 pub mod service;

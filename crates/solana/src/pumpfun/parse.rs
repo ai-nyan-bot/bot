@@ -4,8 +4,10 @@
 use crate::model::Transaction;
 use crate::parse::{ParseResult, Parser};
 use crate::pumpfun::model::Instruction;
+use base::model::{Mint, PublicKey};
 use common::model::Timestamp;
 use common::ByteReader;
+use log::warn;
 use solana_sdk::pubkey::Pubkey;
 
 pub struct PumpFunParser {}
@@ -34,16 +36,24 @@ impl Parser<Instruction> for PumpFunParser {
                     reader.seek(8).unwrap(); // skip anchor method identifier
                     let disc = reader.read_range(8).unwrap();
 
-                    if disc == TRADE_EVENT_DISCRIMINANT {
+                    if disc == TRADE_DISCRIMINANT {
                         match decode_trade(&reader) {
-                            None => {}
+                            None => {
+                                warn!("Failed to decode trade from {}", tx.signature)
+                            }
                             Some(instr) => {
                                 result.push(instr);
                             }
                         }
-                    } else if disc == CREATE_EVENT_DISCRIMINANT {
-                        let instr = decode_create(&reader);
-                        result.push(instr);
+                    } else if disc == CREATE_DISCRIMINANT {
+                        match decode_create(&reader) {
+                            None => {
+                                warn!("Failed to decode create from {}", tx.signature)
+                            }
+                            Some(instr) => {
+                                result.push(instr);
+                            }
+                        }
                     }
                 }
             }
@@ -52,46 +62,50 @@ impl Parser<Instruction> for PumpFunParser {
     }
 }
 
-const CREATE_EVENT_DISCRIMINANT: [u8; 8] = [27, 114, 169, 77, 222, 235, 99, 118];
-const TRADE_EVENT_DISCRIMINANT: [u8; 8] = [189, 219, 127, 211, 78, 230, 97, 238];
+const CREATE_DISCRIMINANT: [u8; 8] = [27, 114, 169, 77, 222, 235, 99, 118];
+const TRADE_DISCRIMINANT: [u8; 8] = [189, 219, 127, 211, 78, 230, 97, 238];
 
-fn decode_create(reader: &ByteReader) -> Instruction {
-    Instruction::Create {
-        name: String::from_utf8_lossy(reader.read_variable_length::<u32>().unwrap())
+fn decode_create(reader: &ByteReader) -> Option<Instruction> {
+    Some(Instruction::Create {
+        name: String::from_utf8_lossy(reader.read_variable_length::<u32>().ok()?)
             .to_string()
             .into(),
-        symbol: String::from_utf8_lossy(reader.read_variable_length::<u32>().unwrap())
+        symbol: String::from_utf8_lossy(reader.read_variable_length::<u32>().ok()?)
             .to_string()
             .into(),
-        uri: String::from_utf8_lossy(reader.read_variable_length::<u32>().unwrap())
+        uri: String::from_utf8_lossy(reader.read_variable_length::<u32>().ok()?)
             .to_string()
             .into(),
-        mint: Pubkey::try_from(reader.read_range(32).unwrap())
+        mint: Pubkey::try_from(reader.read_range(32).ok()?)
             .unwrap()
             .into(),
-        bonding_curve: Pubkey::try_from(reader.read_range(32).unwrap())
+        bonding_curve: Pubkey::try_from(reader.read_range(32).ok()?)
             .unwrap()
             .into(),
-        user: Pubkey::try_from(reader.read_range(32).unwrap())
+        user: Pubkey::try_from(reader.read_range(32).ok()?)
             .unwrap()
             .into(),
-    }
+    })
 }
 
 fn decode_trade(reader: &ByteReader) -> Option<Instruction> {
     let trade = Instruction::Trade {
-        mint: Pubkey::try_from(reader.read_range(32).unwrap())
-            .unwrap()
-            .into(),
-        sol_amount: reader.read_u64().unwrap().into(),
-        token_amount: reader.read_u64().unwrap().into(),
-        is_buy: reader.read_u8().unwrap() == 1,
-        user: Pubkey::try_from(reader.read_range(32).unwrap())
-            .unwrap()
-            .into(),
-        timestamp: Timestamp::from_solana_time(reader.read_u64().unwrap() as i64),
-        virtual_sol_reserves: reader.read_u64().unwrap().into(),
-        virtual_token_reserves: reader.read_u64().unwrap().into(),
+        mint: reader
+            .read_range(32)
+            .map(|d| Pubkey::try_from(d).ok())
+            .ok()?
+            .map(|d| Mint::from(d))?,
+        sol_amount: reader.read_u64().ok()?.into(),
+        token_amount: reader.read_u64().ok()?.into(),
+        is_buy: reader.read_u8().ok()? == 1,
+        user: reader
+            .read_range(32)
+            .map(|d| Pubkey::try_from(d).ok())
+            .ok()?
+            .map(|d| PublicKey::from(d))?,
+        timestamp: Timestamp::from_solana_time(reader.read_u64().ok()? as i64),
+        virtual_sol_reserves: reader.read_u64().ok()?.into(),
+        virtual_token_reserves: reader.read_u64().ok()?.into(),
     };
 
     if let Instruction::Trade {

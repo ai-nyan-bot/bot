@@ -5,7 +5,7 @@ use crate::model::Slot;
 use crate::rpc::RpcClient;
 use async_trait::async_trait;
 use common::model::RpcUrl;
-use common::{Signal, SignalKind};
+use common::{Signal, SignalType};
 use log::{debug, error, trace, warn};
 use std::time::Duration;
 use tokio::select;
@@ -51,10 +51,10 @@ impl SlotStream for RpcSlotStream {
                     select! {
                         signal = signal.recv() => {
                             match signal{
-                                SignalKind::Shutdown => {
+                                SignalType::Shutdown => {
                                     debug!("{signal}");
                                 }
-                                SignalKind::Terminate(_) => {
+                                SignalType::Terminate(_) => {
                                     warn!("{signal}")
                                 }
                             }

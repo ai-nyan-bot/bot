@@ -1,20 +1,22 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use log::error;
 use std::fmt::{Display, Formatter};
+use std::process::exit;
 use tokio::sync::broadcast::{Receiver, Sender};
 
 #[derive(Clone, Debug, PartialEq)]
-pub enum SignalKind {
+pub enum SignalType {
     Shutdown,
     Terminate(String),
 }
 
-impl Display for SignalKind {
+impl Display for SignalType {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            SignalKind::Shutdown => f.write_str("shutdown signal"),
-            SignalKind::Terminate(reason) => {
+            SignalType::Shutdown => f.write_str("shutdown signal"),
+            SignalType::Terminate(reason) => {
                 f.write_fmt(format_args!("termination signal: {reason}"))
             }
         }
@@ -22,8 +24,8 @@ impl Display for SignalKind {
 }
 
 pub struct Signal {
-    sender: Sender<SignalKind>,
-    receiver: Receiver<SignalKind>,
+    sender: Sender<SignalType>,
+    receiver: Receiver<SignalType>,
 }
 
 impl Clone for Signal {
@@ -48,20 +50,23 @@ impl Signal {
     }
 
     pub fn shutdown(&self) {
-        self.sender.send(SignalKind::Shutdown).unwrap();
+        self.sender.send(SignalType::Shutdown).unwrap();
     }
 
     pub fn terminate(&self, reason: impl Into<String>) {
         self.sender
-            .send(SignalKind::Terminate(reason.into()))
+            .send(SignalType::Terminate(reason.into()))
             .unwrap();
     }
 
-    pub async fn recv(&mut self) -> SignalKind {
-        self.receiver.recv().await.unwrap()
+    pub async fn recv(&mut self) -> SignalType {
+        self.receiver.recv().await.unwrap_or_else(|_| {
+            error!("Failed to receive signal - exit");
+            exit(-1)
+        })
     }
 
-    pub async fn recv_maybe(&mut self) -> Option<SignalKind> {
+    pub async fn recv_maybe(&mut self) -> Option<SignalType> {
         self.receiver.try_recv().ok()
     }
 }
@@ -83,7 +88,7 @@ mod tests {
         });
 
         let received = receiver.recv().await;
-        assert_eq!(received, SignalKind::Shutdown);
+        assert_eq!(received, SignalType::Shutdown);
 
         sender_task.await.unwrap();
     }
@@ -101,7 +106,7 @@ mod tests {
         let received = receiver.recv().await;
         assert_eq!(
             received,
-            SignalKind::Terminate("For that reason".to_string())
+            SignalType::Terminate("For that reason".to_string())
         );
 
         sender_task.await.unwrap();
@@ -121,8 +126,8 @@ mod tests {
         let received1 = receiver1.recv().await;
         let received2 = receiver2.recv().await;
 
-        assert_eq!(received1, SignalKind::Shutdown);
-        assert_eq!(received2, SignalKind::Shutdown);
+        assert_eq!(received1, SignalType::Shutdown);
+        assert_eq!(received2, SignalType::Shutdown);
 
         sender_task.await.unwrap();
     }
@@ -135,7 +140,7 @@ mod tests {
         signal.shutdown();
 
         let received = receiver.recv().await;
-        assert_eq!(received, SignalKind::Shutdown);
+        assert_eq!(received, SignalType::Shutdown);
     }
 
     #[tokio::test]
@@ -146,6 +151,6 @@ mod tests {
         signal.terminate("It's all over");
 
         let received = receiver.recv().await;
-        assert_eq!(received, SignalKind::Terminate("It's all over".to_string()));
+        assert_eq!(received, SignalType::Terminate("It's all over".to_string()));
     }
 }

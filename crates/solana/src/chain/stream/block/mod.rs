@@ -87,6 +87,7 @@ impl<S: SlotStream> BlockStream for RpcBlockStream<S> {
                     if let Err(_) = self.tx.send(block).await {
                         error!("Failed to send block to channel");
                         signal.terminate("RpcBlockStream failed to send to channel");
+                        return;
                     }
                 }
             }

@@ -5,7 +5,7 @@ use crate::model::Decimals;
 use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
 
-#[derive(Copy, Clone, Debug, PartialEq, Deserialize, Serialize, sqlx::Type)]
+#[derive(Copy, Clone, Debug, PartialEq, PartialOrd, Deserialize, Serialize, sqlx::Type)]
 #[sqlx(transparent)]
 pub struct Amount(pub i64);
 

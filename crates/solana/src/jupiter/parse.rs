@@ -4,28 +4,42 @@
 use crate::jupiter::model::{Instruction, Jupiter6Swap};
 use crate::model::Transaction;
 use crate::parse::{ParseError, ParseResult, Parser};
+use base::model::{Amount, Mint, PublicKey};
 use common::ByteReader;
+use log::warn;
 use solana_sdk::pubkey::Pubkey;
 
 const SWAP_EVENT_DISCRIMINANT: [u8; 8] = [64, 198, 205, 232, 38, 8, 113, 226];
 
 struct SwapEvent {
-    pub amm: Pubkey,
-    pub input_mint: Pubkey,
-    pub input_amount: u64,
-    pub output_mint: Pubkey,
-    pub output_amount: u64,
+    pub amm: PublicKey,
+    pub input_mint: Mint,
+    pub input_amount: Amount,
+    pub output_mint: Mint,
+    pub output_amount: Amount,
 }
 
 impl SwapEvent {
-    fn decode(reader: &ByteReader) -> SwapEvent {
-        SwapEvent {
-            amm: Pubkey::try_from(reader.read_range(32).unwrap()).unwrap(),
-            input_mint: Pubkey::try_from(reader.read_range(32).unwrap()).unwrap(),
-            input_amount: reader.read_u64().unwrap(),
-            output_mint: Pubkey::try_from(reader.read_range(32).unwrap()).unwrap(),
-            output_amount: reader.read_u64().unwrap(),
-        }
+    fn decode(reader: &ByteReader) -> Option<SwapEvent> {
+        Some(SwapEvent {
+            amm: reader
+                .read_range(32)
+                .map(|d| Pubkey::try_from(d).ok())
+                .ok()?
+                .map(|d| PublicKey::from(d))?,
+            input_mint: reader
+                .read_range(32)
+                .map(|d| Pubkey::try_from(d).ok())
+                .ok()?
+                .map(|d| Mint::from(d))?,
+            input_amount: reader.read_u64().ok()?.into(),
+            output_mint: reader
+                .read_range(32)
+                .map(|d| Pubkey::try_from(d).ok())
+                .ok()?
+                .map(|d| Mint::from(d))?,
+            output_amount: reader.read_u64().ok()?.into(),
+        })
     }
 }
 
@@ -68,15 +82,21 @@ pub(crate) fn parse_swaps(tx: &Transaction) -> Result<Vec<Jupiter6Swap>, ParseEr
 
                 if let Ok(disc) = reader.read_range(8) {
                     if disc == SWAP_EVENT_DISCRIMINANT {
-                        let evt = SwapEvent::decode(&reader);
-                        if evt.input_amount > 0 && evt.output_amount > 0 {
-                            result.push(Jupiter6Swap {
-                                amm: evt.amm.into(),
-                                input_mint: evt.input_mint.into(),
-                                input_amount: evt.input_amount.into(),
-                                output_mint: evt.output_mint.into(),
-                                output_amount: evt.output_amount.into(),
-                            })
+                        match SwapEvent::decode(&reader) {
+                            None => {
+                                warn!("Failed to decode swap from {}", tx.signature)
+                            }
+                            Some(swap) => {
+                                if swap.input_amount.0 > 0 && swap.output_amount.0 > 0 {
+                                    result.push(Jupiter6Swap {
+                                        amm: swap.amm,
+                                        input_mint: swap.input_mint,
+                                        input_amount: swap.input_amount,
+                                        output_mint: swap.output_mint,
+                                        output_amount: swap.output_amount,
+                                    })
+                                }
+                            }
                         }
                     };
                 }
@@ -106,7 +126,8 @@ mod tests {
             let test_instance = JupiterParser::new();
             let tx = transaction("4pp3wY3KcAvzV7sL9y1ENtHgV4A43t2tmAzwxuxHRbJAXxbq7CGjjmhtUpd35y76zfKqp5N2mfR9aLHFRC9AZjg2");
 
-            let Instruction::Trade { swaps, signer } = test_instance.parse(&tx).unwrap().pop().unwrap();
+            let Instruction::Trade { swaps, signer } =
+                test_instance.parse(&tx).unwrap().pop().unwrap();
 
             assert_eq!(signer, "ACHPeLHfDUcXQC5pa4NTB2R9TDQtAnwgfszhX2udq7S2");
 
@@ -130,7 +151,8 @@ mod tests {
             let test_instance = JupiterParser::new();
             let tx = transaction("3Qd7xWYqpuUbYNGrfSLgaWSsmp7QF9un8qz4whJt87wmPfkxZDo8YhrqHpGBdQZZAqnWAVEq5DnS8B3MbBzuSVX1");
 
-            let Instruction::Trade { swaps, signer } = test_instance.parse(&tx).unwrap().pop().unwrap();
+            let Instruction::Trade { swaps, signer } =
+                test_instance.parse(&tx).unwrap().pop().unwrap();
             assert_eq!(signer, "5cTNAQEaDgEsR7mseeDtay7tJqcQoDMm3LMS6Rkj9Cm3");
             assert_eq!(swaps.len(), 4);
         }
