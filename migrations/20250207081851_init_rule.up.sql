@@ -34,4 +34,4 @@ execute function solana.increment_rule_version();
 create trigger set_updated_at
 before update on solana.rule
 for each row
-execute function update_updated_at_column();
+execute function solana.update_updated_at_column();

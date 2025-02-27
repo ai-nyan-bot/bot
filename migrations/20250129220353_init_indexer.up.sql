@@ -11,4 +11,4 @@ create table solana.indexer
 create trigger set_updated_at
 before update on solana.indexer
 for each row
-execute function update_updated_at_column();
+execute function solana.update_updated_at_column();

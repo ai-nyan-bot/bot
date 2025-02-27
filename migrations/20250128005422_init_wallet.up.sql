@@ -22,4 +22,4 @@ create unique index unique_solana_solana_private_key on nyanbot.wallet (solana_p
 create trigger set_updated_at
 before update on nyanbot.wallet
 for each row
-execute function update_updated_at_column();
+execute function nyanbot.update_updated_at_column();

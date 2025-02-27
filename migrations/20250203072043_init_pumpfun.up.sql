@@ -1,10 +1,18 @@
 -- Copyright (c) nyanbot.com 2025.
 -- This file is licensed under the AGPL-3.0-or-later.
 
--- This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
--- Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
+
 
 create schema pumpfun;
+
+create function pumpfun.update_updated_at_column()
+returns trigger as $$
+begin
+    NEW.updated_at = timezone('utc', now());
+    return NEW;
+end;
+$$ language plpgsql;
+
 
 create table pumpfun.trade
 (

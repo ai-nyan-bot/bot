@@ -37,7 +37,7 @@ create trigger set_updated_at
 before update on pumpfun.curve
 
 for each row
-execute function update_updated_at_column();
+execute function pumpfun.update_updated_at_column();
 
 create function pumpfun.curve_log_trigger_fn()
 returns trigger as $$

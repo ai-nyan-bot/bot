@@ -1,15 +1,6 @@
 -- Copyright (c) nyanbot.com 2025.
 -- This file is licensed under the AGPL-3.0-or-later.
 
-create or replace function update_updated_at_column()
-returns trigger as $$
-begin
-    NEW.updated_at = timezone('utc', now());
-    return NEW;
-end;
-$$ language plpgsql;
-
-
 create table nyanbot.user
 (
     id          serial primary key,
@@ -23,7 +14,7 @@ create unique index unique_telegram_id on nyanbot.user (telegram_id) where teleg
 create trigger set_updated_at
 before update on nyanbot.user
 for each row
-execute function update_updated_at_column();
+execute function nyanbot.update_updated_at_column();
 
 create table nyanbot.auth
 (
@@ -43,4 +34,4 @@ create unique index auth_unique_token_idx on nyanbot.auth(token);
 create trigger set_updated_at
 before update on nyanbot.auth
 for each row
-execute function update_updated_at_column();
+execute function nyanbot.update_updated_at_column();

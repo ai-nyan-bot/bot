@@ -6,5 +6,3 @@ drop table nyanbot.auth cascade;
 
 drop trigger set_updated_at on nyanbot.user;
 drop table nyanbot.user cascade;
-
-drop function update_updated_at_column();
