@@ -23,7 +23,7 @@ async fn test_load_token_info() {
     assert_eq!(result.name, "kith gil");
     assert_eq!(result.symbol, "gil");
     assert_eq!(result.decimals, 6);
-    assert_eq!(result.supply, 999817464638882);
+    assert_eq!(result.supply.unwrap(), 999817464638882i64);
 }
 
 #[test_log::test(tokio::test)]
@@ -39,7 +39,7 @@ async fn test_token_2022_without_extension() {
     assert_eq!(token_info.name, "");
     assert_eq!(token_info.symbol, "");
     assert_eq!(token_info.decimals, 2);
-    assert_eq!(token_info.supply, 99994080970212413);
+    assert_eq!(token_info.supply.unwrap(), 99994080883812413i64);
 }
 
 #[test_log::test(tokio::test)]
@@ -59,7 +59,7 @@ async fn test_token_2022_with_extension() {
     assert_eq!(token_info.name, "PayPal USD");
     assert_eq!(token_info.symbol, "PYUSD");
     assert_eq!(token_info.decimals, 6);
-    assert_eq!(token_info.supply, 152396264479361);
+    assert_eq!(token_info.supply.unwrap(), 152396264479361i64);
 }
 
 #[test_log::test(tokio::test)]

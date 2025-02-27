@@ -3,5 +3,5 @@
 
 pub mod rpc;
 mod ipfs;
-mod legacy;
+mod local;
 

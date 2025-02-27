@@ -37,7 +37,7 @@ pub struct Token {
     pub name: Name,
     pub symbol: Symbol,
     pub decimals: Decimals,
-    pub supply: Supply,
+    pub supply: Option<Supply>,
     pub description: Option<Description>,
     pub metadata: Option<Uri>,
     pub image: Option<Uri>,

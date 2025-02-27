@@ -51,7 +51,7 @@ impl<L: LoadTokenInfo> TokenRepo<L> {
 
         Ok(sqlx::query(
             r#"with new_token as (
-            insert into solana.token (mint,name,symbol,decimals)
+            insert into solana.token (mint,name,symbol,decimals,supply,metadata,description,image,website)
             select
                 unnest($1::text[]) as mint,
                 unnest($2::text[]) as name,
@@ -86,8 +86,8 @@ impl<L: LoadTokenInfo> TokenRepo<L> {
             )
             select * from new_token"#,
         )
-        .bind(&mints)
-        .bind(&names)
+        .bind(mints)
+        .bind(names)
         .bind(symbols)
         .bind(decimals)
         .bind(supplies)
@@ -104,7 +104,7 @@ impl<L: LoadTokenInfo> TokenRepo<L> {
             name: r.get::<Name, _>("name"),
             symbol: r.get::<Symbol, _>("symbol"),
             decimals: r.get::<Decimals, _>("decimals"),
-            supply: r.get::<Supply, _>("supply"),
+            supply: r.try_get::<Supply, _>("supply").ok(),
             description: r.try_get::<Description, _>("description").ok(),
             metadata: r.try_get::<Uri, _>("metadata").ok(),
             image: r.try_get::<Uri, _>("image").ok(),

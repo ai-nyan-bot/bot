@@ -10,7 +10,7 @@ common = { path = "../common" }
 
 async-trait = { workspace = true }
 futures-util = { workspace = true }
-
+itertools = { workspace = true }
 mpl-token-metadata = { version = "5.1.0" }
 
 serde = { workspace = true }

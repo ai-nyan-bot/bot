@@ -56,7 +56,9 @@ impl fmt::Display for PublicKeyError {
 
 impl std::error::Error for PublicKeyError {}
 
-#[derive(Default, Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, sqlx::Type)]
+#[derive(
+    Default, Debug, Clone, PartialEq, PartialOrd, Eq, Hash, Serialize, Deserialize, sqlx::Type,
+)]
 #[sqlx(transparent)]
 pub struct PublicKey(pub String);
 
@@ -170,8 +172,11 @@ impl FromStr for PrivateKey {
     type Err = PrivateKeyError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let decoded = bs58::decode(s).into_vec().map_err(|_| PrivateKeyError::Invalid(s.to_string()))?;
-        let key = Keypair::from_bytes(&decoded).map_err(|_| PrivateKeyError::Invalid(s.to_string()))?;
+        let decoded = bs58::decode(s)
+            .into_vec()
+            .map_err(|_| PrivateKeyError::Invalid(s.to_string()))?;
+        let key =
+            Keypair::from_bytes(&decoded).map_err(|_| PrivateKeyError::Invalid(s.to_string()))?;
         Ok(PrivateKey(key.to_base58_string()))
     }
 }

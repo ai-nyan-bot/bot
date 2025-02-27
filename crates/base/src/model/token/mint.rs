@@ -13,7 +13,7 @@ pub const USDC_MINT_STR: &str = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 pub const USDT_MINT_STR: &str = "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB";
 pub const WSOL_MINT_STR: &str = "So11111111111111111111111111111111111111112";
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Deserialize, Serialize, sqlx::Type)]
+#[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Hash, Deserialize, Serialize, sqlx::Type)]
 #[sqlx(transparent)]
 pub struct Mint(pub PublicKey);
 
@@ -117,7 +117,9 @@ pub fn determine_mints(a: impl Into<Mint>, b: impl Into<Mint>) -> Option<(Mint, 
 mod tests {
 
     mod determine_mints {
-        use crate::model::token::mint::{determine_mints, USDC_MINT_STR, USDT_MINT_STR, WSOL_MINT_STR};
+        use crate::model::token::mint::{
+            determine_mints, USDC_MINT_STR, USDT_MINT_STR, WSOL_MINT_STR,
+        };
 
         #[test]
         fn test_wsol_usdc() {

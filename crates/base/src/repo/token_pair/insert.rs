@@ -4,7 +4,10 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
-use crate::model::{Decimals, Token, TokenId, Mint, Name, TokenPair, TokenPairId, TokenPairMint, Symbol, Supply, Description, Uri};
+use crate::model::{
+    Decimals, Description, Mint, Name, Supply, Symbol, Token, TokenId, TokenPair, TokenPairId,
+    TokenPairMint, Uri,
+};
 use crate::repo::TokenPairRepo;
 use crate::LoadTokenInfo;
 use common::repo::{RepoResult, Tx};
@@ -12,11 +15,15 @@ use sqlx::Row;
 use std::collections::HashMap;
 
 impl<L: LoadTokenInfo> TokenPairRepo<L> {
-    pub async fn insert_token_pairs<'a>(&self, tx: &mut Tx<'a>, mints: &[TokenPairMint]) -> RepoResult<Vec<TokenPair>> {
+    pub async fn insert_token_pairs<'a>(
+        &self,
+        tx: &mut Tx<'a>,
+        mints: &[TokenPairMint],
+    ) -> RepoResult<Vec<TokenPair>> {
         if mints.is_empty() {
             return Ok(vec![]);
         }
-        
+
         let mut token_mints = Vec::with_capacity(mints.len() * 2);
         for (base, quote) in mints {
             if !token_mints.contains(base) {
@@ -29,7 +36,10 @@ impl<L: LoadTokenInfo> TokenPairRepo<L> {
         }
 
         let tokens: Vec<Token> = self.token_repo.list_or_populate(tx, token_mints).await?;
-        let tokens: HashMap<Mint, Token> = tokens.into_iter().map(|token| (token.mint.clone(), token)).collect();
+        let tokens: HashMap<Mint, Token> = tokens
+            .into_iter()
+            .map(|token| (token.mint.clone(), token))
+            .collect();
 
         let mut base_ids = Vec::with_capacity(mints.len());
         let mut quote_ids = Vec::with_capacity(mints.len());
@@ -90,33 +100,33 @@ impl<L: LoadTokenInfo> TokenPairRepo<L> {
         .fetch_all(&mut **tx)
         .await?
         .into_iter()
-            .map(|r| TokenPair {
-                id: r.get::<TokenPairId, _>("id"),
-                base: Token {
-                    id: r.get::<TokenId, _>("base_id"),
-                    mint: r.get::<Mint, _>("base_mint"),
-                    name: r.get::<Name, _>("base_name"),
-                    symbol: r.get::<Symbol, _>("base_symbol"),
-                    decimals: r.get::<Decimals, _>("base_decimals"),
-                    supply: r.get::<Supply, _>("base_supply"),
-                    description: r.try_get::<Description, _>("base_description").ok(),
-                    metadata: r.try_get::<Uri, _>("base_metadata").ok(),
-                    image: r.try_get::<Uri, _>("base_image").ok(),
-                    website: r.try_get::<Uri, _>("base_website").ok(),
-                },
-                quote: Token {
-                    id: r.get::<TokenId, _>("quote_id"),
-                    mint: r.get::<Mint, _>("quote_mint"),
-                    name: r.get::<Name, _>("quote_name"),
-                    symbol: r.get::<Symbol, _>("quote_symbol"),
-                    decimals: r.get::<Decimals, _>("quote_decimals"),
-                    supply: r.get::<Supply, _>("quote_supply"),
-                    description: r.try_get::<Description, _>("quote_description").ok(),
-                    metadata: r.try_get::<Uri, _>("quote_metadata").ok(),
-                    image: r.try_get::<Uri, _>("quote_image").ok(),
-                    website: r.try_get::<Uri, _>("quote_website").ok(),
-                },
-            })
+        .map(|r| TokenPair {
+            id: r.get::<TokenPairId, _>("id"),
+            base: Token {
+                id: r.get::<TokenId, _>("base_id"),
+                mint: r.get::<Mint, _>("base_mint"),
+                name: r.get::<Name, _>("base_name"),
+                symbol: r.get::<Symbol, _>("base_symbol"),
+                decimals: r.get::<Decimals, _>("base_decimals"),
+                supply: r.try_get::<Supply, _>("base_supply").ok(),
+                description: r.try_get::<Description, _>("base_description").ok(),
+                metadata: r.try_get::<Uri, _>("base_metadata").ok(),
+                image: r.try_get::<Uri, _>("base_image").ok(),
+                website: r.try_get::<Uri, _>("base_website").ok(),
+            },
+            quote: Token {
+                id: r.get::<TokenId, _>("quote_id"),
+                mint: r.get::<Mint, _>("quote_mint"),
+                name: r.get::<Name, _>("quote_name"),
+                symbol: r.get::<Symbol, _>("quote_symbol"),
+                decimals: r.get::<Decimals, _>("quote_decimals"),
+                supply: r.try_get::<Supply, _>("quote_supply").ok(),
+                description: r.try_get::<Description, _>("quote_description").ok(),
+                metadata: r.try_get::<Uri, _>("quote_metadata").ok(),
+                image: r.try_get::<Uri, _>("quote_image").ok(),
+                website: r.try_get::<Uri, _>("quote_website").ok(),
+            },
+        })
         .collect::<Vec<_>>())
     }
 }
