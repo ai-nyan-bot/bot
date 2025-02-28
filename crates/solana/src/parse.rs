@@ -2,7 +2,6 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::{Signature, Slot, Transaction};
-use crate::parse::ParseError::NoAmount;
 use common::ReaderError;
 use log::error;
 use solana_sdk::bs58;
@@ -18,14 +17,12 @@ use std::fmt::{Display, Formatter};
 #[derive(Debug, PartialEq)]
 pub enum ParseError {
     DecodingFailed,
-    NoAmount,
 }
 
 impl Display for ParseError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             ParseError::DecodingFailed => f.write_str("decoding failed"),
-            ParseError::NoAmount => f.write_str("no amount"),
         }
     }
 }
@@ -38,14 +35,12 @@ impl From<ReaderError> for ParseError {
     }
 }
 
-pub(crate) fn log_andreturn_parse_error<'a>(
+pub(crate) fn log_and_return_parse_error<'a>(
     err: ParseError,
     signature: &'a Signature,
     name: &'a str,
 ) -> ParseError {
-    if err != NoAmount {
-        error!("Failed to parse {name} of {}: {err}", signature);
-    }
+    error!("Failed to parse {name} of {}: {err}", signature);
     err
 }
 

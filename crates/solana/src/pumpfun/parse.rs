@@ -2,8 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::Transaction;
-use crate::parse::ParseError::NoAmount;
-use crate::parse::{log_andreturn_parse_error, ParseError, ParseResult, Parser};
+use crate::parse::{log_and_return_parse_error, ParseError, ParseResult, Parser};
 use crate::pumpfun::model::Instruction;
 use base::model::{Mint, PublicKey};
 use common::model::Timestamp;
@@ -39,14 +38,18 @@ impl Parser<Vec<Instruction>> for PumpFunParser {
                     if disc == TRADE_DISCRIMINANT {
                         match parse_trade(&reader) {
                             Err(err) => {
-                                return Err(log_andreturn_parse_error(err, &tx.signature, "trade"))
+                                return Err(log_and_return_parse_error(err, &tx.signature, "trade"))
                             }
                             Ok(instr) => result.push(instr),
                         }
                     } else if disc == CREATE_DISCRIMINANT {
                         match parse_create(&reader) {
                             Err(err) => {
-                                return Err(log_andreturn_parse_error(err, &tx.signature, "create"))
+                                return Err(log_and_return_parse_error(
+                                    err,
+                                    &tx.signature,
+                                    "create",
+                                ))
                             }
                             Ok(instr) => result.push(instr),
                         }
@@ -79,7 +82,7 @@ fn parse_create(reader: &ByteReader) -> ParseResult<Instruction> {
 }
 
 fn parse_trade(reader: &ByteReader) -> ParseResult<Instruction> {
-    let trade = Instruction::Trade {
+    Ok(Instruction::Trade {
         mint: reader
             .read_range(32)
             .map(|d| Pubkey::try_from(d).ok())?
@@ -97,21 +100,7 @@ fn parse_trade(reader: &ByteReader) -> ParseResult<Instruction> {
             .map_err(|_| ParseError::DecodingFailed)?,
         virtual_sol_reserves: reader.read_u64()?.into(),
         virtual_token_reserves: reader.read_u64()?.into(),
-    };
-
-    if let Instruction::Trade {
-        sol_amount,
-        token_amount,
-        ..
-    } = &trade
-    {
-        if *sol_amount == 0 || *token_amount == 0 {
-            return Err(NoAmount);
-        }
-        Ok(trade)
-    } else {
-        unreachable!()
-    }
+    })
 }
 
 #[cfg(test)]

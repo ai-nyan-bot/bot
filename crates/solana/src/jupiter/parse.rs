@@ -3,7 +3,7 @@
 
 use crate::jupiter::model::{Instruction, Jupiter6Swap};
 use crate::model::Transaction;
-use crate::parse::{log_andreturn_parse_error, ParseError, ParseResult, Parser};
+use crate::parse::{log_and_return_parse_error, ParseError, ParseResult, Parser};
 use base::model::{Amount, Mint, PublicKey};
 use common::ByteReader;
 use solana_sdk::pubkey::Pubkey;
@@ -20,7 +20,7 @@ struct SwapEvent {
 
 impl SwapEvent {
     fn decode(reader: &ByteReader) -> ParseResult<SwapEvent> {
-        let result = SwapEvent {
+        Ok(SwapEvent {
             amm: reader
                 .read_range(32)
                 .map(|d| Pubkey::try_from(d).ok())?
@@ -38,13 +38,7 @@ impl SwapEvent {
                 .map(|d| Mint::from(d))
                 .ok_or(ParseError::DecodingFailed)?,
             output_amount: reader.read_u64()?.into(),
-        };
-
-        if result.input_amount.0 == 0 || result.output_amount.0 == 0 {
-            return Err(ParseError::NoAmount);
-        }
-
-        Ok(result)
+        })
     }
 }
 
@@ -89,7 +83,7 @@ pub(crate) fn parse_swaps(tx: &Transaction) -> ParseResult<Vec<Jupiter6Swap>> {
                     if disc == SWAP_EVENT_DISCRIMINANT {
                         match SwapEvent::decode(&reader) {
                             Err(err) => {
-                                return Err(log_andreturn_parse_error(err, &tx.signature, "swap"))
+                                return Err(log_and_return_parse_error(err, &tx.signature, "swap"))
                             }
                             Ok(swap) => result.push(Jupiter6Swap {
                                 amm: swap.amm,
