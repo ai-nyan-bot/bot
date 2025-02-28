@@ -4,6 +4,7 @@
 pub use account::*;
 use common::model::Timestamp;
 pub use indexer::Indexer;
+use serde::{Deserialize, Serialize};
 pub use signature::*;
 pub use slot::*;
 pub use summary::*;
@@ -16,7 +17,7 @@ mod slot;
 mod summary;
 mod transaction;
 
-#[derive(Debug)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Block {
     pub slot: Slot,
     pub timestamp: Timestamp,

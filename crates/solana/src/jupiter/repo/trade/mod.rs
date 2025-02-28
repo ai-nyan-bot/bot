@@ -11,6 +11,7 @@ use std::sync::Arc;
 
 mod count;
 mod insert;
+mod list;
 
 pub struct TradeQueryAll {
     pub limit: Limit,

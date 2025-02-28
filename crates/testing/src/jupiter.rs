@@ -7,6 +7,10 @@ use common::repo::Tx;
 use solana::jupiter::model::Trade;
 use solana::jupiter::repo::{ReadTradeRepo, SlotTrades, TradeRepo};
 
+pub async fn list_all_trades<'a>(tx: &mut Tx<'a>) -> Vec<Trade> {
+    ReadTradeRepo::new().list(tx).await.unwrap()
+}
+
 pub async fn count_all_trades<'a>(tx: &mut Tx<'a>) -> Count {
     ReadTradeRepo::new().count_all(tx).await.unwrap()
 }

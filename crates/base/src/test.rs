@@ -43,7 +43,7 @@ impl LoadTokenInfo<Mint> for SuccessfulTokenInfoLoader {
     }
 }
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct FailingTokenInfoLoader {}
 
 #[async_trait]
@@ -53,6 +53,7 @@ impl LoadTokenInfo<Mint> for FailingTokenInfoLoader {
     }
 }
 
+#[derive(Debug, Clone)]
 pub struct NeverCalledTokenInfoLoader {}
 
 #[async_trait]

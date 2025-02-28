@@ -14,6 +14,7 @@ use std::borrow::Cow;
 use std::collections::HashMap;
 
 /// Legacy token list for Solana from solana-labs repo and kana, merge data if required
+#[derive(Debug, Clone)]
 pub struct TokenInfoLocalLoader {
     metadata: HashMap<Mint, TokenInfo>,
 }

@@ -2847,6 +2847,7 @@ dependencies = [
  "common",
  "dotenv",
  "serde",
+ "serde_json",
  "solana",
  "sqlx",
  "test-log",

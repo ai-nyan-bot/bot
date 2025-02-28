@@ -4,7 +4,8 @@
 use crate::solana::indexer::IndexerRepo;
 use crate::solana::state::State;
 use crate::solana::{jupiter, pumpfun};
-use base::model::PublicKey;
+use base::model::{Mint, PublicKey};
+use base::LoadTokenInfo;
 use solana::jupiter::parse::JupiterParser;
 use solana::model::{Block, TransactionStatus};
 use solana::parse::Parser;
@@ -13,7 +14,7 @@ use std::str::FromStr;
 use std::time::Instant;
 use tracing::{debug, info};
 
-pub async fn index_block(state: State, block: Block) {
+pub async fn index_block<L: LoadTokenInfo<Mint> + Clone>(state: State<L>, block: Block) {
     info!("index {}", block.slot);
 
     let jupiter_parser = JupiterParser::new();

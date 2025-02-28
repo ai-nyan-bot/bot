@@ -10,7 +10,7 @@ pub mod service;
 pub mod test;
 
 #[async_trait]
-pub trait LoadTokenInfo<T>: Send + Sync {
+pub trait LoadTokenInfo<T>: Send + Sync + Clone {
     async fn load(&self, target: impl Into<T> + Send) -> Option<TokenInfo>;
 }
 

@@ -40,7 +40,6 @@ hyper = { version = "1.5.2" }
 itertools = { version = "0.14.0" }
 
 rand = { version = "0.8.5", features = ["rand_chacha"] }
-reqwest = { version = "0.12.12" }
 
 serde = { version = "1.0.217" }
 serde_json = { version = "1.0.135" }

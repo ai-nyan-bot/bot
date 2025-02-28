@@ -1,28 +1,29 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use solana::token_info::rpc::TokenInfoRpcLoader;
+use base::model::Mint;
+use base::LoadTokenInfo;
+use sqlx::PgPool;
 use std::ops::Deref;
 use std::sync::Arc;
-use sqlx::PgPool;
 
 #[derive(Debug, Clone)]
-pub struct State(pub Arc<StateInner>);
+pub struct State<L: LoadTokenInfo<Mint>>(pub Arc<StateInner<L>>);
 
-impl Deref for State {
-    type Target = StateInner;
+impl<L: LoadTokenInfo<Mint>> Deref for State<L> {
+    type Target = StateInner<L>;
     fn deref(&self) -> &Self::Target {
         self.0.deref()
     }
 }
 
 #[derive(Debug)]
-pub struct StateInner {
+pub struct StateInner<L: LoadTokenInfo<Mint>> {
     pub pool: PgPool,
     // pub token_repo: TokenRepo<RpcTokenInfoLoader>,
     // pub token_pair_repo: TokenPairRepo<RpcTokenInfoLoader>,
     // pub wallet_repo: AddressRepo,
-    pub pumpfun_trade_repo: solana::pumpfun::repo::TradeRepo<TokenInfoRpcLoader>,
+    pub pumpfun_trade_repo: solana::pumpfun::repo::TradeRepo<L>,
     pub pumpfun_curve_repo: solana::pumpfun::repo::CurveRepo,
-    pub jupiter_trade_repo: solana::jupiter::repo::TradeRepo<TokenInfoRpcLoader>,
+    pub jupiter_trade_repo: solana::jupiter::repo::TradeRepo<L>,
 }

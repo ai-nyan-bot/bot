@@ -4,10 +4,8 @@
 mod pumpfun;
 
 use crate::AppState;
-use base::model::{Notification, NotificationType, TokenPairId, Venue};
+use base::model::{Notification, NotificationType, Venue};
 use base::service::NotificationResult;
-use teloxide::payloads::SendMessageSetters;
-use teloxide::requests::Requester;
 
 pub(crate) async fn rule_matched(
     state: AppState,

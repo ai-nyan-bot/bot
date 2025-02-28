@@ -14,6 +14,7 @@ use solana_client::client_error::reqwest::{Client, StatusCode};
 use std::time::Duration;
 use tokio::time::sleep;
 
+#[derive(Clone)]
 pub struct TokenInfoUriLoader {}
 
 impl TokenInfoUriLoader {

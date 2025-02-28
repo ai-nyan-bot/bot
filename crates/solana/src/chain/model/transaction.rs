@@ -3,14 +3,15 @@
 
 use crate::model::Signature;
 use base::model::PublicKey;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub enum TransactionStatus {
     Success,
     Error(String),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Transaction {
     pub signature: Signature,
     pub status: TransactionStatus,
@@ -20,7 +21,7 @@ pub struct Transaction {
     pub keys: Keys,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Keys {
     pub static_account: Vec<PublicKey>,
     pub log_account: Vec<PublicKey>,
@@ -32,20 +33,20 @@ impl Keys {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct CompiledInstruction {
     pub program_id_index: u8,
     pub accounts: Vec<u8>,
     pub data: Vec<u8>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct InnerInstruction {
     pub instruction: CompiledInstruction,
     pub stack_height: Option<u32>,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct InnerInstructions {
     pub index: u8,
     pub instructions: Vec<InnerInstruction>,
