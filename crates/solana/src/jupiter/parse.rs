@@ -3,10 +3,9 @@
 
 use crate::jupiter::model::{Instruction, Jupiter6Swap};
 use crate::model::Transaction;
-use crate::parse::{ParseError, ParseResult, Parser};
+use crate::parse::{log_andreturn_parse_error, ParseError, ParseResult, Parser};
 use base::model::{Amount, Mint, PublicKey};
 use common::ByteReader;
-use log::warn;
 use solana_sdk::pubkey::Pubkey;
 
 const SWAP_EVENT_DISCRIMINANT: [u8; 8] = [64, 198, 205, 232, 38, 8, 113, 226];
@@ -20,26 +19,32 @@ struct SwapEvent {
 }
 
 impl SwapEvent {
-    fn decode(reader: &ByteReader) -> Option<SwapEvent> {
-        Some(SwapEvent {
+    fn decode(reader: &ByteReader) -> ParseResult<SwapEvent> {
+        let result = SwapEvent {
             amm: reader
                 .read_range(32)
-                .map(|d| Pubkey::try_from(d).ok())
-                .ok()?
-                .map(|d| PublicKey::from(d))?,
+                .map(|d| Pubkey::try_from(d).ok())?
+                .map(|d| PublicKey::from(d))
+                .ok_or(ParseError::DecodingFailed)?,
             input_mint: reader
                 .read_range(32)
-                .map(|d| Pubkey::try_from(d).ok())
-                .ok()?
-                .map(|d| Mint::from(d))?,
-            input_amount: reader.read_u64().ok()?.into(),
+                .map(|d| Pubkey::try_from(d).ok())?
+                .map(|d| Mint::from(d))
+                .ok_or(ParseError::DecodingFailed)?,
+            input_amount: reader.read_u64()?.into(),
             output_mint: reader
                 .read_range(32)
-                .map(|d| Pubkey::try_from(d).ok())
-                .ok()?
-                .map(|d| Mint::from(d))?,
-            output_amount: reader.read_u64().ok()?.into(),
-        })
+                .map(|d| Pubkey::try_from(d).ok())?
+                .map(|d| Mint::from(d))
+                .ok_or(ParseError::DecodingFailed)?,
+            output_amount: reader.read_u64()?.into(),
+        };
+
+        if result.input_amount.0 == 0 || result.output_amount.0 == 0 {
+            return Err(ParseError::NoAmount);
+        }
+
+        Ok(result)
     }
 }
 
@@ -57,8 +62,8 @@ impl Default for JupiterParser {
     }
 }
 
-impl Parser<Instruction> for JupiterParser {
-    fn parse(&self, tx: &Transaction) -> ParseResult<Instruction> {
+impl Parser<Vec<Instruction>> for JupiterParser {
+    fn parse(&self, tx: &Transaction) -> ParseResult<Vec<Instruction>> {
         let swaps = parse_swaps(tx)?;
         if swaps.is_empty() {
             return Ok(vec![]);
@@ -71,35 +76,31 @@ impl Parser<Instruction> for JupiterParser {
     }
 }
 
-pub(crate) fn parse_swaps(tx: &Transaction) -> Result<Vec<Jupiter6Swap>, ParseError> {
+pub(crate) fn parse_swaps(tx: &Transaction) -> ParseResult<Vec<Jupiter6Swap>> {
     let mut result = vec![];
     for inner in &tx.inner_instructions {
         for instruction in &inner.instructions {
             let data = &instruction.instruction.data;
             if data.len() > 16 {
                 let reader = ByteReader::new(data);
-                reader.seek(8).unwrap(); // skip anchor method identifier
+                reader.seek(8)?; // skip anchor method identifier
 
                 if let Ok(disc) = reader.read_range(8) {
                     if disc == SWAP_EVENT_DISCRIMINANT {
                         match SwapEvent::decode(&reader) {
-                            None => {
-                                warn!("Failed to decode swap from {}", tx.signature)
+                            Err(err) => {
+                                return Err(log_andreturn_parse_error(err, &tx.signature, "swap"))
                             }
-                            Some(swap) => {
-                                if swap.input_amount.0 > 0 && swap.output_amount.0 > 0 {
-                                    result.push(Jupiter6Swap {
-                                        amm: swap.amm,
-                                        input_mint: swap.input_mint,
-                                        input_amount: swap.input_amount,
-                                        output_mint: swap.output_mint,
-                                        output_amount: swap.output_amount,
-                                    })
-                                }
-                            }
+                            Ok(swap) => result.push(Jupiter6Swap {
+                                amm: swap.amm,
+                                input_mint: swap.input_mint,
+                                input_amount: swap.input_amount,
+                                output_mint: swap.output_mint,
+                                output_amount: swap.output_amount,
+                            }),
                         }
-                    };
-                }
+                    }
+                };
             }
         }
     }

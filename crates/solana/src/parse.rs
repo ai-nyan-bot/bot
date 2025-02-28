@@ -2,32 +2,54 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::{Signature, Slot, Transaction};
+use crate::parse::ParseError::NoAmount;
+use common::ReaderError;
+use log::error;
 use solana_sdk::bs58;
 use solana_sdk::instruction::CompiledInstruction;
 use solana_sdk::pubkey::Pubkey;
 use solana_transaction_status::option_serializer::OptionSerializer;
 use solana_transaction_status::UiInstruction::{Compiled, Parsed};
-use solana_transaction_status::{EncodedTransactionWithStatusMeta, InnerInstruction, InnerInstructions};
+use solana_transaction_status::{
+    EncodedTransactionWithStatusMeta, InnerInstruction, InnerInstructions,
+};
 use std::fmt::{Display, Formatter};
 
 #[derive(Debug, PartialEq)]
 pub enum ParseError {
-    DecodingFailed(String),
-    UnsupportedTokenPair,
+    DecodingFailed,
+    NoAmount,
 }
 
 impl Display for ParseError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            ParseError::DecodingFailed(e) => f.write_fmt(format_args!("decoding failed: {}", e)),
-            ParseError::UnsupportedTokenPair => f.write_str("unsupported token pair"),
+            ParseError::DecodingFailed => f.write_str("decoding failed"),
+            ParseError::NoAmount => f.write_str("no amount"),
         }
     }
 }
 
 impl std::error::Error for ParseError {}
 
-pub type ParseResult<T> = Result<Vec<T>, ParseError>;
+impl From<ReaderError> for ParseError {
+    fn from(_value: ReaderError) -> Self {
+        Self::DecodingFailed
+    }
+}
+
+pub(crate) fn log_andreturn_parse_error<'a>(
+    err: ParseError,
+    signature: &'a Signature,
+    name: &'a str,
+) -> ParseError {
+    if err != NoAmount {
+        error!("Failed to parse {name} of {}: {err}", signature);
+    }
+    err
+}
+
+pub type ParseResult<T> = Result<T, ParseError>;
 
 pub trait Parser<T> {
     fn parse(&self, tx: &Transaction) -> ParseResult<T>;

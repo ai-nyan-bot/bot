@@ -1,16 +1,16 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::byte::Error::{OutOfBounds, UnexpectedEndOfFile};
+use crate::byte::ReaderError::{OutOfBounds, UnexpectedEndOfFile};
 use core::cell::RefCell;
 
 #[derive(Debug, PartialEq)]
-pub enum Error {
+pub enum ReaderError {
     OutOfBounds,
     UnexpectedEndOfFile,
 }
 
-type Result<T, E = Error> = core::result::Result<T, E>;
+type Result<T, E = ReaderError> = core::result::Result<T, E>;
 
 pub struct ByteReader<'a> {
     data: &'a [u8],
@@ -198,7 +198,7 @@ impl<'a> ByteReader<'a> {
 
 #[cfg(test)]
 mod tests {
-    use crate::byte::Error::OutOfBounds;
+    use crate::byte::ReaderError::OutOfBounds;
     use crate::byte::ByteReader;
 
     #[test]

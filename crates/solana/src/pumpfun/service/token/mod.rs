@@ -6,7 +6,7 @@ pub use summarise::TokenSummary;
 mod summarise;
 
 use crate::pumpfun::repo::{CurveRepo, SummaryRepo};
-use base::repo::{ReadTokenPairRepo, ReadTokenRepo};
+use base::repo::ReadTokenPairRepo;
 use sqlx::PgPool;
 use std::ops::Deref;
 use std::sync::Arc;
@@ -30,12 +30,17 @@ pub struct TokenServiceInner {
 }
 
 impl TokenService {
-    pub fn new(pool: PgPool, token_pair_repo: ReadTokenPairRepo, curve_repo: CurveRepo, summary_repo: SummaryRepo) -> Self {
+    pub fn new(
+        pool: PgPool,
+        token_pair_repo: ReadTokenPairRepo,
+        curve_repo: CurveRepo,
+        summary_repo: SummaryRepo,
+    ) -> Self {
         Self(Arc::new(TokenServiceInner {
             pool,
             token_pair_repo,
             curve_repo,
-            summary_repo
+            summary_repo,
         }))
     }
 
@@ -44,7 +49,7 @@ impl TokenService {
             pool,
             token_pair_repo: ReadTokenPairRepo::testing(),
             curve_repo: CurveRepo::testing(),
-            summary_repo: SummaryRepo::new()
+            summary_repo: SummaryRepo::new(),
         }))
     }
 }

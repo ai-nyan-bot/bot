@@ -2,12 +2,12 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::Transaction;
-use crate::parse::{ParseResult, Parser};
+use crate::parse::ParseError::NoAmount;
+use crate::parse::{log_andreturn_parse_error, ParseError, ParseResult, Parser};
 use crate::pumpfun::model::Instruction;
 use base::model::{Mint, PublicKey};
 use common::model::Timestamp;
 use common::ByteReader;
-use log::warn;
 use solana_sdk::pubkey::Pubkey;
 
 pub struct PumpFunParser {}
@@ -24,8 +24,8 @@ impl Default for PumpFunParser {
     }
 }
 
-impl Parser<Instruction> for PumpFunParser {
-    fn parse(&self, tx: &Transaction) -> ParseResult<Instruction> {
+impl Parser<Vec<Instruction>> for PumpFunParser {
+    fn parse(&self, tx: &Transaction) -> ParseResult<Vec<Instruction>> {
         let mut result = vec![];
 
         for inner in &tx.inner_instructions {
@@ -33,26 +33,22 @@ impl Parser<Instruction> for PumpFunParser {
                 let data = &instruction.instruction.data;
                 if data.len() > 16 {
                     let reader = ByteReader::new(data);
-                    reader.seek(8).unwrap(); // skip anchor method identifier
-                    let disc = reader.read_range(8).unwrap();
+                    reader.seek(8)?; // skip anchor method identifier
+                    let disc = reader.read_range(8)?;
 
                     if disc == TRADE_DISCRIMINANT {
-                        match decode_trade(&reader) {
-                            None => {
-                                warn!("Failed to decode trade from {}", tx.signature)
+                        match parse_trade(&reader) {
+                            Err(err) => {
+                                return Err(log_andreturn_parse_error(err, &tx.signature, "trade"))
                             }
-                            Some(instr) => {
-                                result.push(instr);
-                            }
+                            Ok(instr) => result.push(instr),
                         }
                     } else if disc == CREATE_DISCRIMINANT {
-                        match decode_create(&reader) {
-                            None => {
-                                warn!("Failed to decode create from {}", tx.signature)
+                        match parse_create(&reader) {
+                            Err(err) => {
+                                return Err(log_andreturn_parse_error(err, &tx.signature, "create"))
                             }
-                            Some(instr) => {
-                                result.push(instr);
-                            }
+                            Ok(instr) => result.push(instr),
                         }
                     }
                 }
@@ -65,47 +61,42 @@ impl Parser<Instruction> for PumpFunParser {
 const CREATE_DISCRIMINANT: [u8; 8] = [27, 114, 169, 77, 222, 235, 99, 118];
 const TRADE_DISCRIMINANT: [u8; 8] = [189, 219, 127, 211, 78, 230, 97, 238];
 
-fn decode_create(reader: &ByteReader) -> Option<Instruction> {
-    Some(Instruction::Create {
-        name: String::from_utf8_lossy(reader.read_variable_length::<u32>().ok()?)
+fn parse_create(reader: &ByteReader) -> ParseResult<Instruction> {
+    Ok(Instruction::Create {
+        name: String::from_utf8_lossy(reader.read_variable_length::<u32>()?)
             .to_string()
             .into(),
-        symbol: String::from_utf8_lossy(reader.read_variable_length::<u32>().ok()?)
+        symbol: String::from_utf8_lossy(reader.read_variable_length::<u32>()?)
             .to_string()
             .into(),
-        uri: String::from_utf8_lossy(reader.read_variable_length::<u32>().ok()?)
+        uri: String::from_utf8_lossy(reader.read_variable_length::<u32>()?)
             .to_string()
             .into(),
-        mint: Pubkey::try_from(reader.read_range(32).ok()?)
-            .unwrap()
-            .into(),
-        bonding_curve: Pubkey::try_from(reader.read_range(32).ok()?)
-            .unwrap()
-            .into(),
-        user: Pubkey::try_from(reader.read_range(32).ok()?)
-            .unwrap()
-            .into(),
+        mint: Pubkey::try_from(reader.read_range(32)?).unwrap().into(),
+        bonding_curve: Pubkey::try_from(reader.read_range(32)?).unwrap().into(),
+        user: Pubkey::try_from(reader.read_range(32)?).unwrap().into(),
     })
 }
 
-fn decode_trade(reader: &ByteReader) -> Option<Instruction> {
+fn parse_trade(reader: &ByteReader) -> ParseResult<Instruction> {
     let trade = Instruction::Trade {
         mint: reader
             .read_range(32)
-            .map(|d| Pubkey::try_from(d).ok())
-            .ok()?
-            .map(|d| Mint::from(d))?,
-        sol_amount: reader.read_u64().ok()?.into(),
-        token_amount: reader.read_u64().ok()?.into(),
-        is_buy: reader.read_u8().ok()? == 1,
+            .map(|d| Pubkey::try_from(d).ok())?
+            .map(|d| Mint::from(d))
+            .ok_or(ParseError::DecodingFailed)?,
+        sol_amount: reader.read_u64()?.into(),
+        token_amount: reader.read_u64()?.into(),
+        is_buy: reader.read_u8()? == 1,
         user: reader
             .read_range(32)
-            .map(|d| Pubkey::try_from(d).ok())
-            .ok()?
-            .map(|d| PublicKey::from(d))?,
-        timestamp: Timestamp::from_epoch_second(reader.read_u64().ok()? as i64).ok()?,
-        virtual_sol_reserves: reader.read_u64().ok()?.into(),
-        virtual_token_reserves: reader.read_u64().ok()?.into(),
+            .map(|d| Pubkey::try_from(d).ok())?
+            .map(|d| PublicKey::from(d))
+            .ok_or(ParseError::DecodingFailed)?,
+        timestamp: Timestamp::from_epoch_second(reader.read_u64()? as i64)
+            .map_err(|_| ParseError::DecodingFailed)?,
+        virtual_sol_reserves: reader.read_u64()?.into(),
+        virtual_token_reserves: reader.read_u64()?.into(),
     };
 
     if let Instruction::Trade {
@@ -115,9 +106,9 @@ fn decode_trade(reader: &ByteReader) -> Option<Instruction> {
     } = &trade
     {
         if *sol_amount == 0 || *token_amount == 0 {
-            return None;
+            return Err(NoAmount);
         }
-        Some(trade)
+        Ok(trade)
     } else {
         unreachable!()
     }
