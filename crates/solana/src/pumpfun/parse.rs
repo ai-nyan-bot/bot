@@ -103,7 +103,7 @@ fn decode_trade(reader: &ByteReader) -> Option<Instruction> {
             .map(|d| Pubkey::try_from(d).ok())
             .ok()?
             .map(|d| PublicKey::from(d))?,
-        timestamp: Timestamp::from_epoch_second(reader.read_u64().ok()? as i64),
+        timestamp: Timestamp::from_epoch_second(reader.read_u64().ok()? as i64).ok()?,
         virtual_sol_reserves: reader.read_u64().ok()?.into(),
         virtual_token_reserves: reader.read_u64().ok()?.into(),
     };

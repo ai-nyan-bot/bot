@@ -6,6 +6,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use sqlx::types::time::OffsetDateTime;
+use time::error;
 
 #[derive(Clone, Copy, Debug, PartialEq, Ord, PartialOrd, Eq, sqlx::Type)]
 #[sqlx(transparent)]
@@ -63,7 +64,7 @@ impl<'de> Deserialize<'de> for Timestamp {
         }
 
         if let Ok(timestamp) = s.parse::<i64>() {
-            return Ok(Timestamp::from_epoch_second(timestamp));
+            return Ok(Timestamp::from_epoch_second(timestamp).unwrap());
         }
 
         Err(serde::de::Error::custom(
@@ -93,8 +94,8 @@ impl Timestamp {
         )
     }
 
-    pub fn from_epoch_second(epoch_second: i64) -> Self {
-        Self(OffsetDateTime::from_unix_timestamp(epoch_second).expect("timestamp conversion"))
+    pub fn from_epoch_second(epoch_second: i64) -> Result<Self, error::ComponentRange> {
+        Ok(Self(OffsetDateTime::from_unix_timestamp(epoch_second)?))
     }
 
     pub fn from_epoch_millis(epoch_millis: i64) -> Self {
