@@ -101,7 +101,7 @@ pub fn index_solana(runtime: Runtime, config: Config) {
             loop {
                 select! {
                      Some(block) = blocks.recv() => {
-                        debug!("index {}", block.slot);
+                        info!("index {}", block.slot);
 
                         // FIXME it would be interesting to see what the time difference is between indexing a block and the actual block time
 
