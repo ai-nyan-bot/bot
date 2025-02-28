@@ -81,6 +81,13 @@ impl ReadTokenPairRepo {
             cache: Cache::default(),
         }))
     }
+    
+    pub fn testing() -> Self {
+        Self(Arc::new(ReadTokenPairRepoInner {
+            token_repo: ReadTokenRepo::testing(),
+            cache: Cache::default(),
+        }))
+    }
 }
 
 impl ReadTokenPairRepo {

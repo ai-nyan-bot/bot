@@ -4,13 +4,13 @@
 // This file includes portions of code from https://github.com/nhuxhr/pumpfun-rs (MIT License).
 // Original MIT License Copyright (c) nhuxhr 2024.
 
+pub(crate) mod constant;
 pub mod model;
+pub mod parse;
 pub mod repo;
 pub mod rpc;
-
-pub(crate) mod constant;
+pub mod service;
 mod tx;
-pub mod parse;
 pub(crate) mod util;
 
 pub use crate::pumpfun::parse::PumpFunParser;

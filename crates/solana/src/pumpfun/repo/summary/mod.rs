@@ -8,6 +8,7 @@ use std::sync::Arc;
 mod calculate;
 mod clean;
 mod count;
+mod get;
 mod list;
 
 pub struct SummaryQuery {
@@ -36,6 +37,10 @@ impl Default for SummaryRepo {
 
 impl SummaryRepo {
     pub fn new() -> Self {
+        Self(Arc::new(SummaryRepoInner {}))
+    }
+
+    pub fn testing() -> Self {
         Self(Arc::new(SummaryRepoInner {}))
     }
 }

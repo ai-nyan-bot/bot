@@ -51,12 +51,18 @@ pub struct TokenPair {
     pub quote: Token,
 }
 
-impl Display for TokenPair {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.write_fmt(format_args!(
+impl TokenPair {
+    pub fn symbol(&self) -> Symbol {
+        Symbol(format!(
             "{}/{}",
             self.base.symbol.as_ref().unwrap(),
             self.quote.symbol.as_ref().unwrap()
         ))
+    }
+}
+
+impl Display for TokenPair {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.write_fmt(format_args!("{}", self.symbol()))
     }
 }

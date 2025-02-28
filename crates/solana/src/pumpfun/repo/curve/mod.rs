@@ -2,6 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 mod count;
+mod get;
 mod list;
 mod upsert;
 

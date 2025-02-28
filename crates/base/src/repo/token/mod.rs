@@ -77,6 +77,12 @@ impl ReadTokenRepo {
             cache: Cache::default(),
         }))
     }
+
+    pub fn testing() -> Self {
+        Self(Arc::new(ReadTokenRepoInner {
+            cache: Cache::default(),
+        }))
+    }
 }
 
 impl ReadTokenRepo {

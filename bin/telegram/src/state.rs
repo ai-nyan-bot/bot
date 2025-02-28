@@ -6,6 +6,8 @@ use crate::config::Config;
 use base::repo::{NotificationRepo, ReadTokenPairRepo, ReadTokenRepo, RuleRepo};
 use base::service::{NotificationService, RuleService, TokenService, UserService};
 use common::repo::pool::setup_pool;
+use solana::pumpfun;
+use solana::pumpfun::repo::{CurveRepo, SummaryRepo};
 use std::ops::Deref;
 use std::sync::Arc;
 use std::time::Duration;
@@ -22,6 +24,10 @@ impl AppState {
 
     pub fn token_service(&self) -> TokenService {
         self.service.token.clone()
+    }
+
+    pub fn pumpfun_token_service(&self) -> pumpfun::service::TokenService {
+        self.service.pumpfun_token_service.clone()
     }
 
     pub fn rule_service(&self) -> RuleService {
@@ -49,6 +55,7 @@ pub struct AppStateInner {
 
 pub struct Service {
     pub notification: NotificationService,
+    pub pumpfun_token_service: pumpfun::service::TokenService,
     pub rule: RuleService,
     pub token: TokenService,
     pub user: UserService,
@@ -68,6 +75,12 @@ impl AppState {
             callback_store: CallbackStore::new(Duration::from_secs(60 * 15)),
             service: Service {
                 notification: NotificationService::new(pool.clone(), NotificationRepo::new()),
+                pumpfun_token_service: pumpfun::service::TokenService::new(
+                    pool.clone(),
+                    token_pair_repo.clone(),
+                    CurveRepo::new(),
+                    SummaryRepo::new(),
+                ),
                 rule: RuleService::new(pool.clone(), RuleRepo::new()),
                 token: TokenService::new(pool.clone(), token_pair_repo.clone()),
                 user: UserService::new(pool),
@@ -85,6 +98,7 @@ impl AppState {
             callback_store: CallbackStore::new(Duration::from_secs(1)),
             service: Service {
                 notification: NotificationService::testing(pool.clone()),
+                pumpfun_token_service: pumpfun::service::TokenService::testing(pool.clone()),
                 rule: RuleService::testing(pool.clone()),
                 token: TokenService::testing(pool.clone()),
                 user: UserService::new(pool.clone()),
