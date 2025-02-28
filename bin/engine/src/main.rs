@@ -6,7 +6,7 @@
 use crate::config::Config;
 use crate::fact::FactService;
 use crate::state::{AppState, AppStateInner, Service};
-use base::model::Action;
+use base::model::{Action, Venue};
 use base::repo::{InvocationCreateCmd, InvocationRepo, NotificationRepo, RuleRepo};
 use base::service::{NotificationRuleMatched, NotificationService, RuleService};
 use common::repo::pool::setup_pool;
@@ -18,6 +18,7 @@ use tokio::time::sleep;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
 use tracing_subscriber::EnvFilter;
+use Venue::PumpFun;
 
 mod config;
 mod fact;
@@ -95,6 +96,7 @@ fn main() {
                                                 NotificationRuleMatched::Telegram {
                                                     user: rule.user,
                                                     rule: rule.id,
+                                                    venue: PumpFun,
                                                     token_pair: *token_pair_id,
                                                     buttons: buttons.clone(),
                                                 },

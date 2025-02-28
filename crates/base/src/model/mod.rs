@@ -10,6 +10,7 @@ pub use rule::*;
 pub use sequence::*;
 pub use token::*;
 pub use user::*;
+pub use venue::Venue;
 pub use wallet::*;
 
 mod address;
@@ -21,4 +22,5 @@ mod rule;
 mod sequence;
 mod token;
 mod user;
+mod venue;
 mod wallet;

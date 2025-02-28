@@ -2,15 +2,20 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::AppState;
-use base::model::{Notification, NotificationType, RuleId, TokenPairId};
+use base::model::{Notification, NotificationType, TokenPair, TokenPairId, Venue};
 use base::service::NotificationResult;
+use common::model::TelegramId;
 use teloxide::payloads::SendMessageSetters;
 use teloxide::requests::Requester;
 use teloxide::types::{
     ChatId, InlineKeyboardButton, InlineKeyboardMarkup, ParseMode, Recipient, WebAppInfo,
 };
 use url::Url;
-use crate::callback::Callback;
+
+struct Message {
+    telegram_id: TelegramId,
+    token_pair: TokenPair,
+}
 
 pub(crate) async fn rule_matched(
     state: AppState,
@@ -22,45 +27,83 @@ pub(crate) async fn rule_matched(
 
     if let Some(telegram_id) = user.telegram_id {
         let token_pair_id: TokenPairId = notification.payload("token_pair").unwrap();
+        let venue: Venue = notification.payload("venue").unwrap();
         let token_pair = state.token_service().get_pair(token_pair_id).await?;
         dbg!(&token_pair);
-        let mint = token_pair.base.mint.clone();
 
-        let rule_id: RuleId = notification.payload("rule").unwrap();
-        let rule = state.rule_service().get_by_id(rule_id).await?;
-        let rule_name = rule.name;
+        println!("{venue}");
 
-        let buttons = InlineKeyboardMarkup::new(vec![
-            vec![InlineKeyboardButton::web_app(
-                "👉 Open pump.fun",
-                WebAppInfo {
-                    url: Url::parse(format!("https://pump.fun/{mint}").as_str()).unwrap(),
-                },
-            )],
-            vec![InlineKeyboardButton::callback(
-                "⛌ Close",
-                state.callback_store.store(Callback::Close).await
-            )],
-        ]);
+        // let mint = token_pair.base.mint.clone();
 
-        let _x = state
-            .bot
-            .send_message(
-                Recipient::Id(ChatId(telegram_id.0.parse::<i64>().unwrap())),
-                format!(
-                    r#"
-Rule *{rule_name}* matched: [{token_pair}](https://pump.fun/{mint})
-"#
-                ),
-            )
-            .parse_mode(ParseMode::MarkdownV2)
-            // .reply_markup(create_keyboard(state.callback_store.clone(), &notification).await)
-            .reply_markup(buttons)
-            .await
-            .unwrap();
+        // let rule_id: RuleId = notification.payload("rule").unwrap();
+        // let rule = state.rule_service().get_by_id(rule_id).await?;
+        // let rule_name = rule.name;
+
+        return send(
+            state,
+            Message {
+                telegram_id,
+                token_pair,
+            },
+        )
+        .await;
     }
+    Ok(())
+}
 
-    dbg!(&notification);
+async fn send(state: AppState, message: Message) -> NotificationResult<()> {
+    let token_pair = message.token_pair;
+    let base_mint = token_pair.base.mint.clone();
+
+    let buttons = InlineKeyboardMarkup::new(vec![
+        vec![InlineKeyboardButton::web_app(
+            "💰 Buy on pump.fun",
+            WebAppInfo {
+                url: Url::parse(format!("https://pump.fun/{base_mint}").as_str()).unwrap(),
+            },
+        )],
+        // vec![InlineKeyboardButton::callback(
+        //     "⛌ Close",
+        //     state.callback_store.store(Callback::Close).await,
+        // )],
+    ]);
+
+    //         let _x = state
+    //             .bot
+    //             .send_message(
+    //                 Recipient::Id(ChatId(telegram_id.0.parse::<i64>().unwrap())),
+    //                 format!(
+    //                     r#"
+    // ⚠️*{token_pair}*⚠️
+    // 🚀🔥 is *xx %& along the bonding curve and on its way to graduate to Raydium 🔥🚀
+    //
+    // Market Cap:
+    // Liquidity:
+    // Price:
+    // Vol:
+    // Trades:
+    // Age: xx days or hours
+    // "#
+    //                 ),
+    let _x = state
+        .bot
+        .send_message(
+            Recipient::Id(ChatId(message.telegram_id.0.parse::<i64>().unwrap())),
+            format!(
+                r#"
+️*{token_pair}*
+is * xx % * along the bonding curve and on its way to graduate to Raydium 🔥🚀
+
+Trades:
+"#
+            ),
+        )
+        .parse_mode(ParseMode::MarkdownV2)
+        // .reply_markup(create_keyboard(state.callback_store.clone(), &notification).await)
+        .reply_markup(buttons)
+        .await
+        .unwrap();
+
     Ok(())
 }
 
