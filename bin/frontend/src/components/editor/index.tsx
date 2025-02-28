@@ -23,13 +23,13 @@ const createCondition = (type: ConditionType): Condition => {
             return {
                 id: uuidv4(),
                 type: 'COMPARE',
-                field: Field.TRADES,
+                field: Field.CURVE_PROGRESS,
                 operator: Operator.MORE_THAN,
                 value: {
-                    type: ValueType.COUNT,
+                    type: ValueType.PERCENT,
                     value: 15
                 },
-                timeframe: Timeframe.M15
+                timeframe: undefined
             }
     }
 }
@@ -133,6 +133,9 @@ export const Editor: React.FC<EditorProps> = ({sequence, onChange}) => {
                                 onRemove={removeCondition}
                                 onFieldChange={(id, value) => {
                                     updateCondition(id, "field", value)
+                                    if (value === Field.CURVE_PROGRESS) {
+                                        updateCondition(id, 'timeframe', null)
+                                    }
                                 }}
                                 onOperatorChange={(id, value) => {
                                     updateCondition(id, "operator", value)

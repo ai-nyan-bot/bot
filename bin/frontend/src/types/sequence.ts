@@ -28,6 +28,7 @@ export type ActionNotifyTelegram = {
 }
 
 export enum Field {
+    CURVE_PROGRESS = 'CURVE_PROGRESS',
     TRADES = 'TRADES',
     TRADES_BUY = 'TRADES_BUY',
     TRADES_SELL = 'TRADES_SELL',

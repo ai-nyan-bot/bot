@@ -15,6 +15,8 @@ pub struct AuthenticateUserTelegramCmd {
 }
 
 impl UserService {
+
+
     pub async fn authenticate_and_create_telegram_user_if_not_exists(&self, cmd: AuthenticateUserTelegramCmd) -> ServiceResult<(User, Auth, Wallet)> {
         let mut tx = self.pool.begin().await?;
 

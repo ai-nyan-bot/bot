@@ -1,4 +1,4 @@
-import {ALL_TIMEFRAMES, COUNT_AND_PERCENT, Field, Operator, Timeframe, Value, ValueCount, ValueType} from "@types";
+import {ALL_TIMEFRAMES, COUNT_AND_PERCENT, Field, Operator, Timeframe, ValueType} from "@types";
 
 
 export const config: Record<
@@ -12,6 +12,18 @@ export const config: Record<
         };
     }
 > = {
+    [Field.CURVE_PROGRESS]: {
+        operators: {
+            [Operator.MORE_THAN]: {
+                valueTypes: [ValueType.PERCENT],
+                timeframes: []
+            },
+            [Operator.LESS_THAN]: {
+                valueTypes: [ValueType.PERCENT],
+                timeframes: []
+            }
+        }
+    },
     [Field.TRADES]: {
         operators: {
             [Operator.INCREASED_BY_MORE_THAN]: {

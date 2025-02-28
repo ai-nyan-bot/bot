@@ -10,7 +10,7 @@ use base::model::Action;
 use base::repo::{InvocationCreateCmd, InvocationRepo, NotificationRepo, RuleRepo};
 use base::service::{NotificationRuleMatched, NotificationService, RuleService};
 use common::repo::pool::setup_pool;
-use solana::pumpfun::repo::SummaryRepo;
+use solana::pumpfun::repo::{CurveRepo, SummaryRepo};
 use std::sync::Arc;
 use std::time::Duration;
 use tokio::runtime::Builder;
@@ -45,7 +45,7 @@ fn main() {
 
         let state = AppState(Arc::new(AppStateInner {
             service: Service {
-                fact: FactService::new(pool.clone(), SummaryRepo::new()),
+                fact: FactService::new(pool.clone(), SummaryRepo::new(), CurveRepo::new()),
                 notification: NotificationService::new(pool.clone(), NotificationRepo::new()),
                 rule: RuleService::new(pool.clone(), RuleRepo::new()),
             },
