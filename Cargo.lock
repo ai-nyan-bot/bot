@@ -2845,7 +2845,7 @@ version = "0.0.1"
 dependencies = [
  "base",
  "common",
- "futures-util",
+ "dotenv",
  "serde",
  "solana",
  "sqlx",
@@ -4738,7 +4738,7 @@ dependencies = [
  "lazy_static",
  "log",
  "mpl-token-metadata",
- "rand 0.8.5",
+ "regex",
  "serde",
  "serde_json",
  "solana-account-decoder-client-types",

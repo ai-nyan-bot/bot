@@ -12,8 +12,6 @@ use crate::solana::state::{State, StateInner};
 use base::repo::{AddressRepo, ReadTokenPairRepo, ReadTokenRepo, TokenPairRepo, TokenRepo};
 use common::repo::pool::setup_pool;
 use common::{ResolveOr, Signal};
-use solana::jupiter::parse::JupiterParser;
-use solana::pumpfun::PumpFunParser;
 use solana::stream::{BlockStream, RpcBlockStream, RpcBlockStreamConfig, RpcSlotStream};
 use solana::token_info::rpc::TokenInfoRpcLoader;
 use tokio::signal::unix::SignalKind;

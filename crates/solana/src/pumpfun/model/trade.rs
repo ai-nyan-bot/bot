@@ -5,6 +5,7 @@ use crate::model::Slot;
 use base::model::{AddressId, Amount, DecimalAmount, PriceQuote, TokenPairId};
 use common::model::Timestamp;
 
+#[derive(Debug)]
 pub struct Trade {
     pub slot: Slot,
     pub address: AddressId,

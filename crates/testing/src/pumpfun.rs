@@ -23,6 +23,10 @@ pub async fn count_all_trades<'a>(tx: &mut Tx<'a>) -> Count {
     ReadTradeRepo::new().count_all(tx).await.unwrap()
 }
 
+pub async fn list_all_trades<'a>(tx: &mut Tx<'a>) -> Vec<Trade> {
+    ReadTradeRepo::new().list(tx).await.unwrap()
+}
+
 pub async fn insert_trade<'a>(tx: &mut Tx<'a>, slot_trades: SlotTrades) -> Vec<Trade> {
     TradeRepo::testing(SuccessfulTokenInfoLoader::default())
         .insert_trades(tx, slot_trades)

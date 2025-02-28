@@ -57,7 +57,8 @@ impl fmt::Display for PublicKeyError {
 impl std::error::Error for PublicKeyError {}
 
 #[derive(
-    Default, Debug, Clone, PartialEq, PartialOrd, Eq, Hash, Serialize, Deserialize, sqlx::Type,
+    Default, Debug, Clone, PartialEq, PartialOrd, Eq, Ord,
+     Hash, Serialize, Deserialize, sqlx::Type,
 )]
 #[sqlx(transparent)]
 pub struct PublicKey(pub String);

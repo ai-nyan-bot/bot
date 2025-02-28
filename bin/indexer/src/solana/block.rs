@@ -21,8 +21,6 @@ pub async fn index_block(state: State, block: Block) {
 
     let indexer_repo = IndexerRepo::default();
 
-    // let odex_router = PublicKey::from_str("6m2CDdhRgxpH4WjvdzxAYbGxwdGUz5MziiL5jek2kBma").unwrap();
-
     let pumpfun_account =
         PublicKey::from_str("6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P").unwrap();
 
@@ -47,12 +45,7 @@ pub async fn index_block(state: State, block: Block) {
 
     for transaction in block.transactions {
         if transaction.status == TransactionStatus::Success {
-            if transaction.account_keys.contains(&pumpfun_account)
-            // || transaction.account_keys.contains(&odex_router)
-            {
-                // println!("inside {}", transaction.signature);
-                // dbg!(&transaction.log_messages);
-
+            if transaction.keys.contains(&pumpfun_account) {
                 if let Ok(instructions) = pumpfun_parser.parse(&transaction) {
                     for instruction in instructions {
                         match instruction {
@@ -85,7 +78,7 @@ pub async fn index_block(state: State, block: Block) {
                 }
             }
 
-            if transaction.account_keys.contains(&jupiter_account) {
+            if transaction.keys.contains(&jupiter_account) {
                 if let Ok(instructions) = jupiter_parser.parse(&transaction) {
                     for instruction in instructions {
                         match instruction {
@@ -120,8 +113,9 @@ pub async fn index_block(state: State, block: Block) {
 
     let indexing_start = Instant::now();
     pumpfun::index_trade(&mut tx, state.clone(), pumpfun_slot_trades).await;
-    // jupiter::index_trade(&mut tx, state.clone(), jupiter_slot_trades).await;
+    jupiter::index_trade(&mut tx, state.clone(), jupiter_slot_trades).await;
     let indexing_done = Instant::now();
+
     debug!(
         "indexing took {} ms",
         indexing_done.duration_since(indexing_start).as_millis()

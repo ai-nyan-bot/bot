@@ -25,9 +25,29 @@ impl ReadTradeRepo {
                 is_buy: r.get::<bool, _>("is_buy"),
                 timestamp: r.get::<Timestamp, _>("timestamp"),
                 virtual_base_reserves: r.get::<Amount, _>("virtual_base_reserves"),
-                virtual_quote_reserves: r.get::<Amount, _>("virtual_quote_reserves")
+                virtual_quote_reserves: r.get::<Amount, _>("virtual_quote_reserves"),
             })
             .collect::<Vec<_>>()
             .into_boxed_slice())
+    }
+
+    pub async fn list<'a>(&self, tx: &mut Tx<'a>) -> RepoResult<Vec<Trade>> {
+        Ok(sqlx::query("select * from pumpfun.trade;")
+            .fetch_all(&mut **tx)
+            .await?
+            .iter()
+            .map(|r| Trade {
+                slot: r.get::<Slot, _>("slot"),
+                address: r.get::<AddressId, _>("address_id"),
+                token_pair: r.get::<TokenPairId, _>("token_pair_id"),
+                base_amount: r.get::<DecimalAmount, _>("base_amount"),
+                quote_amount: r.get::<DecimalAmount, _>("quote_amount"),
+                price: r.get::<PriceQuote, _>("price"),
+                is_buy: r.get::<bool, _>("is_buy"),
+                timestamp: r.get::<Timestamp, _>("timestamp"),
+                virtual_base_reserves: r.get::<Amount, _>("virtual_base_reserves"),
+                virtual_quote_reserves: r.get::<Amount, _>("virtual_quote_reserves"),
+            })
+            .collect::<Vec<_>>())
     }
 }

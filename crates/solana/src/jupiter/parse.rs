@@ -71,7 +71,7 @@ impl Parser<Vec<Instruction>> for JupiterParser {
 
         Ok(vec![Instruction::Trade {
             swaps,
-            signer: tx.account_keys[0].clone(),
+            signer: tx.keys.static_account[0].clone(),
         }])
     }
 }

@@ -14,10 +14,22 @@ pub enum TransactionStatus {
 pub struct Transaction {
     pub signature: Signature,
     pub status: TransactionStatus,
-    pub account_keys: Vec<PublicKey>,
     pub instructions: Vec<CompiledInstruction>,
     pub inner_instructions: Vec<InnerInstructions>,
     pub log_messages: Vec<String>,
+    pub keys: Keys,
+}
+
+#[derive(Debug)]
+pub struct Keys {
+    pub static_account: Vec<PublicKey>,
+    pub log_account: Vec<PublicKey>,
+}
+
+impl Keys {
+    pub fn contains(&self, public_key: &PublicKey) -> bool {
+        self.static_account.contains(public_key) || self.log_account.contains(public_key)
+    }
 }
 
 #[derive(Debug)]
