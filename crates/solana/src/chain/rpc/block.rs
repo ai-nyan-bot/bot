@@ -36,7 +36,7 @@ impl RpcClient {
                 self.delegate.clone(),
                 slot,
                 RpcBlockConfig {
-                    encoding: Some(UiTransactionEncoding::Base64),
+                    encoding: Some(UiTransactionEncoding::Base58),
                     transaction_details: Some(TransactionDetails::Full),
                     rewards: None,
                     commitment: Some(CommitmentConfig::confirmed()),
@@ -157,7 +157,10 @@ mod tests {
 
         let result = test_instance.get_block(1).await.unwrap();
         let result = result.unwrap();
-        assert_eq!(result.timestamp, Timestamp::from_epoch_second(1737344750).unwrap())
+        assert_eq!(
+            result.timestamp,
+            Timestamp::from_epoch_second(1737344750).unwrap()
+        )
     }
 
     #[tokio::test]

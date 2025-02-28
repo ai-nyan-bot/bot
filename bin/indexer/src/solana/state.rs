@@ -4,6 +4,7 @@
 use solana::token_info::rpc::TokenInfoRpcLoader;
 use std::ops::Deref;
 use std::sync::Arc;
+use sqlx::PgPool;
 
 #[derive(Debug, Clone)]
 pub struct State(pub Arc<StateInner>);
@@ -17,7 +18,7 @@ impl Deref for State {
 
 #[derive(Debug)]
 pub struct StateInner {
-    // pub pool: PgPool,
+    pub pool: PgPool,
     // pub token_repo: TokenRepo<RpcTokenInfoLoader>,
     // pub token_pair_repo: TokenPairRepo<RpcTokenInfoLoader>,
     // pub wallet_repo: AddressRepo,

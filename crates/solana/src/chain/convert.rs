@@ -1,7 +1,10 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::{CompiledInstruction, InnerInstruction, InnerInstructions, Signature, Transaction, TransactionStatus};
+use crate::model::{
+    CompiledInstruction, InnerInstruction, InnerInstructions, Signature, Transaction,
+    TransactionStatus,
+};
 use base::model::PublicKey;
 use solana_rpc_client::rpc_client::SerializableTransaction;
 use solana_sdk::bs58;
@@ -70,7 +73,12 @@ pub(crate) fn convert_transaction(tx: EncodedTransactionWithStatusMeta) -> Trans
         OptionSerializer::Skip => vec![],
     };
 
-    let account_keys: Vec<PublicKey> = vtx.message.static_account_keys().iter().map(|key| (*key).into()).collect();
+    let account_keys: Vec<PublicKey> = vtx
+        .message
+        .static_account_keys()
+        .iter()
+        .map(|key| (*key).into())
+        .collect();
 
     Transaction {
         signature: Signature(signature.to_string()),
