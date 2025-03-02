@@ -16,6 +16,7 @@ export default defineConfig({
             '@modals': '/src/modals',
             '@pages': '/src/pages',
             '@states': '/src/states',
+            '@styles': '/src/styles',
             '@types': '/src/types',
             '@utils': '/src/utils',
         },

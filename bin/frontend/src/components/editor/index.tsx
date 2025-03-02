@@ -35,7 +35,18 @@ const createCondition = (type: ConditionType): Condition => {
                             operator: Operator.MORE_THAN,
                             value: {
                                 type: ValueType.PERCENT,
-                                value: 85
+                                value: 0
+                            },
+                            timeframe: undefined
+                        },
+                        {
+                            id: uuidv4(),
+                            type: ConditionType.COMPARE,
+                            field: Field.CURVE_PROGRESS,
+                            operator: Operator.LESS_THAN,
+                            value: {
+                                type: ValueType.PERCENT,
+                                value: 95
                             },
                             timeframe: undefined
                         },
@@ -182,17 +193,15 @@ export const Editor: React.FC<EditorProps> = ({sequence, onChange}) => {
                 </CardHeader>
                 <CardContent>
                     <div className="max-w-4xl mx-auto space-y-6">
-                        <div className="border-l-4 border-yellow-500 pl-4">
-                            <ConditionList
-                                condition={condition}
-                                isRoot={true}
-                                onAdd={addCondition}
-                                onRemove={removeCondition}
-                                onConditionChange={(condition: Condition) => {
-                                    updateCondition(condition)
-                                }}
-                            />
-                        </div>
+                        <ConditionList
+                            condition={condition}
+                            isRoot={true}
+                            onAdd={addCondition}
+                            onRemove={removeCondition}
+                            onConditionChange={(condition: Condition) => {
+                                updateCondition(condition)
+                            }}
+                        />
                     </div>
                 </CardContent>
             </Card>

@@ -21,6 +21,7 @@ export type ComposeBondingCurve = {
         type: ConditionType.AND,
         conditions: [
             CompareCurveProgressPercent,
+            CompareCurveProgressPercent,
             CompareCurveProgressAge
         ]
     }

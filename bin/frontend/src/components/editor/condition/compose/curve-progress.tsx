@@ -1,17 +1,6 @@
 import React, {FC, useState} from "react";
-import {
-    Compare,
-    CompareCurveProgressPercent,
-    ComposeBondingCurve,
-    ComposeType,
-    ConditionType,
-    Field,
-    Operator,
-    TimeUnit,
-    ValueType
-} from "@types";
-import {CompareWidget} from "@components/editor/condition";
-
+import {Compare, ComposeBondingCurve, ComposeType, ConditionType, Field, Operator, TimeUnit, ValueType} from "@types";
+import {DualRangeSlider} from "@components/ui/slider.tsx";
 
 export type CurveProgressWidgetProps = {
     condition: ComposeBondingCurve;
@@ -22,49 +11,76 @@ export type CurveProgressWidgetProps = {
 export const CurveProgressWidget: FC<CurveProgressWidgetProps> = ({condition, onChange}) => {
     const [curveProgress, setCurveProgress] = useState<Compare>(condition.condition.conditions[0]);
 
-    const propagateChange = (updatedCurveProgress: CompareCurveProgressPercent) => {
-        onChange({
-            id: condition.id,
-            type: ConditionType.COMPOSE,
-            ty: ComposeType.CURVE_PROGRESS,
-            condition: {
-                type: ConditionType.AND,
-                conditions: [
-                    {
-                        id: updatedCurveProgress.id,
-                        type: ConditionType.COMPARE,
-                        field: Field.CURVE_PROGRESS,
-                        operator: updatedCurveProgress.operator,
-                        value: updatedCurveProgress.value
-                    },
-                    {
-                        id: updatedCurveProgress.id,
-                        type: ConditionType.COMPARE,
-                        field: Field.CURVE_PROGRESS_AGE,
-                        operator: Operator.LESS_THAN,
-                        value: {
-                            type: ValueType.DURATION,
-                            value: 1,
-                            unit: TimeUnit.MINUTE
+    const [range, setRange] = useState<number[]>(() => {
+        let conditions = condition.condition.conditions;
+        return [conditions[0].value.value, conditions[1].value.value]
+    });
+
+    const handleChange = (values: number[]) => {
+        setRange(prev => {
+            onChange({
+                id: condition.id,
+                type: ConditionType.COMPOSE,
+                ty: ComposeType.CURVE_PROGRESS,
+                condition: {
+                    type: ConditionType.AND,
+                    conditions: [
+                        {
+                            id: curveProgress.id,
+                            type: ConditionType.COMPARE,
+                            field: Field.CURVE_PROGRESS,
+                            operator: Operator.MORE_THAN,
+                            value: {
+                                type: ValueType.PERCENT,
+                                value: values[0]
+                            }
+                        },
+                        {
+                            id: curveProgress.id,
+                            type: ConditionType.COMPARE,
+                            field: Field.CURVE_PROGRESS,
+                            operator: Operator.LESS_THAN,
+                            value: {
+                                type: ValueType.PERCENT,
+                                value: values[1]
+                            }
+                        },
+                        {
+                            id: curveProgress.id,
+                            type: ConditionType.COMPARE,
+                            field: Field.CURVE_PROGRESS_AGE,
+                            operator: Operator.LESS_THAN,
+                            value: {
+                                type: ValueType.DURATION,
+                                value: 1,
+                                unit: TimeUnit.MINUTE
+                            }
                         }
-                    }
-                ],
-            },
+                    ],
+                },
+            });
+
+            return values
         });
     };
 
     return (
-        <>
-            <CompareWidget
-                compare={curveProgress}
-                onChange={(compare) => {
-                    setCurveProgress(() => {
-                        propagateChange(compare as CompareCurveProgressPercent);
-                        return compare;
-                    });
-
-                }}
+        <div className="w-full max-w-md mx-auto p-4 ">
+            <DualRangeSlider
+                value={range}
+                onValueChange={handleChange}
+                min={0}
+                max={99}
+                step={1}
+                className="mt-2"
             />
-        </>
+            <div className="mt-4 text-sm text-center text-gray-500">
+                {range[0] == 0 && (<p>Curve progressed more than {range[1]}%</p>)}
+                {range[0] > 0 && (<>
+                    <p>Curve progressed at least {range[0]}%</p>
+                    <p>but not more than {range[1]}%</p>
+                </>)}
+            </div>
+        </div>
     );
 };
