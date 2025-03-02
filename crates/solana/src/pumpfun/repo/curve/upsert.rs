@@ -5,6 +5,7 @@ use crate::model::Slot;
 use crate::pumpfun::model::{CalculateProgress, Curve, Trade};
 use crate::pumpfun::repo::curve::CurveRepo;
 use base::model::{Amount, Percent, TokenPairId};
+use common::model::{Timestamp, UpdatedAt};
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 
@@ -17,6 +18,7 @@ impl CurveRepo {
             virtual_quote_reserves: trade.virtual_quote_reserves,
             progress: Percent(0.0),
             complete: false,
+            updated_at: UpdatedAt(Timestamp::now()),
         };
 
         curve.progress = curve.calculate_progress();
@@ -33,7 +35,7 @@ impl CurveRepo {
                 virtual_quote_reserves = excluded.virtual_quote_reserves,
                 progress = excluded.progress,
                 complete = excluded.complete
-            returning id, slot, virtual_base_reserves, virtual_quote_reserves, progress, complete
+            returning id, slot, virtual_base_reserves, virtual_quote_reserves, progress, complete, updated_at
         "#;
 
         Ok(sqlx::query(query)
@@ -52,6 +54,7 @@ impl CurveRepo {
                 virtual_quote_reserves: r.get::<Amount, _>("virtual_quote_reserves"),
                 progress: r.get::<Percent, _>("progress"),
                 complete: r.get::<bool, _>("complete"),
+                updated_at: r.get::<UpdatedAt, _>("updated_at"),
             })?)
     }
 }

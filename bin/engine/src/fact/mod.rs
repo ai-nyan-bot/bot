@@ -3,7 +3,7 @@
 
 use base::model::{Fact, Facts, TokenPairId, Value};
 use common::model::Timeframe::M1;
-use common::model::{Limit, Timeframe};
+use common::model::{Limit, TimeUnit, Timeframe};
 use solana::pumpfun::repo::{CurveRepo, SummaryQuery, SummaryRepo};
 use sqlx::PgPool;
 use std::collections::HashMap;
@@ -11,7 +11,6 @@ use std::collections::HashMap;
 #[derive(Clone)]
 pub struct FactService {
     pool: PgPool,
-    // trade_repo: ReadTradeRepo,
     summary_repo: SummaryRepo,
     curve_repo: CurveRepo,
 }
@@ -41,6 +40,11 @@ impl FactService {
                         .with_value(
                             Fact::CurveProgressPercent,
                             Value::percent(c.progress.0 as f64),
+                        )
+                        .unwrap()
+                        .with_value(
+                            Fact::CurveProgressAgeDuration,
+                            Value::duration(c.updated_at.age_sec(), TimeUnit::Second),
                         )
                         .unwrap(),
                 )

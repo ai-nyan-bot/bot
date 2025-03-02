@@ -152,6 +152,12 @@ pub struct CreatedAt(pub Timestamp);
 #[sqlx(transparent, no_pg_array)]
 pub struct UpdatedAt(pub Timestamp);
 
+impl UpdatedAt {
+    pub fn age_sec(&self) -> i64 {
+        (unix_seconds_now() as i64) - self.0.to_epoch_seconds()
+    }
+}
+
 #[cfg(test)]
 mod test {
     use serde_json::json;

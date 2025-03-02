@@ -5,6 +5,7 @@ use crate::model::Slot;
 use crate::pumpfun::model::Curve;
 use crate::pumpfun::repo::CurveRepo;
 use base::model::{Amount, Percent, TokenPairId};
+use common::model::UpdatedAt;
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 
@@ -15,7 +16,7 @@ impl CurveRepo {
         token_pair: impl Into<TokenPairId> + Send,
     ) -> RepoResult<Curve> {
         let query = r#"
-            select id, slot, virtual_base_reserves, virtual_quote_reserves, progress, complete from pumpfun.curve where id = $1
+            select id, slot, virtual_base_reserves, virtual_quote_reserves, progress, complete, updated_at from pumpfun.curve where id = $1
         "#;
 
         Ok(sqlx::query(query)
@@ -29,6 +30,7 @@ impl CurveRepo {
                 virtual_quote_reserves: r.get::<Amount, _>("virtual_quote_reserves"),
                 progress: r.get::<Percent, _>("progress"),
                 complete: r.get::<bool, _>("complete"),
+                updated_at: r.get::<UpdatedAt, _>("updated_at"),
             })?)
     }
 }

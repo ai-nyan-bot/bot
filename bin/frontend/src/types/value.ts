@@ -3,7 +3,7 @@ import {TimeUnit} from "./index.ts";
 export enum ValueType {
     BOOLEAN = 'BOOLEAN',
     COUNT = 'COUNT',
-    DURATION = 'DURATIOn',
+    DURATION = 'DURATION',
     PERCENT = 'PERCENT',
     QUOTE = 'QUOTE',
     SOL = 'SOL',

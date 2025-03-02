@@ -3,6 +3,7 @@
 
 use crate::model::Slot;
 use base::model::{Amount, Percent, TokenPairId};
+use common::model::UpdatedAt;
 pub use progress::CalculateProgress;
 
 mod progress;
@@ -15,6 +16,7 @@ pub struct Curve {
     pub virtual_quote_reserves: Amount,
     pub progress: Percent,
     pub complete: bool,
+    pub updated_at: UpdatedAt,
 }
 
 pub struct CurveLog {

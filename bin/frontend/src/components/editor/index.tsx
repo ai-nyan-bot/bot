@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Action, ComposeType, Condition, ConditionType, Field, Operator, Sequence, ValueType} from "@types";
+import {Action, ComposeType, Condition, ConditionType, Field, Operator, Sequence, TimeUnit, ValueType} from "@types";
 import {ConditionList} from "./condition";
 import {uuidv4} from "@app/utils/id.ts";
 import {Card, CardContent, CardHeader, CardTitle} from "@components/ui/card.tsx";
@@ -38,6 +38,17 @@ const createCondition = (type: ConditionType): Condition => {
                                 value: 85
                             },
                             timeframe: undefined
+                        },
+                        {
+                            id: uuidv4(),
+                            type: ConditionType.COMPARE,
+                            field: Field.CURVE_PROGRESS_AGE,
+                            operator: Operator.LESS_THAN,
+                            value: {
+                                type: ValueType.DURATION,
+                                value: 1,
+                                unit: TimeUnit.MINUTE
+                            }
                         }
                     ]
                 }

@@ -1,5 +1,15 @@
 import React, {FC, useState} from "react";
-import {Compare, ComposeBondingCurve, ComposeType, ConditionType, Field, Operator, TimeUnit, ValueType} from "@types";
+import {
+    Compare,
+    CompareCurveProgressPercent,
+    ComposeBondingCurve,
+    ComposeType,
+    ConditionType,
+    Field,
+    Operator,
+    TimeUnit,
+    ValueType
+} from "@types";
 import {CompareWidget} from "@components/editor/condition";
 
 
@@ -12,7 +22,7 @@ export type CurveProgressWidgetProps = {
 export const CurveProgressWidget: FC<CurveProgressWidgetProps> = ({condition, onChange}) => {
     const [curveProgress, setCurveProgress] = useState<Compare>(condition.condition.conditions[0]);
 
-    const propagateChange = (updatedCurveProgress: Compare) => {
+    const propagateChange = (updatedCurveProgress: CompareCurveProgressPercent) => {
         onChange({
             id: condition.id,
             type: ConditionType.COMPOSE,
@@ -30,7 +40,7 @@ export const CurveProgressWidget: FC<CurveProgressWidgetProps> = ({condition, on
                     {
                         id: updatedCurveProgress.id,
                         type: ConditionType.COMPARE,
-                        field: Field.CURVE_PROGRESS_UPDATED_AT,
+                        field: Field.CURVE_PROGRESS_AGE,
                         operator: Operator.LESS_THAN,
                         value: {
                             type: ValueType.DURATION,
@@ -49,7 +59,7 @@ export const CurveProgressWidget: FC<CurveProgressWidgetProps> = ({condition, on
                 compare={curveProgress}
                 onChange={(compare) => {
                     setCurveProgress(() => {
-                        propagateChange(compare);
+                        propagateChange(compare as CompareCurveProgressPercent);
                         return compare;
                     });
 

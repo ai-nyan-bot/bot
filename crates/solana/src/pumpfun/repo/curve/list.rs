@@ -7,12 +7,13 @@ use crate::pumpfun::repo::CurveRepo;
 use base::model::{Amount, Percent, TokenPairId};
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
+use common::model::UpdatedAt;
 
 impl CurveRepo {
 
     pub async fn list_all<'a>(&self, tx: &mut Tx<'a>) -> RepoResult<Vec<Curve>> {
         let query = r#"
-            select id, slot, virtual_base_reserves, virtual_quote_reserves, progress, complete from pumpfun.curve order by id, slot desc
+            select id, slot, virtual_base_reserves, virtual_quote_reserves, progress, complete, updated_at from pumpfun.curve order by id, slot desc
         "#;
 
         Ok(sqlx::query(query)
@@ -26,6 +27,7 @@ impl CurveRepo {
                 virtual_quote_reserves: r.get::<Amount, _>("virtual_quote_reserves"),
                 progress: r.get::<Percent, _>("progress"),
                 complete: r.get::<bool, _>("complete"),
+                updated_at: r.get::<UpdatedAt, _>("updated_at"),
             })
             .collect::<Vec<_>>())
     }

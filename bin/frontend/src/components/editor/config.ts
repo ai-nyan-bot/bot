@@ -24,7 +24,7 @@ export const config: Record<
             }
         }
     },
-    [Field.CURVE_PROGRESS_UPDATED_AT]: {
+    [Field.CURVE_PROGRESS_AGE]: {
         operators: {
             [Operator.MORE_THAN]: {
                 valueTypes: [ValueType.DURATION],

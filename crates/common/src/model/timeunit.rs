@@ -7,7 +7,6 @@ use std::fmt::{Display, Formatter};
 #[derive(Debug, Copy, Clone, Eq, Hash, PartialEq, PartialOrd, Serialize, Deserialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum TimeUnit {
-    MilliSecond,
     Second,
     Minute,
     Hour,
@@ -17,7 +16,6 @@ pub enum TimeUnit {
 impl Display for TimeUnit {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            TimeUnit::MilliSecond => f.write_str("ms"),
             TimeUnit::Second => f.write_str("s"),
             TimeUnit::Minute => f.write_str("m"),
             TimeUnit::Hour => f.write_str("h"),

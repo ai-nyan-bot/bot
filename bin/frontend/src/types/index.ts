@@ -11,7 +11,6 @@ export enum Timeframe {
 }
 
 export enum TimeUnit {
-    MILLI_SECOND = 'MILLI_SECOND',
     SECOND = "SECOND",
     MINUTE = "MINUTE",
     HOUR = "HOUR",

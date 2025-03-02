@@ -4,16 +4,17 @@
 use crate::model::Fact::CurveProgressPercent;
 use crate::model::FactError::UnableToDeriveFact;
 use crate::model::Field::PriceAvg;
-use crate::model::ValueType::{Count, Percent, Quote, Usd};
+use crate::model::ValueType::{Count, Duration, Percent, Quote, Usd};
 use crate::model::{Condition, FactError, Field, Operator, Value, ValueType};
 use serde::{Deserialize, Serialize};
 use Fact::{
-    PriceAvgQuote, PriceAvgUsd, PriceQuote, PriceUsd, TelegramGroup, TelegramGroupHandle,
-    TradesBuyChangeCount, TradesBuyChangePercent, TradesBuyCount, TradesChangeCount,
-    TradesChangePercent, TradesCount, TradesSellChangeCount, TradesSellChangePercent,
-    TradesSellCount, TwitterAccount, TwitterAccountHandle, VolumeChangeQuote,
+    CurveProgressAgeDuration, PriceAvgQuote, PriceAvgUsd, PriceQuote, PriceUsd, TelegramGroup,
+    TelegramGroupHandle, TradesBuyChangeCount, TradesBuyChangePercent, TradesBuyCount,
+    TradesChangeCount, TradesChangePercent, TradesCount, TradesSellChangeCount,
+    TradesSellChangePercent, TradesSellCount, TwitterAccount, TwitterAccountHandle,
+    VolumeChangeQuote,
 };
-use Field::{CurveProgress, Price, Trades, TradesBuy, TradesSell, Volume};
+use Field::{CurveProgress, CurveProgressAge, Price, Trades, TradesBuy, TradesSell, Volume};
 use Operator::{
     DecreasedByLessThan, DecreasedByLessThanEqual, DecreasedByMoreThan, DecreasedByMoreThanEqual,
     Equal, IncreasedByLessThan, IncreasedByLessThanEqual, IncreasedByMoreThan,
@@ -24,6 +25,7 @@ use ValueType::Boolean;
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Fact {
     CurveProgressPercent,
+    CurveProgressAgeDuration,
 
     PriceQuote,
     PriceUsd,
@@ -61,6 +63,7 @@ impl Fact {
     pub fn has_timeframe(&self) -> bool {
         match self {
             CurveProgressPercent => false,
+            CurveProgressAgeDuration => false,
 
             PriceQuote => false,
             PriceUsd => false,
@@ -99,6 +102,7 @@ impl Fact {
     pub fn value_type(&self) -> ValueType {
         match self {
             CurveProgressPercent => Percent,
+            CurveProgressAgeDuration => Duration,
 
             PriceQuote => Quote,
             PriceUsd => Usd,
@@ -168,6 +172,12 @@ impl Fact {
             (CurveProgress, MoreThanEqual, Percent, false) => CurveProgressPercent,
             (CurveProgress, LessThan, Percent, false) => CurveProgressPercent,
             (CurveProgress, LessThanEqual, Percent, false) => CurveProgressPercent,
+
+            // CurveProgressAgeDuration
+            (CurveProgressAge, MoreThan, Duration, false) => CurveProgressAgeDuration,
+            (CurveProgressAge, MoreThanEqual, Duration, false) => CurveProgressAgeDuration,
+            (CurveProgressAge, LessThan, Duration, false) => CurveProgressAgeDuration,
+            (CurveProgressAge, LessThanEqual, Duration, false) => CurveProgressAgeDuration,
 
             // PriceQuote
             (Price, MoreThan, Quote, false) => PriceQuote,
@@ -296,6 +306,7 @@ impl Fact {
 
 #[cfg(test)]
 mod tests {
+    use common::model::TimeUnit::Minute;
     use super::*;
 
     #[test]
@@ -329,6 +340,29 @@ mod tests {
             Some(CurveProgressPercent)
         );
     }
+
+    #[test]
+    fn test_curve_progress_age() {
+        assert_eq!(
+            Fact::from_comparison(&CurveProgressAge, &MoreThan, &Value::duration(1, Minute), false),
+            Some(CurveProgressAgeDuration)
+        );
+        assert_eq!(
+            Fact::from_comparison(&CurveProgressAge, &MoreThanEqual, &Value::duration(1, Minute), false),
+            Some(CurveProgressAgeDuration)
+        );
+
+        assert_eq!(
+            Fact::from_comparison(&CurveProgressAge, &LessThan, &Value::duration(1, Minute), false),
+            Some(CurveProgressAgeDuration)
+        );
+
+        assert_eq!(
+            Fact::from_comparison(&CurveProgressAge, &LessThanEqual, &Value::duration(1, Minute), false),
+            Some(CurveProgressAgeDuration)
+        );
+    }
+
 
     #[test]
     fn test_price_quote() {
