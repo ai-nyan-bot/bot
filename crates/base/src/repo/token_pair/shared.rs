@@ -5,8 +5,8 @@
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
 use crate::model::{
-    Decimals, Description, Mint, Name, Supply, Symbol, Token, TokenId, TokenPair, TokenPairId,
-    TokenPairMint, Uri,
+	Decimals, Description, Mint, Name, Supply, Symbol, Token, TokenId, TokenPair, TokenPairId,
+	TokenPairMint, Uri,
 };
 use crate::repo::ReadTokenPairRepo;
 use common::repo::{RepoResult, Tx};

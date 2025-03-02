@@ -147,9 +147,10 @@ impl TryFrom<&Condition> for Fact {
                 ..
             } => Fact::from_comparison(field, operator, value, timeframe.is_some())
                 .ok_or(UnableToDeriveFact(condition.clone())),
-            Condition::And { .. } | Condition::Or { .. } | Condition::AndNot { .. } => {
-                Err(UnableToDeriveFact(condition.clone()))
-            }
+            Condition::Compose { .. }
+            | Condition::And { .. }
+            | Condition::Or { .. }
+            | Condition::AndNot { .. } => Err(UnableToDeriveFact(condition.clone())),
         }
     }
 }

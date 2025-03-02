@@ -2,8 +2,8 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use base::model::{
-    Amount, PublicKey, Mint, Name,
-    Symbol, Uri,
+	Amount, PublicKey, Mint, Name,
+	Symbol, Uri,
 };
 use common::model::Timestamp;
 
