@@ -64,17 +64,16 @@ mod tests {
     use common::model::Timeframe;
     use Fact::{PriceQuote, PriceUsd, VolumeChangeQuote};
     use Timeframe::{M1, S1};
-    use Value::Quote;
 
     fn facts() -> Facts {
         Facts::new()
-            .with_value(PriceQuote, Quote(1.0))
+            .with_value(PriceQuote, Value::quote(1.0))
             .unwrap()
-            .with_value(PriceUsd, Value::Usd(2.0))
+            .with_value(PriceUsd, Value::usd(2.0))
             .unwrap()
-            .with_timeframe_value(VolumeChangeQuote, Quote(3.0), S1)
+            .with_timeframe_value(VolumeChangeQuote, Value::quote(3.0), S1)
             .unwrap()
-            .with_timeframe_value(VolumeChangeQuote, Quote(4.0), M1)
+            .with_timeframe_value(VolumeChangeQuote, Value::quote(4.0), M1)
             .unwrap()
     }
 
@@ -82,18 +81,16 @@ mod tests {
         use crate::model::sequence::condition::test::tests::facts;
         use crate::model::Field::Price;
         use crate::model::Operator::MoreThanEqual;
-        use crate::model::Value::Usd;
         use crate::model::{Condition, Field, Value};
         use Condition::{And, AndNot, Compare, Compose, Or};
         use Field::Volume;
-        use Value::Quote;
 
         #[test]
         fn test_equal_true() {
             assert!(Compare {
                 field: Price,
                 operator: MoreThanEqual,
-                value: Quote(1.0),
+                value: Value::quote(1.0),
                 timeframe: None,
             }
             .test(&facts()))
@@ -104,7 +101,7 @@ mod tests {
             assert!(!Compare {
                 field: Price,
                 operator: MoreThanEqual,
-                value: Quote(1337.0),
+                value: Value::quote(1337.0),
                 timeframe: None,
             }
             .test(&facts()))
@@ -117,7 +114,7 @@ mod tests {
                 condition: Box::new(Compare {
                     field: Price,
                     operator: MoreThanEqual,
-                    value: Quote(1.0),
+                    value: Value::quote(1.0),
                     timeframe: None,
                 }),
             }
@@ -131,7 +128,7 @@ mod tests {
                 condition: Box::new(Compare {
                     field: Price,
                     operator: MoreThanEqual,
-                    value: Quote(22222.0),
+                    value: Value::quote(22222.0),
                     timeframe: None,
                 }),
             }
@@ -145,13 +142,13 @@ mod tests {
                     Compare {
                         field: Price,
                         operator: MoreThanEqual,
-                        value: Quote(1.0),
+                        value: Value::quote(1.0),
                         timeframe: None,
                     },
                     Compare {
                         field: Price,
                         operator: MoreThanEqual,
-                        value: Usd(2.0),
+                        value: Value::usd(2.0),
                         timeframe: None,
                     }
                 ]
@@ -166,13 +163,13 @@ mod tests {
                     Compare {
                         field: Price,
                         operator: MoreThanEqual,
-                        value: Quote(1.0),
+                        value: Value::quote(1.0),
                         timeframe: None
                     },
                     Compare {
                         field: Price,
                         operator: MoreThanEqual,
-                        value: Usd(22222.0),
+                        value: Value::usd(22222.0),
                         timeframe: None,
                     }
                 ]
@@ -187,13 +184,13 @@ mod tests {
                     Compare {
                         field: Price,
                         operator: MoreThanEqual,
-                        value: Quote(111111.0),
+                        value: Value::quote(111111.0),
                         timeframe: None,
                     },
                     Compare {
                         field: Volume,
                         operator: MoreThanEqual,
-                        value: Quote(2.0),
+                        value: Value::quote(2.0),
                         timeframe: None,
                     }
                 ]
@@ -208,13 +205,13 @@ mod tests {
                     Compare {
                         field: Price,
                         operator: MoreThanEqual,
-                        value: Quote(111111.0),
+                        value: Value::quote(111111.0),
                         timeframe: None,
                     },
                     Compare {
                         field: Volume,
                         operator: MoreThanEqual,
-                        value: Quote(22222.0),
+                        value: Value::quote(22222.0),
                         timeframe: None,
                     }
                 ]
@@ -229,13 +226,13 @@ mod tests {
                     Compare {
                         field: Price,
                         operator: MoreThanEqual,
-                        value: Quote(1.0),
+                        value: Value::quote(1.0),
                         timeframe: None,
                     },
                     Compare {
                         field: Volume,
                         operator: MoreThanEqual,
-                        value: Quote(2.0),
+                        value: Value::quote(2.0),
                         timeframe: None,
                     }
                 ]
@@ -250,13 +247,13 @@ mod tests {
                     Compare {
                         field: Price,
                         operator: MoreThanEqual,
-                        value: Quote(1.0),
+                        value: Value::quote(1.0),
                         timeframe: None,
                     },
                     Compare {
                         field: Volume,
                         operator: MoreThanEqual,
-                        value: Quote(22222.0),
+                        value: Value::quote(22222.0),
                         timeframe: None,
                     }
                 ]
@@ -271,13 +268,13 @@ mod tests {
                     Compare {
                         field: Price,
                         operator: MoreThanEqual,
-                        value: Quote(111111.0),
+                        value: Value::quote(111111.0),
                         timeframe: None,
                     },
                     Compare {
                         field: Price,
                         operator: MoreThanEqual,
-                        value: Usd(2.0),
+                        value: Value::usd(2.0),
                         timeframe: None,
                     }
                 ]
@@ -292,13 +289,13 @@ mod tests {
                     Compare {
                         field: Price,
                         operator: MoreThanEqual,
-                        value: Quote(111111.0),
+                        value: Value::quote(111111.0),
                         timeframe: None,
                     },
                     Compare {
                         field: Price,
                         operator: MoreThanEqual,
-                        value: Usd(22222.0),
+                        value: Value::usd(22222.0),
                         timeframe: None,
                     }
                 ]
@@ -313,13 +310,13 @@ mod tests {
                     Compare {
                         field: Price,
                         operator: MoreThanEqual,
-                        value: Quote(1.0),
+                        value: Value::quote(1.0),
                         timeframe: None,
                     },
                     Compare {
                         field: Volume,
                         operator: MoreThanEqual,
-                        value: Quote(2.0),
+                        value: Value::quote(2.0),
                         timeframe: None,
                     }
                 ]
@@ -334,13 +331,13 @@ mod tests {
                     Compare {
                         field: Price,
                         operator: MoreThanEqual,
-                        value: Quote(1.0),
+                        value: Value::quote(1.0),
                         timeframe: None
                     },
                     Compare {
                         field: Volume,
                         operator: MoreThanEqual,
-                        value: Quote(22222.0),
+                        value: Value::quote(22222.0),
                         timeframe: None,
                     }
                 ]
@@ -355,13 +352,13 @@ mod tests {
                     Compare {
                         field: Price,
                         operator: MoreThanEqual,
-                        value: Quote(111111.0),
+                        value: Value::quote(111111.0),
                         timeframe: None,
                     },
                     Compare {
                         field: Price,
                         operator: MoreThanEqual,
-                        value: Usd(2.0),
+                        value: Value::usd(2.0),
                         timeframe: None,
                     }
                 ]
@@ -376,13 +373,13 @@ mod tests {
                     Compare {
                         field: Price,
                         operator: MoreThanEqual,
-                        value: Quote(111111.0),
+                        value: Value::quote(111111.0),
                         timeframe: None,
                     },
                     Compare {
                         field: Price,
                         operator: MoreThanEqual,
-                        value: Usd(22222.0),
+                        value: Value::usd(22222.0),
                         timeframe: None,
                     }
                 ]
@@ -400,14 +397,13 @@ mod tests {
         use Condition::Compare;
         use Field::Volume;
         use Timeframe::{M1, S1};
-        use Value::Quote;
 
         #[test]
         fn test_equal_true() {
             assert!(Compare {
                 field: Volume,
                 operator: IncreasedByMoreThanEqual,
-                value: Quote(3.0),
+                value: Value::quote(3.0),
                 timeframe: Some(S1),
             }
             .test(&facts()))
@@ -418,7 +414,7 @@ mod tests {
             assert!(!Compare {
                 field: Volume,
                 operator: IncreasedByMoreThanEqual,
-                value: Quote(1337.0),
+                value: Value::quote(1337.0),
                 timeframe: Some(M1),
             }
             .test(&facts()))
@@ -431,7 +427,7 @@ mod tests {
                 condition: Box::new(Compare {
                     field: Volume,
                     operator: IncreasedByMoreThanEqual,
-                    value: Quote(3.0),
+                    value: Value::quote(3.0),
                     timeframe: Some(S1),
                 }),
             }
@@ -445,7 +441,7 @@ mod tests {
                 condition: Box::new(Compare {
                     field: Volume,
                     operator: IncreasedByMoreThanEqual,
-                    value: Quote(1337.0),
+                    value: Value::quote(1337.0),
                     timeframe: Some(M1),
                 }),
             }
@@ -459,13 +455,13 @@ mod tests {
                     Compare {
                         field: Volume,
                         operator: IncreasedByMoreThanEqual,
-                        value: Quote(3.0),
+                        value: Value::quote(3.0),
                         timeframe: Some(S1),
                     },
                     Compare {
                         field: Volume,
                         operator: IncreasedByMoreThanEqual,
-                        value: Quote(4.0),
+                        value: Value::quote(4.0),
                         timeframe: Some(M1),
                     }
                 ]
@@ -480,13 +476,13 @@ mod tests {
                     Compare {
                         field: Volume,
                         operator: IncreasedByMoreThanEqual,
-                        value: Quote(3.0),
+                        value: Value::quote(3.0),
                         timeframe: Some(S1),
                     },
                     Compare {
                         field: Volume,
                         operator: IncreasedByMoreThanEqual,
-                        value: Quote(444444.0),
+                        value: Value::quote(444444.0),
                         timeframe: Some(M1),
                     }
                 ]
@@ -501,13 +497,13 @@ mod tests {
                     Compare {
                         field: Volume,
                         operator: IncreasedByMoreThanEqual,
-                        value: Quote(33333.0),
+                        value: Value::quote(33333.0),
                         timeframe: Some(S1),
                     },
                     Compare {
                         field: Volume,
                         operator: IncreasedByMoreThanEqual,
-                        value: Quote(4.0),
+                        value: Value::quote(4.0),
                         timeframe: Some(M1),
                     }
                 ]
@@ -522,13 +518,13 @@ mod tests {
                     Compare {
                         field: Volume,
                         operator: IncreasedByMoreThanEqual,
-                        value: Quote(33333.0),
+                        value: Value::quote(33333.0),
                         timeframe: Some(S1),
                     },
                     Compare {
                         field: Volume,
                         operator: IncreasedByMoreThanEqual,
-                        value: Quote(44444.0),
+                        value: Value::quote(44444.0),
                         timeframe: Some(M1),
                     }
                 ]
@@ -543,13 +539,13 @@ mod tests {
                     Compare {
                         field: Volume,
                         operator: IncreasedByMoreThanEqual,
-                        value: Quote(3.0),
+                        value: Value::quote(3.0),
                         timeframe: Some(S1),
                     },
                     Compare {
                         field: Volume,
                         operator: IncreasedByMoreThanEqual,
-                        value: Quote(4.0),
+                        value: Value::quote(4.0),
                         timeframe: Some(M1),
                     }
                 ]
@@ -564,13 +560,13 @@ mod tests {
                     Compare {
                         field: Volume,
                         operator: IncreasedByMoreThanEqual,
-                        value: Quote(3.0),
+                        value: Value::quote(3.0),
                         timeframe: Some(S1),
                     },
                     Compare {
                         field: Volume,
                         operator: IncreasedByMoreThanEqual,
-                        value: Quote(444444.0),
+                        value: Value::quote(444444.0),
                         timeframe: Some(M1),
                     }
                 ]
@@ -585,13 +581,13 @@ mod tests {
                     Compare {
                         field: Volume,
                         operator: IncreasedByMoreThanEqual,
-                        value: Quote(33333.0),
+                        value: Value::quote(33333.0),
                         timeframe: Some(S1),
                     },
                     Compare {
                         field: Volume,
                         operator: IncreasedByMoreThanEqual,
-                        value: Quote(4.0),
+                        value: Value::quote(4.0),
                         timeframe: Some(M1),
                     }
                 ]
@@ -606,13 +602,13 @@ mod tests {
                     Compare {
                         field: Volume,
                         operator: IncreasedByMoreThanEqual,
-                        value: Quote(33333.0),
+                        value: Value::quote(33333.0),
                         timeframe: Some(S1),
                     },
                     Compare {
                         field: Volume,
                         operator: IncreasedByMoreThanEqual,
-                        value: Quote(44444.0),
+                        value: Value::quote(44444.0),
                         timeframe: Some(M1),
                     }
                 ]
@@ -627,13 +623,13 @@ mod tests {
                     Compare {
                         field: Volume,
                         operator: IncreasedByMoreThanEqual,
-                        value: Quote(3.0),
+                        value: Value::quote(3.0),
                         timeframe: Some(S1),
                     },
                     Compare {
                         field: Volume,
                         operator: IncreasedByMoreThanEqual,
-                        value: Quote(4.0),
+                        value: Value::quote(4.0),
                         timeframe: Some(M1),
                     }
                 ]
@@ -648,13 +644,13 @@ mod tests {
                     Compare {
                         field: Volume,
                         operator: IncreasedByMoreThanEqual,
-                        value: Quote(3.0),
+                        value: Value::quote(3.0),
                         timeframe: Some(S1),
                     },
                     Compare {
                         field: Volume,
                         operator: IncreasedByMoreThanEqual,
-                        value: Quote(444444.0),
+                        value: Value::quote(444444.0),
                         timeframe: Some(M1),
                     }
                 ]
@@ -669,13 +665,13 @@ mod tests {
                     Compare {
                         field: Volume,
                         operator: IncreasedByMoreThanEqual,
-                        value: Quote(33333.0),
+                        value: Value::quote(33333.0),
                         timeframe: Some(S1),
                     },
                     Compare {
                         field: Volume,
                         operator: IncreasedByMoreThanEqual,
-                        value: Quote(4.0),
+                        value: Value::quote(4.0),
                         timeframe: Some(M1),
                     }
                 ]
@@ -690,13 +686,13 @@ mod tests {
                     Compare {
                         field: Volume,
                         operator: IncreasedByMoreThanEqual,
-                        value: Quote(33333.0),
+                        value: Value::quote(33333.0),
                         timeframe: Some(S1),
                     },
                     Compare {
                         field: Volume,
                         operator: IncreasedByMoreThanEqual,
-                        value: Quote(44444.0),
+                        value: Value::quote(44444.0),
                         timeframe: Some(M1),
                     }
                 ]

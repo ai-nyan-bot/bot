@@ -1,14 +1,21 @@
-export * from './app.ts'
+export * from './app'
 export * from './rules'
-export * from './sequence.ts'
-export * from './telegram.ts'
-
-
+export * from './sequence'
+export * from './telegram'
+export * from './value'
 
 export enum Timeframe {
     M1 = "M1",
     M5 = "M5",
     M15 = "M15"
+}
+
+export enum TimeUnit {
+    MILLI_SECOND = 'MILLI_SECOND',
+    SECOND = "SECOND",
+    MINUTE = "MINUTE",
+    HOUR = "HOUR",
+    DAY = "DAY"
 }
 
 export const ALL_TIMEFRAMES = [Timeframe.M1, Timeframe.M5, Timeframe.M15];

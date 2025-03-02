@@ -67,7 +67,7 @@ mod tests {
     fn buy_callback() -> Callback {
         Callback::ActionButton(CallbackActionButton {
             config: TelegramActionButtonConfig::Buy {
-                value: Value::Sol(12.34),
+                value: Value::sol(12.34),
             },
         })
     }
@@ -75,7 +75,7 @@ mod tests {
     fn sell_callback() -> Callback {
         Callback::ActionButton(CallbackActionButton {
             config: TelegramActionButtonConfig::Sell {
-                value: Value::Percent(23.45),
+                value: Value::percent(23.45),
             },
         })
     }

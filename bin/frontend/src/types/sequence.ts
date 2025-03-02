@@ -1,5 +1,5 @@
-import {Condition
-} from "./rules";
+import {Condition} from "./rules";
+import {ValueNumber} from "./value.ts";
 
 export type Sequence = {
     condition: Condition,
@@ -30,24 +30,11 @@ export type ActionNotifyTelegram = {
 
 export enum Field {
     CURVE_PROGRESS = 'CURVE_PROGRESS',
+    CURVE_PROGRESS_UPDATED_AT = 'CURVE_PROGRESS_UPDATED_AT',
     TRADES = 'TRADES',
     TRADES_BUY = 'TRADES_BUY',
     TRADES_SELL = 'TRADES_SELL',
 }
-
-
-// export type ConditionType = 'COMPARE' | 'COMPOSE' | 'AND' | 'OR'
-//
-// export type Condition = {
-//     id: string;
-//     type: ConditionType;
-//     field?: Field;
-//     operator?: Operator;
-//     value?: Value;
-//     timeframe?: Timeframe;
-//     conditions?: Condition[];
-// };
-
 
 export enum Operator {
     EQUAL = "EQUAL",
@@ -68,56 +55,4 @@ export enum Operator {
     LESS_THAN = 'LESS_THAN',
     LESS_THAN_EQUAL = 'LESS_THAN_EQUAL',
 
-}
-
-export enum ValueType {
-    BOOLEAN = 'BOOLEAN',
-    COUNT = 'COUNT',
-    PERCENT = 'PERCENT',
-    QUOTE = 'QUOTE',
-    SOL = 'SOL',
-    STRING = 'STRING',
-    USD = 'USD'
-}
-
-export const COUNT_AND_PERCENT: Array<ValueNumberType> = [ValueType.COUNT, ValueType.PERCENT];
-
-export type ValueNumberType = ValueType.COUNT | ValueType.PERCENT | ValueType.SOL | ValueType.QUOTE | ValueType.USD;
-
-export type Value = ValueBoolean | ValueCount | ValuePercent | ValueQuote | ValueSol | ValueString | ValueUsd;
-export type ValueNumber = ValueCount | ValuePercent | ValueQuote | ValueSol | ValueUsd;
-
-export type ValueBoolean = {
-    type: ValueType.BOOLEAN;
-    value: boolean;
-}
-
-export type ValueCount = {
-    type: ValueType.COUNT;
-    value: number;
-}
-
-export type ValuePercent = {
-    type: ValueType.PERCENT;
-    value: number;
-}
-
-export type ValueQuote = {
-    type: ValueType.QUOTE;
-    value: number;
-}
-
-export type ValueSol = {
-    type: ValueType.SOL;
-    value: number;
-}
-
-export type ValueString = {
-    type: ValueType.STRING;
-    value: string;
-}
-
-export type ValueUsd = {
-    type: ValueType.USD;
-    value: number;
 }

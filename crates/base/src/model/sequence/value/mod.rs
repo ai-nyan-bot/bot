@@ -2,9 +2,9 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::{PriceAvgQuote, Trades};
-use ::serde::{Deserialize, Serialize};
+use common::model::TimeUnit;
 pub(crate) use compare::*;
-pub(crate) use serde::*;
+use ::serde::{Deserialize, Serialize};
 use std::fmt::{Display, Formatter};
 
 mod compare;
@@ -14,6 +14,7 @@ mod serde;
 pub enum ValueType {
     Boolean,
     Count,
+    Duration,
     Quote,
     Percent,
     Sol,
@@ -24,59 +25,54 @@ pub enum ValueType {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum Value {
-    #[serde(
-        serialize_with = "serialize_boolean",
-        deserialize_with = "deserialize_boolean"
-    )]
-    Boolean(bool),
-    #[serde(
-        serialize_with = "serialize_count",
-        deserialize_with = "deserialize_count"
-    )]
-    Count(i64),
-    #[serde(
-        serialize_with = "serialize_percent",
-        deserialize_with = "deserialize_percent"
-    )]
-    Percent(f64),
-    #[serde(
-        serialize_with = "serialize_quote",
-        deserialize_with = "deserialize_quote"
-    )]
-    Quote(f64),
-    #[serde(serialize_with = "serialize_sol", deserialize_with = "deserialize_sol")]
-    Sol(f64),
-    #[serde(
-        serialize_with = "serialize_string",
-        deserialize_with = "deserialize_string"
-    )]
-    String(String),
-    #[serde(serialize_with = "serialize_usd", deserialize_with = "deserialize_usd")]
-    Usd(f64),
+    Boolean { value: bool },
+    Count { value: i64 },
+    Duration { value: i64, unit: TimeUnit },
+    Percent { value: f64 },
+    Quote { value: f64 },
+    Sol { value: f64 },
+    String { value: String },
+    Usd { value: f64 },
+}
+
+impl Value {
+
+    pub fn boolean(value: bool) -> Self { Self::Boolean { value }}
+    pub fn count(value: i64) -> Self { Self::Count { value }}
+    pub fn duration(value: i64, unit: TimeUnit) -> Self { Self::Duration { value, unit } }
+    pub fn percent(value: f64) -> Self { Self::Percent { value }}
+    pub fn quote(value: f64) -> Self { Self::Quote { value }}
+    pub fn sol(value: f64) -> Self { Self::Sol { value }}
+    pub fn string(value: impl Into<String>) -> Self { Self::String { value: value.into() }}
+    pub fn usd(value: f64) -> Self { Self::Usd { value }}
+
 }
 
 impl From<PriceAvgQuote> for Value {
     fn from(value: PriceAvgQuote) -> Self {
-        Self::Quote(value.0)
+        Self::Quote { value: value.0 }
     }
 }
 
 impl From<Trades> for Value {
     fn from(value: Trades) -> Self {
-        Self::Count(value.0 as i64)
+        Self::Count {
+            value: value.0 as i64,
+        }
     }
 }
 
 impl Value {
     pub fn value_type(&self) -> ValueType {
         match self {
-            Value::Boolean(_) => ValueType::Boolean,
-            Value::Count(_) => ValueType::Count,
-            Value::Percent(_) => ValueType::Percent,
-            Value::Quote(_) => ValueType::Quote,
-            Value::Sol(_) => ValueType::Sol,
-            Value::String(_) => ValueType::String,
-            Value::Usd(_) => ValueType::Usd,
+            Value::Boolean { .. } => ValueType::Boolean,
+            Value::Count { .. } => ValueType::Count,
+            Value::Duration { .. } => ValueType::Duration,
+            Value::Percent { .. } => ValueType::Percent,
+            Value::Quote { .. } => ValueType::Quote,
+            Value::Sol { .. } => ValueType::Sol,
+            Value::String { .. } => ValueType::String,
+            Value::Usd { .. } => ValueType::Usd,
         }
     }
 }
@@ -84,13 +80,14 @@ impl Value {
 impl Display for Value {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            Value::Boolean(value) => Display::fmt(value, f),
-            Value::Count(value) => Display::fmt(value, f),
-            Value::Percent(value) => f.write_fmt(format_args!("{value} %")),
-            Value::Quote(value) => f.write_fmt(format_args!("{value} QUOTE")),
-            Value::Sol(value) => f.write_fmt(format_args!("{value} SOL")),
-            Value::String(value) => Display::fmt(value, f),
-            Value::Usd(value) => f.write_fmt(format_args!("{value} USD")),
+            Value::Boolean { value } => Display::fmt(value, f),
+            Value::Count { value } => Display::fmt(value, f),
+            Value::Duration { value, unit } => f.write_fmt(format_args!("{}{}", value, unit)),
+            Value::Percent { value } => f.write_fmt(format_args!("{value} %")),
+            Value::Quote { value } => f.write_fmt(format_args!("{value} QUOTE")),
+            Value::Sol { value } => f.write_fmt(format_args!("{value} SOL")),
+            Value::String { value } => Display::fmt(value, f),
+            Value::Usd { value } => f.write_fmt(format_args!("{value} USD")),
         }
     }
 }

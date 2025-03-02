@@ -1,5 +1,5 @@
 import React, {FC, useState} from "react";
-import {Compare, ComposeBondingCurve, ComposeType, ConditionType, Field} from "@types";
+import {Compare, ComposeBondingCurve, ComposeType, ConditionType, Field, Operator, TimeUnit, ValueType} from "@types";
 import {CompareWidget} from "@components/editor/condition";
 
 
@@ -19,13 +19,26 @@ export const CurveProgressWidget: FC<CurveProgressWidgetProps> = ({condition, on
             ty: ComposeType.CURVE_PROGRESS,
             condition: {
                 type: ConditionType.AND,
-                conditions: [{
-                    id: updatedCurveProgress.id,
-                    type: ConditionType.COMPARE,
-                    field: Field.CURVE_PROGRESS,
-                    operator: updatedCurveProgress.operator,
-                    value: updatedCurveProgress.value
-                }],
+                conditions: [
+                    {
+                        id: updatedCurveProgress.id,
+                        type: ConditionType.COMPARE,
+                        field: Field.CURVE_PROGRESS,
+                        operator: updatedCurveProgress.operator,
+                        value: updatedCurveProgress.value
+                    },
+                    {
+                        id: updatedCurveProgress.id,
+                        type: ConditionType.COMPARE,
+                        field: Field.CURVE_PROGRESS_UPDATED_AT,
+                        operator: Operator.LESS_THAN,
+                        value: {
+                            type: ValueType.DURATION,
+                            value: 1,
+                            unit: TimeUnit.MINUTE
+                        }
+                    }
+                ],
             },
         });
     };

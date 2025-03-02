@@ -31,15 +31,15 @@ mod tests {
 
 	#[test]
 	fn serde_buy() {
-		let serialised = serde_json::to_string(&TelegramActionButtonConfig::Buy { value: Value::Sol(23.4) }).unwrap();
+		let serialised = serde_json::to_string(&TelegramActionButtonConfig::Buy { value: Value::sol(23.4) }).unwrap();
 		assert_eq!(serialised, r#"{"action":"BUY","value":{"type":"SOL","value":23.4}}"#);
-		assert_eq!(serde_json::from_str::<TelegramActionButtonConfig>(serialised.as_str()).unwrap(), TelegramActionButtonConfig::Buy { value: Value::Sol(23.4) });
+		assert_eq!(serde_json::from_str::<TelegramActionButtonConfig>(serialised.as_str()).unwrap(), TelegramActionButtonConfig::Buy { value: Value::sol(23.4) });
 	}
 
 	#[test]
 	fn serde_sell() {
-		let serialised = serde_json::to_string(&TelegramActionButtonConfig::Sell { value: Value::Percent(51.2) }).unwrap();
+		let serialised = serde_json::to_string(&TelegramActionButtonConfig::Sell { value: Value::percent(51.2) }).unwrap();
 		assert_eq!(serialised, r#"{"action":"SELL","value":{"type":"PERCENT","value":51.2}}"#);
-		assert_eq!(serde_json::from_str::<TelegramActionButtonConfig>(serialised.as_str()).unwrap(), TelegramActionButtonConfig::Sell { value: Value::Percent(51.2) });
+		assert_eq!(serde_json::from_str::<TelegramActionButtonConfig>(serialised.as_str()).unwrap(), TelegramActionButtonConfig::Sell { value: Value::percent(51.2) });
 	}
 }

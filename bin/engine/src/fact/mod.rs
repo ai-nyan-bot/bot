@@ -40,7 +40,7 @@ impl FactService {
                     Facts::new()
                         .with_value(
                             Fact::CurveProgressPercent,
-                            Value::Percent(c.progress.0 as f64),
+                            Value::percent(c.progress.0 as f64),
                         )
                         .unwrap(),
                 )
@@ -57,7 +57,7 @@ impl FactService {
         //         Some(curve) => facts
         //             .set_value(
         //                 Fact::CurveProgressPercent,
-        //                 Value::Percent(curve.progress.0 as f64),
+        //                 Value::percent(curve.progress.0 as f64),
         //             )
         //             .unwrap(),
         //     }
@@ -99,7 +99,7 @@ impl FactService {
                         facts
                             .set_timeframe_value(
                                 Fact::TradesChangeCount,
-                                Value::Count(change.0 as i64),
+                                Value::count(change.0 as i64),
                                 M1,
                             )
                             .unwrap();
@@ -109,7 +109,7 @@ impl FactService {
                         facts
                             .set_timeframe_value(
                                 Fact::TradesChangePercent,
-                                Value::Percent(percent.0 as f64),
+                                Value::percent(percent.0 as f64),
                                 M1,
                             )
                             .unwrap();
@@ -119,7 +119,7 @@ impl FactService {
                         facts
                             .set_timeframe_value(
                                 Fact::TradesBuyCount,
-                                Value::Count(change.0 as i64),
+                                Value::count(change.0 as i64),
                                 M1,
                             )
                             .unwrap();
@@ -129,7 +129,7 @@ impl FactService {
                         facts
                             .set_timeframe_value(
                                 Fact::TradesBuyChangePercent,
-                                Value::Percent(percent.0 as f64),
+                                Value::percent(percent.0 as f64),
                                 M1,
                             )
                             .unwrap();
@@ -139,7 +139,7 @@ impl FactService {
                         facts
                             .set_timeframe_value(
                                 Fact::TradesSellCount,
-                                Value::Count(change.0 as i64),
+                                Value::count(change.0 as i64),
                                 M1,
                             )
                             .unwrap();
@@ -149,7 +149,7 @@ impl FactService {
                         facts
                             .set_timeframe_value(
                                 Fact::TradesSellChangePercent,
-                                Value::Percent(percent.0 as f64),
+                                Value::percent(percent.0 as f64),
                                 M1,
                             )
                             .unwrap();

@@ -24,6 +24,18 @@ export const config: Record<
             }
         }
     },
+    [Field.CURVE_PROGRESS_UPDATED_AT]: {
+        operators: {
+            [Operator.MORE_THAN]: {
+                valueTypes: [ValueType.DURATION],
+                timeframes: []
+            },
+            [Operator.LESS_THAN]: {
+                valueTypes: [ValueType.DURATION],
+                timeframes: []
+            }
+        }
+    },
     [Field.TRADES]: {
         operators: {
             [Operator.INCREASED_BY_MORE_THAN]: {

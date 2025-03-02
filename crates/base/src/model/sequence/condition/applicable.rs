@@ -27,11 +27,10 @@ impl Condition {
 mod tests {
 
     mod compose {
-        use crate::model::Condition;
         use crate::model::Condition::Compare;
         use crate::model::Field::TwitterAccountHandle;
         use crate::model::Operator::{Equal, NotEqual};
-        use crate::model::Value::String;
+        use crate::model::{Condition, Value};
 
         #[test]
         fn applicable() {
@@ -40,7 +39,7 @@ mod tests {
                 condition: Box::new(Compare {
                     field: TwitterAccountHandle,
                     operator: Equal,
-                    value: String("AI_nyanbot".to_string()),
+                    value: Value::string("AI_nyanbot"),
                     timeframe: None,
                 }),
             };
@@ -54,7 +53,7 @@ mod tests {
                 condition: Box::new(Compare {
                     field: TwitterAccountHandle,
                     operator: NotEqual,
-                    value: String("AI_nyanbot".to_string()),
+                    value: Value::string("AI_nyanbot"),
                     timeframe: None,
                 }),
             };
@@ -66,7 +65,6 @@ mod tests {
         use crate::model::Condition::Compare;
         use crate::model::Field::{TradesBuy, TwitterAccountHandle};
         use crate::model::Operator::{Equal, MoreThan, NotEqual};
-        use crate::model::Value::{Percent, String};
         use crate::model::{Condition, Value};
         use common::model::Timeframe::M15;
 
@@ -82,7 +80,7 @@ mod tests {
                 conditions: vec![Compare {
                     field: TwitterAccountHandle,
                     operator: Equal,
-                    value: String("AI_nyanbot".to_string()),
+                    value: Value::string("AI_nyanbot"),
                     timeframe: None,
                 }],
             };
@@ -95,7 +93,7 @@ mod tests {
                 conditions: vec![Compare {
                     field: TwitterAccountHandle,
                     operator: NotEqual,
-                    value: String("AI_nyanbot".to_string()),
+                    value: Value::string("AI_nyanbot"),
                     timeframe: None,
                 }],
             };
@@ -109,13 +107,13 @@ mod tests {
                     Compare {
                         field: TradesBuy,
                         operator: MoreThan,
-                        value: Value::Count(1),
+                        value: Value::count(1),
                         timeframe: Some(M15),
                     },
                     Compare {
                         field: TwitterAccountHandle,
                         operator: Equal,
-                        value: String("AI_nyanbot".to_string()),
+                        value: Value::string("AI_nyanbot"),
                         timeframe: None,
                     },
                 ],
@@ -131,14 +129,14 @@ mod tests {
                     Compare {
                         field: TradesBuy,
                         operator: MoreThan,
-                        value: Percent(1.0),
+                        value: Value::percent(1.0),
                         timeframe: Some(M15),
                     },
                     // Not applicable
                     Compare {
                         field: TwitterAccountHandle,
                         operator: NotEqual,
-                        value: String("AI_nyanbot".to_string()),
+                        value: Value::string("AI_nyanbot"),
                         timeframe: None,
                     },
                 ],
@@ -160,11 +158,10 @@ mod tests {
     }
 
     mod or {
-        use crate::model::Condition;
         use crate::model::Condition::Compare;
         use crate::model::Field::{TradesBuy, TwitterAccountHandle};
         use crate::model::Operator::{Equal, IncreasedByMoreThan, MoreThan, NotEqual};
-        use crate::model::Value::{Percent, String};
+        use crate::model::{Condition, Value};
         use common::model::Timeframe::M15;
         use Condition::Or;
 
@@ -180,7 +177,7 @@ mod tests {
                 conditions: vec![Compare {
                     field: TwitterAccountHandle,
                     operator: Equal,
-                    value: String("AI_nyanbot".to_string()),
+                    value: Value::string("AI_nyanbot"),
                     timeframe: None,
                 }],
             };
@@ -193,7 +190,7 @@ mod tests {
                 conditions: vec![Compare {
                     field: TwitterAccountHandle,
                     operator: NotEqual,
-                    value: String("AI_nyanbot".to_string()),
+                    value: Value::string("AI_nyanbot"),
                     timeframe: None,
                 }],
             };
@@ -207,13 +204,13 @@ mod tests {
                     Compare {
                         field: TradesBuy,
                         operator: IncreasedByMoreThan,
-                        value: Percent(1.0),
+                        value: Value::percent(1.0),
                         timeframe: Some(M15),
                     },
                     Compare {
                         field: TwitterAccountHandle,
                         operator: Equal,
-                        value: String("AI_nyanbot".to_string()),
+                        value: Value::string("AI_nyanbot"),
                         timeframe: None,
                     },
                 ],
@@ -229,14 +226,14 @@ mod tests {
                     Compare {
                         field: TradesBuy,
                         operator: MoreThan,
-                        value: Percent(1.0),
+                        value: Value::percent(1.0),
                         timeframe: Some(M15),
                     },
                     // Not applicable
                     Compare {
                         field: TwitterAccountHandle,
                         operator: NotEqual,
-                        value: String("AI_nyanbot".to_string()),
+                        value: Value::string("AI_nyanbot"),
                         timeframe: None,
                     },
                 ],
@@ -258,11 +255,10 @@ mod tests {
     }
 
     mod and_not {
-        use crate::model::Condition;
         use crate::model::Condition::{And, Compare, Or};
         use crate::model::Field::{TradesBuy, TwitterAccountHandle};
         use crate::model::Operator::{Equal, IncreasedByMoreThan, MoreThan, NotEqual};
-        use crate::model::Value::{Percent, String};
+        use crate::model::{Condition, Value};
         use common::model::Timeframe::M15;
         use Condition::AndNot;
 
@@ -278,7 +274,7 @@ mod tests {
                 conditions: vec![Compare {
                     field: TwitterAccountHandle,
                     operator: Equal,
-                    value: String("AI_nyanbot".to_string()),
+                    value: Value::string("AI_nyanbot"),
                     timeframe: None,
                 }],
             };
@@ -291,7 +287,7 @@ mod tests {
                 conditions: vec![Compare {
                     field: TwitterAccountHandle,
                     operator: NotEqual,
-                    value: String("AI_nyanbot".to_string()),
+                    value: Value::string("AI_nyanbot"),
                     timeframe: None,
                 }],
             };
@@ -305,13 +301,13 @@ mod tests {
                     Compare {
                         field: TradesBuy,
                         operator: IncreasedByMoreThan,
-                        value: Percent(1.0),
+                        value: Value::percent(1.0),
                         timeframe: Some(M15),
                     },
                     Compare {
                         field: TwitterAccountHandle,
                         operator: Equal,
-                        value: String("AI_nyanbot".to_string()),
+                        value: Value::string("AI_nyanbot"),
                         timeframe: None,
                     },
                 ],
@@ -327,14 +323,14 @@ mod tests {
                     Compare {
                         field: TradesBuy,
                         operator: MoreThan,
-                        value: Percent(1.0),
+                        value: Value::percent(1.0),
                         timeframe: Some(M15),
                     },
                     // Not applicable
                     Compare {
                         field: TwitterAccountHandle,
                         operator: NotEqual,
-                        value: String("AI_nyanbot".to_string()),
+                        value: Value::string("AI_nyanbot"),
                         timeframe: None,
                     },
                 ],

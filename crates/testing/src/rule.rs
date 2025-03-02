@@ -22,7 +22,7 @@ pub async fn create_rule_for_test_user<'a>(tx: &mut Tx<'a>, name: impl Into<Rule
                     condition: Compare {
                         field: Field::PriceAvg,
                         operator: MoreThan,
-                        value: Value::Percent(2.0),
+                        value: Value::percent(2.0),
                         timeframe: Some(Timeframe::M15),
                     },
                     action: NotifyTelegram { buttons: vec![] },
@@ -45,7 +45,7 @@ pub async fn create_rule_for_another_user<'a>(tx: &mut Tx<'a>, name: impl Into<R
                     condition: Compare {
                         field: Field::Volume,
                         operator: MoreThan,
-                        value: Value::Percent(2.0),
+                        value: Value::percent(2.0),
                         timeframe: Some(Timeframe::D1),
                     },
                     action: NotifyTelegram { buttons: vec![] },

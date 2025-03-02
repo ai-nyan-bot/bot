@@ -301,21 +301,21 @@ mod tests {
     #[test]
     fn test_curve_progress() {
         assert_eq!(
-            Fact::from_comparison(&CurveProgress, &MoreThan, &Value::Percent(99.24), false),
+            Fact::from_comparison(&CurveProgress, &MoreThan, &Value::percent(99.24), false),
             Some(CurveProgressPercent)
         );
         assert_eq!(
             Fact::from_comparison(
                 &CurveProgress,
                 &MoreThanEqual,
-                &Value::Percent(99.24),
+                &Value::percent(99.24),
                 false
             ),
             Some(CurveProgressPercent)
         );
 
         assert_eq!(
-            Fact::from_comparison(&CurveProgress, &LessThan, &Value::Percent(99.24), false),
+            Fact::from_comparison(&CurveProgress, &LessThan, &Value::percent(99.24), false),
             Some(CurveProgressPercent)
         );
 
@@ -323,7 +323,7 @@ mod tests {
             Fact::from_comparison(
                 &CurveProgress,
                 &LessThanEqual,
-                &Value::Percent(99.24),
+                &Value::percent(99.24),
                 false
             ),
             Some(CurveProgressPercent)
@@ -333,19 +333,19 @@ mod tests {
     #[test]
     fn test_price_quote() {
         assert_eq!(
-            Fact::from_comparison(&Price, &MoreThan, &Value::Quote(99.24), false),
+            Fact::from_comparison(&Price, &MoreThan, &Value::quote(99.24), false),
             Some(PriceQuote)
         );
         assert_eq!(
-            Fact::from_comparison(&Price, &MoreThanEqual, &Value::Quote(99.24), false),
+            Fact::from_comparison(&Price, &MoreThanEqual, &Value::quote(99.24), false),
             Some(PriceQuote)
         );
         assert_eq!(
-            Fact::from_comparison(&Price, &LessThan, &Value::Quote(99.24), false),
+            Fact::from_comparison(&Price, &LessThan, &Value::quote(99.24), false),
             Some(PriceQuote)
         );
         assert_eq!(
-            Fact::from_comparison(&Price, &LessThanEqual, &Value::Quote(99.24), false),
+            Fact::from_comparison(&Price, &LessThanEqual, &Value::quote(99.24), false),
             Some(PriceQuote)
         );
     }
@@ -353,19 +353,19 @@ mod tests {
     #[test]
     fn test_price_usd() {
         assert_eq!(
-            Fact::from_comparison(&Price, &MoreThan, &Value::Usd(99.24), false),
+            Fact::from_comparison(&Price, &MoreThan, &Value::usd(99.24), false),
             Some(PriceUsd)
         );
         assert_eq!(
-            Fact::from_comparison(&Price, &MoreThanEqual, &Value::Usd(99.24), false),
+            Fact::from_comparison(&Price, &MoreThanEqual, &Value::usd(99.24), false),
             Some(PriceUsd)
         );
         assert_eq!(
-            Fact::from_comparison(&Price, &LessThan, &Value::Usd(99.24), false),
+            Fact::from_comparison(&Price, &LessThan, &Value::usd(99.24), false),
             Some(PriceUsd)
         );
         assert_eq!(
-            Fact::from_comparison(&Price, &LessThanEqual, &Value::Usd(99.24), false),
+            Fact::from_comparison(&Price, &LessThanEqual, &Value::usd(99.24), false),
             Some(PriceUsd)
         );
     }
@@ -373,19 +373,19 @@ mod tests {
     #[test]
     fn test_price_avg_quote() {
         assert_eq!(
-            Fact::from_comparison(&PriceAvg, &MoreThan, &Value::Quote(99.24), true),
+            Fact::from_comparison(&PriceAvg, &MoreThan, &Value::quote(99.24), true),
             Some(PriceAvgQuote)
         );
         assert_eq!(
-            Fact::from_comparison(&PriceAvg, &MoreThanEqual, &Value::Quote(99.24), true),
+            Fact::from_comparison(&PriceAvg, &MoreThanEqual, &Value::quote(99.24), true),
             Some(PriceAvgQuote)
         );
         assert_eq!(
-            Fact::from_comparison(&PriceAvg, &LessThan, &Value::Quote(99.24), true),
+            Fact::from_comparison(&PriceAvg, &LessThan, &Value::quote(99.24), true),
             Some(PriceAvgQuote)
         );
         assert_eq!(
-            Fact::from_comparison(&PriceAvg, &LessThanEqual, &Value::Quote(99.24), true),
+            Fact::from_comparison(&PriceAvg, &LessThanEqual, &Value::quote(99.24), true),
             Some(PriceAvgQuote)
         );
     }
@@ -393,19 +393,19 @@ mod tests {
     #[test]
     fn test_price_avg_usd() {
         assert_eq!(
-            Fact::from_comparison(&PriceAvg, &MoreThan, &Value::Usd(99.24), true),
+            Fact::from_comparison(&PriceAvg, &MoreThan, &Value::usd(99.24), true),
             Some(PriceAvgUsd)
         );
         assert_eq!(
-            Fact::from_comparison(&PriceAvg, &MoreThanEqual, &Value::Usd(99.24), true),
+            Fact::from_comparison(&PriceAvg, &MoreThanEqual, &Value::usd(99.24), true),
             Some(PriceAvgUsd)
         );
         assert_eq!(
-            Fact::from_comparison(&PriceAvg, &LessThan, &Value::Usd(99.24), true),
+            Fact::from_comparison(&PriceAvg, &LessThan, &Value::usd(99.24), true),
             Some(PriceAvgUsd)
         );
         assert_eq!(
-            Fact::from_comparison(&PriceAvg, &LessThanEqual, &Value::Usd(99.24), true),
+            Fact::from_comparison(&PriceAvg, &LessThanEqual, &Value::usd(99.24), true),
             Some(PriceAvgUsd)
         );
     }
@@ -413,19 +413,19 @@ mod tests {
     #[test]
     fn test_trades_count() {
         assert_eq!(
-            Fact::from_comparison(&Trades, &MoreThan, &Value::Count(9924), true),
+            Fact::from_comparison(&Trades, &MoreThan, &Value::count(9924), true),
             Some(TradesCount)
         );
         assert_eq!(
-            Fact::from_comparison(&Trades, &MoreThanEqual, &Value::Count(9924), true),
+            Fact::from_comparison(&Trades, &MoreThanEqual, &Value::count(9924), true),
             Some(TradesCount)
         );
         assert_eq!(
-            Fact::from_comparison(&Trades, &LessThan, &Value::Count(9924), true),
+            Fact::from_comparison(&Trades, &LessThan, &Value::count(9924), true),
             Some(TradesCount)
         );
         assert_eq!(
-            Fact::from_comparison(&Trades, &LessThanEqual, &Value::Count(9924), true),
+            Fact::from_comparison(&Trades, &LessThanEqual, &Value::count(9924), true),
             Some(TradesCount)
         );
     }
@@ -433,19 +433,19 @@ mod tests {
     #[test]
     fn test_trades_buy_count() {
         assert_eq!(
-            Fact::from_comparison(&TradesBuy, &MoreThan, &Value::Count(9924), true),
+            Fact::from_comparison(&TradesBuy, &MoreThan, &Value::count(9924), true),
             Some(TradesBuyCount)
         );
         assert_eq!(
-            Fact::from_comparison(&TradesBuy, &MoreThanEqual, &Value::Count(9924), true),
+            Fact::from_comparison(&TradesBuy, &MoreThanEqual, &Value::count(9924), true),
             Some(TradesBuyCount)
         );
         assert_eq!(
-            Fact::from_comparison(&TradesBuy, &LessThan, &Value::Count(9924), true),
+            Fact::from_comparison(&TradesBuy, &LessThan, &Value::count(9924), true),
             Some(TradesBuyCount)
         );
         assert_eq!(
-            Fact::from_comparison(&TradesBuy, &LessThanEqual, &Value::Count(9924), true),
+            Fact::from_comparison(&TradesBuy, &LessThanEqual, &Value::count(9924), true),
             Some(TradesBuyCount)
         );
     }
@@ -453,19 +453,19 @@ mod tests {
     #[test]
     fn test_trades_sell_count() {
         assert_eq!(
-            Fact::from_comparison(&TradesSell, &MoreThan, &Value::Count(9924), true),
+            Fact::from_comparison(&TradesSell, &MoreThan, &Value::count(9924), true),
             Some(TradesSellCount)
         );
         assert_eq!(
-            Fact::from_comparison(&TradesSell, &MoreThanEqual, &Value::Count(9924), true),
+            Fact::from_comparison(&TradesSell, &MoreThanEqual, &Value::count(9924), true),
             Some(TradesSellCount)
         );
         assert_eq!(
-            Fact::from_comparison(&TradesSell, &LessThan, &Value::Count(9924), true),
+            Fact::from_comparison(&TradesSell, &LessThan, &Value::count(9924), true),
             Some(TradesSellCount)
         );
         assert_eq!(
-            Fact::from_comparison(&TradesSell, &LessThanEqual, &Value::Count(9924), true),
+            Fact::from_comparison(&TradesSell, &LessThanEqual, &Value::count(9924), true),
             Some(TradesSellCount)
         );
     }
@@ -473,53 +473,53 @@ mod tests {
     #[test]
     fn test_trades_change_count() {
         assert_eq!(
-            Fact::from_comparison(&Trades, &IncreasedByMoreThan, &Value::Count(9924), true),
+            Fact::from_comparison(&Trades, &IncreasedByMoreThan, &Value::count(9924), true),
             Some(TradesChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
                 &Trades,
                 &IncreasedByMoreThanEqual,
-                &Value::Count(9924),
+                &Value::count(9924),
                 true
             ),
             Some(TradesChangeCount)
         );
         assert_eq!(
-            Fact::from_comparison(&Trades, &IncreasedByLessThan, &Value::Count(9924), true),
+            Fact::from_comparison(&Trades, &IncreasedByLessThan, &Value::count(9924), true),
             Some(TradesChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
                 &Trades,
                 &IncreasedByLessThanEqual,
-                &Value::Count(9924),
+                &Value::count(9924),
                 true
             ),
             Some(TradesChangeCount)
         );
         assert_eq!(
-            Fact::from_comparison(&Trades, &DecreasedByMoreThan, &Value::Count(9924), true),
+            Fact::from_comparison(&Trades, &DecreasedByMoreThan, &Value::count(9924), true),
             Some(TradesChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
                 &Trades,
                 &DecreasedByMoreThanEqual,
-                &Value::Count(9924),
+                &Value::count(9924),
                 true
             ),
             Some(TradesChangeCount)
         );
         assert_eq!(
-            Fact::from_comparison(&Trades, &DecreasedByLessThan, &Value::Count(9924), true),
+            Fact::from_comparison(&Trades, &DecreasedByLessThan, &Value::count(9924), true),
             Some(TradesChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
                 &Trades,
                 &DecreasedByLessThanEqual,
-                &Value::Count(9924),
+                &Value::count(9924),
                 true
             ),
             Some(TradesChangeCount)
@@ -529,53 +529,53 @@ mod tests {
     #[test]
     fn test_trades_buy_change_count() {
         assert_eq!(
-            Fact::from_comparison(&TradesBuy, &IncreasedByMoreThan, &Value::Count(9924), true),
+            Fact::from_comparison(&TradesBuy, &IncreasedByMoreThan, &Value::count(9924), true),
             Some(TradesBuyChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
                 &TradesBuy,
                 &IncreasedByMoreThanEqual,
-                &Value::Count(9924),
+                &Value::count(9924),
                 true
             ),
             Some(TradesBuyChangeCount)
         );
         assert_eq!(
-            Fact::from_comparison(&TradesBuy, &IncreasedByLessThan, &Value::Count(9924), true),
+            Fact::from_comparison(&TradesBuy, &IncreasedByLessThan, &Value::count(9924), true),
             Some(TradesBuyChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
                 &TradesBuy,
                 &IncreasedByLessThanEqual,
-                &Value::Count(9924),
+                &Value::count(9924),
                 true
             ),
             Some(TradesBuyChangeCount)
         );
         assert_eq!(
-            Fact::from_comparison(&TradesBuy, &DecreasedByMoreThan, &Value::Count(9924), true),
+            Fact::from_comparison(&TradesBuy, &DecreasedByMoreThan, &Value::count(9924), true),
             Some(TradesBuyChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
                 &TradesBuy,
                 &DecreasedByMoreThanEqual,
-                &Value::Count(9924),
+                &Value::count(9924),
                 true
             ),
             Some(TradesBuyChangeCount)
         );
         assert_eq!(
-            Fact::from_comparison(&TradesBuy, &DecreasedByLessThan, &Value::Count(9924), true),
+            Fact::from_comparison(&TradesBuy, &DecreasedByLessThan, &Value::count(9924), true),
             Some(TradesBuyChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
                 &TradesBuy,
                 &DecreasedByLessThanEqual,
-                &Value::Count(9924),
+                &Value::count(9924),
                 true
             ),
             Some(TradesBuyChangeCount)
@@ -585,53 +585,53 @@ mod tests {
     #[test]
     fn test_trades_sell_change_count() {
         assert_eq!(
-            Fact::from_comparison(&TradesSell, &IncreasedByMoreThan, &Value::Count(9924), true),
+            Fact::from_comparison(&TradesSell, &IncreasedByMoreThan, &Value::count(9924), true),
             Some(TradesSellChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
                 &TradesSell,
                 &IncreasedByMoreThanEqual,
-                &Value::Count(9924),
+                &Value::count(9924),
                 true
             ),
             Some(TradesSellChangeCount)
         );
         assert_eq!(
-            Fact::from_comparison(&TradesSell, &IncreasedByLessThan, &Value::Count(9924), true),
+            Fact::from_comparison(&TradesSell, &IncreasedByLessThan, &Value::count(9924), true),
             Some(TradesSellChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
                 &TradesSell,
                 &IncreasedByLessThanEqual,
-                &Value::Count(9924),
+                &Value::count(9924),
                 true
             ),
             Some(TradesSellChangeCount)
         );
         assert_eq!(
-            Fact::from_comparison(&TradesSell, &DecreasedByMoreThan, &Value::Count(9924), true),
+            Fact::from_comparison(&TradesSell, &DecreasedByMoreThan, &Value::count(9924), true),
             Some(TradesSellChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
                 &TradesSell,
                 &DecreasedByMoreThanEqual,
-                &Value::Count(9924),
+                &Value::count(9924),
                 true
             ),
             Some(TradesSellChangeCount)
         );
         assert_eq!(
-            Fact::from_comparison(&TradesSell, &DecreasedByLessThan, &Value::Count(9924), true),
+            Fact::from_comparison(&TradesSell, &DecreasedByLessThan, &Value::count(9924), true),
             Some(TradesSellChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
                 &TradesSell,
                 &DecreasedByLessThanEqual,
-                &Value::Count(9924),
+                &Value::count(9924),
                 true
             ),
             Some(TradesSellChangeCount)
@@ -641,53 +641,53 @@ mod tests {
     #[test]
     fn test_trades_change_percent() {
         assert_eq!(
-            Fact::from_comparison(&Trades, &IncreasedByMoreThan, &Value::Percent(99.24), true),
+            Fact::from_comparison(&Trades, &IncreasedByMoreThan, &Value::percent(99.24), true),
             Some(TradesChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
                 &Trades,
                 &IncreasedByMoreThanEqual,
-                &Value::Percent(99.24),
+                &Value::percent(99.24),
                 true
             ),
             Some(TradesChangePercent)
         );
         assert_eq!(
-            Fact::from_comparison(&Trades, &IncreasedByLessThan, &Value::Percent(99.24), true),
+            Fact::from_comparison(&Trades, &IncreasedByLessThan, &Value::percent(99.24), true),
             Some(TradesChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
                 &Trades,
                 &IncreasedByLessThanEqual,
-                &Value::Percent(99.24),
+                &Value::percent(99.24),
                 true
             ),
             Some(TradesChangePercent)
         );
         assert_eq!(
-            Fact::from_comparison(&Trades, &DecreasedByMoreThan, &Value::Percent(99.24), true),
+            Fact::from_comparison(&Trades, &DecreasedByMoreThan, &Value::percent(99.24), true),
             Some(TradesChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
                 &Trades,
                 &DecreasedByMoreThanEqual,
-                &Value::Percent(99.24),
+                &Value::percent(99.24),
                 true
             ),
             Some(TradesChangePercent)
         );
         assert_eq!(
-            Fact::from_comparison(&Trades, &DecreasedByLessThan, &Value::Percent(99.24), true),
+            Fact::from_comparison(&Trades, &DecreasedByLessThan, &Value::percent(99.24), true),
             Some(TradesChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
                 &Trades,
                 &DecreasedByLessThanEqual,
-                &Value::Percent(99.24),
+                &Value::percent(99.24),
                 true
             ),
             Some(TradesChangePercent)
@@ -700,7 +700,7 @@ mod tests {
             Fact::from_comparison(
                 &TradesBuy,
                 &IncreasedByMoreThan,
-                &Value::Percent(99.24),
+                &Value::percent(99.24),
                 true
             ),
             Some(TradesBuyChangePercent)
@@ -709,7 +709,7 @@ mod tests {
             Fact::from_comparison(
                 &TradesBuy,
                 &IncreasedByMoreThanEqual,
-                &Value::Percent(99.24),
+                &Value::percent(99.24),
                 true
             ),
             Some(TradesBuyChangePercent)
@@ -718,7 +718,7 @@ mod tests {
             Fact::from_comparison(
                 &TradesBuy,
                 &IncreasedByLessThan,
-                &Value::Percent(99.24),
+                &Value::percent(99.24),
                 true
             ),
             Some(TradesBuyChangePercent)
@@ -727,7 +727,7 @@ mod tests {
             Fact::from_comparison(
                 &TradesBuy,
                 &IncreasedByLessThanEqual,
-                &Value::Percent(99.24),
+                &Value::percent(99.24),
                 true
             ),
             Some(TradesBuyChangePercent)
@@ -736,7 +736,7 @@ mod tests {
             Fact::from_comparison(
                 &TradesBuy,
                 &DecreasedByMoreThan,
-                &Value::Percent(99.24),
+                &Value::percent(99.24),
                 true
             ),
             Some(TradesBuyChangePercent)
@@ -745,7 +745,7 @@ mod tests {
             Fact::from_comparison(
                 &TradesBuy,
                 &DecreasedByMoreThanEqual,
-                &Value::Percent(99.24),
+                &Value::percent(99.24),
                 true
             ),
             Some(TradesBuyChangePercent)
@@ -754,7 +754,7 @@ mod tests {
             Fact::from_comparison(
                 &TradesBuy,
                 &DecreasedByLessThan,
-                &Value::Percent(99.24),
+                &Value::percent(99.24),
                 true
             ),
             Some(TradesBuyChangePercent)
@@ -763,7 +763,7 @@ mod tests {
             Fact::from_comparison(
                 &TradesBuy,
                 &DecreasedByLessThanEqual,
-                &Value::Percent(99.24),
+                &Value::percent(99.24),
                 true
             ),
             Some(TradesBuyChangePercent)
@@ -776,7 +776,7 @@ mod tests {
             Fact::from_comparison(
                 &TradesSell,
                 &IncreasedByMoreThan,
-                &Value::Percent(99.24),
+                &Value::percent(99.24),
                 true
             ),
             Some(TradesSellChangePercent)
@@ -785,7 +785,7 @@ mod tests {
             Fact::from_comparison(
                 &TradesSell,
                 &IncreasedByMoreThanEqual,
-                &Value::Percent(99.24),
+                &Value::percent(99.24),
                 true
             ),
             Some(TradesSellChangePercent)
@@ -794,7 +794,7 @@ mod tests {
             Fact::from_comparison(
                 &TradesSell,
                 &IncreasedByLessThan,
-                &Value::Percent(99.24),
+                &Value::percent(99.24),
                 true
             ),
             Some(TradesSellChangePercent)
@@ -803,7 +803,7 @@ mod tests {
             Fact::from_comparison(
                 &TradesSell,
                 &IncreasedByLessThanEqual,
-                &Value::Percent(99.24),
+                &Value::percent(99.24),
                 true
             ),
             Some(TradesSellChangePercent)
@@ -812,7 +812,7 @@ mod tests {
             Fact::from_comparison(
                 &TradesSell,
                 &DecreasedByMoreThan,
-                &Value::Percent(99.24),
+                &Value::percent(99.24),
                 true
             ),
             Some(TradesSellChangePercent)
@@ -821,7 +821,7 @@ mod tests {
             Fact::from_comparison(
                 &TradesSell,
                 &DecreasedByMoreThanEqual,
-                &Value::Percent(99.24),
+                &Value::percent(99.24),
                 true
             ),
             Some(TradesSellChangePercent)
@@ -830,7 +830,7 @@ mod tests {
             Fact::from_comparison(
                 &TradesSell,
                 &DecreasedByLessThan,
-                &Value::Percent(99.24),
+                &Value::percent(99.24),
                 true
             ),
             Some(TradesSellChangePercent)
@@ -839,7 +839,7 @@ mod tests {
             Fact::from_comparison(
                 &TradesSell,
                 &DecreasedByLessThanEqual,
-                &Value::Percent(99.24),
+                &Value::percent(99.24),
                 true
             ),
             Some(TradesSellChangePercent)
@@ -849,53 +849,53 @@ mod tests {
     #[test]
     fn test_volume_change_quote() {
         assert_eq!(
-            Fact::from_comparison(&Volume, &IncreasedByMoreThan, &Value::Quote(99.24), true),
+            Fact::from_comparison(&Volume, &IncreasedByMoreThan, &Value::quote(99.24), true),
             Some(VolumeChangeQuote)
         );
         assert_eq!(
             Fact::from_comparison(
                 &Volume,
                 &IncreasedByMoreThanEqual,
-                &Value::Quote(99.24),
+                &Value::quote(99.24),
                 true
             ),
             Some(VolumeChangeQuote)
         );
         assert_eq!(
-            Fact::from_comparison(&Volume, &IncreasedByLessThan, &Value::Quote(99.24), true),
+            Fact::from_comparison(&Volume, &IncreasedByLessThan, &Value::quote(99.24), true),
             Some(VolumeChangeQuote)
         );
         assert_eq!(
             Fact::from_comparison(
                 &Volume,
                 &IncreasedByLessThanEqual,
-                &Value::Quote(99.24),
+                &Value::quote(99.24),
                 true
             ),
             Some(VolumeChangeQuote)
         );
         assert_eq!(
-            Fact::from_comparison(&Volume, &DecreasedByMoreThan, &Value::Quote(99.24), true),
+            Fact::from_comparison(&Volume, &DecreasedByMoreThan, &Value::quote(99.24), true),
             Some(VolumeChangeQuote)
         );
         assert_eq!(
             Fact::from_comparison(
                 &Volume,
                 &DecreasedByMoreThanEqual,
-                &Value::Quote(99.24),
+                &Value::quote(99.24),
                 true
             ),
             Some(VolumeChangeQuote)
         );
         assert_eq!(
-            Fact::from_comparison(&Volume, &DecreasedByLessThan, &Value::Quote(99.24), true),
+            Fact::from_comparison(&Volume, &DecreasedByLessThan, &Value::quote(99.24), true),
             Some(VolumeChangeQuote)
         );
         assert_eq!(
             Fact::from_comparison(
                 &Volume,
                 &DecreasedByLessThanEqual,
-                &Value::Quote(99.24),
+                &Value::quote(99.24),
                 true
             ),
             Some(VolumeChangeQuote)

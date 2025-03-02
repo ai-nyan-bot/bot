@@ -6,6 +6,7 @@ pub use query::*;
 pub use telegram::*;
 pub use timeframe::*;
 pub use timestamp::*;
+pub use timeunit::TimeUnit;
 pub use url::*;
 
 mod partition;
@@ -13,4 +14,5 @@ mod query;
 mod telegram;
 mod timeframe;
 mod timestamp;
+mod timeunit;
 mod url;

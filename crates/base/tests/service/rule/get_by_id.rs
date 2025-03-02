@@ -25,7 +25,7 @@ async fn test_ok() {
             Compare {
                 field: Field::Volume,
                 operator: MoreThan,
-                value: Value::Percent(2.0),
+                value: Value::percent(2.0),
                 timeframe: Some(Timeframe::D1),
             },
         );

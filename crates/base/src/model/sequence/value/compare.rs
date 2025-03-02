@@ -6,12 +6,12 @@ use std::ops::Neg;
 
 pub(crate) fn compare(fact: &Value, operator: &Operator, rule: &Value) -> bool {
     match (fact, rule) {
-        (Value::Boolean(fact), Value::Boolean(rule)) => match operator {
+        (Value::Boolean { value: fact }, Value::Boolean { value: rule }) => match operator {
             Operator::Equal => fact == rule,
             Operator::NotEqual => fact != rule,
             _ => false,
         },
-        (Value::Count(fact), Value::Count(rule)) => match operator {
+        (Value::Count { value: fact }, Value::Count { value: rule }) => match operator {
             Operator::Equal => fact == rule,
             Operator::NotEqual => fact != rule,
 
@@ -30,7 +30,7 @@ pub(crate) fn compare(fact: &Value, operator: &Operator, rule: &Value) -> bool {
             Operator::LessThan => fact < rule,
             Operator::LessThanEqual => fact <= rule,
         },
-        (Value::Percent(fact), Value::Percent(rule)) => match operator {
+        (Value::Percent { value: fact }, Value::Percent { value: rule }) => match operator {
             Operator::Equal => fact == rule,
             Operator::NotEqual => fact != rule,
 
@@ -49,7 +49,7 @@ pub(crate) fn compare(fact: &Value, operator: &Operator, rule: &Value) -> bool {
             Operator::LessThan => fact < rule,
             Operator::LessThanEqual => fact <= rule,
         },
-        (Value::Quote(fact), Value::Quote(rule)) => match operator {
+        (Value::Quote { value: fact }, Value::Quote { value: rule }) => match operator {
             Operator::Equal => fact == rule,
             Operator::NotEqual => fact != rule,
 
@@ -68,12 +68,12 @@ pub(crate) fn compare(fact: &Value, operator: &Operator, rule: &Value) -> bool {
             Operator::LessThan => fact < rule,
             Operator::LessThanEqual => fact <= rule,
         },
-        (Value::String(fact), Value::String(rule)) => match operator {
+        (Value::String { value: fact }, Value::String { value: rule }) => match operator {
             Operator::Equal => fact == rule,
             Operator::NotEqual => fact != rule,
             _ => false,
         },
-        (Value::Usd(fact), Value::Usd(rule)) => match operator {
+        (Value::Usd { value: fact }, Value::Usd { value: rule }) => match operator {
             Operator::Equal => fact == rule,
             Operator::NotEqual => fact != rule,
 
@@ -110,136 +110,136 @@ mod tests {
 
     #[test]
     fn test_boolean_comparisons() {
-        assert!(compare(&Boolean(true), &Equal, &Boolean(true)));
-        assert!(!compare(&Boolean(true), &Equal, &Boolean(false)));
-        assert!(compare(&Boolean(true), &NotEqual, &Boolean(false)));
-        assert!(!compare(&Boolean(true), &NotEqual, &Boolean(true)));
+        assert!(compare(&Value::boolean(true), &Equal, &Value::boolean(true)));
+        assert!(!compare(&Value::boolean(true), &Equal, &Value::boolean(false)));
+        assert!(compare(&Value::boolean(true), &NotEqual, &Value::boolean(false)));
+        assert!(!compare(&Value::boolean(true), &NotEqual, &Value::boolean(true)));
     }
 
     #[test]
     fn test_count_comparisons() {
-        assert!(compare(&Count(5), &Equal, &Count(5)));
+        assert!(compare(&Value::count(5), &Equal, &Value::count(5)));
 
-        assert!(compare(&Count(5), &IncreasedByMoreThan, &Count(3)));
-        assert!(compare(&Count(5), &IncreasedByMoreThanEqual, &Count(5)));
-        assert!(compare(&Count(3), &IncreasedByLessThan, &Count(5)));
-        assert!(compare(&Count(3), &IncreasedByLessThanEqual, &Count(3)));
+        assert!(compare(&Value::count(5), &IncreasedByMoreThan, &Value::count(3)));
+        assert!(compare(&Value::count(5), &IncreasedByMoreThanEqual, &Value::count(5)));
+        assert!(compare(&Value::count(3), &IncreasedByLessThan, &Value::count(5)));
+        assert!(compare(&Value::count(3), &IncreasedByLessThanEqual, &Value::count(3)));
 
-        assert!(compare(&Count(-3), &DecreasedByMoreThan, &Count(5)));
-        assert!(compare(&Count(-5), &DecreasedByMoreThanEqual, &Count(5)));
-        assert!(compare(&Count(-5), &DecreasedByLessThan, &Count(3)));
-        assert!(compare(&Count(-3), &DecreasedByLessThanEqual, &Count(3)));
+        assert!(compare(&Value::count(-3), &DecreasedByMoreThan, &Value::count(5)));
+        assert!(compare(&Value::count(-5), &DecreasedByMoreThanEqual, &Value::count(5)));
+        assert!(compare(&Value::count(-5), &DecreasedByLessThan, &Value::count(3)));
+        assert!(compare(&Value::count(-3), &DecreasedByLessThanEqual, &Value::count(3)));
 
-        assert!(compare(&Count(5), &MoreThan, &Count(3)));
-        assert!(compare(&Count(5), &MoreThanEqual, &Count(5)));
-        assert!(compare(&Count(3), &LessThan, &Count(5)));
-        assert!(compare(&Count(3), &LessThanEqual, &Count(3)));
-        assert!(compare(&Count(3), &NotEqual, &Count(5)));
+        assert!(compare(&Value::count(5), &MoreThan, &Value::count(3)));
+        assert!(compare(&Value::count(5), &MoreThanEqual, &Value::count(5)));
+        assert!(compare(&Value::count(3), &LessThan, &Value::count(5)));
+        assert!(compare(&Value::count(3), &LessThanEqual, &Value::count(3)));
+        assert!(compare(&Value::count(3), &NotEqual, &Value::count(5)));
     }
 
     #[test]
     fn test_percent_comparisons() {
-        assert!(compare(&Percent(5.0), &Equal, &Percent(5.0)));
-        assert!(compare(&Percent(3.0), &NotEqual, &Percent(5.0)));
+        assert!(compare(&Value::percent(5.0), &Equal, &Value::percent(5.0)));
+        assert!(compare(&Value::percent(3.0), &NotEqual, &Value::percent(5.0)));
 
-        assert!(compare(&Percent(5.0), &IncreasedByMoreThan, &Percent(3.0)));
+        assert!(compare(&Value::percent(5.0), &IncreasedByMoreThan, &Value::percent(3.0)));
         assert!(compare(
-            &Percent(5.0),
+            &Value::percent(5.0),
             &IncreasedByMoreThanEqual,
-            &Percent(5.0)
+            &Value::percent(5.0)
         ));
-        assert!(compare(&Percent(3.0), &IncreasedByLessThan, &Percent(5.0)));
+        assert!(compare(&Value::percent(3.0), &IncreasedByLessThan, &Value::percent(5.0)));
         assert!(compare(
-            &Percent(3.0),
+            &Value::percent(3.0),
             &IncreasedByLessThanEqual,
-            &Percent(3.0)
+            &Value::percent(3.0)
         ));
 
-        assert!(compare(&Percent(-3.0), &DecreasedByMoreThan, &Percent(5.0)));
+        assert!(compare(&Value::percent(-3.0), &DecreasedByMoreThan, &Value::percent(5.0)));
         assert!(compare(
-            &Percent(-5.0),
+            &Value::percent(-5.0),
             &DecreasedByMoreThanEqual,
-            &Percent(5.0)
+            &Value::percent(5.0)
         ));
-        assert!(compare(&Percent(-5.0), &DecreasedByLessThan, &Percent(3.0)));
+        assert!(compare(&Value::percent(-5.0), &DecreasedByLessThan, &Value::percent(3.0)));
         assert!(compare(
-            &Percent(-3.0),
+            &Value::percent(-3.0),
             &DecreasedByLessThanEqual,
-            &Percent(3.0)
+            &Value::percent(3.0)
         ));
 
-        assert!(compare(&Percent(5.0), &MoreThan, &Percent(3.0)));
-        assert!(compare(&Percent(5.0), &MoreThanEqual, &Percent(5.0)));
-        assert!(compare(&Percent(3.0), &LessThan, &Percent(5.0)));
-        assert!(compare(&Percent(3.0), &LessThanEqual, &Percent(3.0)));
+        assert!(compare(&Value::percent(5.0), &MoreThan, &Value::percent(3.0)));
+        assert!(compare(&Value::percent(5.0), &MoreThanEqual, &Value::percent(5.0)));
+        assert!(compare(&Value::percent(3.0), &LessThan, &Value::percent(5.0)));
+        assert!(compare(&Value::percent(3.0), &LessThanEqual, &Value::percent(3.0)));
     }
 
     #[test]
     fn test_quote_comparisons() {
-        assert!(compare(&Quote(5.0), &Equal, &Quote(5.0)));
-        assert!(compare(&Quote(3.0), &NotEqual, &Quote(5.0)));
+        assert!(compare(&Value::quote(5.0), &Equal, &Value::quote(5.0)));
+        assert!(compare(&Value::quote(3.0), &NotEqual, &Value::quote(5.0)));
 
-        assert!(compare(&Quote(5.0), &IncreasedByMoreThan, &Quote(3.0)));
-        assert!(compare(&Quote(5.0), &IncreasedByMoreThanEqual, &Quote(5.0)));
-        assert!(compare(&Quote(3.0), &IncreasedByLessThan, &Quote(5.0)));
-        assert!(compare(&Quote(3.0), &IncreasedByLessThanEqual, &Quote(3.0)));
+        assert!(compare(&Value::quote(5.0), &IncreasedByMoreThan, &Value::quote(3.0)));
+        assert!(compare(&Value::quote(5.0), &IncreasedByMoreThanEqual, &Value::quote(5.0)));
+        assert!(compare(&Value::quote(3.0), &IncreasedByLessThan, &Value::quote(5.0)));
+        assert!(compare(&Value::quote(3.0), &IncreasedByLessThanEqual, &Value::quote(3.0)));
 
-        assert!(compare(&Quote(-3.0), &DecreasedByMoreThan, &Quote(5.0)));
+        assert!(compare(&Value::quote(-3.0), &DecreasedByMoreThan, &Value::quote(5.0)));
         assert!(compare(
-            &Quote(-5.0),
+            &Value::quote(-5.0),
             &DecreasedByMoreThanEqual,
-            &Quote(5.0)
+            &Value::quote(5.0)
         ));
-        assert!(compare(&Quote(-5.0), &DecreasedByLessThan, &Quote(3.0)));
+        assert!(compare(&Value::quote(-5.0), &DecreasedByLessThan, &Value::quote(3.0)));
         assert!(compare(
-            &Quote(-3.0),
+            &Value::quote(-3.0),
             &DecreasedByLessThanEqual,
-            &Quote(3.0)
+            &Value::quote(3.0)
         ));
 
-        assert!(compare(&Quote(5.0), &MoreThan, &Quote(3.0)));
-        assert!(compare(&Quote(5.0), &MoreThanEqual, &Quote(5.0)));
-        assert!(compare(&Quote(3.0), &LessThan, &Quote(5.0)));
-        assert!(compare(&Quote(3.0), &LessThanEqual, &Quote(3.0)));
+        assert!(compare(&Value::quote(5.0), &MoreThan, &Value::quote(3.0)));
+        assert!(compare(&Value::quote(5.0), &MoreThanEqual, &Value::quote(5.0)));
+        assert!(compare(&Value::quote(3.0), &LessThan, &Value::quote(5.0)));
+        assert!(compare(&Value::quote(3.0), &LessThanEqual, &Value::quote(3.0)));
     }
 
     #[test]
     fn test_string_comparisons() {
         assert!(compare(
-            &Value::String("hello".to_string()),
+            &Value::string("hello".to_string()),
             &Equal,
-            &Value::String("hello".to_string())
+            &Value::string("hello".to_string())
         ));
         assert!(!compare(
-            &Value::String("hello".to_string()),
+            &Value::string("hello".to_string()),
             &Equal,
-            &Value::String("world".to_string())
+            &Value::string("world".to_string())
         ));
         assert!(compare(
-            &Value::String("hello".to_string()),
+            &Value::string("hello".to_string()),
             &NotEqual,
-            &Value::String("world".to_string())
+            &Value::string("world".to_string())
         ));
     }
 
     #[test]
     fn test_usd_comparisons() {
-        assert!(compare(&Usd(5.0), &Equal, &Usd(5.0)));
-        assert!(compare(&Usd(3.0), &NotEqual, &Usd(5.0)));
+        assert!(compare(&Value::usd(5.0), &Equal, &Value::usd(5.0)));
+        assert!(compare(&Value::usd(3.0), &NotEqual, &Value::usd(5.0)));
 
-        assert!(compare(&Usd(5.0), &IncreasedByMoreThan, &Usd(3.0)));
-        assert!(compare(&Usd(5.0), &IncreasedByMoreThanEqual, &Usd(5.0)));
-        assert!(compare(&Usd(3.0), &IncreasedByLessThan, &Usd(5.0)));
-        assert!(compare(&Usd(3.0), &IncreasedByLessThanEqual, &Usd(3.0)));
+        assert!(compare(&Value::usd(5.0), &IncreasedByMoreThan, &Value::usd(3.0)));
+        assert!(compare(&Value::usd(5.0), &IncreasedByMoreThanEqual, &Value::usd(5.0)));
+        assert!(compare(&Value::usd(3.0), &IncreasedByLessThan, &Value::usd(5.0)));
+        assert!(compare(&Value::usd(3.0), &IncreasedByLessThanEqual, &Value::usd(3.0)));
 
-        assert!(compare(&Usd(-3.0), &DecreasedByMoreThan, &Usd(5.0)));
-        assert!(compare(&Usd(-5.0), &DecreasedByMoreThanEqual, &Usd(5.0)));
-        assert!(compare(&Usd(-5.0), &DecreasedByLessThan, &Usd(3.0)));
-        assert!(compare(&Usd(-3.0), &DecreasedByLessThanEqual, &Usd(3.0)));
+        assert!(compare(&Value::usd(-3.0), &DecreasedByMoreThan, &Value::usd(5.0)));
+        assert!(compare(&Value::usd(-5.0), &DecreasedByMoreThanEqual, &Value::usd(5.0)));
+        assert!(compare(&Value::usd(-5.0), &DecreasedByLessThan, &Value::usd(3.0)));
+        assert!(compare(&Value::usd(-3.0), &DecreasedByLessThanEqual, &Value::usd(3.0)));
 
-        assert!(compare(&Usd(5.0), &MoreThan, &Usd(3.0)));
-        assert!(compare(&Usd(5.0), &MoreThanEqual, &Usd(5.0)));
-        assert!(compare(&Usd(3.0), &LessThan, &Usd(5.0)));
-        assert!(compare(&Usd(3.0), &LessThanEqual, &Usd(3.0)));
+        assert!(compare(&Value::usd(5.0), &MoreThan, &Value::usd(3.0)));
+        assert!(compare(&Value::usd(5.0), &MoreThanEqual, &Value::usd(5.0)));
+        assert!(compare(&Value::usd(3.0), &LessThan, &Value::usd(5.0)));
+        assert!(compare(&Value::usd(3.0), &LessThanEqual, &Value::usd(3.0)));
     }
 }
