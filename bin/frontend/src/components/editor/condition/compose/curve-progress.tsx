@@ -1,5 +1,5 @@
 import React, {FC, useState} from "react";
-import {Compare, ComposeBondingCurve, ComposeType, ConditionType} from "@types";
+import {Compare, ComposeBondingCurve, ComposeType, ConditionType, Field} from "@types";
 import {CompareWidget} from "@components/editor/condition";
 
 
@@ -22,8 +22,8 @@ export const CurveProgressWidget: FC<CurveProgressWidgetProps> = ({condition, on
                 conditions: [{
                     id: updatedCurveProgress.id,
                     type: ConditionType.COMPARE,
-                    field: updatedCurveProgress.field!!,
-                    operator: updatedCurveProgress.operator!!,
+                    field: Field.CURVE_PROGRESS,
+                    operator: updatedCurveProgress.operator,
                     value: updatedCurveProgress.value
                 }],
             },
@@ -33,27 +33,13 @@ export const CurveProgressWidget: FC<CurveProgressWidgetProps> = ({condition, on
     return (
         <>
             <CompareWidget
-                condition={curveProgress}
-                onOperatorChange={(id, operator) => {
-                    setCurveProgress(prevState => {
-                        const updated = {...prevState, operator};
-                        propagateChange(updated);
-                        return updated;
+                compare={curveProgress}
+                onChange={(compare) => {
+                    setCurveProgress(() => {
+                        propagateChange(compare);
+                        return compare;
                     });
-                }}
-                onTimeframeChange={(id, timeframe) => {
-                    setCurveProgress(prevState => {
-                        const updated = {...prevState, timeframe};
-                        propagateChange(updated);
-                        return updated;
-                    });
-                }}
-                onValueChange={(id, value) => {
-                    setCurveProgress(prevState => {
-                        const updated = {...prevState, value};
-                        propagateChange(updated);
-                        return updated;
-                    });
+
                 }}
             />
         </>

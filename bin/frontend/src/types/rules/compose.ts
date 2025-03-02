@@ -1,5 +1,5 @@
 import {ConditionType} from "@app/types/rules/condition.ts";
-import {Condition, Field, Operator, ValuePercent} from "@types";
+import {Condition, Field, Operator, Value, ValuePercent} from "@types";
 
 export enum ComposeType {
     CURVE_PROGRESS = 'CURVE_PROGRESS',
@@ -23,9 +23,8 @@ export type ComposeBondingCurve = {
                 id: string;
                 type: ConditionType.COMPARE,
                 field: Field.CURVE_PROGRESS,
-                operator: Operator.MORE_THAN | Operator.LESS_THAN,
-                value: ValuePercent
-
+                operator: Operator,
+                value: Value
             }
         ]
 

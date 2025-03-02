@@ -96,46 +96,60 @@ export const Editor: React.FC<EditorProps> = ({sequence, onChange}) => {
     const [action, setAction] = useState<Action>(sequence.action);
     const [condition, setCondition] = useState<Condition>(sequence.condition);
 
-    // const updateCondition = (id: string, key: keyof Condition, value: any) => {
-    //     setCondition((prev) => ({
-    //         ...prev,
-    //         conditions: update(id, (cond) => ({
-    //             ...cond,
-    //             [key]: value
-    //         }), prev.conditions),
-    //     }));
-    // };
-
     const updateCondition = (condition: Condition) => {
-        setCondition((prev) => ({
-            ...prev,
-            conditions: findAndUpdateCondition(condition.id, condition, prev.conditions),
-        }));
+        setCondition((prev) => {
+            if (prev.type === ConditionType.AND) {
+                return {
+                    ...prev,
+                    conditions: findAndUpdateCondition(condition.id, condition, prev.conditions),
+                }
+            } else {
+                throw new Error("Not a group");
+            }
+        });
     };
 
     const addCondition = (parentId: string, type: ConditionType) => {
         setCondition((prev) => {
-            if (prev.id === parentId && prev.type === ConditionType.AND) {
+            if (prev.type === ConditionType.AND) {
+                if (prev.id === parentId) {
+                    return {
+                        ...prev,
+                        conditions: [...(prev.conditions || []), createCondition(type)],
+                    };
+                }
                 return {
                     ...prev,
-                    conditions: [...(prev.conditions || []), createCondition(type)],
+                    conditions: update(parentId, (parent) => {
+                            if (parent.type === ConditionType.AND) {
+                                return {
+                                    ...parent,
+                                    conditions: [...(parent.conditions || []), createCondition(type)]
+                                }
+                            } else {
+                                throw new Error("Not a group");
+                            }
+                        },
+                        prev.conditions
+                    ),
                 };
+            } else {
+                throw new Error("Not a group");
             }
-            return {
-                ...prev,
-                conditions: update(parentId, (parent) => ({
-                    ...parent,
-                    conditions: [...(parent.conditions || []), createCondition(type)]
-                }), prev.conditions),
-            };
         });
     };
 
     const removeCondition = (id: string) => {
-        setCondition((prev) => ({
-            ...prev,
-            conditions: filter(id, prev.conditions),
-        }));
+        setCondition((prev) => {
+            if (prev.type === ConditionType.AND) {
+                return {
+                    ...prev,
+                    conditions: filter(id, prev.conditions),
+                }
+            } else {
+                throw new Error("Not a group")
+            }
+        })
     };
 
     useEffect(() => {
@@ -163,21 +177,6 @@ export const Editor: React.FC<EditorProps> = ({sequence, onChange}) => {
                                 isRoot={true}
                                 onAdd={addCondition}
                                 onRemove={removeCondition}
-                                onComposeTypeChange={(id, value) => {
-                                    // updateCondition(id, 'ty', value)
-                                }}
-                                onFieldChange={(id, value) => {
-                                    // updateCondition(id, "field", value)
-                                }}
-                                onOperatorChange={(id, value) => {
-                                    // updateCondition(id, "operator", value)
-                                }}
-                                onTimeframeChange={(id, value) => {
-                                    // updateCondition(id, "timeframe", value)
-                                }}
-                                onValueChange={(id, value) => {
-                                    // updateCondition(id, "value", value)
-                                }}
                                 onConditionChange={(condition: Condition) => {
                                     updateCondition(condition)
                                 }}

@@ -1,9 +1,8 @@
 import {ComposeWidget} from "@components/editor/condition/compose";
 import {Card} from "@components/ui/card.tsx";
-import {And, Compose, ComposeType, Condition, ConditionType, Field, Operator, Timeframe, Value} from "@types";
+import {And, Condition, ConditionType} from "@types";
 import React, {FC} from "react";
 import {Button} from "@components/ui/button.tsx";
-import {CompareWidget} from "./compare";
 
 export * from './compare'
 export * from './field'
@@ -16,12 +15,6 @@ export type ConditionListProps = {
 
     onAdd: (parentId: string, type: ConditionType) => void;
     onRemove: (id: string) => void;
-    onFieldChange: (id: string, value: Field) => void;
-    onComposeTypeChange: (id: string, value: ComposeType) => void;
-    onOperatorChange: (id: string, value: Operator) => void;
-    onTimeframeChange: (id: string, value: Timeframe) => void;
-    onValueChange: (id: string, value: Value) => void;
-
     onConditionChange: (condition: Condition) => void;
 
 }
@@ -32,11 +25,6 @@ export const ConditionList: FC<ConditionListProps> = ({
                                                           isRoot,
                                                           onAdd,
                                                           onRemove,
-                                                          onComposeTypeChange,
-                                                          onFieldChange,
-                                                          onOperatorChange,
-                                                          onTimeframeChange,
-                                                          onValueChange,
                                                           onConditionChange
                                                       }) => {
     return (
@@ -53,23 +41,9 @@ export const ConditionList: FC<ConditionListProps> = ({
                     </div>
                 )}
 
-            {condition.type === 'COMPARE' && (
-                <CompareWidget
-                    condition={condition}
-                    // onFieldChange={onFieldChange}
-                    onValueChange={onValueChange}
-                    onTimeframeChange={onTimeframeChange}
-                    onOperatorChange={onOperatorChange}
-                />
-            )}
-
             {condition.type === 'COMPOSE' && (
                 <ComposeWidget
                     condition={condition}
-                    onComposeTypeChange={onComposeTypeChange}
-                    // onValueChange={onValueChange}
-                    // onTimeframeChange={onTimeframeChange}
-                    // onOperatorChange={onOperatorChange}
                     onConditionChange={onConditionChange}
                 />
             )}
@@ -80,11 +54,6 @@ export const ConditionList: FC<ConditionListProps> = ({
                     isRoot={isRoot}
                     onAdd={onAdd}
                     onRemove={onRemove}
-                    onFieldChange={onFieldChange}
-                    onComposeTypeChange={onComposeTypeChange}
-                    onOperatorChange={onOperatorChange}
-                    onTimeframeChange={onTimeframeChange}
-                    onValueChange={onValueChange}
                     onConditionChange={onConditionChange}
                 />
 
@@ -99,11 +68,6 @@ type GroupProps = {
     isRoot: boolean
     onAdd: (parentId: string, type: ConditionType) => void;
     onRemove: (id: string) => void;
-    onFieldChange: (id: string, value: Field) => void;
-    onComposeTypeChange: (id: string, value: ComposeType) => void;
-    onOperatorChange: (id: string, value: Operator) => void;
-    onTimeframeChange: (id: string, value: Timeframe) => void;
-    onValueChange: (id: string, value: Value) => void;
     onConditionChange: (condition: Condition) => void;
 }
 
@@ -112,11 +76,6 @@ const Group: FC<GroupProps> = ({
                                    isRoot,
                                    onAdd,
                                    onRemove,
-                                   onFieldChange,
-                                   onComposeTypeChange,
-                                   onOperatorChange,
-                                   onTimeframeChange,
-                                   onValueChange,
                                    onConditionChange
                                }) => {
 
@@ -132,11 +91,6 @@ const Group: FC<GroupProps> = ({
                         isRoot={false}
                         onAdd={onAdd}
                         onRemove={onRemove}
-                        onFieldChange={onFieldChange}
-                        onComposeTypeChange={onComposeTypeChange}
-                        onOperatorChange={onOperatorChange}
-                        onTimeframeChange={onTimeframeChange}
-                        onValueChange={onValueChange}
                         onConditionChange={onConditionChange}
                     />
                 )}

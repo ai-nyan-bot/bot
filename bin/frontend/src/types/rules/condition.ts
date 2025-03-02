@@ -8,20 +8,6 @@ export enum ConditionType {
     OR = 'OR'
 }
 
-// export type Condition = {
-//     id: string;
-//     type: ConditionType;
-//     field?: Field;
-//     operator?: Operator;
-//     value?: Value;
-//     timeframe?: Timeframe;
-//     conditions?: Condition[];
-//
-//     // COMPOSE
-//     ty?: ComposeType;
-//     condition?: Condition;
-// };
-
 export type Condition = And | Compare | Compose;
 
 export type And = {
@@ -33,8 +19,8 @@ export type And = {
 export type Compare = {
     id: string;
     type: ConditionType.COMPARE;
-    field?: Field;
-    operator?: Operator;
-    value?: Value;
+    field: Field;
+    operator: Operator;
+    value: Value;
     timeframe?: Timeframe;
 }

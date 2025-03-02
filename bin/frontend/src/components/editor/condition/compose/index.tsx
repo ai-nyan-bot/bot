@@ -5,20 +5,12 @@ import {CurveProgressWidget} from "@components/editor/condition/compose/curve-pr
 
 type ComposeWidgetProps = {
     condition: Compose,
-    onComposeTypeChange: (id: string, value: ComposeType) => void;
-    // onOperatorChange: (id: string, value: Operator) => void;
-    // onTimeframeChange: (id: string, value: Timeframe) => void;
-    // onValueChange: (id: string, value: Value) => void;
     onConditionChange: (value: Condition) => void;
 }
 
 export const ComposeWidget: FC<ComposeWidgetProps> = ({
                                                           condition,
-                                                          onComposeTypeChange,
                                                           onConditionChange
-                                                          // onOperatorChange,
-                                                          // onTimeframeChange,
-                                                          // onValueChange
                                                       }) => {
     const [composeType, setComposeType] = useState<ComposeType>(condition.ty)
 
@@ -33,7 +25,7 @@ export const ComposeWidget: FC<ComposeWidgetProps> = ({
                 supported={[ComposeType.CURVE_PROGRESS]}
                 onChange={(value) => {
                     setComposeType(value)
-                    onComposeTypeChange(condition.id, value)
+                    // TODO update condition
                 }}
             />
 

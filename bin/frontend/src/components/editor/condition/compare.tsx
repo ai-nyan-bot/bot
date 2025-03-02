@@ -1,34 +1,28 @@
-import {Compare, Condition, Field, Operator, Timeframe, Value, ValueNumber, ValueNumberType} from "@types";
-import React, {FC} from "react";
+import {Compare, Operator, ValueNumber, ValueNumberType} from "@types";
+import React, {FC, useState} from "react";
 import {SelectOperator} from "./operator.tsx";
 import {ValueNumberInput} from "../value.tsx";
 import {SelectTimeframe} from "./timeframe.tsx";
-import {SelectField} from "./field.tsx";
 import {config} from "@components/editor/config.ts";
 
 
 type CompareWidgetProps = {
-    condition: Compare,
-    // onFieldChange: (id: string, value: Field) => void;
-    onOperatorChange: (id: string, value: Operator) => void;
-    onTimeframeChange: (id: string, value: Timeframe) => void;
-    onValueChange: (id: string, value: Value) => void;
+    compare: Compare,
+    onChange: (compare: Compare) => void;
 }
 
 export const CompareWidget: FC<CompareWidgetProps> = ({
-                                              condition,
-                                              // onFieldChange,
-                                              onOperatorChange,
-                                              onTimeframeChange,
-                                              onValueChange
-                                          }) => {
+                                                          compare,
+                                                          onChange
+                                                      }) => {
+    const [value, setValue] = useState<Compare>(compare);
 
-    const supportedOperators = Object.keys(config[condition.field!!]?.operators || {}) as Operator[];
-    const supportedValueTypes = config[condition.field!!]?.operators[condition.operator!!]?.valueTypes || [];
-    const supportedTimeframes = config[condition.field!!]?.operators[condition.operator!!]?.timeframes || [];
+    const supportedOperators = Object.keys(config[compare.field!!]?.operators || {}) as Operator[];
+    const supportedValueTypes = config[compare.field!!]?.operators[compare.operator!!]?.valueTypes || [];
+    const supportedTimeframes = config[compare.field!!]?.operators[compare.operator!!]?.timeframes || [];
 
     return (
-        <div key={condition.id}>
+        <div key={value.id}>
             {/*<SelectField*/}
             {/*    defaultField={condition.field}*/}
             {/*    supported={Object.keys(config) as Field[]}*/}
@@ -36,21 +30,39 @@ export const CompareWidget: FC<CompareWidgetProps> = ({
             {/*/>*/}
 
             <SelectOperator
-                defaultOperator={condition.operator}
+                defaultOperator={value.operator}
                 supported={supportedOperators}
-                onChange={(value) => onOperatorChange(condition.id, value)}
+                onChange={(operator) => {
+                    setValue(prev => {
+                        let updated = {...prev, operator}
+                        onChange(updated);
+                        return updated;
+                    });
+                }}
             />
 
             <ValueNumberInput
                 supported={supportedValueTypes as ValueNumberType[]}
-                defaultValue={(condition.value) ? condition.value as ValueNumber : undefined}
-                onChange={(value) => onValueChange(condition.id, value)}
+                defaultValue={(value.value) ? value.value as ValueNumber : undefined}
+                onChange={(value) => {
+                    setValue(prev => {
+                        let updated = {...prev, value}
+                        onChange(updated);
+                        return updated;
+                    });
+                }}
             />
 
             {supportedTimeframes.length > 0 && <SelectTimeframe
-                defaultTimeframe={condition.timeframe}
+                defaultTimeframe={value.timeframe}
                 supported={supportedTimeframes}
-                onChange={(value) => onTimeframeChange(condition.id, value)}
+                onChange={(timeframe) => {
+                    setValue(prev => {
+                        let updated = {...prev, timeframe}
+                        onChange(updated);
+                        return updated;
+                    });
+                }}
             />}
         </div>
     )
