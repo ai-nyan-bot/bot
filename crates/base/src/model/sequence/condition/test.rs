@@ -113,7 +113,7 @@ mod tests {
         #[test]
         fn test_compare_true() {
             assert!(Compose {
-                id: "Id1".into(),
+                ty: "SomeType".into(),
                 condition: Box::new(Compare {
                     field: Price,
                     operator: MoreThanEqual,
@@ -127,7 +127,7 @@ mod tests {
         #[test]
         fn test_compare_false() {
             assert!(!Compose {
-                id: "Id1".into(),
+                ty: "SomeType".into(),
                 condition: Box::new(Compare {
                     field: Price,
                     operator: MoreThanEqual,
@@ -427,7 +427,7 @@ mod tests {
         #[test]
         fn test_compare_true() {
             assert!(Compose {
-                id: "Id1".into(),
+                ty: "SomeType".into(),
                 condition: Box::new(Compare {
                     field: Volume,
                     operator: IncreasedByMoreThanEqual,
@@ -441,7 +441,7 @@ mod tests {
         #[test]
         fn test_compare_false() {
             assert!(!Compose {
-                id: "Id1".into(),
+                ty: "SomeType".into(),
                 condition: Box::new(Compare {
                     field: Volume,
                     operator: IncreasedByMoreThanEqual,

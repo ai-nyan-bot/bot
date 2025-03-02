@@ -1,4 +1,4 @@
-import {Condition, Field, Operator, Timeframe, Value, ValueNumber, ValueNumberType} from "@types";
+import {Compare, Condition, Field, Operator, Timeframe, Value, ValueNumber, ValueNumberType} from "@types";
 import React, {FC} from "react";
 import {SelectOperator} from "./operator.tsx";
 import {ValueNumberInput} from "../value.tsx";
@@ -7,17 +7,17 @@ import {SelectField} from "./field.tsx";
 import {config} from "@components/editor/config.ts";
 
 
-type CompareProps = {
-    condition: Condition,
-    onFieldChange: (id: string, value: Field) => void;
+type CompareWidgetProps = {
+    condition: Compare,
+    // onFieldChange: (id: string, value: Field) => void;
     onOperatorChange: (id: string, value: Operator) => void;
     onTimeframeChange: (id: string, value: Timeframe) => void;
     onValueChange: (id: string, value: Value) => void;
 }
 
-export const Compare: FC<CompareProps> = ({
+export const CompareWidget: FC<CompareWidgetProps> = ({
                                               condition,
-                                              onFieldChange,
+                                              // onFieldChange,
                                               onOperatorChange,
                                               onTimeframeChange,
                                               onValueChange
@@ -29,11 +29,11 @@ export const Compare: FC<CompareProps> = ({
 
     return (
         <div key={condition.id}>
-            <SelectField
-                defaultField={condition.field}
-                supported={Object.keys(config) as Field[]}
-                onChange={(value) => onFieldChange(condition.id, value)}
-            />
+            {/*<SelectField*/}
+            {/*    defaultField={condition.field}*/}
+            {/*    supported={Object.keys(config) as Field[]}*/}
+            {/*    onChange={(value) => onFieldChange(condition.id, value)}*/}
+            {/*/>*/}
 
             <SelectOperator
                 defaultOperator={condition.operator}

@@ -1,4 +1,5 @@
-import {Timeframe} from "@app/types/index.ts";
+import {Condition
+} from "./rules";
 
 export type Sequence = {
     condition: Condition,
@@ -34,17 +35,19 @@ export enum Field {
     TRADES_SELL = 'TRADES_SELL',
 }
 
-export type ConditionType = 'COMPARE' | 'AND' | 'OR'
 
-export type Condition = {
-    id: string;
-    type: ConditionType;
-    field?: Field;
-    operator?: Operator;
-    value?: Value;
-    timeframe?: Timeframe;
-    conditions?: Condition[];
-};
+// export type ConditionType = 'COMPARE' | 'COMPOSE' | 'AND' | 'OR'
+//
+// export type Condition = {
+//     id: string;
+//     type: ConditionType;
+//     field?: Field;
+//     operator?: Operator;
+//     value?: Value;
+//     timeframe?: Timeframe;
+//     conditions?: Condition[];
+// };
+
 
 export enum Operator {
     EQUAL = "EQUAL",

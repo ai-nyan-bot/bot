@@ -11,33 +11,33 @@ mod test;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize, sqlx::Type)]
 #[sqlx(transparent)]
-pub struct ComposeId(pub String);
+pub struct ComposeType(pub String);
 
-impl From<String> for ComposeId {
+impl From<String> for ComposeType {
     fn from(value: String) -> Self {
         Self(value)
     }
 }
 
-impl From<&str> for ComposeId {
+impl From<&str> for ComposeType {
     fn from(value: &str) -> Self {
         Self(value.to_string())
     }
 }
 
-impl PartialEq<&str> for ComposeId {
+impl PartialEq<&str> for ComposeType {
     fn eq(&self, other: &&str) -> bool {
         self.0.as_str() == *other
     }
 }
 
-impl ComposeId {
+impl ComposeType {
     pub fn new(value: impl Into<String>) -> Self {
         Self(value.into())
     }
 }
 
-impl Display for ComposeId {
+impl Display for ComposeType {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
     }
@@ -47,7 +47,7 @@ impl Display for ComposeId {
 #[serde(tag = "type", rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum Condition {
     Compose {
-        id: ComposeId,
+        ty: ComposeType,
         condition: Box<Condition>,
     },
     Compare {
