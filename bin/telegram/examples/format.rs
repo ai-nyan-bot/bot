@@ -6,7 +6,7 @@ use common::repo::pool::PostgresConfig;
 use common::ConfigValue;
 use dotenv::dotenv;
 use std::env;
-use telegram::{markdown, AppState, Config, SansSerif, Style, TelegramConfig};
+use telegram::{markdown, AppState, Config, Font, Style, TelegramConfig};
 use teloxide::payloads::SendMessageSetters;
 use teloxide::prelude::ChatId;
 use teloxide::requests::Requester;
@@ -49,9 +49,8 @@ pub async fn main() {
     let buy_trades = 75;
     let sell_trades = 25;
 
-    let font = SansSerif::default();
-    let bold_font = SansSerif::new(Style::Bold);
-    let italic_font = SansSerif::new(Style::Italic);
+    let font = Font::default();
+    let bold_font = Font::new(Style::Bold);
 
     // let text = markdown!(
     //     r#"
@@ -92,24 +91,24 @@ pub async fn main() {
     builder += markdown!("{}",bold_font.format("Trades")).as_str();
     builder += "\n";
     builder += markdown!("{}",font.format("All:")).as_str();
-    builder += "`   `";
-    builder += markdown!("{}",bold_font.format("123")).as_str();
     builder += "`  `";
-    builder += markdown!("{}",font.format("+ ( 15 | 23.4% )")).as_str();
+    builder += markdown!(";`{}{};`",bold_font.format("12.4"), font.format("K")).as_str();
+    builder += "` `";
+    builder += markdown!("{}",font.format(";` + ;`( 15 | 23.4% )")).as_str();
     builder += "\n";
     builder += markdown!("{}",font.format("Buy:")).as_str();
     builder += "`  `";
-    builder += markdown!("{}",bold_font.format("234")).as_str();
-    builder += "`  `";
-    builder += markdown!("{}",font.format("+ ( 15 | 23.4% )")).as_str();
+    builder += markdown!(";`   {} ;`",bold_font.format("4")).as_str();
+    builder += "` `";
+    builder += markdown!("{}",font.format(";` - ;`( 15 | 23.4% )")).as_str();
     builder += "\n";
     builder += markdown!("{}",font.format("Sell:")).as_str();
-    builder += "`  `";
-    builder += markdown!("{}",bold_font.format("345")).as_str();
-    builder += "`  `";
-    builder += markdown!("{}",font.format("+ ( 15 | 23.4% )")).as_str();
+    builder += "` `";
+    builder += markdown!(";` {}{};`",bold_font.format("3.4"), font.format("M")).as_str();
+    builder += "` `";
+    builder += markdown!("{}",font.format(";` + ;`( 15 | 23.4% )")).as_str();
     builder += "\n";
-    
+
 
 //     let text = markdown!(
 //         r#"

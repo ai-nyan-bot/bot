@@ -7,44 +7,37 @@ use std::collections::HashMap;
 pub enum Style {
     Regular,
     Bold,
-    Italic,
 }
 
-pub struct SansSerif {
+pub struct Font {
     unicode: HashMap<char, char>,
 }
 
-impl SansSerif {
+impl Font {
     pub fn new(style: Style) -> Self {
         let mut unicode_map: HashMap<char, char> = HashMap::new();
 
         let (offset_upper, offset_lower, offset_digit) = match style {
             Style::Regular => (
-                '𝖠' as u32 - 'A' as u32,
-                '𝖺' as u32 - 'a' as u32,
-                '𝟢' as u32 - '0' as u32,
+                '𝙰' as u32 - 'A' as u32,
+                '𝚊' as u32 - 'a' as u32,
+                '𝟶' as u32 - '0' as u32,
             ),
             Style::Bold => (
                 '𝗔' as u32 - 'A' as u32,
                 '𝗮' as u32 - 'a' as u32,
                 '𝟬' as u32 - '0' as u32,
             ),
-            Style::Italic => ('𝘈' as u32 - 'A' as u32, '𝘢' as u32 - 'a' as u32, 0),
         };
 
-        // Populate uppercase letters
         for c in 'A'..='Z' {
             unicode_map.insert(c, char::from_u32((c as u32) + offset_upper).unwrap());
         }
-        // Populate lowercase letters
         for c in 'a'..='z' {
             unicode_map.insert(c, char::from_u32((c as u32) + offset_lower).unwrap());
         }
-        // Populate digits
-        if style != Style::Italic {
-            for c in '0'..='9' {
-                unicode_map.insert(c, char::from_u32((c as u32) + offset_digit).unwrap());
-            }
+        for c in '0'..='9' {
+            unicode_map.insert(c, char::from_u32((c as u32) + offset_digit).unwrap());
         }
 
         Self {
@@ -59,7 +52,7 @@ impl SansSerif {
     }
 }
 
-impl Default for SansSerif {
+impl Default for Font {
     fn default() -> Self {
         Self::new(Style::Regular)
     }
