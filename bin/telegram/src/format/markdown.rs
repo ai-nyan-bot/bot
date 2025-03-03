@@ -44,7 +44,8 @@ macro_rules! markdown {
             result.push_str(current_line.trim());
         }
 
-        result.trim().to_string()
+        // result.trim().to_string()
+        result
     }};
 }
 mod tests {

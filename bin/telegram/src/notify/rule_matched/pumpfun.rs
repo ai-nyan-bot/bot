@@ -84,6 +84,7 @@ pub(crate) async fn send(
         ;`Buy:    ;`;*{buy_trades};*;`  ;`(+24 | +12.42%)🚀
         ;`Sell:   ;`;*{sell_trades};*;`    ;`(+12 | +23.42%)🚀
 
+
         ;`;`;`
         Trades:
         All:    {trades}  (+23 | +15.42%)🚀
