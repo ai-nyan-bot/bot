@@ -3,11 +3,11 @@
 
 use crate::i18n::{Language, I18N};
 use crate::state::AppState;
-use crate::HandlerResult;
+use crate::{markdown, HandlerResult};
 use teloxide::payloads::SendMessageSetters;
 use teloxide::prelude::Message;
 use teloxide::requests::Requester;
-use teloxide::types::{InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo};
+use teloxide::types::{InlineKeyboardButton, InlineKeyboardMarkup, ParseMode, WebAppInfo};
 use teloxide::Bot;
 use url::Url;
 
@@ -91,7 +91,7 @@ pub(crate) async fn start(bot: Bot, msg: Message, state: AppState) -> HandlerRes
     //         .await?;
     //     Ok(())
 
-    bot.send_message(msg.chat.id, r#"
+    bot.send_message(msg.chat.id, markdown!(r#"
 Welcome to AI Nyanbot!
   
 You’ve just joined the purr-fect Telegram bot for navigating the Solana ecosystem. 
@@ -102,17 +102,18 @@ Set Your Conditions:
 🟢 Bonding Curve Progress: Aim for pump.fun tokens <50% bonded for early entries, or >80% for safer bets.  
  
 Verify trades via official links only.
- 
-⚠️Ad Disclaimer⚠️: 
-Heads up! We don’t control ads shown by Telegram here. 
+
+⚠️Ad Disclaimer⚠️:
+Heads up! We don’t control ads shown by Telegram here.
 Beware of fake airdrops, phishing links, or sketchy login pages.
-Stick to https://nyan.bot for the real deal.  
- 
+Stick to ;[nyan.bot;];(https://nyan.bot;) for the real deal.
+
 Get more alpha: 
-🌐Check out our website: https://nyan.bot 
-🐥Follow us on X: https://x.com/AI_Nyanbot
 💬Join our TG: @AI_Nyanbot
-"#)
+🌐Check out our ;[Website;];(https://nyan.bot;) 
+🐥Follow us on X: ;[AI_Nyanbot;];(https://x.com/AI_Nyanbot;)
+"#))
+        .parse_mode(ParseMode::MarkdownV2)
         .reply_markup(options)
         .await?;
     Ok(())
