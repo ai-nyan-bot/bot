@@ -28,5 +28,26 @@ async fn test_start_command_creates_user_if_not_exists() {
     // This is a regular teloxide::types::Message!
     // dbg!(&message);
 
-    assert_eq!(message.text(), Some("Nyanbot"));
+    assert_eq!(message.text(), Some("
+Welcome to AI Nyanbot!
+  
+You’ve just joined the purr-fect Telegram bot for navigating the Solana ecosystem. 
+I’m Nyanbot, your AI-powered DEX screener to help you find your next 100x gem and dodge scams!
+ 
+Trading Tips & Rules💡: 
+Set Your Conditions:
+🟢 Bonding Curve Progress: Aim for pump.fun tokens <50% bonded for early entries, or >80% for safer bets.  
+ 
+Verify trades via official links only.
+ 
+⚠\u{fe0f}Ad Disclaimer⚠\u{fe0f}: 
+Heads up! We don’t control ads shown by Telegram here. 
+Beware of fake airdrops, phishing links, or sketchy login pages.
+Stick to https://nyan.bot for the real deal.  
+ 
+Get more alpha: 
+🌐Check out our website: https://nyan.bot 
+🐥Follow us on X: https://x.com/AI_Nyanbot
+💬Join our TG: @AI_Nyanbot
+"));
 }
