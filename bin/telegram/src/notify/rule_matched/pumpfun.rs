@@ -22,8 +22,8 @@ pub(crate) async fn send(
         .summarise(token_pair_id)
         .await?;
 
-    let symbol = token_summary.pair.symbol();
-    dbg!(&token_summary);
+    let symbol = token_summary.pair.symbol().to_string();
+    // dbg!(&token_summary);
 
     // todo!();
 
@@ -69,21 +69,42 @@ pub(crate) async fn send(
     let buy_trades = token_summary.summary.trades.buy.trades.0;
     let sell_trades = token_summary.summary.trades.sell.trades.0;
 
+    // is * {progress} % * along the bonding curve and on its way to graduate to Raydium 🔥🚀
+    //
+    // Trades: *{trades}*
+    //     Buy: *{buy_trades}*
+    //     Sell: *{sell_trades}*
+
+    let text = markdown!(r#"
+        ;* {symbol} ;*
+        is ;* {progress} % ;* along the bonding curve and on its way to graduate to Raydium 🔥🚀
+
+        ;*Trades;*
+        ;`All:    ;`;*{trades};*;`  ;`(+23 | +15.42%)🚀 
+        ;`Buy:    ;`;*{buy_trades};*;`  ;`(+24 | +12.42%)🚀
+        ;`Sell:   ;`;*{sell_trades};*;`    ;`(+12 | +23.42%)🚀
+
+        ;`;`;`
+        Trades:
+        All:    {trades}  (+23 | +15.42%)🚀
+        Buy:    {buy_trades}  (+24 | +12.42%)🚀
+        Sell:   {sell_trades}    (+12 | +23.42%)🚀
+        ;`;`;`
+
+        ;`;`;`Trades
+        All:    {trades}  (+23 | +15.42%)🚀
+        Buy:    {buy_trades}  (+24 | +12.42%)🚀
+        Sell:   {sell_trades}    (+12 | +23.42%)🚀
+        ;`;`;`
+    "#);
+
+    println!("{}", text);
+
     let _x = state
         .bot
         .send_message(
             Recipient::Id(ChatId(telegram_id.0.parse::<i64>().unwrap())),
-            markdown!(
-                r#"
-️*{symbol}*
-is * {progress} % * along the bonding curve and on its way to graduate to Raydium 🔥🚀
-
-Trades: *{trades}* 
-Buy: *{buy_trades}* 
-Sell: *{sell_trades}*
- 
-    "#
-            ),
+            text,
         )
         .parse_mode(ParseMode::MarkdownV2)
         // .reply_markup(create_keyboard(state.callback_store.clone(), &notification).await)
