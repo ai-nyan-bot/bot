@@ -3,7 +3,7 @@
 
 pub use crate::config::*;
 use crate::dispatch::dispatch;
-use crate::notify::notify;
+pub use crate::notify::{notify, send_notification};
 pub use crate::schema::schema;
 pub use crate::state::*;
 use common::Signal;

@@ -28,7 +28,18 @@ async fn test_rules_command() {
     let responses = bot.get_responses();
     let message = responses.sent_messages.last().unwrap();
 
-    assert_eq!(message.text(), Some("Rules"));
+    assert_eq!(message.text(), Some(r#"
+Set your custom rules to screen for potential 100x gems!
+
+For example, you can choose to filter for the following 
+🟢Market Cap: Min/Max (e.g., $50K-500K). 
+🟢Tx Count: Min (e.g., 50) for hype (>100) or sleepers (<20).  
+🟢Honeypot: Exclude scams (Yes/No).   
+🟢Bonding Curve: 0-50% (snipe) or 80-100% (safe). 
+ 
+Tweak, save, and pounce on profits! 
+Remember to DYOR!    
+"#));
     assert_eq!(
         message.reply_markup(),
         Some(&InlineKeyboardMarkup::new(vec![vec![

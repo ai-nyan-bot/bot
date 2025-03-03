@@ -5,7 +5,8 @@ mod rule_matched;
 
 use crate::notify::rule_matched::rule_matched;
 use crate::AppState;
-use base::model::NotificationType;
+use base::model::{Notification, NotificationType};
+use base::service::NotificationResult;
 use common::Signal;
 use log::info;
 use std::time::Duration;
@@ -34,15 +35,18 @@ async fn next_notifications(state: AppState) {
         .notification_service()
         .pop(1, {
             let state = state.clone();
-            move |notification| {
-                let state = state.clone();
-                async move {
-                    match notification.ty {
-                        NotificationType::RuleMatched => rule_matched(state, notification).await?,
-                    }
-                    Ok(())
-                }
-            }
+            move |notification| send_notification(state.clone(), notification)
         })
         .await;
+}
+
+pub async fn send_notification(
+    state: AppState,
+    notification: Notification,
+) -> NotificationResult<()> {
+    let state = state.clone();
+    match notification.ty {
+        NotificationType::RuleMatched => rule_matched(state, notification).await?,
+    };
+    Ok(())
 }

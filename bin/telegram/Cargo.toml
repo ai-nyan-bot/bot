@@ -10,6 +10,7 @@ base = { path = "../../crates/base" }
 solana = { path = "../../crates/solana" }
 testing = { path = "../../crates/testing" }
 
+dotenv = { workspace = true }
 log = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }

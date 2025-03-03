@@ -148,11 +148,21 @@ pub fn unix_micros_now() -> u128 {
 #[sqlx(transparent, no_pg_array)]
 pub struct CreatedAt(pub Timestamp);
 
+impl CreatedAt {
+    pub fn now() -> Self {
+        Self(Timestamp::now())
+    }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Ord, PartialOrd, Eq, sqlx::Type)]
 #[sqlx(transparent, no_pg_array)]
 pub struct UpdatedAt(pub Timestamp);
 
 impl UpdatedAt {
+    pub fn now() -> Self {
+        Self(Timestamp::now())
+    }
+
     pub fn age_sec(&self) -> i64 {
         (unix_seconds_now() as i64) - self.0.to_epoch_seconds()
     }
