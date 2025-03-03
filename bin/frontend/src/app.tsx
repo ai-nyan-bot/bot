@@ -8,8 +8,6 @@ import {useLocalStorage, useSetMetaMaskAuth, useSetTelegramAuth, useSetUnauthori
 import {appInitialState, appReducer} from "@states/app";
 import {Client} from "./client";
 
-import {ConnectionLostPage} from "@pages/connection-lost";
-
 import {Modal} from "./modal.tsx";
 
 import Layout from "@app/layout.tsx";
@@ -30,7 +28,7 @@ import {MetaMaskButton} from "@components/metamask.tsx";
 
 const WebAuthenticated: FC<{ children: ReactNode }> = ({children}) => {
     const location = useLocation();
-    const {auth, connection} = useContext(ContextAppState);
+    const {auth} = useContext(ContextAppState);
     if (auth.type === "Unauthorized") {
         return (
             <div className={"w-full flex flex-row justify-center"}>
@@ -44,7 +42,7 @@ const WebAuthenticated: FC<{ children: ReactNode }> = ({children}) => {
 const TelegramAuthenticated: FC<{ children: ReactNode }> = ({children}) => {
     const location = useLocation();
     const [telegramLogin, , , telegramErr] = useTelegram();
-    const {telegramData, auth, connection} = useContext(ContextAppState);
+    const {telegramData, auth} = useContext(ContextAppState);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -57,13 +55,7 @@ const TelegramAuthenticated: FC<{ children: ReactNode }> = ({children}) => {
         };
     }, [auth, navigate, telegramData, location, telegramLogin]);
 
-    useEffect(() => {
-        if (connection.status === "DISCONNECTED") {
-            navigate("/connection-lost");
-        }
-    }, [connection, navigate]);
-
-    if (auth.type === "Unauthorized" || connection.status === "DISCONNECTED") {
+    if (auth.type === "Unauthorized") {
         return (
             <h1 className={"text-center text-blue-800 text-xl"}>Starting your telegram terminal </h1>
         )
@@ -83,12 +75,6 @@ const AppRouter = () => {
         return (
             <BrowserRouter>
                 <Routes>
-                    <Route
-                        path={"/connection-lost"}
-                        element={
-                            <ConnectionLostPage/>
-                        }
-                    />
                     <Route
                         path={"/"}
                         element={
@@ -123,10 +109,6 @@ const AppRouter = () => {
         return (
             <BrowserRouter>
                 <Routes>
-                    <Route
-                        path={"/connection-lost"}
-                        element={<ConnectionLostPage/>}
-                    />
                     <Route
                         path={"/"}
                         element={
