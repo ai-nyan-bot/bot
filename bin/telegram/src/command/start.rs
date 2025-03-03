@@ -16,7 +16,7 @@ pub(crate) async fn start(bot: Bot, msg: Message, state: AppState) -> HandlerRes
 
     let options = InlineKeyboardMarkup::new(vec![
         vec![InlineKeyboardButton::web_app(
-            "Rules",
+            i18n.button_text_rules,
             WebAppInfo {
                 url: Url::parse("https://telegram.nyan.bot/rules").unwrap(),
             },

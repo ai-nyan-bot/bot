@@ -23,7 +23,8 @@ impl Display for Language {
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub struct I18N {
-    pub button_text_balance: String,
+    pub button_text_rules: String,
+    // pub button_text_balance: String,
     // pub button_text_receive: String,
     // pub button_text_send: String,
     // pub button_text_wallet: String,

@@ -49,7 +49,7 @@ export const useGet = <T>(): [GetAction, T | null, boolean, Error | null] => {
 
                     if (error.message === 'NetworkError when attempting to fetch resource.') {
                         // setAuth(null) // FIXME
-                        window.location.href = '/login'
+                        window.location.href = '/'
                     }
                 })
         }
@@ -110,7 +110,7 @@ export const usePost = <T>(): [PostAction, T | null, boolean, Error | null] => {
 
                     if (error.message === 'NetworkError when attempting to fetch resource.') {
                         // setAuth(null) // FIXME
-                        window.location.href = '/login'
+                        window.location.href = '/'
                     }
 
                 })
@@ -172,7 +172,7 @@ export const usePatch = <T>(): [PutAction, T | null, boolean, Error | null] => {
 
                     if (error.message === 'NetworkError when attempting to fetch resource.') {
                         // setAuth(null) // FIXME
-                        window.location.href = '/login'
+                        window.location.href = '/'
                     }
 
                 })

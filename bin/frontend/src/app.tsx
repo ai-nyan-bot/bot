@@ -1,5 +1,5 @@
 import React, {FC, ReactNode, useContext, useEffect, useReducer} from "react";
-import {BrowserRouter, Route, Routes, useNavigate} from "react-router-dom";
+import {BrowserRouter, Route, Routes, useLocation, useNavigate} from "react-router-dom";
 
 import {modalInitialState, modalReducer} from "@states/modal";
 import {ContextAppDispatch, ContextAppState, ContextModalDispatch, ContextModalState} from "./context.ts";
@@ -18,39 +18,63 @@ import NotFound from "@app/not-found.tsx";
 import './styles/globals.css'
 import {MetaMaskUIProvider} from "@metamask/sdk-react-ui";
 
-import TelegramLandingPage from "@pages/telegram/landing";
 import TelegramHomePage from "@pages/telegram/home";
 import TelegramRuleListPage from "@pages/telegram/rule-list";
 import TelegramRuleDetailPage from "@pages/telegram/rule-detail";
-
-import WebLandingPage from "@pages/web/landing";
 import WebHomePage from "@pages/web/home";
 import WebRuleListPage from "@pages/web/rule-list";
 import WebRuleDetailPage from "@pages/web/rule-detail";
+import {useTelegram} from "@hooks";
+import {MetaMaskButton} from "@components/metamask.tsx";
 
 
-const Authenticated: FC<{ children: ReactNode }> = ({children}) => {
+const WebAuthenticated: FC<{ children: ReactNode }> = ({children}) => {
+    const location = useLocation();
     const {auth, connection} = useContext(ContextAppState);
+    if (auth.type === "Unauthorized") {
+        return (
+            <div className={"w-full flex flex-row justify-center"}>
+                <MetaMaskButton redirect={location.pathname}/>
+            </div>
+        )
+    }
+    return children;
+};
+
+const TelegramAuthenticated: FC<{ children: ReactNode }> = ({children}) => {
+    const location = useLocation();
+    const [telegramLogin, , , telegramErr] = useTelegram();
+    const {telegramData, auth, connection} = useContext(ContextAppState);
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (auth.type === "Unauthorized") {
-            navigate("/")
+        const abortController = new AbortController();
+        if (auth.type === "Unauthorized" && telegramData?.initData) {
+            telegramLogin(telegramData.initData, location.pathname, abortController);
         }
-    }, [auth, navigate]);
+        return () => {
+            abortController.abort();
+        };
+    }, [auth, navigate, telegramData, location, telegramLogin]);
 
     useEffect(() => {
         if (connection.status === "DISCONNECTED") {
-            navigate("/connection-lost")
+            navigate("/connection-lost");
         }
     }, [connection, navigate]);
 
     if (auth.type === "Unauthorized" || connection.status === "DISCONNECTED") {
-        return null;
+        return (
+            <h1 className={"text-center text-blue-800 text-xl"}>Starting your telegram terminal </h1>
+        )
     }
 
-    return (children)
-}
+    if (telegramErr) {
+        return (<h1>Telegram terminal says no </h1>);
+    }
+
+    return children;
+};
 
 const AppRouter = () => {
     const appState = useContext(ContextAppState);
@@ -59,19 +83,35 @@ const AppRouter = () => {
         return (
             <BrowserRouter>
                 <Routes>
-                    <Route path={"/"} element={<TelegramLandingPage/>}/>
-                    <Route path={"/connection-lost"} element={<ConnectionLostPage/>}/>
                     <Route
-                        path={"/home"}
-                        element={<Authenticated><TelegramHomePage/></Authenticated>}
+                        path={"/connection-lost"}
+                        element={
+                            <ConnectionLostPage/>
+                        }
+                    />
+                    <Route
+                        path={"/"}
+                        element={
+                            <TelegramAuthenticated>
+                                <TelegramHomePage/>
+                            </TelegramAuthenticated>
+                        }
                     />
                     <Route
                         path={"/rules"}
-                        element={<Authenticated><TelegramRuleListPage/></Authenticated>}
+                        element={
+                            <TelegramAuthenticated>
+                                <TelegramRuleListPage/>
+                            </TelegramAuthenticated>
+                        }
                     />
                     <Route
                         path={"/rules/:id"}
-                        element={<Authenticated><TelegramRuleDetailPage/></Authenticated>}
+                        element={
+                            <TelegramAuthenticated>
+                                <TelegramRuleDetailPage/>
+                            </TelegramAuthenticated>
+                        }
                     />
                     <Route path='*' element={<NotFound/>}/>
                 </Routes>
@@ -83,19 +123,33 @@ const AppRouter = () => {
         return (
             <BrowserRouter>
                 <Routes>
-                    <Route path={"/"} element={<WebLandingPage/>}/>
-                    <Route path={"/connection-lost"} element={<ConnectionLostPage/>}/>
                     <Route
-                        path={"/home"}
-                        element={<Authenticated><WebHomePage/></Authenticated>}
+                        path={"/connection-lost"}
+                        element={<ConnectionLostPage/>}
+                    />
+                    <Route
+                        path={"/"}
+                        element={
+                            <WebAuthenticated>
+                                <WebHomePage/>
+                            </WebAuthenticated>
+                        }
                     />
                     <Route
                         path={"/rules"}
-                        element={<Authenticated><WebRuleListPage/></Authenticated>}
+                        element={
+                            <WebAuthenticated>
+                                <WebRuleListPage/>
+                            </WebAuthenticated>
+                        }
                     />
                     <Route
                         path={"/rules/:id"}
-                        element={<Authenticated><WebRuleDetailPage/></Authenticated>}
+                        element={
+                            <WebAuthenticated>
+                                <WebRuleDetailPage/>
+                            </WebAuthenticated>
+                        }
                     />
                     <Route path='*' element={<NotFound/>}/>
                 </Routes>

@@ -4,9 +4,10 @@ import {useMetaMask} from "@hooks/auth";
 
 type MetaMaskButtonProps = {
     className?: string;
+    redirect: string;
 }
 
-export const MetaMaskButton: FC<MetaMaskButtonProps> = ({className}) => {
+export const MetaMaskButton: FC<MetaMaskButtonProps> = ({className, redirect}) => {
     const [connecting, setConnecting] = useState(false)
     const {sdk, account} = useSDK();
 
@@ -27,7 +28,7 @@ export const MetaMaskButton: FC<MetaMaskButtonProps> = ({className}) => {
     useEffect(() => {
         if (account && signedMessage) {
             const invoke = async () => {
-                requestToken(account!, signedMessage)
+                requestToken(account!, signedMessage, redirect)
             }
             invoke()
         }
