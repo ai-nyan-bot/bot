@@ -97,10 +97,10 @@ mod tests {
 				r#"{"name":"test","sequence":{"condition":{"id":"root","type":"AND","conditions":[]},"action":{"type":"NOTIFY_TELEGRAM","buttons":[{"action":"NONE"},{"action":"NONE"},{"action":"NONE"},{"action":"NONE"},{"action":"NONE"},{"action":"NONE"}]}}}"#,
 			)
 			.await;
-        assert_eq!(response.status(), StatusCode::NOT_FOUND);
+        assert_eq!(response.status(), StatusCode::FORBIDDEN);
 
         let error = extract_error(response).await;
-        assert_eq!(error.code, StatusCode::NOT_FOUND);
+        assert_eq!(error.code, StatusCode::FORBIDDEN);
         assert_eq!(error.message, "User not found");
     }
 

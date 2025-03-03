@@ -65,7 +65,7 @@ mod tests {
     async fn belongs_to_another_user() {
         let test = Test::new().await;
         let response = test.get_as_another_user("/v1/rules/1").await;
-        assert_eq!(response.status(), StatusCode::NOT_FOUND);
+        assert_eq!(response.status(), StatusCode::OK);
 
         let response = test.get_as_test_user("/v1/rules/1").await;
         assert_eq!(response.status(), StatusCode::NOT_FOUND);
@@ -79,10 +79,10 @@ mod tests {
     async fn requires_authentication() {
         let test = Test::new_empty_db().await;
         let response = test.get_unauthenticated("/v1/rules/4").await;
-        assert_eq!(response.status(), StatusCode::NOT_FOUND);
+        assert_eq!(response.status(), StatusCode::FORBIDDEN);
 
         let error = extract_error(response).await;
-        assert_eq!(error.code, StatusCode::NOT_FOUND);
+        assert_eq!(error.code, StatusCode::FORBIDDEN);
         assert_eq!(error.message, "User not found");
     }
 }

@@ -30,8 +30,8 @@ export const useLogout = (): [LogoutAction, boolean, Error | null] => {
         })
             .then(() => {
                 setLoading(false)
-                navigate("/", {replace: true})
                 appDispatch({type: 'APP_LOGOUT'})
+                navigate("/", {replace: true})
             })
             .catch(error => {
                 if (error.name !== 'AbortError') {

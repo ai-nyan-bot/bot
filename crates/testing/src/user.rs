@@ -29,7 +29,7 @@ pub async fn get_or_create_another_user<'a>(tx: &mut Tx<'a>) -> User {
         Ok(user) => user,
         Err(_) => {
             let result = create_telegram_user(tx, "ANOTHER_USER").await.unwrap();
-            create_auth(tx, 2, "TestAnotherUserToken").await.unwrap();
+            create_auth(tx, 2, "AnotherUserToken").await.unwrap();
             assert_eq!(result.id, 2);
             result
         }

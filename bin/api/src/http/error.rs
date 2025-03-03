@@ -12,6 +12,7 @@ use serde_json::json;
 pub enum HttpError {
     BadRequest(String),
     Conflict(String),
+    Forbidden(String),
     InternalServer(String),
     NotFound(String),
     Unprocessable(String),
@@ -20,6 +21,14 @@ pub enum HttpError {
 impl HttpError {
     pub fn bad_request(message: impl Into<String>) -> Self {
         Self::BadRequest(message.into())
+    }
+
+    pub fn conflict(message: impl Into<String>) -> Self {
+        Self::Conflict(message.into())
+    }
+
+    pub fn forbidden(message: impl Into<String>) -> Self {
+        Self::Forbidden(message.into())
     }
 
     pub fn internal_server(message: impl Into<String>) -> Self {
@@ -38,11 +47,11 @@ impl HttpError {
 impl From<ServiceError> for HttpError {
     fn from(value: ServiceError) -> Self {
         match value {
-            ServiceError::Conflict(message) => HttpError::Conflict(message),
+            ServiceError::Conflict(message) => HttpError::conflict(message),
             ServiceError::Internal(_) => {
                 HttpError::InternalServer("Internal server error".to_string())
             }
-            ServiceError::NotFound(message) => HttpError::NotFound(message),
+            ServiceError::NotFound(message) => HttpError::not_found(message),
         }
     }
 }
@@ -84,6 +93,10 @@ impl From<HttpError> for HttpErrorResponse {
             },
             HttpError::Conflict(message) => HttpErrorResponse {
                 code: StatusCode::CONFLICT,
+                message,
+            },
+            HttpError::Forbidden(message) => HttpErrorResponse {
+                code: StatusCode::FORBIDDEN,
                 message,
             },
             HttpError::InternalServer(message) => HttpErrorResponse {

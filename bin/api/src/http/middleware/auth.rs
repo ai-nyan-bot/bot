@@ -9,28 +9,42 @@ use axum::middleware::Next;
 use axum::response::Response;
 use base::model::AuthenticatedUser;
 use base::service::AuthService;
+use common::service::ServiceError;
 
-pub async fn auth(State(state): State<AppState>, mut req: Request, next: Next) -> Result<Response, HttpError> {
+pub async fn auth(
+    State(state): State<AppState>,
+    mut req: Request,
+    next: Next,
+) -> Result<Response, HttpError> {
     let user = authenticate_user(state.auth_service(), req.headers()).await?;
     req.extensions_mut().insert(user);
     Ok(next.run(req).await)
 }
 
-async fn authenticate_user(auth_service: AuthService, headers: &http::HeaderMap) -> Result<AuthenticatedUser, HttpError> {
+async fn authenticate_user(
+    auth_service: AuthService,
+    headers: &http::HeaderMap,
+) -> Result<AuthenticatedUser, HttpError> {
     if let Some(auth_header) = headers.get("Authorization") {
-        let token = auth_header.to_str().ok().ok_or(HttpError::not_found("User not found"))?;
+        let token = auth_header
+            .to_str()
+            .ok()
+            .ok_or(HttpError::forbidden("User not found"))?;
 
         if !token.starts_with("Bearer ") {
-            return Err(HttpError::not_found("User not found"));
+            return Err(HttpError::forbidden("User not found"));
         }
 
         let token = token.replace("Bearer ", "");
         return match auth_service.get_by_token(token).await {
             Ok(user) => Ok(user),
-            Err(err) => Err(err.into()),
+            Err(err) => match err {
+                ServiceError::NotFound(_) => Err(HttpError::forbidden("User not found")),
+                _ => Err(err.into()),
+            },
         };
     }
-    Err(HttpError::not_found("User not found"))
+    Err(HttpError::forbidden("User not found"))
 }
 
 #[cfg(test)]
@@ -76,7 +90,10 @@ mod tests {
             let _ = tx.commit().await;
 
             let result = authenticate_user(service, &headers).await;
-            assert_eq!(result.err().unwrap(), HttpError::not_found("User not found"));
+            assert_eq!(
+                result.err().unwrap(),
+                HttpError::forbidden("User not found")
+            );
         })
         .await;
     }
@@ -95,7 +112,10 @@ mod tests {
             let _ = tx.commit().await;
 
             let result = authenticate_user(service, &headers).await;
-            assert_eq!(result.err().unwrap(), HttpError::not_found("User not found"));
+            assert_eq!(
+                result.err().unwrap(),
+                HttpError::forbidden("User not found")
+            );
         })
         .await;
     }
@@ -112,7 +132,10 @@ mod tests {
             let _ = tx.commit().await;
 
             let result = authenticate_user(service, &headers).await;
-            assert_eq!(result.err().unwrap(), HttpError::not_found("User not found"));
+            assert_eq!(
+                result.err().unwrap(),
+                HttpError::forbidden("User not found")
+            );
         })
         .await;
     }

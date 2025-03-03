@@ -1,4 +1,4 @@
-import {useAuth} from "@hooks/auth.ts";
+import {useAuth, useLogout} from "@hooks/auth.ts";
 import {useCallback, useState} from "react";
 
 type GetAction = (url: string, abortController?: AbortController) => void
@@ -7,13 +7,12 @@ export const useGet = <T>(): [GetAction, T | null, boolean, Error | null] => {
     const [data, setData] = useState<T | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
+    const [logout] = useLogout();
 
     const fn = useCallback(async (url: string, abortController?: AbortController) => {
         if (auth.type === 'Unauthorized') {
             setError(Error("Unauthenticated"))
             setLoading(false)
-            // setAuth(null) // FIXME
-            window.location.href = '/'
         } else {
             setLoading(true)
             fetch(`${import.meta.env.VITE_BASE_URL}${url}`, {
@@ -27,8 +26,7 @@ export const useGet = <T>(): [GetAction, T | null, boolean, Error | null] => {
             })
                 .then(response => {
                     if (response.status === 403) {
-                        // setAuth(null) // FIXME
-                        window.location.href = '/'
+                        logout()
                     }
 
                     if (!response.ok) {
@@ -64,14 +62,12 @@ export const usePost = <T>(): [PostAction, T | null, boolean, Error | null] => {
     const [data, setData] = useState<T | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
+    const [logout] = useLogout();
 
     const fn = useCallback(async (url: string, body: object, abortController?: AbortController) => {
         if (auth.type === 'Unauthorized') {
             setError(Error("Unauthenticated"))
             setLoading(false)
-            // setAuth(null) // FIXME
-            window.location.href = '/'
-
         } else {
             setLoading(true)
             fetch(`${import.meta.env.VITE_BASE_URL}${url}`, {
@@ -85,10 +81,8 @@ export const usePost = <T>(): [PostAction, T | null, boolean, Error | null] => {
                 signal: abortController?.signal
             })
                 .then(response => {
-
                     if (response.status === 403) {
-                        // setAuth(null) // FIXME
-                        window.location.href = '/'
+                        logout()
                     }
 
                     if (!response.ok) {
@@ -120,20 +114,18 @@ export const usePost = <T>(): [PostAction, T | null, boolean, Error | null] => {
     return [fn, data, loading, error]
 }
 
-type PutAction = (url: string, data: object, abortController?: AbortController) => void
-export const usePatch = <T>(): [PutAction, T | null, boolean, Error | null] => {
+type PatchAction = (url: string, data: object, abortController?: AbortController) => void
+export const usePatch = <T>(): [PatchAction, T | null, boolean, Error | null] => {
     const [auth] = useAuth()
     const [data, setData] = useState<T | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<Error | null>(null);
+    const [logout] = useLogout();
 
     const fn = useCallback(async (url: string, body: object, abortController?: AbortController) => {
         if (auth.type === 'Unauthorized') {
             setError(Error("Unauthenticated"))
             setLoading(false)
-            // setAuth(null) // FIXME
-            window.location.href = '/'
-
         } else {
             setLoading(true)
             fetch(`${import.meta.env.VITE_BASE_URL}${url}`, {
@@ -149,8 +141,7 @@ export const usePatch = <T>(): [PutAction, T | null, boolean, Error | null] => {
                 .then(response => {
 
                     if (response.status === 403) {
-                        // setAuth(null) // FIXME
-                        window.location.href = '/'
+                        logout()
                     }
 
                     if (!response.ok) {
