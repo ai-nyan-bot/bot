@@ -6971,6 +6971,7 @@ dependencies = [
  "sqlx",
  "teloxide",
  "teloxide_tests",
+ "test-log",
  "testing",
  "tokio",
  "toml 0.8.19",

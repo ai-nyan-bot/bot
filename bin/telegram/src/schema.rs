@@ -1,6 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use crate::callback::callback;
 use crate::{command, message, MessageState};
 use teloxide::dispatching::dialogue::InMemStorage;
 use teloxide::dispatching::{dialogue, UpdateFilterExt, UpdateHandler};
@@ -8,7 +9,6 @@ use teloxide::dptree::case;
 use teloxide::macros::BotCommands;
 use teloxide::prelude::Update;
 use teloxide::{dptree, filter_command};
-use crate::callback::callback;
 
 #[derive(BotCommands, Clone)]
 #[command(rename_rule = "lowercase")]
@@ -16,6 +16,7 @@ enum Command {
     Balance,
     Cancel,
     Help,
+    Rules,
     Start,
     Wallet,
 }
@@ -27,6 +28,7 @@ pub fn schema() -> UpdateHandler<Box<dyn std::error::Error + Send + Sync + 'stat
         .branch(
             case![MessageState::Main]
                 .branch(case![Command::Help].endpoint(command::help))
+                .branch(case![Command::Rules].endpoint(command::rules))
                 .branch(case![Command::Start].endpoint(command::start))
                 .branch(case![Command::Balance].endpoint(command::balance))
                 .branch(case![Command::Wallet].endpoint(command::wallet)),

@@ -3,3 +3,4 @@
 
 mod help;
 mod start;
+mod rules;
