@@ -16,6 +16,7 @@ mod command;
 mod config;
 mod dispatch;
 mod i18n;
+mod markdown;
 mod message;
 mod notify;
 mod schema;
@@ -26,14 +27,14 @@ pub type HandlerResult = Result<(), Box<dyn std::error::Error + Send + Sync>>;
 
 #[derive(Clone, Default)]
 pub enum MessageState {
-	#[default]
-	Main,
+    #[default]
+    Main,
 }
 
 pub async fn run(state: AppState, signal: Signal) {
-	let _ = try_join!(
-		async { notify(state.clone(),signal.clone()).await },
-		async { dispatch(state.clone(), signal.clone()).await }
-	);
-	println!("done");
+    let _ = try_join!(
+        async { notify(state.clone(), signal.clone()).await },
+        async { dispatch(state.clone(), signal.clone()).await }
+    );
+    println!("done");
 }

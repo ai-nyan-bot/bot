@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::AppState;
+use crate::{markdown, AppState};
 use base::model::{Notification, TokenPairId, User};
 use base::service::NotificationResult;
 use teloxide::payloads::SendMessageSetters;
@@ -63,9 +63,9 @@ pub(crate) async fn send(
     let progress = format!("{:.2}", progress);
 
     let trades = token_summary.summary.trades.all.trades.0;
-    let trades_change = token_summary.summary.trades.all.change.unwrap().0;
-    let trades_change_percent = token_summary.summary.trades.all.change_percent.unwrap().0;
-    
+    // let trades_change = token_summary.summary.trades.all.change.unwrap().0;
+    // let trades_change_percent = token_summary.summary.trades.all.change_percent.unwrap().0;
+    //
     let buy_trades = token_summary.summary.trades.buy.trades.0;
     let sell_trades = token_summary.summary.trades.sell.trades.0;
 
@@ -73,23 +73,17 @@ pub(crate) async fn send(
         .bot
         .send_message(
             Recipient::Id(ChatId(telegram_id.0.parse::<i64>().unwrap())),
-            format!(
+            markdown!(
                 r#"
 ️*{symbol}*
 is * {progress} % * along the bonding curve and on its way to graduate to Raydium 🔥🚀
 
-Trades: *{trades}* (+{trades_change}|+{trades_change_percent}%)
+Trades: *{trades}* 
 Buy: *{buy_trades}* 
 Sell: *{sell_trades}*
  
     "#
-            )
-            .replace(".", "\\.")
-            .replace("|", "\\|")
-            .replace("(", "\\(")
-            .replace(")", "\\)")
-            .replace("+", "\\+")
-            ,
+            ),
         )
         .parse_mode(ParseMode::MarkdownV2)
         // .reply_markup(create_keyboard(state.callback_store.clone(), &notification).await)
