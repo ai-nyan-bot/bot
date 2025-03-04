@@ -1,3 +1,125 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use clap::Parser;
+pub use error::*;
+pub use font::*;
+use std::path::PathBuf;
+use std::str::FromStr;
+use tokio::task::spawn_blocking;
+
+mod error;
+mod font;
+pub mod render;
+
+pub type RenderResult = std::result::Result<PathBuf, RenderError>;
+
+pub async fn render() -> RenderResult {
+    Ok(
+        spawn_blocking(|| PathBuf::from_str("/tmp/nyanbot_image.png").unwrap())
+            .await
+            .unwrap(),
+    )
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct Width(pub u32);
+
+impl From<u32> for Width {
+    fn from(value: u32) -> Self {
+        Self(value)
+    }
+}
+
+impl PartialEq<u32> for Width {
+    fn eq(&self, other: &u32) -> bool {
+        self.0 == *other
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct Height(pub u32);
+
+impl From<u32> for Height {
+    fn from(value: u32) -> Self {
+        Self(value)
+    }
+}
+
+impl PartialEq<u32> for Height {
+    fn eq(&self, other: &u32) -> bool {
+        self.0 == *other
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct Size {
+    pub width: Width,
+    pub height: Height,
+}
+
+impl PartialEq<(u32, u32)> for Size {
+    fn eq(&self, other: &(u32, u32)) -> bool {
+        self.width.0 == other.0 && self.height == other.1
+    }
+}
+
+impl From<(u32, u32)> for Size {
+    fn from(value: (u32, u32)) -> Self {
+        Self {
+            width: Width(value.0),
+            height: Height(value.1),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct X(pub u32);
+
+impl From<u32> for X {
+    fn from(value: u32) -> Self {
+        Self(value)
+    }
+}
+
+impl PartialEq<u32> for X {
+    fn eq(&self, other: &u32) -> bool {
+        self.0 == *other
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct Y(pub u32);
+
+impl From<u32> for Y {
+    fn from(value: u32) -> Self {
+        Self(value)
+    }
+}
+
+impl PartialEq<u32> for Y {
+    fn eq(&self, other: &u32) -> bool {
+        self.0 == *other
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct Point {
+    pub x: X,
+    pub y: Y,
+}
+
+impl PartialEq<(u32, u32)> for Point {
+    fn eq(&self, other: &(u32, u32)) -> bool {
+        self.x.0 == other.0 && self.y == other.1
+    }
+}
+
+impl From<(u32, u32)> for Point {
+    fn from(value: (u32, u32)) -> Self {
+        Self {
+            x: X(value.0),
+            y: Y(value.1),
+        }
+    }
+}

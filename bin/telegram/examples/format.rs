@@ -6,12 +6,13 @@ use common::repo::pool::PostgresConfig;
 use common::ConfigValue;
 use dotenv::dotenv;
 
+use render::render;
 use std::env;
 use telegram::{markdown, AppState, Config, TelegramConfig};
 use teloxide::payloads::SendPhotoSetters;
 use teloxide::prelude::ChatId;
 use teloxide::requests::Requester;
-use teloxide::types::{ParseMode, Recipient};
+use teloxide::types::{InputFile, ParseMode, Recipient};
 
 #[tokio::main]
 pub async fn main() {
@@ -156,20 +157,21 @@ pub async fn main() {
 
     // let start = Instant::now();
     // create_image().expect("Failed to generate image");
-    // let file = InputFile::file(IMAGE_PATH);
+    let image_path = render().await.unwrap();
+    let file = InputFile::file(image_path);
     //
     // println!("took: {}", Instant::now().duration_since(start).as_millis());
 
-    // state
-    //     .bot
-    //     .send_photo(Recipient::Id(ChatId(6886037674)), file)
-    //     .caption(markdown!(
-    //         r#"
-    //     	;*{symbol};*
-	//         is ;* {progress} % ;* along the bonding curve and on its way to graduate to Raydium 🔥🚀
-	// 	"#
-    //     ))
-    //     .parse_mode(ParseMode::MarkdownV2)
-    //     .await
-    //     .unwrap();
+    state
+        .bot
+        .send_photo(Recipient::Id(ChatId(6886037674)), file)
+        .caption(markdown!(
+            r#"
+        	;*{symbol};*
+	        is ;* {progress} % ;* along the bonding curve and on its way to graduate to Raydium 🔥🚀
+		"#
+        ))
+        .parse_mode(ParseMode::MarkdownV2)
+        .await
+        .unwrap();
 }

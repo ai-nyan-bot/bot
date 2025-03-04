@@ -52,7 +52,7 @@ teloxide_tests = { version = "0.2.0" }
 
 test-log = { version = "0.2.17" }
 time = { version = "0.3.37" }
-tokio = { version = "1.42.0", features = ["signal", "macros"], default-features = true }
+tokio = { version = "1.42.0", features = ["signal", "macros", "rt", "rt-multi-thread"] }
 tokio-tungstenite = { version = "0.26.1", features = ["connect", "default", "native-tls"] }
 toml = { version = "0.8.19", features = ["parse"] }
 tower = { version = "0.5.2" }

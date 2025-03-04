@@ -1,14 +1,12 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use ab_glyph::{FontRef, PxScale};
-use image::imageops::{overlay, resize, FilterType};
-use image::{DynamicImage, Rgba, RgbaImage};
-use imageproc::drawing::{draw_text_mut, Canvas};
-use rand::Rng;
+use image::{Rgba, RgbaImage};
+use render::{Font, FontType};
 use std::time::Instant;
 
-pub fn main() {
+#[tokio::main]
+pub async fn main() {
     // Markdown::with_block(
     //
     // )
@@ -19,6 +17,11 @@ pub fn main() {
     // let trades = 100;
     let buy_trades = 75;
     let sell_trades = 25;
+
+    let font = Font::new(FontType::DejaVuSans);
+
+    println!("{:?}", font.measure("dd", 45));
+    println!("{:?}", font.measure("dd", 50));
 
     // let font = Font::default();
     // let bold_font = Font::new(Style::Bold);
@@ -134,6 +137,24 @@ pub fn main() {
 
 const IMAGE_PATH: &str = "/tmp/nyanbot_image.png";
 
+// fn measure_text_size(text: &str, font_size: f32) -> (u32, u32) {
+//     // Load a font
+//     let font_data = include_bytes!("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf");
+//     let font = Font::try_from_bytes(font_data).expect("Failed to load font");
+//     let scale= Scale{ x: font_size, y: font_size };
+//     let v_metrics = font.v_metrics(scale);
+//     let v_metrics = v_metrics;
+//     let height = (v_metrics.ascent - v_metrics.descent).ceil() as u32;
+//
+//     // Get width by summing the horizontal advances of each character
+//     let width: u32 = text.chars()
+//         .map(|c| font.glyph(c).scaled(scale).h_metrics().advance_width)
+//         .sum::<f32>()
+//         .ceil() as u32;
+//
+//     (width, height)
+// }
+
 fn create_image() -> Result<(), Box<dyn std::error::Error>> {
     let img_width = 1200;
     let img_height = 1200;
@@ -154,7 +175,7 @@ fn create_image() -> Result<(), Box<dyn std::error::Error>> {
                                            //
                                            // // Generate random stars
 
-    let font = FontRef::try_from_slice(include_bytes!("../asset/DejaVuSans.ttf")).unwrap();
+    // let font = FontRef::try_from_slice(include_bytes!("../asset/DejaVuSans.ttf")).unwrap();
 
     let space_color = Rgba([10, 10, 30, 255]); // Dark blue/black space
 
@@ -162,157 +183,160 @@ fn create_image() -> Result<(), Box<dyn std::error::Error>> {
         *pixel = space_color;
     }
 
-    let mut rng = rand::thread_rng();
-    let neon_colors = [
-        Rgba([255, 0, 255, 255]), // Magenta
-        Rgba([0, 255, 255, 255]), // Cyan
-        Rgba([255, 255, 0, 255]), // Yellow
-        Rgba([0, 255, 0, 255]),   // Lime Green
-        Rgba([255, 165, 0, 255]), // Orange
-    ];
-
-    // Draw celestial objects
-    for _ in 0..50 {
-        let x = rng.gen_range(10..img_width - 10) as i32;
-        let y = rng.gen_range(10..img_height - 10) as i32;
-        let size = rng.gen_range(1..5);
-        let color = neon_colors[rng.gen_range(0..neon_colors.len())];
-
-        if rng.gen_bool(0.6) {
-            draw_text_mut(
-                &mut img,
-                color,
-                x,
-                y,
-                PxScale {
-                    x: size as f32,
-                    y: size as f32,
-                },
-                &font,
-                "*",
-            );
-        } else {
-            imageproc::drawing::draw_filled_circle_mut(&mut img, (x as i32, y as i32), size, color);
-        }
-    }
-
-    for _ in 0..100 {
-        // Adjust number of stars
-        let x = rng.gen_range(0..img_width);
-        let y = rng.gen_range(0..img_height);
-
-        let size = rng.gen_range(1..=3); // Small and large stars
-
-        for dx in 0..size {
-            for dy in 0..size {
-                if x + dx < img_width && y + dy < img_height {
-                    img.put_pixel(x + dx, y + dy, grey);
-                }
-            }
-        }
-    }
-
-    // Fill background with white
-    // for pixel in img.pixels_mut() {
-    // 	*pixel = white;
+    // let mut rng = rand::thread_rng();
+    // let neon_colors = [
+    //     Rgba([255, 0, 255, 255]), // Magenta
+    //     Rgba([0, 255, 255, 255]), // Cyan
+    //     Rgba([255, 255, 0, 255]), // Yellow
+    //     Rgba([0, 255, 0, 255]),   // Lime Green
+    //     Rgba([255, 165, 0, 255]), // Orange
+    // ];
+    //
+    // // Draw celestial objects
+    // for _ in 0..50 {
+    //     let x = rng.gen_range(10..img_width - 10) as i32;
+    //     let y = rng.gen_range(10..img_height - 10) as i32;
+    //     let size = rng.gen_range(1..5);
+    //     let color = neon_colors[rng.gen_range(0..neon_colors.len())];
+    //
+    //     if rng.gen_bool(0.6) {
+    //         draw_text_mut(
+    //             &mut img,
+    //             color,
+    //             x,
+    //             y,
+    //             Scale {
+    //                 x: size as f32,
+    //                 y: size as f32,
+    //             },
+    //             &font,
+    //             "*",
+    //         );
+    //     } else {
+    //         imageproc::drawing::draw_filled_circle_mut(&mut img, (x as i32, y as i32), size, color);
+    //     }
     // }
-
-    // Load a font
-
-    let s = 45;
-
-    let scale = PxScale {
-        x: s as f32,
-        y: s as f32,
-    };
-
-    let mut dyn_img = DynamicImage::ImageRgba8(img); // Convert to DynamicImage
-
-    // let logo = image::open("/home/ddymke/repo/nyanbot/bin/telegram/examples/logo_256.png")?; // Load the image
-    // let resized_logo = resize(&logo, 100, 100, FilterType::Lanczos3); // Resize to fit
-    // overlay(&mut dyn_img, &resized_logo, 0, 0); // Adjust position as needed
-    // overlay(&mut dyn_img, &resized_logo, 100, 0); // Adjust position as needed
-    // overlay(&mut dyn_img, &resized_logo, 200, 0); // Adjust position as needed
-    // overlay(&mut dyn_img, &resized_logo, 300, 0); // Adjust position as needed
-    // overlay(&mut dyn_img, &resized_logo, 400, 0); // Adjust position as needed
-    // overlay(&mut dyn_img, &resized_logo, 500, 0); // Adjust position as needed
-    // overlay(&mut dyn_img, &resized_logo, 600, 0); // Adjust position as needed
-    // overlay(&mut dyn_img, &resized_logo, 700, 0); // Adjust position as needed
-    // overlay(&mut dyn_img, &resized_logo, 800, 0); // Adjust position as needed
-    // overlay(&mut dyn_img, &resized_logo, 900, 0); // Adjust position as needed
-    // overlay(&mut dyn_img, &resized_logo, 1000, 0); // Adjust position as needed
-    // overlay(&mut dyn_img, &resized_logo, 1100, 0); // Adjust position as needed
-    // overlay(&mut dyn_img, &resized_logo, 1200, 0); // Adjust position as needed
     //
-    // // overlay(&mut dyn_img, &resized_logo, 0, 1200); // Adjust position as needed
+    // for _ in 0..100 {
+    //     // Adjust number of stars
+    //     let x = rng.gen_range(0..img_width);
+    //     let y = rng.gen_range(0..img_height);
+    //
+    //     let size = rng.gen_range(1..=3); // Small and large stars
+    //
+    //     for dx in 0..size {
+    //         for dy in 0..size {
+    //             if x + dx < img_width && y + dy < img_height {
+    //                 img.put_pixel(x + dx, y + dy, grey);
+    //             }
+    //         }
+    //     }
+    // }
+    //
+    // // Fill background with white
+    // // for pixel in img.pixels_mut() {
+    // // 	*pixel = white;
+    // // }
+    //
+    // // Load a font
+    //
+    // let s = 45;
+    //
+    // let scale = Scale {
+    //     x: s as f32,
+    //     y: s as f32,
+    // };
+    //
+    // let mut dyn_img = DynamicImage::ImageRgba8(img); // Convert to DynamicImage
+    //
+    // // let logo = image::open("/home/ddymke/repo/nyanbot/bin/telegram/examples/logo_256.png")?; // Load the image
+    // // let resized_logo = resize(&logo, 100, 100, FilterType::Lanczos3); // Resize to fit
+    // // overlay(&mut dyn_img, &resized_logo, 0, 0); // Adjust position as needed
+    // // overlay(&mut dyn_img, &resized_logo, 100, 0); // Adjust position as needed
+    // // overlay(&mut dyn_img, &resized_logo, 200, 0); // Adjust position as needed
+    // // overlay(&mut dyn_img, &resized_logo, 300, 0); // Adjust position as needed
+    // // overlay(&mut dyn_img, &resized_logo, 400, 0); // Adjust position as needed
+    // // overlay(&mut dyn_img, &resized_logo, 500, 0); // Adjust position as needed
+    // // overlay(&mut dyn_img, &resized_logo, 600, 0); // Adjust position as needed
+    // // overlay(&mut dyn_img, &resized_logo, 700, 0); // Adjust position as needed
+    // // overlay(&mut dyn_img, &resized_logo, 800, 0); // Adjust position as needed
+    // // overlay(&mut dyn_img, &resized_logo, 900, 0); // Adjust position as needed
+    // // overlay(&mut dyn_img, &resized_logo, 1000, 0); // Adjust position as needed
+    // // overlay(&mut dyn_img, &resized_logo, 1100, 0); // Adjust position as needed
     // // overlay(&mut dyn_img, &resized_logo, 1200, 0); // Adjust position as needed
-    // // overlay(&mut dyn_img, &resized_logo, 1200, 1200); // Adjust position as needed
+    // //
+    // // // overlay(&mut dyn_img, &resized_logo, 0, 1200); // Adjust position as needed
+    // // // overlay(&mut dyn_img, &resized_logo, 1200, 0); // Adjust position as needed
+    // // // overlay(&mut dyn_img, &resized_logo, 1200, 1200); // Adjust position as needed
+    // //
+    // // overlay(&mut dyn_img, &resized_logo, 0, 1100); // Adjust position as needed
+    // // overlay(&mut dyn_img, &resized_logo, 100, 1100); // Adjust position as needed
+    // // overlay(&mut dyn_img, &resized_logo, 200, 1100); // Adjust position as needed
+    // // overlay(&mut dyn_img, &resized_logo, 300, 1100); // Adjust position as needed
+    // // overlay(&mut dyn_img, &resized_logo, 400, 1100); // Adjust position as needed
+    // // overlay(&mut dyn_img, &resized_logo, 500, 1100); // Adjust position as needed
+    // // overlay(&mut dyn_img, &resized_logo, 600, 1100); // Adjust position as needed
+    // // overlay(&mut dyn_img, &resized_logo, 700, 1100); // Adjust position as needed
+    // // overlay(&mut dyn_img, &resized_logo, 800, 1100); // Adjust position as needed
+    // // overlay(&mut dyn_img, &resized_logo, 900, 1100); // Adjust position as needed
+    // // overlay(&mut dyn_img, &resized_logo, 1000, 1100); // Adjust position as needed
+    // // overlay(&mut dyn_img, &resized_logo, 1100, 1100); // Adjust position as needed
+    // // overlay(&mut dyn_img, &resized_logo, 1200, 1100); // Adjust position as needed
     //
-    // overlay(&mut dyn_img, &resized_logo, 0, 1100); // Adjust position as needed
-    // overlay(&mut dyn_img, &resized_logo, 100, 1100); // Adjust position as needed
-    // overlay(&mut dyn_img, &resized_logo, 200, 1100); // Adjust position as needed
-    // overlay(&mut dyn_img, &resized_logo, 300, 1100); // Adjust position as needed
-    // overlay(&mut dyn_img, &resized_logo, 400, 1100); // Adjust position as needed
-    // overlay(&mut dyn_img, &resized_logo, 500, 1100); // Adjust position as needed
-    // overlay(&mut dyn_img, &resized_logo, 600, 1100); // Adjust position as needed
-    // overlay(&mut dyn_img, &resized_logo, 700, 1100); // Adjust position as needed
-    // overlay(&mut dyn_img, &resized_logo, 800, 1100); // Adjust position as needed
-    // overlay(&mut dyn_img, &resized_logo, 900, 1100); // Adjust position as needed
-    // overlay(&mut dyn_img, &resized_logo, 1000, 1100); // Adjust position as needed
-    // overlay(&mut dyn_img, &resized_logo, 1100, 1100); // Adjust position as needed
-    // overlay(&mut dyn_img, &resized_logo, 1200, 1100); // Adjust position as needed
-
-    let mut logo = image::load_from_memory(include_bytes!("../asset/logo_256.png"))?.to_rgba8();
-    let mut watermark = resize(&logo, 1200, 1200, FilterType::Lanczos3); // Resize to fit
-
-    // Reduce opacity to make it a watermark
-    for pixel in watermark.pixels_mut() {
-        pixel.0[3] = 15; // Set transparency (0-255, lower = more transparent)
-    }
-
-    overlay(&mut dyn_img, &watermark, 0, 0); // Position in bottom-right corner
-
-    // Draw text
-    let mut x = 0;
-    let mut y = 300;
-    // for line in 0..45 {
-    // 	draw_text_mut(&mut img, black, x, y, scale, &font, "Trades");
-    // 	draw_text_mut(&mut img, black, x, y + s, scale, &font, "All: 1200");
-    // 	// draw_text_mut(&mut img, green, 400, y + 90, scale, &font, "+200");
-    // 	draw_text_mut(&mut img, green, 300, y + s, scale, &font, "3.24% (200)");
+    // let mut logo = image::load_from_memory(include_bytes!("../asset/logo_256.png"))?.to_rgba8();
+    // let mut watermark = resize(&logo, 1200, 1200, FilterType::Lanczos3); // Resize to fit
     //
-    // 	y += s;
-    // 	draw_text_mut(&mut img, black, x, y + s, scale, &font, "Buy: 100");
-    // 	draw_text_mut(&mut img, red, 300, y + s, scale, &font, "3.24% (200)");
+    // // Reduce opacity to make it a watermark
+    // for pixel in watermark.pixels_mut() {
+    //     pixel.0[3] = 15; // Set transparency (0-255, lower = more transparent)
+    // }
     //
-    // 	y += s;
-    // 	draw_text_mut(&mut img, black, x, y + s, scale, &font, "Sell: 100");
-    // 	draw_text_mut(&mut img, red, 300, y + s, scale, &font, "3.24% (200)");
-
-    // draw_text_mut(&mut img, white, x +s , y, scale, &font, "NYAN/WSOL");
-    // y += s;
-    // draw_text_mut(&mut img, white, x +s , y, scale, &font, "is 12.34% along the bonding curve");
-    // y += s;
-    // draw_text_mut(&mut img, white, x +s , y, scale, &font, "and on its way to graduate to Raydium");
-    // y += s;
-    // y += s;
-    draw_text_mut(&mut dyn_img, white, x, y, scale, &font, "Trades: All 1200");
-    draw_text_mut(&mut dyn_img, green, 300, y, scale, &font, "(3.24%)");
-    draw_text_mut(&mut dyn_img, white, 450, y, scale, &font, "Buy 1200");
-    draw_text_mut(&mut dyn_img, green, 650, y, scale, &font, "(3.24%)");
-    draw_text_mut(&mut dyn_img, white, 800, y, scale, &font, "Sell 1200");
-    draw_text_mut(&mut dyn_img, green, 1000, y, scale, &font, "(3.24%)");
-    y += s; // Move down for the next line
-            // draw_text_mut(&mut img, white, x + s, y, scale, &font, "Volume: All 1200");
-            // draw_text_mut(&mut img, green, 300 + s, y, scale, &font, "(3.24%)");
-            // draw_text_mut(&mut img, white, 450 + s, y, scale, &font, "Buy 1200");
-            // draw_text_mut(&mut img, green, 650 + s, y, scale, &font, "(3.24%)");
-            // draw_text_mut(&mut img, white, 800 + s, y, scale, &font, "Sell 1200");
-            // draw_text_mut(&mut img, green, 1000 + s, y, scale, &font, "(3.24%)");
-            // }
-
-    // Save image
-    dyn_img.save(IMAGE_PATH)?;
+    // overlay(&mut dyn_img, &watermark, 0, 0); // Position in bottom-right corner
+    //
+    // // Draw text
+    // let mut x = 0;
+    // let mut y = 300;
+    // // for line in 0..45 {
+    // // 	draw_text_mut(&mut img, black, x, y, scale, &font, "Trades");
+    // // 	draw_text_mut(&mut img, black, x, y + s, scale, &font, "All: 1200");
+    // // 	// draw_text_mut(&mut img, green, 400, y + 90, scale, &font, "+200");
+    // // 	draw_text_mut(&mut img, green, 300, y + s, scale, &font, "3.24% (200)");
+    // //
+    // // 	y += s;
+    // // 	draw_text_mut(&mut img, black, x, y + s, scale, &font, "Buy: 100");
+    // // 	draw_text_mut(&mut img, red, 300, y + s, scale, &font, "3.24% (200)");
+    // //
+    // // 	y += s;
+    // // 	draw_text_mut(&mut img, black, x, y + s, scale, &font, "Sell: 100");
+    // // 	draw_text_mut(&mut img, red, 300, y + s, scale, &font, "3.24% (200)");
+    //
+    // // draw_text_mut(&mut img, white, x +s , y, scale, &font, "NYAN/WSOL");
+    // // y += s;
+    // // draw_text_mut(&mut img, white, x +s , y, scale, &font, "is 12.34% along the bonding curve");
+    // // y += s;
+    // // draw_text_mut(&mut img, white, x +s , y, scale, &font, "and on its way to graduate to Raydium");
+    // // y += s;
+    // // y += s;
+    //
+    // println!("{:?}", measure_text_size("Trades: All 1200", 45.0));
+    //
+    // draw_text_mut(&mut dyn_img, white, x, y, scale, &font, "Trades: All 1200");
+    // draw_text_mut(&mut dyn_img, green, 300, y, scale, &font, "(3.24%)");
+    // draw_text_mut(&mut dyn_img, white, 450, y, scale, &font, "Buy 1200");
+    // draw_text_mut(&mut dyn_img, green, 650, y, scale, &font, "(3.24%)");
+    // draw_text_mut(&mut dyn_img, white, 800, y, scale, &font, "Sell 1200");
+    // draw_text_mut(&mut dyn_img, green, 1000, y, scale, &font, "(3.24%)");
+    // y += s; // Move down for the next line
+    //         // draw_text_mut(&mut img, white, x + s, y, scale, &font, "Volume: All 1200");
+    //         // draw_text_mut(&mut img, green, 300 + s, y, scale, &font, "(3.24%)");
+    //         // draw_text_mut(&mut img, white, 450 + s, y, scale, &font, "Buy 1200");
+    //         // draw_text_mut(&mut img, green, 650 + s, y, scale, &font, "(3.24%)");
+    //         // draw_text_mut(&mut img, white, 800 + s, y, scale, &font, "Sell 1200");
+    //         // draw_text_mut(&mut img, green, 1000 + s, y, scale, &font, "(3.24%)");
+    //         // }
+    //
+    // // Save image
+    // dyn_img.save(IMAGE_PATH)?;
 
     Ok(())
 }
