@@ -67,12 +67,12 @@ pub(crate) async fn send(
     let progress = token_summary.curve.progress;
     let progress = format!("{:.2}", progress);
 
-    let trades = token_summary.summary.trades.all.trades.0;
+    // let trades = token_summary.summary.trades.all.trades.0;
     // let trades_change = token_summary.summary.trades.all.change.unwrap().0;
     // let trades_change_percent = token_summary.summary.trades.all.change_percent.unwrap().0;
     //
-    let buy_trades = token_summary.summary.trades.buy.trades.0;
-    let sell_trades = token_summary.summary.trades.sell.trades.0;
+    // let buy_trades = token_summary.summary.trades.buy.trades.0;
+    // let sell_trades = token_summary.summary.trades.sell.trades.0;
 
     let caption = markdown!(
         r#"

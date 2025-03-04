@@ -21,7 +21,7 @@ impl RenderText {
         text: &Text,
     ) -> Size {
         // let mut x_offset = (start_x + self.padding.0) as u32;
-        let mut x_offset = start_x as u32;
+        let x_offset = start_x as u32;
         // let y_offset = start_y + self.padding.1;
         let y_offset = start_y as u32;
 

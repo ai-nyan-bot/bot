@@ -948,7 +948,7 @@ pub fn pumpfun(img: &mut RgbaImage, ctx: PumpfunContext) {
                     words: vec![Text {
                         content: format!("{}%", change.0),
                         size: 36.into(),
-                        color: if (change.0 > 0.0) {
+                        color: if change.0 > 0.0 {
                             increased
                         } else {
                             decreased
@@ -1174,7 +1174,7 @@ pub fn pumpfun(img: &mut RgbaImage, ctx: PumpfunContext) {
                     words: vec![Text {
                         content: format!("{}%", change.0),
                         size: 36.into(),
-                        color: if (change.0 > 0.0) {
+                        color: if change.0 > 0.0 {
                             increased
                         } else {
                             decreased
@@ -1410,7 +1410,7 @@ pub fn pumpfun(img: &mut RgbaImage, ctx: PumpfunContext) {
                     words: vec![Text {
                         content: format!("{}%", change.0),
                         size: 36.into(),
-                        color: if (change.0 > 0.0) {
+                        color: if change.0 > 0.0 {
                             increased
                         } else {
                             decreased

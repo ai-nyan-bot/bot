@@ -44,8 +44,7 @@ macro_rules! markdown {
             result.push_str(current_line.trim());
         }
 
-        // result.trim().to_string()
-        result
+        result.trim().to_string()
     }};
 }
 mod tests {
@@ -55,10 +54,12 @@ mod tests {
         let symbol = "WSOL/USDT";
         let progress = 42.24;
 
-        let result = markdown!( r#"
+        let result = markdown!(
+            r#"
             ;*{symbol};*
             is ;* {progress} % ;* along the bonding curve and on its way to graduate to Raydium! 🔥🚀
-        "#);
+        "#
+        );
         assert_eq!(result, "*WSOL/USDT*\nis * 42\\.24 % * along the bonding curve and on its way to graduate to Raydium\\! 🔥🚀");
     }
 
@@ -124,7 +125,6 @@ mod tests {
         let result = markdown!(";*");
         assert_eq!(result, "*");
     }
-
 
     #[test]
     fn test_apostrophes() {
