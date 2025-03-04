@@ -25,6 +25,18 @@ create table pumpfun.summary_1m
     curve_progress_low             real,
     curve_progress_low_change      real,
 
+    holder_avg                     int4,
+    holder_avg_change              int4,
+    holder_avg_change_percent      real,
+
+    holder_high                    int4,
+    holder_high_change             int4,
+    holder_high_change_percent     real,
+
+    holder_low                     int4,
+    holder_low_change              int4,
+    holder_low_change_percent      real,
+
     liquidity_avg                  double precision,
     liquidity_avg_usd              double precision,
     liquidity_avg_change           double precision,
@@ -138,6 +150,18 @@ create table pumpfun.summary_5m
 
     curve_progress_low             real,
     curve_progress_low_change      real,
+
+    holder_avg                     int4,
+    holder_avg_change              int4,
+    holder_avg_change_percent      real,
+
+    holder_high                    int4,
+    holder_high_change             int4,
+    holder_high_change_percent     real,
+
+    holder_low                     int4,
+    holder_low_change              int4,
+    holder_low_change_percent      real,
 
     liquidity_avg                  double precision,
     liquidity_avg_usd              double precision,
@@ -253,6 +277,18 @@ create table pumpfun.summary_15m
     curve_progress_low             real,
     curve_progress_low_change      real,
 
+    holder_avg                     int4,
+    holder_avg_change              int4,
+    holder_avg_change_percent      real,
+
+    holder_high                    int4,
+    holder_high_change             int4,
+    holder_high_change_percent     real,
+
+    holder_low                     int4,
+    holder_low_change              int4,
+    holder_low_change_percent      real,
+
     liquidity_avg                  double precision,
     liquidity_avg_usd              double precision,
     liquidity_avg_change           double precision,
@@ -366,6 +402,18 @@ create table pumpfun.summary_1h
 
     curve_progress_low             real,
     curve_progress_low_change      real,
+
+    holder_avg                     int4,
+    holder_avg_change              int4,
+    holder_avg_change_percent      real,
+
+    holder_high                    int4,
+    holder_high_change             int4,
+    holder_high_change_percent     real,
+
+    holder_low                     int4,
+    holder_low_change              int4,
+    holder_low_change_percent      real,
 
     liquidity_avg                  double precision,
     liquidity_avg_usd              double precision,
@@ -481,6 +529,18 @@ create table pumpfun.summary_6h
     curve_progress_low             real,
     curve_progress_low_change      real,
 
+    holder_avg                     int4,
+    holder_avg_change              int4,
+    holder_avg_change_percent      real,
+
+    holder_high                    int4,
+    holder_high_change             int4,
+    holder_high_change_percent     real,
+
+    holder_low                     int4,
+    holder_low_change              int4,
+    holder_low_change_percent      real,
+
     liquidity_avg                  double precision,
     liquidity_avg_usd              double precision,
     liquidity_avg_change           double precision,
@@ -594,6 +654,18 @@ create table pumpfun.summary_1d
 
     curve_progress_low             real,
     curve_progress_low_change      real,
+
+    holder_avg                     int4,
+    holder_avg_change              int4,
+    holder_avg_change_percent      real,
+
+    holder_high                    int4,
+    holder_high_change             int4,
+    holder_high_change_percent     real,
+
+    holder_low                     int4,
+    holder_low_change              int4,
+    holder_low_change_percent      real,
 
     liquidity_avg                  double precision,
     liquidity_avg_usd              double precision,
