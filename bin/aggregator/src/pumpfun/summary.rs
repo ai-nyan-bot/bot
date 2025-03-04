@@ -128,8 +128,8 @@ impl RefreshSummary {
                     tokio::spawn(async move {
                         let mut tx = pool.begin().await.unwrap();
 
-                        repo.clean_4h(&mut tx).await.unwrap();
-                        repo.calculate_4h(&mut tx, partition).await.unwrap();
+                        repo.clean_6h(&mut tx).await.unwrap();
+                        repo.calculate_6h(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
                         tokio::time::sleep(Duration::from_secs(10)).await;

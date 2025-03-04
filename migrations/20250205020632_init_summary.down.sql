@@ -13,8 +13,8 @@ drop table pumpfun.summary_15m cascade;
 drop trigger set_updated_at on pumpfun.summary_1h;
 drop table pumpfun.summary_1h cascade;
 
-drop trigger set_updated_at on pumpfun.summary_4h;
-drop table pumpfun.summary_4h cascade;
+drop trigger set_updated_at on pumpfun.summary_6h;
+drop table pumpfun.summary_6h cascade;
 
 drop trigger set_updated_at on pumpfun.summary_1d;
 drop table pumpfun.summary_1d cascade;

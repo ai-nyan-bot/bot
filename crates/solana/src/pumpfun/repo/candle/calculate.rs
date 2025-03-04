@@ -326,13 +326,13 @@ impl CandleRepo {
         .await
     }
 
-    pub async fn calculate_4h<'a>(&self, tx: &mut Tx<'a>, partition: Partition) -> RepoResult<()> {
+    pub async fn calculate_6h<'a>(&self, tx: &mut Tx<'a>, partition: Partition) -> RepoResult<()> {
         aggregate_candle(
             tx,
-            4,
+            6,
             "hours",
             format!("pumpfun.candle_1h_{partition}").as_str(),
-            format!("pumpfun.candle_4h_{partition}").as_str(),
+            format!("pumpfun.candle_6h_{partition}").as_str(),
         )
         .await
     }
@@ -341,7 +341,7 @@ impl CandleRepo {
             tx,
             1,
             "day",
-            format!("pumpfun.candle_4h_{partition}").as_str(),
+            format!("pumpfun.candle_6h_{partition}").as_str(),
             format!("pumpfun.candle_1d_{partition}").as_str(),
         )
         .await

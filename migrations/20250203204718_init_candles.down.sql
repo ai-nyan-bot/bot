@@ -23,9 +23,9 @@ drop table pumpfun.candle_1h_most_recent cascade;
 drop function pumpfun.candle_1h_update_most_recent cascade;
 drop table pumpfun.candle_1h cascade;
 
-drop table pumpfun.candle_4h_most_recent cascade;
-drop function pumpfun.candle_4h_update_most_recent cascade;
-drop table pumpfun.candle_4h cascade;
+drop table pumpfun.candle_6h_most_recent cascade;
+drop function pumpfun.candle_6h_update_most_recent cascade;
+drop table pumpfun.candle_6h cascade;
 
 drop table pumpfun.candle_1d_most_recent cascade;
 drop function pumpfun.candle_1d_update_most_recent cascade;

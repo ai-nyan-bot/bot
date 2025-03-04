@@ -45,10 +45,10 @@ where updated_at < (select * from last_timestamp) - interval '1 hour';
 		Ok(())
 	}
 
-	pub async fn clean_4h<'a>(&self, tx: &mut Tx<'a>) -> RepoResult<()> {
+	pub async fn clean_6h<'a>(&self, tx: &mut Tx<'a>) -> RepoResult<()> {
 		let query_str = r#"
-with last_timestamp as (select updated_at from pumpfun.summary_4h order by updated_at desc limit 1)
-delete from pumpfun.summary_4h
+with last_timestamp as (select updated_at from pumpfun.summary_6h order by updated_at desc limit 1)
+delete from pumpfun.summary_6h
 where updated_at < (select * from last_timestamp) - interval '4 hour';
         "#;
 		let _ = sqlx::query(query_str).execute(&mut **tx).await?;

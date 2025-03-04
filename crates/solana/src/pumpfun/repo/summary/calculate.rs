@@ -57,14 +57,14 @@ impl SummaryRepo {
 			.await
 	}
 
-	pub async fn calculate_4h<'a>(&self, tx: &mut Tx<'a>, partition: Partition) -> RepoResult<()> {
+	pub async fn calculate_6h<'a>(&self, tx: &mut Tx<'a>, partition: Partition) -> RepoResult<()> {
 		calculate_summary(
 			tx,
 			8,
 			"hours",
-			"pumpfun.candle_4h_most_recent",
-			format!("pumpfun.candle_4h_{partition}").as_str(),
-			"pumpfun.summary_4h",
+			"pumpfun.candle_6h_most_recent",
+			format!("pumpfun.candle_6h_{partition}").as_str(),
+			"pumpfun.summary_6h",
 		)
 			.await
 	}
