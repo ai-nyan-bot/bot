@@ -13,6 +13,7 @@ pub struct Font {
     unicode: HashMap<char, char>,
 }
 
+
 impl Font {
     pub fn new(style: Style) -> Self {
         let mut unicode_map: HashMap<char, char> = HashMap::new();
@@ -45,8 +46,9 @@ impl Font {
         }
     }
 
-    pub fn format(&self, text: &str) -> String {
-        text.chars()
+    pub fn format(&self, text: impl AsRef<str>) -> String {
+        text.as_ref()
+            .chars()
             .map(|c| self.unicode.get(&c).cloned().unwrap_or(c))
             .collect()
     }

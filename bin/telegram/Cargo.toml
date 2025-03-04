@@ -23,6 +23,12 @@ tracing-subscriber = { workspace = true }
 url = { workspace = true }
 uuid = { workspace = true }
 
+ab_glyph = "0.2.29"
+image = "0.25.5"
+rusttype = "0.9.3"
+imageproc = "0.25.0"
+rand = "0.8.5"   # Add this line
+
 [dev-dependencies]
 teloxide_tests = { workspace = true }
 test-log = { workspace = true }
