@@ -5,8 +5,9 @@ rust-version.workspace = true
 edition.workspace = true
 
 [dependencies]
-common = { path = "../../crates/common" }
 base = { path = "../../crates/base" }
+common = { path = "../../crates/common" }
+render = { path = "../../crates/render" }
 solana = { path = "../../crates/solana" }
 testing = { path = "../../crates/testing" }
 
@@ -22,12 +23,6 @@ tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
 url = { workspace = true }
 uuid = { workspace = true }
-
-ab_glyph = "0.2.29"
-image = "0.25.5"
-rusttype = "0.9.3"
-imageproc = "0.25.0"
-rand = "0.8.5"   # Add this line
 
 [dev-dependencies]
 teloxide_tests = { workspace = true }

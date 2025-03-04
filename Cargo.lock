@@ -4555,6 +4555,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2b15c43186be67a4fd63bee50d0303afffcef381492ebe2c5d87f324e1b8815c"
 
 [[package]]
+name = "render"
+version = "0.0.1"
+dependencies = [
+ "ab_glyph",
+ "image",
+ "imageproc",
+ "rand 0.8.5",
+ "rusttype",
+ "tokio",
+]
+
+[[package]]
 name = "reqwest"
 version = "0.11.27"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -7501,15 +7513,11 @@ dependencies = [
 name = "telegram"
 version = "0.0.1"
 dependencies = [
- "ab_glyph",
  "base",
  "common",
  "dotenv",
- "image",
- "imageproc",
  "log",
- "rand 0.8.5",
- "rusttype",
+ "render",
  "serde",
  "serde_json",
  "solana",

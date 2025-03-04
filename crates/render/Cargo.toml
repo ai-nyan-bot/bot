@@ -1,0 +1,15 @@
+[package]
+name = "render"
+version.workspace = true
+rust-version.workspace = true
+edition.workspace = true
+
+[dependencies]
+ab_glyph = { version = "0.2.29" }
+image = { version = "0.25.5" }
+imageproc = { version = "0.25.0" }
+rand = { workspace = true }
+rusttype = { version = "0.9.3" }
+tokio = { workspace = true }
+
+[dev-dependencies]
