@@ -5,20 +5,20 @@ use base::model::{TokenPairId, Trades, TradesChange, TradesChangePercent};
 
 #[derive(Clone, Debug)]
 pub struct Summary {
-	pub token_pair: TokenPairId,
-	pub trades: SummaryTrades,
+    pub token_pair: TokenPairId,
+    pub trades: SummaryTrades,
 }
 
 #[derive(Clone, Debug)]
 pub struct SummaryTrades {
-	pub buy: TradesWithChange,
-	pub sell: TradesWithChange,
-	pub all: TradesWithChange,
+    pub all: TradesWithChange,
+    pub buy: TradesWithChange,
+    pub sell: TradesWithChange,
 }
 
 #[derive(Clone, Debug)]
 pub struct TradesWithChange {
-	pub trades: Trades,
-	pub change: Option<TradesChange>,
-	pub change_percent: Option<TradesChangePercent>,
+    pub trades: Trades,
+    pub change: Option<TradesChange>,
+    pub change_percent: Option<TradesChangePercent>,
 }

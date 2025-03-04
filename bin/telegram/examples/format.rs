@@ -6,7 +6,7 @@ use common::repo::pool::PostgresConfig;
 use common::ConfigValue;
 use dotenv::dotenv;
 
-use render::render;
+use render::{render, Font, FontType, RenderBackground, RenderWatermark};
 use std::env;
 use telegram::{markdown, AppState, Config, TelegramConfig};
 use teloxide::payloads::SendPhotoSetters;
@@ -157,7 +157,13 @@ pub async fn main() {
 
     // let start = Instant::now();
     // create_image().expect("Failed to generate image");
-    let image_path = render().await.unwrap();
+    let image_path = render(|img| {
+        let font = Font::new(FontType::DejaVuSans);
+        RenderBackground::render(img);
+        RenderWatermark::render(img);
+    })
+    .await
+    .unwrap();
     let file = InputFile::file(image_path);
     //
     // println!("took: {}", Instant::now().duration_since(start).as_millis());

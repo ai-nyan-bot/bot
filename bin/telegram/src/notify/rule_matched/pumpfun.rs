@@ -2,12 +2,17 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::{markdown, AppState};
-use base::model::{Notification, TokenPairId, User};
+use base::model::{Notification, TokenPairId, TradesChangePercent, User};
 use base::service::NotificationResult;
-use teloxide::payloads::SendMessageSetters;
+use render::page::{pumpfun, PumpfunContext};
+use render::render;
+use teloxide::payloads::SendPhotoSetters;
 use teloxide::requests::Requester;
-use teloxide::types::{ChatId, InlineKeyboardButton, InlineKeyboardMarkup, ParseMode, Recipient};
+use teloxide::types::{
+    ChatId, InlineKeyboardButton, InlineKeyboardMarkup, InputFile, ParseMode, Recipient,
+};
 use url::Url;
+use solana::model::{Summary, SummaryTrades, TradesWithChange};
 
 pub(crate) async fn send(
     state: AppState,
@@ -69,44 +74,56 @@ pub(crate) async fn send(
     let buy_trades = token_summary.summary.trades.buy.trades.0;
     let sell_trades = token_summary.summary.trades.sell.trades.0;
 
-    // is * {progress} % * along the bonding curve and on its way to graduate to Raydium 🔥🚀
-    //
-    // Trades: *{trades}*
-    //     Buy: *{buy_trades}*
-    //     Sell: *{sell_trades}*
-
-    let text = markdown!(r#"
+    let caption = markdown!(
+        r#"
         ;* {symbol} ;*
         is ;* {progress} % ;* along the bonding curve and on its way to graduate to Raydium 🔥🚀
+    "#
+    );
 
-        ;*Trades;*
-        ;`All:    ;`;*{trades};*;`  ;`(+23 | +15.42%)🚀 
-        ;`Buy:    ;`;*{buy_trades};*;`  ;`(+24 | +12.42%)🚀
-        ;`Sell:   ;`;*{sell_trades};*;`    ;`(+12 | +23.42%)🚀
+    // println!("{}", text);
 
-
-        ;`;`;`
-        Trades:
-        All:    {trades}  (+23 | +15.42%)🚀
-        Buy:    {buy_trades}  (+24 | +12.42%)🚀
-        Sell:   {sell_trades}    (+12 | +23.42%)🚀
-        ;`;`;`
-
-        ;`;`;`Trades
-        All:    {trades}  (+23 | +15.42%)🚀
-        Buy:    {buy_trades}  (+24 | +12.42%)🚀
-        Sell:   {sell_trades}    (+12 | +23.42%)🚀
-        ;`;`;`
-    "#);
-
-    println!("{}", text);
+    let image_path = render(|img| {
+        pumpfun(
+            img,
+            PumpfunContext {
+                m1: None,
+                h1: Some(Summary {
+                    token_pair: 1.into(),
+                    trades: SummaryTrades {
+                        all: TradesWithChange {
+                            trades: 3.into(),
+                            change: Some(1.into()),
+                            change_percent: Some(33.3.into()),
+                        },
+                        buy: TradesWithChange {
+                            trades: 2.into(),
+                            change: Some(2.into()),
+                            change_percent: Some(100.0.into()),
+                        },
+                        sell: TradesWithChange {
+                            trades: 1.into(),
+                            change: Some(1.into()),
+                            change_percent: Some(TradesChangePercent::from(-50.0)),
+                        },
+                    },
+                }),
+                d1: None,
+            },
+        )
+    })
+    .await
+    .unwrap();
+    
+    let file = InputFile::file(image_path);
 
     let _x = state
         .bot
-        .send_message(
+        .send_photo(
             Recipient::Id(ChatId(telegram_id.0.parse::<i64>().unwrap())),
-            text,
+            file,
         )
+        .caption(caption)
         .parse_mode(ParseMode::MarkdownV2)
         // .reply_markup(create_keyboard(state.callback_store.clone(), &notification).await)
         .reply_markup(buttons)
