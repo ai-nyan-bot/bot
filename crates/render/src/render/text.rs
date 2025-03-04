@@ -2,19 +2,19 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::{Font, FontSize, Point, Size};
-use image::{Rgb, RgbImage};
+use image::{Rgba, RgbaImage};
 
 pub struct Text {
     pub content: String,
     pub size: FontSize,
-    pub color: Rgb<u8>,
+    pub color: Rgba<u8>,
 }
 
-pub struct TextRender {}
+pub struct RenderText {}
 
-impl TextRender {
+impl RenderText {
     pub fn render(
-        img: &mut RgbImage,
+        img: &mut RgbaImage,
         font: &Font,
         start_x: u32,
         start_y: u32,
@@ -33,10 +33,10 @@ impl TextRender {
         for glyph in font.layout(&text.content, text.size, offset) {
             if let Some(bb) = glyph.pixel_bounding_box() {
                 glyph.draw(|gx, gy, v| {
-                    let px = bb.min.x as u32 + gx;
-                    let py = bb.min.y as u32 + gy;
+                    let px = (bb.min.x + gx as i32) as u32;
+                    let py = (bb.min.y + gy as i32) as u32;
 
-                    if px >= 0 && py >= 0 && px < img.width() as u32 && py < img.height() as u32 {
+                    if px < img.width() as u32 && py < img.height() as u32 {
                         let px = px as u32;
                         let py = py as u32;
 
@@ -44,17 +44,18 @@ impl TextRender {
                         let blend =
                             |a, b, alpha| ((a as f32 * (1.0 - alpha)) + (b as f32 * alpha)) as u8;
 
-                        *pixel = Rgb([
+                        *pixel = Rgba([
                             blend(pixel[0], text.color[0], v),
                             blend(pixel[1], text.color[1], v),
                             blend(pixel[2], text.color[2], v),
+                            blend(pixel[3], text.color[3], v),
                         ]);
                     }
                 });
             }
         }
 
-        return font.measure(text.content.as_str(), text.size);
+        font.measure(text.content.as_str(), text.size)
 
         // let px_scale = PxScale::from(45.0);
         //
