@@ -21,7 +21,7 @@ impl CandleRepo {
             format!("candle_1m_{}", partition),
             format!("twap_1m_{}", partition),
             "sol_price_1m",
-            "candle_price_usd_1m",
+            "candle_usd_1m",
         )
         .await
     }
@@ -38,7 +38,7 @@ impl CandleRepo {
             format!("candle_5m_{}", partition),
             format!("twap_5m_{}", partition),
             "sol_price_5m",
-            "candle_price_usd_5m",
+            "candle_usd_5m",
         )
         .await
     }
@@ -55,7 +55,7 @@ impl CandleRepo {
             format!("candle_15m_{}", partition),
             format!("twap_15m_{}", partition),
             "sol_price_15m",
-            "candle_price_usd_15m",
+            "candle_usd_15m",
         )
         .await
     }
@@ -72,7 +72,7 @@ impl CandleRepo {
             format!("candle_1h_{}", partition),
             format!("twap_1h_{}", partition),
             "sol_price_1h",
-            "candle_price_usd_1h",
+            "candle_usd_1h",
         )
         .await
     }
@@ -89,7 +89,7 @@ impl CandleRepo {
             format!("candle_6h_{}", partition),
             format!("twap_6h_{}", partition),
             "sol_price_6h",
-            "candle_price_usd_6h",
+            "candle_usd_6h",
         )
         .await
     }
@@ -106,7 +106,7 @@ impl CandleRepo {
             format!("candle_1d_{}", partition),
             format!("twap_1d_{}", partition),
             "sol_price_1d",
-            "candle_price_usd_1d",
+            "candle_usd_1d",
         )
         .await
     }
