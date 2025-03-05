@@ -99,7 +99,7 @@ impl<L: LoadTokenInfo<Mint>> TradeRepo<L> {
                 let token_pair = token_pairs.get(&(base_mint, quote_mint)).unwrap();
 
                 let (price, amount_base, amount_quote, is_buy) =
-                    calculate_price_amount_and_side(&trade, &token_pair.base, &token_pair.quote);
+                    calculate_amount_and_side(&trade, &token_pair.base, &token_pair.quote);
 
                 slots.push(slot.slot);
                 address_ids.push(keys.get(&trade.wallet).unwrap());
@@ -162,7 +162,7 @@ returning slot, address_id, token_pair_id, amount_base, amount_quote, price, is_
     }
 }
 
-fn calculate_price_amount_and_side(
+fn calculate_amount_and_side(
     trade: &SlotTrade,
     base_token: &Token,
     quote_token: &Token,

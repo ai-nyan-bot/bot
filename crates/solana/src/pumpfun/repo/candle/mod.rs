@@ -6,6 +6,7 @@ use std::ops::Deref;
 use std::sync::Arc;
 
 mod calculate;
+mod calculate_progress;
 mod calculate_usd;
 mod count;
 

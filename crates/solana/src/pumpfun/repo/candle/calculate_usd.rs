@@ -9,7 +9,7 @@ use common::model::Partition;
 use common::repo::{RepoResult, Tx};
 
 impl CandleRepo {
-    pub async fn calculate_price_usd_1m<'a>(
+    pub async fn calculate_usd_1m<'a>(
         &self,
         tx: &mut Tx<'a>,
         partition: Partition,
@@ -26,7 +26,7 @@ impl CandleRepo {
         .await
     }
 
-    pub async fn calculate_price_usd_5m<'a>(
+    pub async fn calculate_usd_5m<'a>(
         &self,
         tx: &mut Tx<'a>,
         partition: Partition,
@@ -43,7 +43,7 @@ impl CandleRepo {
         .await
     }
 
-    pub async fn calculate_price_usd_15m<'a>(
+    pub async fn calculate_usd_15m<'a>(
         &self,
         tx: &mut Tx<'a>,
         partition: Partition,
@@ -60,7 +60,7 @@ impl CandleRepo {
         .await
     }
 
-    pub async fn calculate_price_usd_1h<'a>(
+    pub async fn calculate_usd_1h<'a>(
         &self,
         tx: &mut Tx<'a>,
         partition: Partition,
@@ -77,7 +77,7 @@ impl CandleRepo {
         .await
     }
 
-    pub async fn calculate_price_usd_6h<'a>(
+    pub async fn calculate_usd_6h<'a>(
         &self,
         tx: &mut Tx<'a>,
         partition: Partition,
@@ -94,7 +94,7 @@ impl CandleRepo {
         .await
     }
 
-    pub async fn calculate_price_usd_1d<'a>(
+    pub async fn calculate_usd_1d<'a>(
         &self,
         tx: &mut Tx<'a>,
         partition: Partition,

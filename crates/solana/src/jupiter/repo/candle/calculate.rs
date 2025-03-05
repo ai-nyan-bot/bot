@@ -9,7 +9,7 @@ use common::model::Partition;
 use common::repo::{RepoResult, Tx};
 
 impl CandleRepo {
-    pub async fn calculate_price_1s<'a>(
+    pub async fn calculate_1s<'a>(
         &self,
         tx: &mut Tx<'a>,
         partition: Partition,
@@ -319,12 +319,12 @@ select * from insert_current_candle
 }
 
 impl CandleRepo {
-    pub async fn calculate_price_1m<'a>(
+    pub async fn calculate_1m<'a>(
         &self,
         tx: &mut Tx<'a>,
         partition: Partition,
     ) -> RepoResult<()> {
-        aggregate_candle_price(
+        aggregate_candle(
             tx,
             1,
             "minute",
@@ -334,12 +334,12 @@ impl CandleRepo {
         .await
     }
 
-    pub async fn calculate_price_5m<'a>(
+    pub async fn calculate_5m<'a>(
         &self,
         tx: &mut Tx<'a>,
         partition: Partition,
     ) -> RepoResult<()> {
-        aggregate_candle_price(
+        aggregate_candle(
             tx,
             5,
             "minute",
@@ -349,12 +349,12 @@ impl CandleRepo {
         .await
     }
 
-    pub async fn calculate_price_15m<'a>(
+    pub async fn calculate_15m<'a>(
         &self,
         tx: &mut Tx<'a>,
         partition: Partition,
     ) -> RepoResult<()> {
-        aggregate_candle_price(
+        aggregate_candle(
             tx,
             15,
             "minute",
@@ -364,12 +364,12 @@ impl CandleRepo {
         .await
     }
 
-    pub async fn calculate_price_1h<'a>(
+    pub async fn calculate_1h<'a>(
         &self,
         tx: &mut Tx<'a>,
         partition: Partition,
     ) -> RepoResult<()> {
-        aggregate_candle_price(
+        aggregate_candle(
             tx,
             1,
             "hour",
@@ -379,12 +379,12 @@ impl CandleRepo {
         .await
     }
 
-    pub async fn calculate_price_6h<'a>(
+    pub async fn calculate_6h<'a>(
         &self,
         tx: &mut Tx<'a>,
         partition: Partition,
     ) -> RepoResult<()> {
-        aggregate_candle_price(
+        aggregate_candle(
             tx,
             6,
             "hours",
@@ -393,12 +393,12 @@ impl CandleRepo {
         )
         .await
     }
-    pub async fn calculate_price_1d<'a>(
+    pub async fn calculate_1d<'a>(
         &self,
         tx: &mut Tx<'a>,
         partition: Partition,
     ) -> RepoResult<()> {
-        aggregate_candle_price(
+        aggregate_candle(
             tx,
             1,
             "day",
@@ -409,7 +409,7 @@ impl CandleRepo {
     }
 }
 
-async fn aggregate_candle_price<'a>(
+async fn aggregate_candle<'a>(
     tx: &mut Tx<'a>,
     window: usize,
     time_unit: &str,
