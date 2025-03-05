@@ -7,6 +7,7 @@ use std::sync::Arc;
 
 mod calculate_price;
 mod count;
+mod calculate_price_usd;
 
 pub struct CandleQuery {
     pub limit: Limit,
