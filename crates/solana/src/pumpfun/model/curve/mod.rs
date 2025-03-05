@@ -4,7 +4,7 @@
 use crate::model::Slot;
 use base::model::{Amount, Percent, TokenPairId};
 use common::model::UpdatedAt;
-pub use progress::CalculateProgress;
+pub use progress::calculate_progress;
 
 mod progress;
 

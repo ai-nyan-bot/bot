@@ -4,7 +4,7 @@
 use crate::pumpfun::repo::curve::{inserting_slot_trades, updating_slot_trades};
 use solana::model::Signature;
 use solana::pumpfun::repo::CurveRepo;
-use testing::pumpfun::{count_all_curve_logs, count_all_curves, insert_trade};
+use testing::pumpfun::{count_all_curves, insert_trade};
 use testing::run_test_on_empty_db;
 
 #[test_log::test(sqlx::test)]
@@ -25,9 +25,6 @@ async fn test_creates_curve() {
         assert!(!result.complete);
 
         let count = count_all_curves(&mut tx).await;
-        assert_eq!(count, 1);
-
-        let count = count_all_curve_logs(&mut tx).await;
         assert_eq!(count, 1);
     })
     .await;
@@ -63,9 +60,6 @@ async fn test_update_curve() {
 
         let count = count_all_curves(&mut tx).await;
         assert_eq!(count, 1);
-
-        let count = count_all_curve_logs(&mut tx).await;
-        assert_eq!(count, 2);
     })
     .await;
 }

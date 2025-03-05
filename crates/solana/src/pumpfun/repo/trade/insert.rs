@@ -5,10 +5,10 @@
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
 use crate::model::{Signature, Slot};
-use crate::pumpfun::model::Trade;
+use crate::pumpfun::model::{calculate_progress, Trade};
 use crate::pumpfun::repo::TradeRepo;
 use base::model::{
-	AddressId, Amount, DecimalAmount, PriceQuote, PublicKey, Mint, TokenPairId,
+    AddressId, Amount, DecimalAmount, Mint, Percent, PriceQuote, PublicKey, TokenPairId,
 };
 use base::LoadTokenInfo;
 use common::model::Timestamp;
@@ -94,6 +94,7 @@ impl<L: LoadTokenInfo<Mint>> TradeRepo<L> {
         let mut timestamps = Vec::with_capacity(len);
         let mut quote_reserves = Vec::with_capacity(len);
         let mut base_reserves = Vec::with_capacity(len);
+        let mut progresses = Vec::with_capacity(len);
         let mut signatures = Vec::with_capacity(len);
 
         for trade in &slot.trades {
@@ -115,6 +116,8 @@ impl<L: LoadTokenInfo<Mint>> TradeRepo<L> {
             timestamps.push(slot.timestamp);
             base_reserves.push(base_reserve);
             quote_reserves.push(quote_reserve);
+            progresses.push(calculate_progress(base_reserve));
+
             signatures.push(trade.signature.clone());
         }
 
@@ -122,7 +125,7 @@ impl<L: LoadTokenInfo<Mint>> TradeRepo<L> {
             r#"
 insert into pumpfun.trade (
     slot, address_id, token_pair_id, base_amount, quote_amount, price,
-    is_buy, timestamp, virtual_base_reserves, virtual_quote_reserves, signature
+    is_buy, timestamp, virtual_base_reserves, virtual_quote_reserves,progress, signature
 )
 select
     unnest($1::int8[]) as slot,
@@ -135,9 +138,10 @@ select
     unnest($8::timestamptz[]) as timestamp,
     unnest($9::int8[]) as virtual_base_reserves,
     unnest($10::int8[]) as virtual_quote_reserves,
-    unnest($11::text[]) as signature
+    unnest($11::real[]) as progress,
+    unnest($12::text[]) as signature
 on conflict (token_pair_id,signature) do nothing
-returning slot, address_id, token_pair_id, base_amount, quote_amount, price, is_buy, timestamp, virtual_base_reserves, virtual_quote_reserves;  "#,
+returning slot, address_id, token_pair_id, base_amount, quote_amount, price, is_buy, timestamp, virtual_base_reserves, virtual_quote_reserves, progress;  "#,
         )
         .bind(&slots)
         .bind(&address_ids)
@@ -149,6 +153,7 @@ returning slot, address_id, token_pair_id, base_amount, quote_amount, price, is_
         .bind(&timestamps)
         .bind(&base_reserves)
         .bind(&quote_reserves)
+        .bind(&progresses)
         .bind(&signatures)
         .fetch_all(&mut **tx)
         .await?;
@@ -166,6 +171,7 @@ returning slot, address_id, token_pair_id, base_amount, quote_amount, price, is_
                 timestamp: r.get::<Timestamp, _>("timestamp"),
                 virtual_base_reserves: r.get::<Amount, _>("virtual_base_reserves"),
                 virtual_quote_reserves: r.get::<Amount, _>("virtual_quote_reserves"),
+                progress: r.get::<Percent, _>("progress"),
             })
             .collect::<Vec<_>>();
 

@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::Slot;
-use base::model::{AddressId, Amount, DecimalAmount, PriceQuote, TokenPairId};
+use base::model::{AddressId, Amount, DecimalAmount, Percent, PriceQuote, TokenPairId};
 use common::model::Timestamp;
 
 #[derive(Debug)]
@@ -17,4 +17,5 @@ pub struct Trade {
     pub timestamp: Timestamp,
     pub virtual_base_reserves: Amount,
     pub virtual_quote_reserves: Amount,
+    pub progress: Percent
 }

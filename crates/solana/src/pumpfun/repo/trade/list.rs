@@ -4,7 +4,7 @@
 use crate::model::{Signature, Slot};
 use crate::pumpfun::model::Trade;
 use crate::pumpfun::repo::ReadTradeRepo;
-use base::model::{AddressId, Amount, DecimalAmount, PriceQuote, TokenPairId};
+use base::model::{AddressId, Amount, DecimalAmount, Percent, PriceQuote, TokenPairId};
 use common::model::Timestamp;
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
@@ -26,6 +26,7 @@ impl ReadTradeRepo {
                 timestamp: r.get::<Timestamp, _>("timestamp"),
                 virtual_base_reserves: r.get::<Amount, _>("virtual_base_reserves"),
                 virtual_quote_reserves: r.get::<Amount, _>("virtual_quote_reserves"),
+                progress: r.get::<Percent, _>("progress"),
             })
             .collect::<Vec<_>>()
             .into_boxed_slice())
@@ -47,6 +48,7 @@ impl ReadTradeRepo {
                 timestamp: r.get::<Timestamp, _>("timestamp"),
                 virtual_base_reserves: r.get::<Amount, _>("virtual_base_reserves"),
                 virtual_quote_reserves: r.get::<Amount, _>("virtual_quote_reserves"),
+                progress: r.get::<Percent, _>("progress"),
             })
             .collect::<Vec<_>>())
     }
@@ -68,6 +70,7 @@ impl ReadTradeRepo {
                 timestamp: r.get::<Timestamp, _>("timestamp"),
                 virtual_base_reserves: r.get::<Amount, _>("virtual_base_reserves"),
                 virtual_quote_reserves: r.get::<Amount, _>("virtual_quote_reserves"),
+                progress: r.get::<Percent, _>("progress"),
             })
             .collect::<Vec<_>>())
     }

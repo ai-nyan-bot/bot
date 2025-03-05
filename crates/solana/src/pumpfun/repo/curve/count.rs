@@ -13,11 +13,4 @@ impl CurveRepo {
             .await?
             .get::<Count, _>("count"))
     }
-
-    pub async fn count_log_all<'a>(&self, tx: &mut Tx<'a>) -> RepoResult<Count> {
-        Ok(sqlx::query("select count(*) from pumpfun.curve_log;")
-            .fetch_one(&mut **tx)
-            .await?
-            .get::<Count, _>("count"))
-    }
 }

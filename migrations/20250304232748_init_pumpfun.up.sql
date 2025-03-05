@@ -24,6 +24,7 @@ create table pumpfun.trade
     timestamp               timestamptz not null,
     virtual_base_reserves   int8 not null,
     virtual_quote_reserves  int8 not null,
+    progress                real not null,
     signature               text not null,
 
     constraint fk_wallet

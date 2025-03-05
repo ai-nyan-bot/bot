@@ -4,7 +4,6 @@
 use common::model::Timestamp;
 use solana::pumpfun::repo::{SlotTrade, SlotTrades};
 
-mod log;
 mod upsert;
 
 pub(crate) fn inserting_slot_trades() -> SlotTrades {

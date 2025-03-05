@@ -1,35 +1,18 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::pumpfun::model::{Curve, CurveInfo};
 use base::model::{Amount, Percent};
 
-pub trait CalculateProgress {
-    fn virtual_base_reserves(&self) -> Amount;
-
-    fn calculate_progress(&self) -> Percent {
-        let base_reserve = self.virtual_base_reserves().0 / 1_000_000;
-        let progress = ((((1_073_000_000) - base_reserve) * 100) as f64) / (793_100_000) as f64;
-        let progress = progress.clamp(0.0, 100.0) as f32;
-        Percent::from(progress)
-    }
-}
-
-impl CalculateProgress for Curve {
-    fn virtual_base_reserves(&self) -> Amount {
-        self.virtual_base_reserves
-    }
-}
-
-impl CalculateProgress for CurveInfo {
-    fn virtual_base_reserves(&self) -> Amount {
-        self.virtual_base_reserves
-    }
+pub fn calculate_progress(virtual_base_reserves: Amount) -> Percent {
+    let base_reserve = virtual_base_reserves.0 / 1_000_000;
+    let progress = ((((1_073_000_000) - base_reserve) * 100) as f64) / (793_100_000) as f64;
+    let progress = progress.clamp(0.0, 100.0) as f32;
+    Percent::from(progress)
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::pumpfun::model::{CalculateProgress, CurveInfo};
+    use crate::pumpfun::model::{calculate_progress, CurveInfo};
 
     #[test]
     fn test_close_to_0_percent() {
@@ -42,7 +25,7 @@ mod tests {
             complete: false,
         };
 
-        let result = test_instance.calculate_progress();
+        let result = calculate_progress(test_instance.virtual_base_reserves);
         assert_eq!(result, 0.19626226);
     }
 
@@ -57,7 +40,7 @@ mod tests {
             complete: false,
         };
 
-        let result = test_instance.calculate_progress();
+        let result = calculate_progress(test_instance.virtual_base_reserves);
         assert_eq!(result, 39.816612);
     }
 
@@ -72,7 +55,7 @@ mod tests {
             complete: false,
         };
 
-        let result = test_instance.calculate_progress();
+        let result = calculate_progress(test_instance.virtual_base_reserves);
         assert_eq!(result, 70.66435);
     }
 
@@ -87,7 +70,7 @@ mod tests {
             complete: true,
         };
 
-        let result = test_instance.calculate_progress();
+        let result = calculate_progress(test_instance.virtual_base_reserves);
         assert_eq!(result, 100);
     }
 }
