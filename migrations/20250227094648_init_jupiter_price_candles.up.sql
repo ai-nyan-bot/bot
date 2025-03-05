@@ -43,6 +43,7 @@ create table jupiter.candle_price_1s_most_recent
     low           double precision not null,
     close         double precision not null,
     avg           double precision not null,
+    duration      int4,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)

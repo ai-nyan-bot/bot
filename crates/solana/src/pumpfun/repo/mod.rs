@@ -5,8 +5,10 @@ pub use candle::{CandleQuery, CandleRepo};
 pub use curve::CurveRepo;
 pub use summary::{SummaryQuery, SummaryRepo};
 pub use trade::{ReadTradeRepo, SlotTrade, SlotTrades, TradeQueryAll, TradeRepo};
+pub use twap::{TwapQuery, TwapRepo};
 
 mod candle;
 mod curve;
 mod summary;
 mod trade;
+mod twap;
