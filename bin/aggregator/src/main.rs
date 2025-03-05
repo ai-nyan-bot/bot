@@ -21,8 +21,6 @@ fn main() {
         .with_span_events(FmtSpan::CLOSE)
         .init();
 
-    println!("Starting the aggregator");
-
     let config = Config::load();
 
     let runtime = Builder::new_multi_thread()
@@ -35,6 +33,7 @@ fn main() {
         let pg_pool = setup_pool(&config.postgres).await;
 
         let jupiter_refresh_candles = jupiter::RefreshCandles::new(pg_pool.clone());
+        let jupiter_refresh_sol = jupiter::RefreshSol::new(pg_pool.clone());
         let jupiter_refresh_twaps = jupiter::RefreshTwaps::new(pg_pool.clone());
         // let refresh_summary = RefreshSummary::new(pg_pool.clone());
 
@@ -47,6 +46,13 @@ fn main() {
             async { jupiter_refresh_candles.h1().await },
             async { jupiter_refresh_candles.h6().await },
             async { jupiter_refresh_candles.d1().await },
+            // jupiter sol
+            async { jupiter_refresh_sol.m1().await },
+            async { jupiter_refresh_sol.m5().await },
+            async { jupiter_refresh_sol.m15().await },
+            async { jupiter_refresh_sol.h1().await },
+            async { jupiter_refresh_sol.h6().await },
+            async { jupiter_refresh_sol.d1().await },
             // jupiter twap
             async { jupiter_refresh_twaps.m1().await },
             async { jupiter_refresh_twaps.m5().await },

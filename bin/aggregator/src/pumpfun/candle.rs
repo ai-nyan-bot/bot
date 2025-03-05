@@ -4,7 +4,6 @@
 use common::model::Partition;
 use solana::pumpfun::repo::CandleRepo;
 use sqlx::PgPool;
-use std::sync::Arc;
 use std::time::Duration;
 use tokio::task::JoinHandle;
 
