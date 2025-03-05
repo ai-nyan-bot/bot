@@ -35,16 +35,25 @@ fn main() {
         let pg_pool = setup_pool(&config.postgres).await;
 
         let jupiter_refresh_candles = jupiter::RefreshCandles::new(pg_pool.clone());
+        let jupiter_refresh_twaps = jupiter::RefreshTwaps::new(pg_pool.clone());
         // let refresh_summary = RefreshSummary::new(pg_pool.clone());
 
         let _ = try_join!(
+            // jupiter candle
             async { jupiter_refresh_candles.s1().await },
             async { jupiter_refresh_candles.m1().await },
             async { jupiter_refresh_candles.m5().await },
             async { jupiter_refresh_candles.m15().await },
             async { jupiter_refresh_candles.h1().await },
-            async { jupiter_refresh_candles.h4().await },
+            async { jupiter_refresh_candles.h6().await },
             async { jupiter_refresh_candles.d1().await },
+            // jupiter twap
+            async { jupiter_refresh_twaps.m1().await },
+            async { jupiter_refresh_twaps.m5().await },
+            async { jupiter_refresh_twaps.m15().await },
+            async { jupiter_refresh_twaps.h1().await },
+            async { jupiter_refresh_twaps.h6().await },
+            async { jupiter_refresh_twaps.d1().await },
             // async { refresh_candles.s1().await },
             // async { refresh_candles.m1().await },
             // async { refresh_candles.m5().await },

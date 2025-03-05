@@ -23,3 +23,14 @@ impl Display for TimeUnit {
         }
     }
 }
+
+impl TimeUnit {
+    pub fn in_seconds(&self) -> u32 {
+        match self {
+            TimeUnit::Second => 1,
+            TimeUnit::Minute => 60,
+            TimeUnit::Hour => 3_600,
+            TimeUnit::Day => 86_400,
+        }
+    }
+}

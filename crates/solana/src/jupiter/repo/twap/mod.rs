@@ -5,28 +5,28 @@ use common::model::Limit;
 use std::ops::Deref;
 use std::sync::Arc;
 
-mod calculate_price;
+mod calculate;
 mod count;
 
-pub struct CandleQuery {
+pub struct TwapQuery {
     pub limit: Limit,
 }
 
 #[derive(Debug, Clone)]
-pub struct CandleRepo(pub Arc<CandleRepoInner>);
+pub struct TwapRepo(pub Arc<TwapRepoInner>);
 
-impl Deref for CandleRepo {
-    type Target = CandleRepoInner;
+impl Deref for TwapRepo {
+    type Target = TwapRepoInner;
     fn deref(&self) -> &Self::Target {
         self.0.deref()
     }
 }
 
 #[derive(Debug)]
-pub struct CandleRepoInner {}
+pub struct TwapRepoInner {}
 
-impl CandleRepo {
+impl TwapRepo {
     pub fn new() -> Self {
-        Self(Arc::new(CandleRepoInner {}))
+        Self(Arc::new(TwapRepoInner {}))
     }
 }

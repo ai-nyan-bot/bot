@@ -2,45 +2,22 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use common::model::Partition;
-use solana::jupiter::repo::CandleRepo;
+use solana::jupiter::repo::TwapRepo;
 use sqlx::PgPool;
-use std::sync::Arc;
 use std::time::Duration;
 use tokio::task::JoinHandle;
 
-pub struct RefreshCandles {
+pub struct RefreshTwaps {
     pool: PgPool,
-    repo: CandleRepo,
+    repo: TwapRepo,
 }
 
-impl RefreshCandles {
+impl RefreshTwaps {
     pub fn new(pool: PgPool) -> Self {
         Self {
             pool,
-            repo: CandleRepo::new(),
+            repo: TwapRepo::new(),
         }
-    }
-
-    pub fn s1(&self) -> JoinHandle<()> {
-        let repo = self.repo.clone();
-        let pool = self.pool.clone();
-        tokio::spawn(async move {
-            loop {
-                for partition in Partition::enumerate() {
-                    let repo = repo.clone();
-                    let pool = pool.clone();
-                    tokio::spawn(async move {
-                        let mut tx = pool.begin().await.unwrap();
-
-                        repo.calculate_price_1s(&mut tx, partition).await.unwrap();
-                        let _ = tx.commit().await;
-                        tokio::time::sleep(Duration::from_millis(10)).await;
-                    })
-                    .await
-                    .unwrap();
-                }
-            }
-        })
     }
 
     pub fn m1(&self) -> JoinHandle<()> {
@@ -54,7 +31,7 @@ impl RefreshCandles {
                     tokio::spawn(async move {
                         let mut tx = pool.begin().await.unwrap();
 
-                        repo.calculate_price_1m(&mut tx, partition).await.unwrap();
+                        repo.calculate_1m(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
                         tokio::time::sleep(Duration::from_millis(10)).await;
@@ -77,7 +54,7 @@ impl RefreshCandles {
                     tokio::spawn(async move {
                         let mut tx = pool.begin().await.unwrap();
 
-                        repo.calculate_price_5m(&mut tx, partition).await.unwrap();
+                        repo.calculate_5m(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
                         tokio::time::sleep(Duration::from_millis(10)).await;
@@ -100,7 +77,7 @@ impl RefreshCandles {
                     tokio::spawn(async move {
                         let mut tx = pool.begin().await.unwrap();
 
-                        repo.calculate_price_15m(&mut tx, partition).await.unwrap();
+                        repo.calculate_15m(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
                         tokio::time::sleep(Duration::from_millis(10)).await;
@@ -123,7 +100,7 @@ impl RefreshCandles {
                     tokio::spawn(async move {
                         let mut tx = pool.begin().await.unwrap();
 
-                        repo.calculate_price_1h(&mut tx, partition).await.unwrap();
+                        repo.calculate_1h(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
                         tokio::time::sleep(Duration::from_millis(10)).await;
@@ -146,7 +123,7 @@ impl RefreshCandles {
                     tokio::spawn(async move {
                         let mut tx = pool.begin().await.unwrap();
 
-                        repo.calculate_price_6h(&mut tx, partition).await.unwrap();
+                        repo.calculate_6h(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
                         tokio::time::sleep(Duration::from_millis(10)).await;
@@ -169,7 +146,7 @@ impl RefreshCandles {
                     tokio::spawn(async move {
                         let mut tx = pool.begin().await.unwrap();
 
-                        repo.calculate_price_1d(&mut tx, partition).await.unwrap();
+                        repo.calculate_1d(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
                         tokio::time::sleep(Duration::from_millis(10)).await;

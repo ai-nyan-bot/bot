@@ -4,20 +4,19 @@
 use common::model::Partition;
 use solana::pumpfun::repo::SummaryRepo;
 use sqlx::PgPool;
-use std::sync::Arc;
 use std::time::Duration;
 use tokio::task::JoinHandle;
 
 pub struct RefreshSummary {
     pool: PgPool,
-    repo: Arc<SummaryRepo>,
+    repo: SummaryRepo,
 }
 
 impl RefreshSummary {
     pub fn new(pool: PgPool) -> Self {
         Self {
             pool,
-            repo: Arc::new(SummaryRepo::new()),
+            repo: SummaryRepo::new(),
         }
     }
 
@@ -117,7 +116,7 @@ impl RefreshSummary {
         })
     }
 
-    pub fn h4(&self) -> JoinHandle<()> {
+    pub fn h6(&self) -> JoinHandle<()> {
         let repo = self.repo.clone();
         let pool = self.pool.clone();
         tokio::spawn(async move {

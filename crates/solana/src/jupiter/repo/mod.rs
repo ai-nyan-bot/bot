@@ -3,6 +3,8 @@
 
 pub use candle::{CandleQuery, CandleRepo};
 pub use trade::{ReadTradeRepo, SlotTrade, SlotTrades, TradeQueryAll, TradeRepo};
+pub use twap::{TwapQuery, TwapRepo};
 
 mod candle;
 mod trade;
+mod twap;

@@ -10,14 +10,14 @@ use tokio::task::JoinHandle;
 
 pub struct RefreshCandles {
     pool: PgPool,
-    repo: Arc<CandleRepo>,
+    repo: CandleRepo,
 }
 
 impl RefreshCandles {
     pub fn new(pool: PgPool) -> Self {
         Self {
             pool,
-            repo: Arc::new(CandleRepo::new()),
+            repo: CandleRepo::new(),
         }
     }
 
@@ -135,7 +135,7 @@ impl RefreshCandles {
         })
     }
 
-    pub fn h4(&self) -> JoinHandle<()> {
+    pub fn h6(&self) -> JoinHandle<()> {
         let repo = self.repo.clone();
         let pool = self.pool.clone();
         tokio::spawn(async move {
