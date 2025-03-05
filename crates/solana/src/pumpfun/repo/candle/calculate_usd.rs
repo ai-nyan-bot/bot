@@ -1,10 +1,10 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-// This file includes portions of code from https://github.com/blockworks-foundation/jupiter (AGPL 3.0).
+// This file includes portions of code from https://github.com/blockworks-foundation/pumpfun (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
-use crate::jupiter::repo::CandleRepo;
+use crate::pumpfun::repo::CandleRepo;
 use common::model::Partition;
 use common::repo::{RepoResult, Tx};
 
@@ -133,21 +133,21 @@ with
 last_candle_ts as (
     select coalesce(
         (select date_trunc('{time_unit}', timestamp) - (extract({time_unit} from timestamp)::int % {window}) * interval '1 {time_unit}' as ts
-         from jupiter.{destination_table}
+         from pumpfun.{destination_table}
          order by timestamp desc
          limit 1),
         '1900-01-01 00:00:00'::timestamp) as ts
 ),
 next_candle_ts as (
     select date_trunc('{time_unit}', timestamp) - (extract({time_unit} from timestamp)::int % {window}) * interval '1 {time_unit}' as ts
-    from jupiter.{candle_source_table}
+    from pumpfun.{candle_source_table}
     where timestamp > (select ts from last_candle_ts)
     order by timestamp
     limit 1
 ),
 next_twap_ts as (
     select date_trunc('{time_unit}', timestamp) - (extract({time_unit} from timestamp)::int % {window}) * interval '1 {time_unit}' as ts
-    from jupiter.{twap_source_table}
+    from pumpfun.{twap_source_table}
     where timestamp > (select ts from last_candle_ts)
     order by timestamp
     limit 1
@@ -158,13 +158,13 @@ timestamp as (
         (coalesce(least((select ts from next_candle_ts), (select ts from next_twap_ts)), (select ts from last_candle_ts))) + interval '3 days' as end_ts
 ),
 twaps as (
-    select token_pair_id, timestamp, twap from jupiter.{twap_source_table} tw
+    select token_pair_id, timestamp, twap from pumpfun.{twap_source_table} tw
     join solana.token_pair tp on tp.id = tw.token_pair_id
     where tp.quote_id = 1 and
           timestamp >= (select start_ts from timestamp) and
           timestamp < (select end_ts from timestamp)
 )
-insert into jupiter.{destination_table}
+insert into pumpfun.{destination_table}
 (
     token_pair_id,
     timestamp,
@@ -173,7 +173,9 @@ insert into jupiter.{destination_table}
     low,
     close,
     avg,
-    twap
+    twap,
+    volume_buy,
+    volume_sell
 )
 select
     c.token_pair_id,
@@ -183,8 +185,10 @@ select
     c.low * sp.usd,
     c.close * sp.usd,
     c.avg * sp.usd,
-    tw.twap * sp.usd
-from jupiter.{candle_source_table} c
+    tw.twap * sp.usd,
+    c.volume_buy * sp.usd,
+    c.volume_sell * sp.usd
+from pumpfun.{candle_source_table} c
 join lateral (
     select usd from jupiter.{sol_price_usd_table}
     where timestamp <= c.timestamp
@@ -192,8 +196,7 @@ join lateral (
     limit 1
 ) sp on true
 join twaps tw on tw.timestamp = c.timestamp and tw.token_pair_id = c.token_pair_id
-join solana.token_pair tp on tp.id = tw.token_pair_id
-    where tp.quote_id = 1
+join solana.token_pair tp on tp.id = tw.token_pair_id  where tp.quote_id = 1
 on conflict (token_pair_id, timestamp)
 do update set
     open = excluded.open,
@@ -201,14 +204,18 @@ do update set
     low = excluded.low,
     close = excluded.close,
     avg = excluded.avg,
-    twap = excluded.twap
+    twap = excluded.twap,
+    volume_buy = excluded.volume_buy,
+    volume_sell = excluded.volume_sell
 where
     {destination_table}.open != excluded.open or
     {destination_table}.high != excluded.high or
     {destination_table}.low != excluded.low or
     {destination_table}.close != excluded.close or
     {destination_table}.avg != excluded.avg or
-    {destination_table}.twap != excluded.twap;
+    {destination_table}.twap != excluded.twap or
+    {destination_table}.volume_buy != excluded.volume_buy or
+    {destination_table}.volume_sell != excluded.volume_sell;
 "#
     );
 

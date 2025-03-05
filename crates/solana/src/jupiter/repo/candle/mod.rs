@@ -5,9 +5,9 @@ use common::model::Limit;
 use std::ops::Deref;
 use std::sync::Arc;
 
-mod calculate_price;
+mod calculate;
 mod count;
-mod calculate_price_usd;
+mod calculate_usd;
 
 pub struct CandleQuery {
     pub limit: Limit,

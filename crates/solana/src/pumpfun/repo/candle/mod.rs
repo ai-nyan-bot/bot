@@ -5,8 +5,8 @@ use common::model::Limit;
 use std::ops::Deref;
 use std::sync::Arc;
 
-mod calculate_price;
-mod calculate_price_usd;
+mod calculate;
+mod calculate_usd;
 mod count;
 
 pub struct CandleQuery {

@@ -11,6 +11,8 @@ create table jupiter.candle_usd_1s
     close         double precision not null,
     avg           double precision not null,
     twap          double precision not null,
+    volume_buy    double precision not null,
+    volume_sell   double precision not null,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -44,6 +46,8 @@ create table jupiter.candle_usd_1s_most_recent
     close         double precision not null,
     avg           double precision not null,
     twap          double precision not null,
+    volume_buy    double precision not null,
+    volume_sell   double precision not null,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -79,6 +83,8 @@ create table jupiter.candle_usd_1m
     close         double precision not null,
     avg           double precision not null,
     twap          double precision not null,
+    volume_buy    double precision not null,
+    volume_sell   double precision not null,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -112,6 +118,8 @@ create table jupiter.candle_usd_1m_most_recent
     close         double precision not null,
     avg           double precision not null,
     twap          double precision not null,
+    volume_buy    double precision not null,
+    volume_sell   double precision not null,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -146,6 +154,8 @@ create table jupiter.candle_usd_5m
     close         double precision not null,
     avg           double precision not null,
     twap          double precision not null,
+    volume_buy    double precision not null,
+    volume_sell   double precision not null,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -179,6 +189,8 @@ create table jupiter.candle_usd_5m_most_recent
     close         double precision not null,
     avg           double precision not null,
     twap          double precision not null,
+    volume_buy    double precision not null,
+    volume_sell   double precision not null,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -213,6 +225,8 @@ create table jupiter.candle_usd_15m
     close         double precision not null,
     avg           double precision not null,
     twap          double precision not null,
+    volume_buy    double precision not null,
+    volume_sell   double precision not null,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -246,6 +260,8 @@ create table jupiter.candle_usd_15m_most_recent
     close         double precision not null,
     avg           double precision not null,
     twap          double precision not null,
+    volume_buy    double precision not null,
+    volume_sell   double precision not null,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -280,6 +296,8 @@ create table jupiter.candle_usd_1h
     close         double precision not null,
     avg           double precision not null,
     twap          double precision not null,
+    volume_buy    double precision not null,
+    volume_sell   double precision not null,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -313,6 +331,8 @@ create table jupiter.candle_usd_1h_most_recent
     close         double precision not null,
     avg           double precision not null,
     twap          double precision not null,
+    volume_buy    double precision not null,
+    volume_sell   double precision not null,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -347,6 +367,8 @@ create table jupiter.candle_usd_6h
     close         double precision not null,
     avg           double precision not null,
     twap          double precision not null,
+    volume_buy    double precision not null,
+    volume_sell   double precision not null,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -380,6 +402,8 @@ create table jupiter.candle_usd_6h_most_recent
     close         double precision not null,
     avg           double precision not null,
     twap          double precision not null,
+    volume_buy    double precision not null,
+    volume_sell   double precision not null,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -414,6 +438,8 @@ create table jupiter.candle_usd_1d
     close         double precision not null,
     avg           double precision not null,
     twap          double precision not null,
+    volume_buy    double precision not null,
+    volume_sell   double precision not null,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -447,6 +473,8 @@ create table jupiter.candle_usd_1d_most_recent
     close         double precision not null,
     avg           double precision not null,
     twap          double precision not null,
+    volume_buy    double precision not null,
+    volume_sell   double precision not null,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
