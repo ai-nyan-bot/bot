@@ -5,8 +5,8 @@
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
 use crate::model::{
-    Decimals, Description, Mint, Name, Supply, Symbol, Token, TokenId, TokenPair, TokenPairId,
-    TokenPairMint, Uri,
+    DecimalAmount, Decimals, Description, Mint, Name, Symbol, Token, TokenId, TokenPair,
+    TokenPairId, TokenPairMint, Uri,
 };
 use crate::repo::TokenPairRepo;
 use crate::LoadTokenInfo;
@@ -108,7 +108,7 @@ impl<L: LoadTokenInfo<Mint>> TokenPairRepo<L> {
                 name: r.try_get::<Name, _>("base_name").ok(),
                 symbol: r.try_get::<Symbol, _>("base_symbol").ok(),
                 decimals: r.get::<Decimals, _>("base_decimals"),
-                supply: r.try_get::<Supply, _>("base_supply").ok(),
+                supply: r.try_get::<DecimalAmount, _>("base_supply").ok(),
                 description: r.try_get::<Description, _>("base_description").ok(),
                 metadata: r.try_get::<Uri, _>("base_metadata").ok(),
                 image: r.try_get::<Uri, _>("base_image").ok(),
@@ -120,7 +120,7 @@ impl<L: LoadTokenInfo<Mint>> TokenPairRepo<L> {
                 name: r.try_get::<Name, _>("quote_name").ok(),
                 symbol: r.try_get::<Symbol, _>("quote_symbol").ok(),
                 decimals: r.get::<Decimals, _>("quote_decimals"),
-                supply: r.try_get::<Supply, _>("quote_supply").ok(),
+                supply: r.try_get::<DecimalAmount, _>("quote_supply").ok(),
                 description: r.try_get::<Description, _>("quote_description").ok(),
                 metadata: r.try_get::<Uri, _>("quote_metadata").ok(),
                 image: r.try_get::<Uri, _>("quote_image").ok(),

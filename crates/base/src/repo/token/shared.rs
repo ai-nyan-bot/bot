@@ -4,7 +4,7 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
-use crate::model::{Decimals, Description, Mint, Name, Supply, Symbol, Token, TokenId, Uri};
+use crate::model::{DecimalAmount, Decimals, Description, Mint, Name, Symbol, Token, TokenId, Uri};
 use crate::repo::cache::Cache;
 use crate::repo::ReadTokenRepo;
 use common::repo::{RepoResult, Tx};
@@ -98,7 +98,7 @@ impl ReadTokenRepo {
             name: r.try_get::<Name, _>("name").ok(),
             symbol: r.try_get::<Symbol, _>("symbol").ok(),
             decimals: r.get::<Decimals, _>("decimals"),
-            supply: r.try_get::<Supply, _>("supply").ok(),
+            supply: r.try_get::<DecimalAmount, _>("supply").ok(),
             description: r.try_get::<Description, _>("description").ok(),
             metadata: r.try_get::<Uri, _>("metadata").ok(),
             image: r.try_get::<Uri, _>("image").ok(),
@@ -136,7 +136,7 @@ impl ReadTokenRepo {
             name: r.try_get::<Name, _>("name").ok(),
             symbol: r.try_get::<Symbol, _>("symbol").ok(),
             decimals: r.get::<Decimals, _>("decimals"),
-            supply: r.try_get::<Supply, _>("supply").ok(),
+            supply: r.try_get::<DecimalAmount, _>("supply").ok(),
             description: r.try_get::<Description, _>("description").ok(),
             metadata: r.try_get::<Uri, _>("metadata").ok(),
             image: r.try_get::<Uri, _>("image").ok(),

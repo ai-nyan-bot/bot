@@ -4,7 +4,7 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
-use crate::model::{Decimals, Description, Mint, Name, Supply, Symbol, Token, TokenId, Uri};
+use crate::model::{DecimalAmount, Decimals, Description, Mint, Name, Symbol, Token, TokenId, Uri};
 use crate::repo::TokenRepo;
 use crate::{load_all, LoadTokenInfo};
 use common::repo::error::RepoError;
@@ -26,7 +26,7 @@ impl<L: LoadTokenInfo<Mint>> TokenRepo<L> {
         let mut names = Vec::with_capacity(token_mints.len());
         let mut symbols = Vec::with_capacity(token_mints.len());
         let mut decimals = Vec::with_capacity(token_mints.len());
-        let mut supplies = Vec::with_capacity(token_mints.len());
+        let mut supplies: Vec<DecimalAmount> = Vec::with_capacity(token_mints.len());
         let mut metadata = Vec::with_capacity(token_mints.len());
         let mut descriptions = Vec::with_capacity(token_mints.len());
         let mut images = Vec::with_capacity(token_mints.len());
@@ -38,7 +38,13 @@ impl<L: LoadTokenInfo<Mint>> TokenRepo<L> {
                 names.push(info.name.unwrap_or("null_value".into()));
                 symbols.push(info.symbol.unwrap_or("null_value".into()));
                 decimals.push(info.decimals.expect("token decimals required"));
-                supplies.push(info.supply.unwrap_or(Supply::from(-1)));
+
+                if let Some(amount) = info.supply {
+                    supplies.push(DecimalAmount::new(amount, info.decimals.unwrap()))
+                } else {
+                    supplies.push(DecimalAmount::from(-1.0))
+                }
+
                 metadata.push(info.metadata.unwrap_or("null_value".into()));
                 descriptions.push(info.description.unwrap_or("null_value".into()));
                 images.push(info.image.unwrap_or("null_value".into()));
@@ -104,7 +110,7 @@ impl<L: LoadTokenInfo<Mint>> TokenRepo<L> {
             name: r.try_get::<Name, _>("name").ok(),
             symbol: r.try_get::<Symbol, _>("symbol").ok(),
             decimals: r.get::<Decimals, _>("decimals"),
-            supply: r.try_get::<Supply, _>("supply").ok(),
+            supply: r.try_get::<DecimalAmount, _>("supply").ok(),
             description: r.try_get::<Description, _>("description").ok(),
             metadata: r.try_get::<Uri, _>("metadata").ok(),
             image: r.try_get::<Uri, _>("image").ok(),

@@ -10,7 +10,6 @@ pub use name::Name;
 pub use percent::Percent;
 pub use price::*;
 use std::fmt::{Display, Formatter};
-pub use supply::Supply;
 pub use symbol::Symbol;
 pub use trades::*;
 pub use uri::Uri;
@@ -24,7 +23,6 @@ mod mint;
 mod name;
 mod percent;
 mod price;
-mod supply;
 mod symbol;
 mod trades;
 mod uri;
@@ -37,7 +35,7 @@ pub struct Token {
     pub name: Option<Name>,
     pub symbol: Option<Symbol>,
     pub decimals: Decimals,
-    pub supply: Option<Supply>,
+    pub supply: Option<DecimalAmount>,
     pub description: Option<Description>,
     pub metadata: Option<Uri>,
     pub image: Option<Uri>,

@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::{Decimals, Description, Mint, Name, Supply, Symbol, Uri};
+use crate::model::{Amount, Decimals, Description, Mint, Name, Symbol, Uri};
 use crate::{LoadTokenInfo, TokenInfo};
 use async_trait::async_trait;
 use std::cell::UnsafeCell;
@@ -34,7 +34,7 @@ impl LoadTokenInfo<Mint> for SuccessfulTokenInfoLoader {
             name: Some(Name::new(counter.to_string())),
             symbol: Some(Symbol::new(counter.to_string())),
             decimals: Some(Decimals(6)),
-            supply: Some(Supply(*counter as i64)),
+            supply: Some(Amount(*counter as i64)),
             description: Some(Description(format!("Token-Description-{counter}"))),
             metadata: Some(Uri(format!("http://metadata-{counter}"))),
             image: Some(Uri(format!("http://image-{counter}"))),

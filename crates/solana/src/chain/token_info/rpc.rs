@@ -6,7 +6,7 @@
 
 use crate::token_info::{rewrite_ipfs, sanitize_value};
 use async_trait::async_trait;
-use base::model::{Decimals, Mint as TokenMint, Name, Supply, Symbol};
+use base::model::{Amount, Decimals, Mint as TokenMint, Name, Symbol};
 use base::{LoadTokenInfo, TokenInfo};
 use common::model::RpcUrl;
 use log::{debug, error, info};
@@ -105,7 +105,7 @@ impl LoadTokenInfo<TokenMint> for TokenInfoRpcLoader {
                                     name: Some(Name(sanitize_value(metadata.name.as_str()))),
                                     symbol: Some(Symbol(sanitize_value(metadata.symbol.as_str()))),
                                     decimals: Some(Decimals(unpacked_mint.decimals as i16)),
-                                    supply: Some(Supply(unpacked_mint.supply as i64)),
+                                    supply: Some(Amount(unpacked_mint.supply as i64)),
                                     description: None,
                                     metadata: Some(
                                         rewrite_ipfs(sanitize_value(metadata.uri)).into(),
@@ -121,7 +121,7 @@ impl LoadTokenInfo<TokenMint> for TokenInfoRpcLoader {
                             name: None,
                             symbol: None,
                             decimals: Some(Decimals(unpacked_mint.decimals as i16)),
-                            supply: Some(Supply(unpacked_mint.supply as i64)),
+                            supply: Some(Amount(unpacked_mint.supply as i64)),
                             description: None,
                             metadata: None,
                             image: None,
@@ -148,7 +148,7 @@ impl LoadTokenInfo<TokenMint> for TokenInfoRpcLoader {
                                 name: None,
                                 symbol: None,
                                 decimals: Some(Decimals(unpacked_mint.base.decimals as i16)),
-                                supply: Some(Supply(unpacked_mint.base.supply as i64)),
+                                supply: Some(Amount(unpacked_mint.base.supply as i64)),
                                 description: None,
                                 metadata: None,
                                 image: None,
@@ -161,7 +161,7 @@ impl LoadTokenInfo<TokenMint> for TokenInfoRpcLoader {
                             name: Some(Name(sanitize_value(metadata.name.as_str()))),
                             symbol: Some(Symbol(sanitize_value(metadata.symbol.as_str()))),
                             decimals: Some(Decimals(unpacked_mint.base.decimals as i16)),
-                            supply: Some(Supply(unpacked_mint.base.supply as i64)),
+                            supply: Some(Amount(unpacked_mint.base.supply as i64)),
                             description: None,
                             metadata: Some(rewrite_ipfs(sanitize_value(metadata.uri)).into()),
                             image: None,

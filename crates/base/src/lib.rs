@@ -1,6 +1,6 @@
 #![cfg_attr(not(debug_assertions), deny(warnings))]
 
-use crate::model::{Decimals, Description, Mint, Name, Supply, Symbol, Uri};
+use crate::model::{Amount, Decimals, Description, Mint, Name, Symbol, Uri};
 use async_trait::async_trait;
 use futures_util::future::join_all;
 
@@ -31,7 +31,7 @@ pub struct TokenInfo {
     pub name: Option<Name>,
     pub symbol: Option<Symbol>,
     pub decimals: Option<Decimals>,
-    pub supply: Option<Supply>,
+    pub supply: Option<Amount>,
     pub description: Option<Description>,
     pub metadata: Option<Uri>,
     pub image: Option<Uri>,
