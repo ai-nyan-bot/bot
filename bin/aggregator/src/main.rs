@@ -4,7 +4,6 @@
 #![cfg_attr(not(debug_assertions), deny(warnings))]
 
 use crate::config::Config;
-use crate::pumpfun::{RefreshCandles, RefreshSummary};
 use common::repo::pool::setup_pool;
 use tokio::runtime::Builder;
 use tokio::try_join;
@@ -13,6 +12,7 @@ use tracing_subscriber::fmt::format::FmtSpan;
 use tracing_subscriber::EnvFilter;
 
 mod config;
+mod jupiter;
 mod pumpfun;
 
 fn main() {
@@ -34,23 +34,30 @@ fn main() {
     runtime.block_on(async {
         let pg_pool = setup_pool(&config.postgres).await;
 
-        let refresh_candles = RefreshCandles::new(pg_pool.clone());
-        let refresh_summary = RefreshSummary::new(pg_pool.clone());
+        let jupiter_refresh_candles = jupiter::RefreshCandles::new(pg_pool.clone());
+        // let refresh_summary = RefreshSummary::new(pg_pool.clone());
 
         let _ = try_join!(
-            async { refresh_candles.s1().await },
-            async { refresh_candles.m1().await },
-            async { refresh_candles.m5().await },
-            async { refresh_candles.m15().await },
-            async { refresh_candles.h1().await },
-            async { refresh_candles.h4().await },
-            async { refresh_candles.d1().await },
-            async { refresh_summary.m1().await },
-            async { refresh_summary.m5().await },
-            async { refresh_summary.m15().await },
-            async { refresh_summary.h1().await },
-            async { refresh_summary.h4().await },
-            async { refresh_summary.d1().await }
+            async { jupiter_refresh_candles.s1().await },
+            async { jupiter_refresh_candles.m1().await },
+            async { jupiter_refresh_candles.m5().await },
+            async { jupiter_refresh_candles.m15().await },
+            async { jupiter_refresh_candles.h1().await },
+            async { jupiter_refresh_candles.h4().await },
+            async { jupiter_refresh_candles.d1().await },
+            // async { refresh_candles.s1().await },
+            // async { refresh_candles.m1().await },
+            // async { refresh_candles.m5().await },
+            // async { refresh_candles.m15().await },
+            // async { refresh_candles.h1().await },
+            // async { refresh_candles.h4().await },
+            // async { refresh_candles.d1().await },
+            // async { refresh_summary.m1().await },
+            // async { refresh_summary.m5().await },
+            // async { refresh_summary.m15().await },
+            // async { refresh_summary.h1().await },
+            // async { refresh_summary.h4().await },
+            // async { refresh_summary.d1().await }
         );
 
         error!("All tasks have stopped, exiting...");
