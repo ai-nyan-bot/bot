@@ -14,6 +14,7 @@ use tracing_subscriber::EnvFilter;
 mod config;
 mod jupiter;
 mod pumpfun;
+mod solana;
 
 fn main() {
     tracing_subscriber::fmt::fmt()
@@ -33,11 +34,12 @@ fn main() {
         let pg_pool = setup_pool(&config.postgres).await;
 
         let jupiter_refresh_candles = jupiter::RefreshCandles::new(pg_pool.clone());
-        let jupiter_refresh_sol = jupiter::RefreshSol::new(pg_pool.clone());
         let jupiter_refresh_twaps = jupiter::RefreshTwaps::new(pg_pool.clone());
 
         let pumpfun_refresh_candles = pumpfun::RefreshCandles::new(pg_pool.clone());
         let pumpfun_refresh_twaps = pumpfun::RefreshTwaps::new(pg_pool.clone());
+
+        let solana_refresh_sol = solana::RefreshSol::new(pg_pool.clone());
 
         let _ = try_join!(
             // jupiter candle
@@ -48,13 +50,6 @@ fn main() {
             async { jupiter_refresh_candles.h1().await },
             async { jupiter_refresh_candles.h6().await },
             async { jupiter_refresh_candles.d1().await },
-            // jupiter sol
-            async { jupiter_refresh_sol.m1().await },
-            async { jupiter_refresh_sol.m5().await },
-            async { jupiter_refresh_sol.m15().await },
-            async { jupiter_refresh_sol.h1().await },
-            async { jupiter_refresh_sol.h6().await },
-            async { jupiter_refresh_sol.d1().await },
             // jupiter twap
             async { jupiter_refresh_twaps.m1().await },
             async { jupiter_refresh_twaps.m5().await },
@@ -83,6 +78,15 @@ fn main() {
             // async { refresh_summary.h1().await },
             // async { refresh_summary.h4().await },
             // async { refresh_summary.d1().await }
+
+
+            // solana sol
+            async { solana_refresh_sol.m1().await },
+            async { solana_refresh_sol.m5().await },
+            async { solana_refresh_sol.m15().await },
+            async { solana_refresh_sol.h1().await },
+            async { solana_refresh_sol.h6().await },
+            async { solana_refresh_sol.d1().await },
         );
 
         error!("All tasks have stopped, exiting...");

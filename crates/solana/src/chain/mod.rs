@@ -3,6 +3,7 @@
 
 pub(crate) mod convert;
 pub mod model;
+pub mod repo;
 pub mod rpc;
 pub mod stream;
 pub mod token_info;

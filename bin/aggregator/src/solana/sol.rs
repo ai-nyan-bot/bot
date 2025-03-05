@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use solana::jupiter::repo::SolRepo;
+use solana::repo::SolRepo;
 use sqlx::PgPool;
 use std::time::Duration;
 use tokio::task::JoinHandle;

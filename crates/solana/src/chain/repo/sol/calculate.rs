@@ -4,7 +4,7 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
-use crate::jupiter::repo::sol::SolRepo;
+use crate::chain::repo::SolRepo;
 use common::repo::{RepoResult, Tx};
 
 impl SolRepo {
@@ -41,7 +41,7 @@ with
 last_price_ts as (
     select coalesce(
         (select date_trunc('{time_unit}', timestamp) - (extract({time_unit} from timestamp)::int % {window}) * interval '1 {time_unit}' as ts
-         from jupiter.{destination_table}
+         from solana.{destination_table}
          order by timestamp desc
          limit 1),
         '1900-01-01 00:00:00'::timestamp) as ts
@@ -58,7 +58,7 @@ timestamp as (
         coalesce((select ts from next_twap_ts), (select ts from last_price_ts)) - interval '{window} {time_unit}' as start_ts,
         coalesce((select ts from next_twap_ts), (select ts from last_price_ts)) + interval '3 days' as end_ts
 )
-insert into jupiter.{destination_table} (
+insert into solana.{destination_table} (
     timestamp,
     usd
 )
@@ -71,7 +71,7 @@ group by timestamp
 on conflict (timestamp)
 do update set
     usd = excluded.usd
-where (jupiter.{destination_table}.usd != excluded.usd );
+where (solana.{destination_table}.usd != excluded.usd );
 "#
     );
     let _ = sqlx::query(&query_str).execute(&mut **tx).await?;
