@@ -4,12 +4,16 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
-use crate::pumpfun::repo::CandleRepo;
+use crate::pumpfun::repo::candle::CandleRepo;
 use common::model::Partition;
 use common::repo::{RepoResult, Tx};
 
 impl CandleRepo {
-    pub async fn calculate_1s<'a>(&self, tx: &mut Tx<'a>, partition: Partition) -> RepoResult<()> {
+    pub async fn calculate_price_1s<'a>(
+        &self,
+        tx: &mut Tx<'a>,
+        partition: Partition,
+    ) -> RepoResult<()> {
         let candle_price_table = format!("pumpfun.candle_price_1s_{partition}");
         let trade_table = format!("pumpfun.trade_{partition}");
 
@@ -73,72 +77,6 @@ close_prices as (
     order by
         token_pair_id, second desc
 ),
-amount_buy as (
-    select
-        token_pair_id,
-        second,
-        sum(amount) as amount
-    from
-        trades
-    where is_buy = true
-    group by
-        token_pair_id, second
-),
-volume_buys as (
-    select
-        token_pair_id,
-        second,
-        sum(amount * price) as volume
-    from
-        trades
-    where is_buy = true
-    group by
-        token_pair_id, second
-),
-trades_buy as (
-    select
-        token_pair_id,
-        second,
-        count(*) as trades
-    from
-        trades
-    where is_buy = true
-    group by
-        token_pair_id, second
-),
-amount_sell as (
-    select
-        token_pair_id,
-        second,
-        sum(amount) as amount
-    from
-        trades
-    where is_buy = false
-    group by
-        token_pair_id, second
-),
-volume_sells as (
-    select
-        token_pair_id,
-        second,
-        sum(amount * price) as volume
-    from
-        trades
-    where is_buy = false
-    group by
-        token_pair_id, second
-),
-trades_sell as (
-    select
-        token_pair_id,
-        second,
-        count(*) as trades
-    from
-        trades
-    where is_buy = false
-    group by
-        token_pair_id, second
-),
 current_candles as (
     select
         t.token_pair_id,
@@ -147,34 +85,16 @@ current_candles as (
         c.close_price,
         max(t.price) as high_price,
         min(t.price) as low_price,
-        avg(t.price) as avg,
-        coalesce(ba.amount,0) as amount_buy,
-        coalesce(bt.trades,0) as trades_buy,
-        coalesce(bv.volume,0) as volume_buy,
-        coalesce(sa.amount,0) as amount_sell,
-        coalesce(st.trades,0) as trades_sell,
-        coalesce(sv.volume,0) as volume_sell
+        avg(t.price) as avg
     from
         trades t
     join open_prices o on t.token_pair_id = o.token_pair_id         and t.second = o.second
     join close_prices c on t.token_pair_id = c.token_pair_id        and t.second = c.second
-    left join amount_buy ba on t.token_pair_id = ba.token_pair_id    and t.second = ba.second
-    left join volume_buys bv on t.token_pair_id = bv.token_pair_id  and t.second = bv.second
-    left join trades_buy bt on t.token_pair_id = bt.token_pair_id   and t.second = bt.second
-    left join amount_sell sa on t.token_pair_id = sa.token_pair_id  and t.second = sa.second
-    left join volume_sells sv on t.token_pair_id = sv.token_pair_id and t.second = sv.second
-    left join trades_sell st on t.token_pair_id = st.token_pair_id  and t.second = st.second
     group by
         t.token_pair_id,
         t.second,
         o.open_price,
-        c.close_price,
-        ba.amount,
-        bt.trades,
-        bv.volume,
-        sa.amount,
-        st.trades,
-        sv.volume
+        c.close_price
 ),
 previous_candles as (
     select r.* from pumpfun.candle_price_1s_most_recent r
@@ -191,12 +111,6 @@ insert_current_candle as (
         low,
         close,
         avg,
-        amount_buy,
-        trades_buy,
-        volume_buy,
-        amount_sell,
-        trades_sell,
-        volume_sell,
         duration
     )
     select
@@ -207,12 +121,6 @@ insert_current_candle as (
         cur.low_price,
         cur.close_price,
         cur.avg,
-        cur.amount_buy,
-        cur.trades_buy,
-        cur.volume_buy,
-        cur.amount_sell,
-        cur.trades_sell,
-        cur.volume_sell,
         null
     from
         current_candles cur
@@ -229,25 +137,13 @@ insert_current_candle as (
         high = excluded.high,
         low = excluded.low,
         close = excluded.close,
-        avg = excluded.avg,
-        amount_buy = excluded.amount_buy,
-        volume_buy = excluded.volume_buy,
-        trades_buy = excluded.trades_buy,
-        amount_sell = excluded.amount_sell,
-        volume_sell = excluded.volume_sell,
-        trades_sell = excluded.trades_sell
+        avg = excluded.avg
     where (
            {candle_price_table}.open != excluded.open or
            {candle_price_table}.high != excluded.high or
            {candle_price_table}.low != excluded.low or
            {candle_price_table}.close != excluded.close or
-           {candle_price_table}.avg != excluded.avg or
-           {candle_price_table}.amount_buy != excluded.amount_buy or
-           {candle_price_table}.volume_buy != excluded.volume_buy or
-           {candle_price_table}.trades_buy != excluded.trades_buy or
-           {candle_price_table}.amount_sell != excluded.amount_sell or
-           {candle_price_table}.volume_sell != excluded.volume_sell or
-           {candle_price_table}.trades_sell != excluded.trades_sell
+           {candle_price_table}.avg != excluded.avg
         )
     returning 1
 ),
@@ -282,8 +178,12 @@ select * from insert_current_candle
 }
 
 impl CandleRepo {
-    pub async fn calculate_1m<'a>(&self, tx: &mut Tx<'a>, partition: Partition) -> RepoResult<()> {
-        aggregate_candle(
+    pub async fn calculate_price_1m<'a>(
+        &self,
+        tx: &mut Tx<'a>,
+        partition: Partition,
+    ) -> RepoResult<()> {
+        aggregate_candle_price(
             tx,
             1,
             "minute",
@@ -293,8 +193,12 @@ impl CandleRepo {
         .await
     }
 
-    pub async fn calculate_5m<'a>(&self, tx: &mut Tx<'a>, partition: Partition) -> RepoResult<()> {
-        aggregate_candle(
+    pub async fn calculate_price_5m<'a>(
+        &self,
+        tx: &mut Tx<'a>,
+        partition: Partition,
+    ) -> RepoResult<()> {
+        aggregate_candle_price(
             tx,
             5,
             "minute",
@@ -304,8 +208,12 @@ impl CandleRepo {
         .await
     }
 
-    pub async fn calculate_15m<'a>(&self, tx: &mut Tx<'a>, partition: Partition) -> RepoResult<()> {
-        aggregate_candle(
+    pub async fn calculate_price_15m<'a>(
+        &self,
+        tx: &mut Tx<'a>,
+        partition: Partition,
+    ) -> RepoResult<()> {
+        aggregate_candle_price(
             tx,
             15,
             "minute",
@@ -315,8 +223,12 @@ impl CandleRepo {
         .await
     }
 
-    pub async fn calculate_1h<'a>(&self, tx: &mut Tx<'a>, partition: Partition) -> RepoResult<()> {
-        aggregate_candle(
+    pub async fn calculate_price_1h<'a>(
+        &self,
+        tx: &mut Tx<'a>,
+        partition: Partition,
+    ) -> RepoResult<()> {
+        aggregate_candle_price(
             tx,
             1,
             "hour",
@@ -326,8 +238,12 @@ impl CandleRepo {
         .await
     }
 
-    pub async fn calculate_6h<'a>(&self, tx: &mut Tx<'a>, partition: Partition) -> RepoResult<()> {
-        aggregate_candle(
+    pub async fn calculate_price_6h<'a>(
+        &self,
+        tx: &mut Tx<'a>,
+        partition: Partition,
+    ) -> RepoResult<()> {
+        aggregate_candle_price(
             tx,
             6,
             "hours",
@@ -336,8 +252,12 @@ impl CandleRepo {
         )
         .await
     }
-    pub async fn calculate_1d<'a>(&self, tx: &mut Tx<'a>, partition: Partition) -> RepoResult<()> {
-        aggregate_candle(
+    pub async fn calculate_price_1d<'a>(
+        &self,
+        tx: &mut Tx<'a>,
+        partition: Partition,
+    ) -> RepoResult<()> {
+        aggregate_candle_price(
             tx,
             1,
             "day",
@@ -348,7 +268,7 @@ impl CandleRepo {
     }
 }
 
-async fn aggregate_candle<'a>(
+async fn aggregate_candle_price<'a>(
     tx: &mut Tx<'a>,
     window: usize,
     time_unit: &str,
@@ -385,18 +305,11 @@ aggregated_candles as (
         coalesce(max(high),0) as high,
         coalesce(min(low),0)  as low,
         coalesce((array_agg(close order by timestamp desc))[1],0)  as close,
-        coalesce(avg(avg),0) as avg,
-        sum(amount_buy) as amount_buy,
-        sum(trades_buy) as trades_buy,
-        sum(volume_buy) as volume_buy,
-        sum(amount_sell) as amount_sell,
-        sum(trades_sell) as trades_sell,
-        sum(volume_sell) as volume_sell
+        coalesce(avg(avg),0) as avg
     from {source_table}
         where
             timestamp > (select start_ts from timestamp) and
-            timestamp < (select end_ts from timestamp) and
-            (trades_buy + trades_sell) > 0
+            timestamp < (select end_ts from timestamp)
     group by token_pair_id, date_trunc('{time_unit}', timestamp) - (extract({time_unit} from timestamp)::int % {window}) * interval '1 {time_unit}'
 )
 insert into {destination_table} (
@@ -406,13 +319,7 @@ insert into {destination_table} (
     high,
     low,
     close,
-    avg,
-    amount_buy,
-    trades_buy,
-    volume_buy,
-    amount_sell,
-    trades_sell,
-    volume_sell
+    avg
 )
 select
     token_pair_id,
@@ -421,13 +328,7 @@ select
     high,
     low,
     close,
-    avg,
-    amount_buy,
-    trades_buy,
-    volume_buy,
-    amount_sell,
-    trades_sell,
-    volume_sell
+    avg
 from aggregated_candles
 on conflict (token_pair_id, timestamp)
 do update set
@@ -435,25 +336,13 @@ do update set
     high = excluded.high,
     low = excluded.low,
     close = excluded.close,
-    avg = excluded.avg,
-    amount_buy = excluded.amount_buy,
-    trades_buy = excluded.trades_buy,
-    volume_buy = excluded.volume_buy,
-    amount_sell = excluded.amount_sell,
-    trades_sell = excluded.trades_sell,
-    volume_sell = excluded.volume_sell
+    avg = excluded.avg
 where (
        {destination_table}.open != excluded.open or
        {destination_table}.high != excluded.high or
        {destination_table}.low != excluded.low or
        {destination_table}.close != excluded.close or
-       {destination_table}.avg != excluded.avg or
-       {destination_table}.amount_buy != excluded.amount_buy or
-       {destination_table}.trades_buy != excluded.trades_buy or
-       {destination_table}.volume_buy != excluded.volume_buy or
-       {destination_table}.amount_sell != excluded.amount_sell or
-       {destination_table}.trades_sell != excluded.trades_sell or
-       {destination_table}.volume_sell != excluded.volume_sell
+       {destination_table}.avg != excluded.avg
     )
         "#
     );

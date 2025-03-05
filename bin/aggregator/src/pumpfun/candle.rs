@@ -31,7 +31,7 @@ impl RefreshCandles {
                     tokio::spawn(async move {
                         let mut tx = pool.begin().await.unwrap();
 
-                        repo.calculate_1s(&mut tx, partition).await.unwrap();
+                        repo.calculate_price_1s(&mut tx, partition).await.unwrap();
                         let _ = tx.commit().await;
                         tokio::time::sleep(Duration::from_millis(10)).await;
                     })
@@ -53,7 +53,10 @@ impl RefreshCandles {
                     tokio::spawn(async move {
                         let mut tx = pool.begin().await.unwrap();
 
-                        repo.calculate_1m(&mut tx, partition).await.unwrap();
+                        repo.calculate_price_1m(&mut tx, partition).await.unwrap();
+                        repo.calculate_price_usd_1m(&mut tx, partition)
+                            .await
+                            .unwrap();
 
                         let _ = tx.commit().await;
                         tokio::time::sleep(Duration::from_millis(10)).await;
@@ -76,7 +79,10 @@ impl RefreshCandles {
                     tokio::spawn(async move {
                         let mut tx = pool.begin().await.unwrap();
 
-                        repo.calculate_5m(&mut tx, partition).await.unwrap();
+                        repo.calculate_price_5m(&mut tx, partition).await.unwrap();
+                        repo.calculate_price_usd_5m(&mut tx, partition)
+                            .await
+                            .unwrap();
 
                         let _ = tx.commit().await;
                         tokio::time::sleep(Duration::from_millis(10)).await;
@@ -99,7 +105,10 @@ impl RefreshCandles {
                     tokio::spawn(async move {
                         let mut tx = pool.begin().await.unwrap();
 
-                        repo.calculate_15m(&mut tx, partition).await.unwrap();
+                        repo.calculate_price_15m(&mut tx, partition).await.unwrap();
+                        repo.calculate_price_usd_15m(&mut tx, partition)
+                            .await
+                            .unwrap();
 
                         let _ = tx.commit().await;
                         tokio::time::sleep(Duration::from_millis(10)).await;
@@ -122,7 +131,10 @@ impl RefreshCandles {
                     tokio::spawn(async move {
                         let mut tx = pool.begin().await.unwrap();
 
-                        repo.calculate_1h(&mut tx, partition).await.unwrap();
+                        repo.calculate_price_1h(&mut tx, partition).await.unwrap();
+                        repo.calculate_price_usd_1h(&mut tx, partition)
+                            .await
+                            .unwrap();
 
                         let _ = tx.commit().await;
                         tokio::time::sleep(Duration::from_millis(10)).await;
@@ -145,7 +157,10 @@ impl RefreshCandles {
                     tokio::spawn(async move {
                         let mut tx = pool.begin().await.unwrap();
 
-                        repo.calculate_6h(&mut tx, partition).await.unwrap();
+                        repo.calculate_price_6h(&mut tx, partition).await.unwrap();
+                        repo.calculate_price_usd_6h(&mut tx, partition)
+                            .await
+                            .unwrap();
 
                         let _ = tx.commit().await;
                         tokio::time::sleep(Duration::from_millis(10)).await;
@@ -168,7 +183,10 @@ impl RefreshCandles {
                     tokio::spawn(async move {
                         let mut tx = pool.begin().await.unwrap();
 
-                        repo.calculate_1d(&mut tx, partition).await.unwrap();
+                        repo.calculate_price_1d(&mut tx, partition).await.unwrap();
+                        repo.calculate_price_usd_1d(&mut tx, partition)
+                            .await
+                            .unwrap();
 
                         let _ = tx.commit().await;
                         tokio::time::sleep(Duration::from_millis(10)).await;

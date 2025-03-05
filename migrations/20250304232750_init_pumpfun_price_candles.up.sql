@@ -78,7 +78,6 @@ create table pumpfun.candle_price_1m
     low           double precision not null,
     close         double precision not null,
     avg           double precision not null,
-    duration      int4,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -111,7 +110,6 @@ create table pumpfun.candle_price_1m_most_recent
     low           double precision not null,
     close         double precision not null,
     avg           double precision not null,
-    duration      int4,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -145,7 +143,6 @@ create table pumpfun.candle_price_5m
     low           double precision not null,
     close         double precision not null,
     avg           double precision not null,
-    duration      int4,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -178,7 +175,6 @@ create table pumpfun.candle_price_5m_most_recent
     low           double precision not null,
     close         double precision not null,
     avg           double precision not null,
-    duration      int4,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -212,7 +208,6 @@ create table pumpfun.candle_price_15m
     low           double precision not null,
     close         double precision not null,
     avg           double precision not null,
-    duration      int4,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -245,7 +240,6 @@ create table pumpfun.candle_price_15m_most_recent
     low           double precision not null,
     close         double precision not null,
     avg           double precision not null,
-    duration      int4,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -279,7 +273,6 @@ create table pumpfun.candle_price_1h
     low           double precision not null,
     close         double precision not null,
     avg           double precision not null,
-    duration      int4,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -312,7 +305,6 @@ create table pumpfun.candle_price_1h_most_recent
     low           double precision not null,
     close         double precision not null,
     avg           double precision not null,
-    duration      int4,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -346,7 +338,6 @@ create table pumpfun.candle_price_6h
     low           double precision not null,
     close         double precision not null,
     avg           double precision not null,
-    duration      int4,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -379,7 +370,6 @@ create table pumpfun.candle_price_6h_most_recent
     low           double precision not null,
     close         double precision not null,
     avg           double precision not null,
-    duration      int4,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -413,7 +403,6 @@ create table pumpfun.candle_price_1d
     low           double precision not null,
     close         double precision not null,
     avg           double precision not null,
-    duration      int4,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -446,7 +435,6 @@ create table pumpfun.candle_price_1d_most_recent
     low           double precision not null,
     close         double precision not null,
     avg           double precision not null,
-    duration      int4,
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
