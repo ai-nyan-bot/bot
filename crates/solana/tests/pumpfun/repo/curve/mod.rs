@@ -12,8 +12,8 @@ pub(crate) fn inserting_slot_trades() -> SlotTrades {
         timestamp: Timestamp::now(),
         trades: vec![SlotTrade {
             mint: "mint1".into(),
-            base_amount: 1_000_000.into(),
-            quote_amount: 2_000_000_000.into(),
+            amount_base: 1_000_000.into(),
+            amount_quote: 2_000_000_000.into(),
             is_buy: true,
             wallet: "7PQ3nyAJHXiFQd5c8HgRBMYLF748MQKgq3uYfTuFioHX".into(),
             virtual_base_reserves: 512561011366544i64.into(),
@@ -29,8 +29,8 @@ pub(crate) fn updating_slot_trades() -> SlotTrades {
         timestamp: Timestamp::now(),
         trades: vec![SlotTrade {
             mint: "mint1".into(),
-            base_amount: 1_000_000.into(),
-            quote_amount: 2_000_000_000.into(),
+            amount_base: 1_000_000.into(),
+            amount_quote: 2_000_000_000.into(),
             is_buy: false,
             wallet: "7PQ3nyAJHXiFQd5c8HgRBMYLF748MQKgq3uYfTuFioHX".into(),
             virtual_base_reserves: 0.into(),

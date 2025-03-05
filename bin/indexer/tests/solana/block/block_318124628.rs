@@ -56,13 +56,13 @@ async fn assert_jupiter_trades<'a>(tx: &mut Tx<'a>) {
     // DYbMBUwwEdeMiQ6iCHRsKZuDRvkVLvKfkvdAF1rFbshRoNRb2cS5GQEVwwgGJG4vgTxB2TxmYtKX8jfrgmaQN44
     let trade = trades
         .iter()
-        .find(|t| t.base_amount == 0.000010703)
+        .find(|t| t.amount_base == 0.000010703)
         .unwrap();
 
     assert_eq!(trade.address, 6);
     assert_eq!(trade.token_pair, 2);
-    assert_eq!(trade.base_amount, 0.000010703);
-    assert_eq!(trade.quote_amount, 0.002072);
+    assert_eq!(trade.amount_base, 0.000010703);
+    assert_eq!(trade.amount_quote, 0.002072);
     assert_eq!(trade.price, 193.5905820797907);
     assert!(!trade.is_buy);
     assert_eq!(
@@ -73,13 +73,13 @@ async fn assert_jupiter_trades<'a>(tx: &mut Tx<'a>) {
     // 5tC86xHQJHj2oFd23P58bjNtkjQhAE3UDUAigLLJiKf3fmVhDP5YW9KzuZjSMxU5nzKf83njzcMNxoCbHDWNuv13
     let trade = trades
         .iter()
-        .find(|t| t.base_amount == 0.000010697)
+        .find(|t| t.amount_base == 0.000010697)
         .unwrap();
 
     assert_eq!(trade.address, 6);
     assert_eq!(trade.token_pair, 2);
-    assert_eq!(trade.base_amount, 0.000010697);
-    assert_eq!(trade.quote_amount, 0.002072);
+    assert_eq!(trade.amount_base, 0.000010697);
+    assert_eq!(trade.amount_quote, 0.002072);
     assert_eq!(trade.price, 193.69916799102555);
     assert!(!trade.is_buy);
     assert_eq!(
@@ -91,8 +91,8 @@ async fn assert_jupiter_trades<'a>(tx: &mut Tx<'a>) {
     let trade = trades.iter().find(|t| t.token_pair == 1004).unwrap();
 
     assert_eq!(trade.address, 5);
-    assert_eq!(trade.base_amount, 274.241866);
-    assert_eq!(trade.quote_amount, 1.0);
+    assert_eq!(trade.amount_base, 274.241866);
+    assert_eq!(trade.amount_quote, 1.0);
     assert_eq!(trade.price, 0.0036464162623514236);
     assert!(trade.is_buy);
     assert_eq!(
@@ -104,8 +104,8 @@ async fn assert_jupiter_trades<'a>(tx: &mut Tx<'a>) {
     let trade = trades.iter().find(|t| t.token_pair == 1005).unwrap();
 
     assert_eq!(trade.address, 5);
-    assert_eq!(trade.base_amount, 920.381148);
-    assert_eq!(trade.quote_amount, 0.503951337);
+    assert_eq!(trade.amount_base, 920.381148);
+    assert_eq!(trade.amount_quote, 0.503951337);
     assert_eq!(trade.price, 0.0005475463487003105);
     assert!(trade.is_buy);
     assert_eq!(
@@ -121,8 +121,8 @@ async fn assert_pumpfun_trades<'a>(tx: &mut Tx<'a>) {
     // OKX transfer - 4ZpWPGRKmR4ChymvfWXabC4jbch6ryee9UJEQUbyfdmo2rMYyd9mYjt9AkRsz94p8ZqYwpTDTtYuaQHnLXxRvzys
     let first = trades.iter().find(|t| t.token_pair == 1000).unwrap();
     assert_eq!(first.address, 1);
-    assert_eq!(first.base_amount, 1950554.226272);
-    assert_eq!(first.quote_amount, 0.1414091);
+    assert_eq!(first.amount_base, 1950554.226272);
+    assert_eq!(first.amount_quote, 0.1414091);
     assert_eq!(first.price, 0.00000007249688221704474);
     assert!(first.is_buy);
     assert_eq!(
@@ -135,8 +135,8 @@ async fn assert_pumpfun_trades<'a>(tx: &mut Tx<'a>) {
     // SELL - 57g7GeNn9j8J819XXd6eAqGThZsdwDHwNNVxMe6oJwAZwPYgN9G5R7co4B5SuyjpBCaf2nfNXmDJQuV98E6rGzpN
     let second = trades.iter().find(|t| t.token_pair == 1001).unwrap();
     assert_eq!(second.address, 2);
-    assert_eq!(second.base_amount, 456403.879924);
-    assert_eq!(second.quote_amount, 0.014259323);
+    assert_eq!(second.amount_base, 456403.879924);
+    assert_eq!(second.amount_quote, 0.014259323);
     assert_eq!(second.price, 0.000000031242773401432195);
     assert!(!second.is_buy);
     assert_eq!(
@@ -149,8 +149,8 @@ async fn assert_pumpfun_trades<'a>(tx: &mut Tx<'a>) {
     // BUY 4FufGr26C7XNSMwqt8y51LYvf8UhgdDmmZicfQoRiGTiD549772Q54Q7GPeZ5EmnshMY4Sdb2Vph78cXiyJe8Bzo
     let third = trades.iter().find(|t| t.token_pair == 1002).unwrap();
     assert_eq!(third.address, 3);
-    assert_eq!(third.base_amount, 732322.630357);
-    assert_eq!(third.quote_amount, 0.020550522);
+    assert_eq!(third.amount_base, 732322.630357);
+    assert_eq!(third.amount_quote, 0.020550522);
     assert_eq!(third.price, 0.00000002806211517727074);
     assert!(third.is_buy);
     assert_eq!(

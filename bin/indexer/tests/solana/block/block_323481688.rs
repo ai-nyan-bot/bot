@@ -86,8 +86,8 @@ insert into solana.token (id, version, mint, name, symbol, decimals, supply, met
 		let mut trades = pumpfun::list_of_tx(&mut tx, "3QVGwMZgNUg4xoLd8eNNo6mXYNXVzro2MbKDZQ2Mz6Yogf22uswTcWZ7K5WKxGhrZccbtrV12rFVa6BGArfpFmn8").await;
 		assert_eq!(trades.len(), 1);
 		let trade = trades.pop().unwrap();
-		assert_eq!(trade.base_amount, 0.035724);
-		assert_eq!(trade.quote_amount, 0.000000001);
+		assert_eq!(trade.amount_base, 0.035724);
+		assert_eq!(trade.amount_quote, 0.000000001);
 		assert_eq!(trade.price, 0.000000027992386070988694);
 		assert!(trade.is_buy);
 		assert_eq!(trade.virtual_base_reserves, 1072373976445263);
@@ -100,8 +100,8 @@ insert into solana.token (id, version, mint, name, symbol, decimals, supply, met
 		let mut trades = jupiter::list_of_tx(&mut tx, "74CYf6mYrv3bmAvfHfT1wQdZsSoRoUMYtN2w5fDS3CbdLSa51AZtvXD7RUHTYe5ff1TQ6H3XsaVoiebpHHB6Erm").await;
 		assert_eq!(trades.len(), 1);
 		let trade = trades.pop().unwrap();
-		assert_eq!(trade.base_amount, 136.264182);
-		assert_eq!(trade.quote_amount, 522.089475);
+		assert_eq!(trade.amount_base, 136.264182);
+		assert_eq!(trade.amount_quote, 522.089475);
 		assert_eq!(trade.price, 3.8314505494921622);
 		assert!(trade.is_buy);
 	})

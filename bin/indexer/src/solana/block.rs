@@ -65,8 +65,8 @@ pub async fn index_block<L: LoadTokenInfo<Mint> + Clone>(state: State<L>, block:
                                     .trades
                                     .push(solana::pumpfun::repo::SlotTrade {
                                         mint,
-                                        base_amount: token_amount,
-                                        quote_amount: sol_amount,
+                                        amount_base: token_amount,
+                                        amount_quote: sol_amount,
                                         is_buy,
                                         wallet: user,
                                         virtual_base_reserves: virtual_token_reserves,

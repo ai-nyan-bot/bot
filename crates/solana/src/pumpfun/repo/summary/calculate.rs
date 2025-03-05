@@ -14,8 +14,8 @@ impl SummaryRepo {
 			tx,
 			2,
 			"minutes",
-			"pumpfun.candle_price_1m_most_recent",
-			format!("pumpfun.candle_price_1m_{partition}").as_str(),
+			"pumpfun.candle_1m_most_recent",
+			format!("pumpfun.candle_1m_{partition}").as_str(),
 			"pumpfun.summary_1m",
 		)
 			.await
@@ -26,8 +26,8 @@ impl SummaryRepo {
 			tx,
 			10,
 			"minutes",
-			"pumpfun.candle_price_5m_most_recent",
-			format!("pumpfun.candle_price_5m_{partition}").as_str(),
+			"pumpfun.candle_5m_most_recent",
+			format!("pumpfun.candle_5m_{partition}").as_str(),
 			"pumpfun.summary_5m",
 		)
 			.await
@@ -38,8 +38,8 @@ impl SummaryRepo {
 			tx,
 			30,
 			"minutes",
-			"pumpfun.candle_price_15m_most_recent",
-			format!("pumpfun.candle_price_15m_{partition}").as_str(),
+			"pumpfun.candle_15m_most_recent",
+			format!("pumpfun.candle_15m_{partition}").as_str(),
 			"pumpfun.summary_15m",
 		)
 			.await
@@ -50,8 +50,8 @@ impl SummaryRepo {
 			tx,
 			2,
 			"hours",
-			"pumpfun.candle_price_1h_most_recent",
-			format!("pumpfun.candle_price_1h_{partition}").as_str(),
+			"pumpfun.candle_1h_most_recent",
+			format!("pumpfun.candle_1h_{partition}").as_str(),
 			"pumpfun.summary_1h",
 		)
 			.await
@@ -62,8 +62,8 @@ impl SummaryRepo {
 			tx,
 			8,
 			"hours",
-			"pumpfun.candle_price_6h_most_recent",
-			format!("pumpfun.candle_price_6h_{partition}").as_str(),
+			"pumpfun.candle_6h_most_recent",
+			format!("pumpfun.candle_6h_{partition}").as_str(),
 			"pumpfun.summary_6h",
 		)
 			.await
@@ -74,8 +74,8 @@ impl SummaryRepo {
 			tx,
 			2,
 			"days",
-			"pumpfun.candle_price_1d_most_recent",
-			format!("pumpfun.candle_price_1d_{partition}").as_str(),
+			"pumpfun.candle_1d_most_recent",
+			format!("pumpfun.candle_1d_{partition}").as_str(),
 			"pumpfun.summary_1d",
 		)
 			.await

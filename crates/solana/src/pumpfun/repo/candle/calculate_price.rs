@@ -14,7 +14,7 @@ impl CandleRepo {
         tx: &mut Tx<'a>,
         partition: Partition,
     ) -> RepoResult<()> {
-        let candle_price_table = format!("pumpfun.candle_price_1s_{partition}");
+        let candle_price_table = format!("pumpfun.candle_1s_{partition}");
         let trade_table = format!("pumpfun.trade_{partition}");
 
         sqlx::query(
@@ -44,7 +44,8 @@ trades as (
         token_pair_id,
         timestamp as second,
         price,
-        base_amount as amount,
+        amount_base as amount_base,
+        amount_quote as amount_quote,
         is_buy
     from
         {trade_table}
@@ -57,7 +58,7 @@ trades as (
          -- so limiting it to 50k trades per second seems to be reasonable, which gives us a 500x speed up
         limit 50000
 ),
-open_prices as (
+open_price as (
     select distinct on (token_pair_id, second)
         token_pair_id,
         second,
@@ -67,7 +68,7 @@ open_prices as (
     order by
         token_pair_id, second asc
 ),
-close_prices as (
+close_price as (
     select distinct on (token_pair_id, second)
         token_pair_id,
         second,
@@ -77,6 +78,94 @@ close_prices as (
     order by
         token_pair_id, second desc
 ),
+amount_base_buy as (
+    select
+        token_pair_id,
+        second,
+        sum(amount_base) as amount
+    from
+        trades
+    where is_buy = true
+    group by
+        token_pair_id, second
+),
+amount_quote_buy as (
+    select
+        token_pair_id,
+        second,
+        sum(amount_quote) as amount
+    from
+        trades
+    where is_buy = true
+    group by
+        token_pair_id, second
+),
+volume_buy as (
+    select
+        token_pair_id,
+        second,
+        sum(amount_quote * price) as volume
+    from
+        trades
+    where is_buy = true
+    group by
+        token_pair_id, second
+),
+trade_buy as (
+    select
+        token_pair_id,
+        second,
+        count(*) as trades
+    from
+        trades
+    where is_buy = true
+    group by
+        token_pair_id, second
+),
+amount_base_sell as (
+    select
+        token_pair_id,
+        second,
+        sum(amount_base) as amount
+    from
+        trades
+    where is_buy = false
+    group by
+        token_pair_id, second
+),
+amount_quote_sell as (
+    select
+        token_pair_id,
+        second,
+        sum(amount_quote) as amount
+    from
+        trades
+    where is_buy = false
+    group by
+        token_pair_id, second
+),
+volume_sell as (
+    select
+        token_pair_id,
+        second,
+        sum(amount_base * price) as volume
+    from
+        trades
+    where is_buy = false
+    group by
+        token_pair_id, second
+),
+trade_sell as (
+    select
+        token_pair_id,
+        second,
+        count(*) as trades
+    from
+        trades
+    where is_buy = false
+    group by
+        token_pair_id, second
+),
 current_candles as (
     select
         t.token_pair_id,
@@ -85,19 +174,43 @@ current_candles as (
         c.close_price,
         max(t.price) as high_price,
         min(t.price) as low_price,
-        avg(t.price) as avg
+        avg(t.price) as avg,
+        coalesce(bab.amount,0) as amount_base_buy,
+        coalesce(baq.amount,0) as amount_quote_buy,
+        coalesce(bt.trades,0) as trade_buy,
+        coalesce(bv.volume,0) as volume_buy,
+        coalesce(sab.amount,0) as amount_base_sell,
+        coalesce(saq.amount,0) as amount_quote_sell,
+        coalesce(st.trades,0) as trade_sell,
+        coalesce(sv.volume,0) as volume_sell
     from
         trades t
-    join open_prices o on t.token_pair_id = o.token_pair_id         and t.second = o.second
-    join close_prices c on t.token_pair_id = c.token_pair_id        and t.second = c.second
+    join open_price o on t.token_pair_id = o.token_pair_id and t.second = o.second
+    join close_price c on t.token_pair_id = c.token_pair_id and t.second = c.second
+    left join amount_base_buy bab on t.token_pair_id = bab.token_pair_id and t.second = bab.second
+    left join amount_quote_buy baq on t.token_pair_id = baq.token_pair_id and t.second = baq.second
+    left join volume_buy bv on t.token_pair_id = bv.token_pair_id  and t.second = bv.second
+    left join trade_buy bt on t.token_pair_id = bt.token_pair_id  and t.second = bt.second
+    left join amount_base_sell sab on t.token_pair_id = sab.token_pair_id  and t.second = sab.second
+    left join amount_quote_sell saq on t.token_pair_id = saq.token_pair_id  and t.second = saq.second
+    left join volume_sell sv on t.token_pair_id = sv.token_pair_id  and t.second = sv.second
+    left join trade_sell st on t.token_pair_id = st.token_pair_id  and t.second = st.second
     group by
         t.token_pair_id,
         t.second,
         o.open_price,
-        c.close_price
+        c.close_price,
+        bab.amount,
+        baq.amount,
+        bt.trades,
+        bv.volume,
+        sab.amount,
+        saq.amount,
+        st.trades,
+        sv.volume
 ),
 previous_candles as (
-    select r.* from pumpfun.candle_price_1s_most_recent r
+    select r.* from pumpfun.candle_1s_most_recent r
              join current_candles c on
                  c.token_pair_id = r.token_pair_id and
                  c.second != r.timestamp
@@ -111,6 +224,14 @@ insert_current_candle as (
         low,
         close,
         avg,
+        amount_base_buy,
+        amount_quote_buy,
+        trade_buy,
+        volume_buy,
+        amount_base_sell,
+        amount_quote_sell,
+        trade_sell,
+        volume_sell,
         duration
     )
     select
@@ -121,6 +242,14 @@ insert_current_candle as (
         cur.low_price,
         cur.close_price,
         cur.avg,
+        cur.amount_base_buy,
+        cur.amount_quote_buy,
+        cur.trade_buy,
+        cur.volume_buy,
+        cur.amount_base_sell,
+        cur.amount_quote_sell,
+        cur.trade_sell,
+        cur.volume_sell,
         null
     from
         current_candles cur
@@ -137,13 +266,29 @@ insert_current_candle as (
         high = excluded.high,
         low = excluded.low,
         close = excluded.close,
-        avg = excluded.avg
+        avg = excluded.avg,
+        amount_base_buy = excluded.amount_base_buy,
+        amount_quote_buy = excluded.amount_quote_buy,
+        volume_buy = excluded.volume_buy,
+        trade_buy = excluded.trade_buy,
+        amount_base_sell = excluded.amount_base_sell,
+        amount_quote_sell = excluded.amount_quote_sell,
+        volume_sell = excluded.volume_sell,
+        trade_sell = excluded.trade_sell
     where (
            {candle_price_table}.open != excluded.open or
            {candle_price_table}.high != excluded.high or
            {candle_price_table}.low != excluded.low or
            {candle_price_table}.close != excluded.close or
-           {candle_price_table}.avg != excluded.avg
+           {candle_price_table}.avg != excluded.avg or
+           {candle_price_table}.amount_base_buy != excluded.amount_base_buy or
+           {candle_price_table}.amount_quote_buy != excluded.amount_quote_buy or
+           {candle_price_table}.volume_buy != excluded.volume_buy or
+           {candle_price_table}.trade_buy != excluded.trade_buy or
+           {candle_price_table}.amount_base_sell != excluded.amount_base_sell or
+           {candle_price_table}.amount_quote_sell != excluded.amount_quote_sell or
+           {candle_price_table}.volume_sell != excluded.volume_sell or
+           {candle_price_table}.trade_sell != excluded.trade_sell
         )
     returning 1
 ),
@@ -166,13 +311,9 @@ update_previous_candles as (
 select * from update_previous_candles
 union all
 select * from insert_current_candle            
-            
-        "#
-            )
-            .as_str(),
-        )
-        .execute(&mut **tx)
-        .await?;
+        "#).as_str())
+            .execute(&mut **tx)
+            .await?;
         Ok(())
     }
 }
@@ -187,8 +328,8 @@ impl CandleRepo {
             tx,
             1,
             "minute",
-            format!("pumpfun.candle_price_1s_{partition}").as_str(),
-            format!("pumpfun.candle_price_1m_{partition}").as_str(),
+            format!("pumpfun.candle_1s_{partition}").as_str(),
+            format!("pumpfun.candle_1m_{partition}").as_str(),
         )
         .await
     }
@@ -202,8 +343,8 @@ impl CandleRepo {
             tx,
             5,
             "minute",
-            format!("pumpfun.candle_price_1m_{partition}").as_str(),
-            format!("pumpfun.candle_price_5m_{partition}").as_str(),
+            format!("pumpfun.candle_1m_{partition}").as_str(),
+            format!("pumpfun.candle_5m_{partition}").as_str(),
         )
         .await
     }
@@ -217,8 +358,8 @@ impl CandleRepo {
             tx,
             15,
             "minute",
-            format!("pumpfun.candle_price_5m_{partition}").as_str(),
-            format!("pumpfun.candle_price_15m_{partition}").as_str(),
+            format!("pumpfun.candle_5m_{partition}").as_str(),
+            format!("pumpfun.candle_15m_{partition}").as_str(),
         )
         .await
     }
@@ -232,8 +373,8 @@ impl CandleRepo {
             tx,
             1,
             "hour",
-            format!("pumpfun.candle_price_15m_{partition}").as_str(),
-            format!("pumpfun.candle_price_1h_{partition}").as_str(),
+            format!("pumpfun.candle_15m_{partition}").as_str(),
+            format!("pumpfun.candle_1h_{partition}").as_str(),
         )
         .await
     }
@@ -247,8 +388,8 @@ impl CandleRepo {
             tx,
             6,
             "hours",
-            format!("pumpfun.candle_price_1h_{partition}").as_str(),
-            format!("pumpfun.candle_price_6h_{partition}").as_str(),
+            format!("pumpfun.candle_1h_{partition}").as_str(),
+            format!("pumpfun.candle_6h_{partition}").as_str(),
         )
         .await
     }
@@ -261,8 +402,8 @@ impl CandleRepo {
             tx,
             1,
             "day",
-            format!("pumpfun.candle_price_6h_{partition}").as_str(),
-            format!("pumpfun.candle_price_1d_{partition}").as_str(),
+            format!("pumpfun.candle_6h_{partition}").as_str(),
+            format!("pumpfun.candle_1d_{partition}").as_str(),
         )
         .await
     }
@@ -305,11 +446,20 @@ aggregated_candles as (
         coalesce(max(high),0) as high,
         coalesce(min(low),0)  as low,
         coalesce((array_agg(close order by timestamp desc))[1],0)  as close,
-        coalesce(avg(avg),0) as avg
+        coalesce(avg(avg),0) as avg,
+        sum(amount_base_buy) as amount_base_buy,
+        sum(amount_quote_buy) as amount_quote_buy,
+        sum(trade_buy) as trade_buy,
+        sum(volume_buy) as volume_buy,
+        sum(amount_base_sell) as amount_base_sell,
+        sum(amount_quote_sell) as amount_quote_sell,
+        sum(trade_sell) as trade_sell,
+        sum(volume_sell) as volume_sell
     from {source_table}
         where
             timestamp > (select start_ts from timestamp) and
-            timestamp < (select end_ts from timestamp)
+            timestamp < (select end_ts from timestamp) and
+            (trade_buy + trade_sell) > 0
     group by token_pair_id, date_trunc('{time_unit}', timestamp) - (extract({time_unit} from timestamp)::int % {window}) * interval '1 {time_unit}'
 )
 insert into {destination_table} (
@@ -319,7 +469,15 @@ insert into {destination_table} (
     high,
     low,
     close,
-    avg
+    avg,
+    amount_base_buy,
+    amount_quote_buy,
+    trade_buy,
+    volume_buy,
+    amount_base_sell,
+    amount_quote_sell,
+    trade_sell,
+    volume_sell
 )
 select
     token_pair_id,
@@ -328,7 +486,15 @@ select
     high,
     low,
     close,
-    avg
+    avg,
+    amount_base_buy,
+    amount_quote_buy,
+    trade_buy,
+    volume_buy,
+    amount_base_sell,
+    amount_quote_sell,
+    trade_sell,
+    volume_sell
 from aggregated_candles
 on conflict (token_pair_id, timestamp)
 do update set
@@ -336,13 +502,29 @@ do update set
     high = excluded.high,
     low = excluded.low,
     close = excluded.close,
-    avg = excluded.avg
+    avg = excluded.avg,
+    amount_base_buy = excluded.amount_base_buy,
+    amount_quote_buy = excluded.amount_quote_buy,
+    trade_buy = excluded.trade_buy,
+    volume_buy = excluded.volume_buy,
+    amount_base_sell = excluded.amount_base_sell,
+    amount_quote_sell = excluded.amount_quote_sell,
+    trade_sell = excluded.trade_sell,
+    volume_sell = excluded.volume_sell
 where (
        {destination_table}.open != excluded.open or
        {destination_table}.high != excluded.high or
        {destination_table}.low != excluded.low or
        {destination_table}.close != excluded.close or
-       {destination_table}.avg != excluded.avg
+       {destination_table}.avg != excluded.avg or
+       {destination_table}.amount_base_buy != excluded.amount_base_buy or
+       {destination_table}.amount_quote_buy != excluded.amount_quote_buy or
+       {destination_table}.trade_buy != excluded.trade_buy or
+       {destination_table}.volume_buy != excluded.volume_buy or
+       {destination_table}.amount_base_sell != excluded.amount_base_sell or
+       {destination_table}.amount_quote_sell != excluded.amount_quote_sell or
+       {destination_table}.trade_sell != excluded.trade_sell or
+       {destination_table}.volume_sell != excluded.volume_sell
     )
         "#
     );

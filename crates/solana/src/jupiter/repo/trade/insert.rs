@@ -85,8 +85,8 @@ impl<L: LoadTokenInfo<Mint>> TradeRepo<L> {
         let mut slots = Vec::with_capacity(len);
         let mut address_ids = Vec::with_capacity(len);
         let mut token_pair_ids = Vec::with_capacity(len);
-        let mut base_amounts = Vec::with_capacity(len);
-        let mut quote_amounts = Vec::with_capacity(len);
+        let mut amount_bases = Vec::with_capacity(len);
+        let mut amount_quotes = Vec::with_capacity(len);
         let mut prices = Vec::with_capacity(len);
         let mut is_buys = Vec::with_capacity(len);
         let mut timestamps = Vec::with_capacity(len);
@@ -98,14 +98,14 @@ impl<L: LoadTokenInfo<Mint>> TradeRepo<L> {
             {
                 let token_pair = token_pairs.get(&(base_mint, quote_mint)).unwrap();
 
-                let (price, base_amount, quote_amount, is_buy) =
+                let (price, amount_base, amount_quote, is_buy) =
                     calculate_price_amount_and_side(&trade, &token_pair.base, &token_pair.quote);
 
                 slots.push(slot.slot);
                 address_ids.push(keys.get(&trade.wallet).unwrap());
                 token_pair_ids.push(token_pair.id);
-                base_amounts.push(base_amount);
-                quote_amounts.push(quote_amount);
+                amount_bases.push(amount_base);
+                amount_quotes.push(amount_quote);
                 prices.push(price);
                 is_buys.push(is_buy);
                 timestamps.push(slot.timestamp);
@@ -115,26 +115,26 @@ impl<L: LoadTokenInfo<Mint>> TradeRepo<L> {
 
         let rows = sqlx::query(
                 r#"
-                insert into jupiter.trade (slot, address_id, token_pair_id, base_amount, quote_amount, price, is_buy, timestamp, signature)
+                insert into jupiter.trade (slot, address_id, token_pair_id, amount_base, amount_quote, price, is_buy, timestamp, signature)
                 select
                     unnest($1::int8[]) as slot,
                     unnest($2::int4[]) as address_id,
                     unnest($3::int4[]) as token_pair_id,
-                    unnest($4::double precision[]) as base_amount,
-                    unnest($5::double precision[]) as quote_amount,
+                    unnest($4::double precision[]) as amount_base,
+                    unnest($5::double precision[]) as amount_quote,
                     unnest($6::double precision[]) as price,
                     unnest($7::boolean[]) as is_buy,
                     unnest($8::timestamptz[]) as timestamp,
                     unnest($9::text[]) as signature
 on conflict (token_pair_id,signature) do nothing
-returning slot, address_id, token_pair_id, base_amount, quote_amount, price, is_buy, timestamp;
+returning slot, address_id, token_pair_id, amount_base, amount_quote, price, is_buy, timestamp;
             "#,
             )
             .bind(&slots)
             .bind(&address_ids)
             .bind(&token_pair_ids)
-            .bind(&base_amounts)
-            .bind(&quote_amounts)
+            .bind(&amount_bases)
+            .bind(&amount_quotes)
             .bind(&prices)
             .bind(&is_buys)
             .bind(&timestamps)
@@ -148,8 +148,8 @@ returning slot, address_id, token_pair_id, base_amount, quote_amount, price, is_
                 slot: r.get::<Slot, _>("slot"),
                 address: r.get::<AddressId, _>("address_id"),
                 token_pair: r.get::<TokenPairId, _>("token_pair_id"),
-                base_amount: r.get::<DecimalAmount, _>("base_amount"),
-                quote_amount: r.get::<DecimalAmount, _>("quote_amount"),
+                amount_base: r.get::<DecimalAmount, _>("amount_base"),
+                amount_quote: r.get::<DecimalAmount, _>("amount_quote"),
                 price: r.get::<PriceQuote, _>("price"),
                 is_buy: r.get::<bool, _>("is_buy"),
                 timestamp: r.get::<Timestamp, _>("timestamp"),
@@ -181,13 +181,13 @@ fn calculate_price_amount_and_side(
     let input_amount = DecimalAmount::new(trade.input_amount, input_decimals.clone());
     let output_amount = DecimalAmount::new(trade.output_amount, output_decimals.clone());
 
-    let base_amount = if trade.input_mint == base_token.mint {
+    let amount_base = if trade.input_mint == base_token.mint {
         input_amount.clone()
     } else {
         output_amount.clone()
     };
 
-    let quote_amount = if trade.output_mint == base_token.mint {
+    let amount_quote = if trade.output_mint == base_token.mint {
         input_amount.clone()
     } else {
         output_amount.clone()
@@ -197,16 +197,16 @@ fn calculate_price_amount_and_side(
         assert!(input_amount > 0.0, "Input amount must not be 0");
         (
             PriceAvgQuote(output_amount.0 / input_amount.0),
-            base_amount,
-            quote_amount,
+            amount_base,
+            amount_quote,
             false,
         )
     } else {
         assert!(output_amount > 0.0, "Output amount must not be 0");
         (
             PriceAvgQuote(input_amount.0 / output_amount.0),
-            base_amount,
-            quote_amount,
+            amount_base,
+            amount_quote,
             true,
         )
     }

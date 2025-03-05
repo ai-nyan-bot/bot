@@ -14,8 +14,8 @@ fn default_slot_trades() -> SlotTrades {
         timestamp: Timestamp::now(),
         trades: vec![SlotTrade {
             mint: "mint1".into(),
-            base_amount: 1_000_000.into(),
-            quote_amount: 2_000_000_000.into(),
+            amount_base: 1_000_000.into(),
+            amount_quote: 2_000_000_000.into(),
             is_buy: true,
             wallet: "7PQ3nyAJHXiFQd5c8HgRBMYLF748MQKgq3uYfTuFioHX".into(),
             virtual_base_reserves: 3_000.into(),
@@ -41,8 +41,8 @@ async fn test_ok() {
         assert_eq!(result.address, 1);
         assert_eq!(result.token_pair, 1000);
 
-        assert_eq!(result.base_amount.0, 1.0);
-        assert_eq!(result.quote_amount.0, 2.0);
+        assert_eq!(result.amount_base.0, 1.0);
+        assert_eq!(result.amount_quote.0, 2.0);
         assert_eq!(result.price, 2.0);
         assert!(result.is_buy);
         assert_eq!(result.virtual_base_reserves, 3_000);
@@ -65,8 +65,8 @@ async fn test_multiple() {
             trades: vec![
                 SlotTrade {
                     mint: "mint1".into(),
-                    base_amount: 1_000_000.into(),
-                    quote_amount: 2_000_000_000.into(),
+                    amount_base: 1_000_000.into(),
+                    amount_quote: 2_000_000_000.into(),
                     is_buy: true,
                     wallet: "7PQ3nyAJHXiFQd5c8HgRBMYLF748MQKgq3uYfTuFioHX".into(),
                     virtual_base_reserves: 3_000.into(),
@@ -75,8 +75,8 @@ async fn test_multiple() {
                 },
                 SlotTrade {
                     mint: "mint2".into(),
-                    base_amount: 5_000_000.into(),
-                    quote_amount: 6_000_000_000i64.into(),
+                    amount_base: 5_000_000.into(),
+                    amount_quote: 6_000_000_000i64.into(),
                     is_buy: false,
                     wallet: "Bp65Vdx5o5THggj1ZHYsVwaKPhp999mRmAeKyFG9FVnT".into(),
                     virtual_base_reserves: 7_000.into(),
@@ -97,8 +97,8 @@ async fn test_multiple() {
         assert_eq!(first.address, 2);
         assert_eq!(first.token_pair, 1001);
 
-        assert_eq!(first.base_amount.0, 5.0);
-        assert_eq!(first.quote_amount.0, 6.0);
+        assert_eq!(first.amount_base.0, 5.0);
+        assert_eq!(first.amount_quote.0, 6.0);
         assert_eq!(first.price, 1.2);
         assert!(!first.is_buy);
         assert_eq!(first.virtual_base_reserves, 7_000);
@@ -109,8 +109,8 @@ async fn test_multiple() {
         assert_eq!(second.address, 1);
         assert_eq!(second.token_pair, 1000);
 
-        assert_eq!(second.base_amount.0, 1.0);
-        assert_eq!(second.quote_amount.0, 2.0);
+        assert_eq!(second.amount_base.0, 1.0);
+        assert_eq!(second.amount_quote.0, 2.0);
         assert_eq!(second.price, 2.0);
         assert!(second.is_buy);
         assert_eq!(second.virtual_base_reserves, 3_000);

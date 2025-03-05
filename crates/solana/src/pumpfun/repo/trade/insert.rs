@@ -27,8 +27,8 @@ pub struct SlotTrades {
 #[derive(Debug, Clone)]
 pub struct SlotTrade {
     pub mint: Mint,
-    pub base_amount: Amount,
-    pub quote_amount: Amount,
+    pub amount_base: Amount,
+    pub amount_quote: Amount,
     pub is_buy: bool,
     pub wallet: PublicKey,
     pub virtual_base_reserves: Amount,
@@ -87,8 +87,8 @@ impl<L: LoadTokenInfo<Mint>> TradeRepo<L> {
         let mut slots = Vec::with_capacity(len);
         let mut address_ids = Vec::with_capacity(len);
         let mut token_pair_ids = Vec::with_capacity(len);
-        let mut base_amounts = Vec::with_capacity(len);
-        let mut quote_amounts = Vec::with_capacity(len);
+        let mut amount_bases = Vec::with_capacity(len);
+        let mut amount_quotes = Vec::with_capacity(len);
         let mut prices = Vec::with_capacity(len);
         let mut is_buys = Vec::with_capacity(len);
         let mut timestamps = Vec::with_capacity(len);
@@ -98,19 +98,19 @@ impl<L: LoadTokenInfo<Mint>> TradeRepo<L> {
         let mut signatures = Vec::with_capacity(len);
 
         for trade in &slot.trades {
-            let base_amount = DecimalAmount::new(trade.base_amount, 6);
-            let quote_amount = DecimalAmount::new(trade.quote_amount, 9);
+            let amount_base = DecimalAmount::new(trade.amount_base, 6);
+            let amount_quote = DecimalAmount::new(trade.amount_quote, 9);
 
             let base_reserve = trade.virtual_base_reserves;
             let quote_reserve = trade.virtual_quote_reserves;
 
-            let price = PriceQuote(quote_amount.0 / base_amount.0);
+            let price = PriceQuote(amount_quote.0 / amount_base.0);
 
             slots.push(slot.slot);
             address_ids.push(addresses.get(&trade.wallet).unwrap());
             token_pair_ids.push(token_pairs.get(&trade.mint).unwrap());
-            base_amounts.push(base_amount);
-            quote_amounts.push(quote_amount);
+            amount_bases.push(amount_base);
+            amount_quotes.push(amount_quote);
             prices.push(price);
             is_buys.push(trade.is_buy);
             timestamps.push(slot.timestamp);
@@ -124,15 +124,15 @@ impl<L: LoadTokenInfo<Mint>> TradeRepo<L> {
         let rows = sqlx::query(
             r#"
 insert into pumpfun.trade (
-    slot, address_id, token_pair_id, base_amount, quote_amount, price,
+    slot, address_id, token_pair_id, amount_base, amount_quote, price,
     is_buy, timestamp, virtual_base_reserves, virtual_quote_reserves,progress, signature
 )
 select
     unnest($1::int8[]) as slot,
     unnest($2::int4[]) as address_id,
     unnest($3::int4[]) as token_pair_id,
-    unnest($4::double precision[]) as base_amount,
-    unnest($5::double precision[]) as quote_amount,
+    unnest($4::double precision[]) as amount_base,
+    unnest($5::double precision[]) as amount_quote,
     unnest($6::double precision[]) as price,
     unnest($7::boolean[]) as is_buy,
     unnest($8::timestamptz[]) as timestamp,
@@ -141,13 +141,13 @@ select
     unnest($11::real[]) as progress,
     unnest($12::text[]) as signature
 on conflict (token_pair_id,signature) do nothing
-returning slot, address_id, token_pair_id, base_amount, quote_amount, price, is_buy, timestamp, virtual_base_reserves, virtual_quote_reserves, progress;  "#,
+returning slot, address_id, token_pair_id, amount_base, amount_quote, price, is_buy, timestamp, virtual_base_reserves, virtual_quote_reserves, progress;  "#,
         )
         .bind(&slots)
         .bind(&address_ids)
         .bind(&token_pair_ids)
-        .bind(&base_amounts)
-        .bind(&quote_amounts)
+        .bind(&amount_bases)
+        .bind(&amount_quotes)
         .bind(&prices)
         .bind(&is_buys)
         .bind(&timestamps)
@@ -164,8 +164,8 @@ returning slot, address_id, token_pair_id, base_amount, quote_amount, price, is_
                 slot: r.get::<Slot, _>("slot"),
                 address: r.get::<AddressId, _>("address_id"),
                 token_pair: r.get::<TokenPairId, _>("token_pair_id"),
-                base_amount: r.get::<DecimalAmount, _>("base_amount"),
-                quote_amount: r.get::<DecimalAmount, _>("quote_amount"),
+                amount_base: r.get::<DecimalAmount, _>("amount_base"),
+                amount_quote: r.get::<DecimalAmount, _>("amount_quote"),
                 price: r.get::<PriceQuote, _>("price"),
                 is_buy: r.get::<bool, _>("is_buy"),
                 timestamp: r.get::<Timestamp, _>("timestamp"),

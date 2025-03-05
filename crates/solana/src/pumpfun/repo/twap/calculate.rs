@@ -55,7 +55,7 @@ with last_twap_ts as (
      '1900-01-01 00:00:00'::timestamp) as ts
 ),
 next_candle_ts as (
-    select date_trunc('{time_unit}', timestamp) - (extract({time_unit} from timestamp)::int % {window}) * interval '1 {time_unit}' as ts from pumpfun.candle_price_1m_{partition}
+    select date_trunc('{time_unit}', timestamp) - (extract({time_unit} from timestamp)::int % {window}) * interval '1 {time_unit}' as ts from pumpfun.candle_1m_{partition}
         where timestamp >= (select ts from last_twap_ts) + interval '{window} {time_unit}'
         order by timestamp
         limit 1
@@ -76,7 +76,7 @@ price_data as (
         end as duration,
         avg
     from
-        pumpfun.candle_price_1s_{partition}
+        pumpfun.candle_1s_{partition}
     where
         timestamp >=  (select start_ts from timestamp) and
         timestamp < (select end_ts from timestamp)
