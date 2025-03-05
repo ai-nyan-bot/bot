@@ -6,9 +6,9 @@ use std::ops::Deref;
 use std::sync::Arc;
 
 mod calculate;
-mod count;
-mod calculate_usd;
 mod calculate_mcap;
+mod calculate_usd;
+mod count;
 
 pub struct CandleQuery {
     pub limit: Limit,

@@ -4,7 +4,7 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
-use crate::jupiter::repo::CandleRepo;
+use crate::pumpfun::repo::CandleRepo;
 use common::model::Partition;
 use common::repo::{RepoResult, Tx};
 
@@ -133,14 +133,14 @@ with
 last_candle_ts as (
     select coalesce(
         (select date_trunc('{time_unit}', timestamp) - (extract({time_unit} from timestamp)::int % {window}) * interval '1 {time_unit}' as ts
-         from jupiter.{destination_table}
+         from pumpfun.{destination_table}
          order by timestamp desc
          limit 1),
         '1900-01-01 00:00:00'::timestamp) as ts
 ),
 next_candle_ts as (
     select date_trunc('{time_unit}', timestamp) - (extract({time_unit} from timestamp)::int % {window}) * interval '1 {time_unit}' as ts
-    from jupiter.{candle_source_table}
+    from pumpfun.{candle_source_table}
     where timestamp > (select ts from last_candle_ts)
     order by timestamp
     limit 1
@@ -150,7 +150,7 @@ timestamp as (
         (coalesce((select ts from next_candle_ts), (select ts from last_candle_ts))) - interval '{window} {time_unit}' as start_ts,
         (coalesce((select ts from next_candle_ts), (select ts from last_candle_ts))) + interval '3 days' as end_ts
 )
-insert into jupiter.{destination_table}
+insert into pumpfun.{destination_table}
 (
     token_pair_id,
     timestamp,
@@ -178,7 +178,7 @@ select
     c.close * base.supply * sp.usd as close_usd,    
     c.avg * base.supply as avg,
     c.avg * base.supply * sp.usd as avg_usd
-from jupiter.{candle_source_table} c
+from pumpfun.{candle_source_table} c
 join lateral (
     select usd from jupiter.{sol_price_usd_table}
     where timestamp <= c.timestamp
@@ -209,7 +209,7 @@ where
     {destination_table}.low_usd != excluded.low_usd or
     {destination_table}.close != excluded.close or
     {destination_table}.close_usd != excluded.close_usd or
-    {destination_table}.avg != excluded.avg or
+    {destination_table}.avg != excluded.avg or 
     {destination_table}.avg_usd != excluded.avg_usd
 "#
 	);

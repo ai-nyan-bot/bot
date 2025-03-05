@@ -57,9 +57,13 @@ impl RefreshCandles {
                         let mut tx = pool.begin().await.unwrap();
 
                         repo.calculate_1m(&mut tx, partition).await.unwrap();
+
+                        repo.calculate_mcap_1m(&mut tx, partition).await.unwrap();
+
                         repo.calculate_progress_1m(&mut tx, partition)
                             .await
                             .unwrap();
+
                         repo.calculate_usd_1m(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
@@ -84,9 +88,13 @@ impl RefreshCandles {
                         let mut tx = pool.begin().await.unwrap();
 
                         repo.calculate_5m(&mut tx, partition).await.unwrap();
+
+                        repo.calculate_mcap_5m(&mut tx, partition).await.unwrap();
+
                         repo.calculate_progress_5m(&mut tx, partition)
                             .await
                             .unwrap();
+
                         repo.calculate_usd_5m(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
@@ -111,9 +119,13 @@ impl RefreshCandles {
                         let mut tx = pool.begin().await.unwrap();
 
                         repo.calculate_15m(&mut tx, partition).await.unwrap();
+
+                        repo.calculate_mcap_15m(&mut tx, partition).await.unwrap();
+
                         repo.calculate_progress_15m(&mut tx, partition)
                             .await
                             .unwrap();
+
                         repo.calculate_usd_15m(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
@@ -138,9 +150,13 @@ impl RefreshCandles {
                         let mut tx = pool.begin().await.unwrap();
 
                         repo.calculate_1h(&mut tx, partition).await.unwrap();
+
+                        repo.calculate_mcap_1h(&mut tx, partition).await.unwrap();
+
                         repo.calculate_progress_1h(&mut tx, partition)
                             .await
                             .unwrap();
+
                         repo.calculate_usd_1h(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
@@ -165,9 +181,13 @@ impl RefreshCandles {
                         let mut tx = pool.begin().await.unwrap();
 
                         repo.calculate_6h(&mut tx, partition).await.unwrap();
+
+                        repo.calculate_mcap_6h(&mut tx, partition).await.unwrap();
+
                         repo.calculate_progress_6h(&mut tx, partition)
                             .await
                             .unwrap();
+
                         repo.calculate_usd_6h(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
@@ -192,9 +212,13 @@ impl RefreshCandles {
                         let mut tx = pool.begin().await.unwrap();
 
                         repo.calculate_1d(&mut tx, partition).await.unwrap();
+
+                        repo.calculate_mcap_1d(&mut tx, partition).await.unwrap();
+
                         repo.calculate_progress_1d(&mut tx, partition)
                             .await
                             .unwrap();
+
                         repo.calculate_usd_1d(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
