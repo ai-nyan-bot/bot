@@ -16,15 +16,15 @@ impl SummaryRepo {
             r#"
 select
     token_pair_id,
-    trades,
-    trades_change,
-    trades_percent,
-    trades_buy,
-    trades_buy_change,
-    trades_buy_percent,
-    trades_sell,
-    trades_sell_change,
-    trades_sell_percent
+    trade,
+    trade_change,
+    trade_percent,
+    trade_buy,
+    trade_buy_change,
+    trade_buy_percent,
+    trade_sell,
+    trade_sell_change,
+    trade_sell_percent
 from {table}
 "#,
         ));
@@ -48,19 +48,19 @@ from {table}
 fn row_to_trades(row: &PgRow) -> SummaryTrades {
     SummaryTrades {
         buy: TradesWithChange {
-            trades: row.get::<Trades, _>("trades_buy"),
-            change: row.try_get::<Change, _>("trades_buy_change").ok(),
-            percent: row.try_get::<Percent, _>("trades_buy_percent").ok(),
+            trades: row.get::<Trades, _>("trade_buy"),
+            change: row.try_get::<Change, _>("trade_buy_change").ok(),
+            percent: row.try_get::<Percent, _>("trade_buy_percent").ok(),
         },
         sell: TradesWithChange {
-            trades: row.get::<Trades, _>("trades_sell"),
-            change: row.try_get::<Change, _>("trades_sell_change").ok(),
-            percent: row.try_get::<Percent, _>("trades_sell_percent").ok(),
+            trades: row.get::<Trades, _>("trade_sell"),
+            change: row.try_get::<Change, _>("trade_sell_change").ok(),
+            percent: row.try_get::<Percent, _>("trade_sell_percent").ok(),
         },
         all: TradesWithChange {
-            trades: row.get::<Trades, _>("trades"),
-            change: row.try_get::<Change, _>("trades_change").ok(),
-            percent: row.try_get::<Percent, _>("trades_percent").ok(),
+            trades: row.get::<Trades, _>("trade"),
+            change: row.try_get::<Change, _>("trade_change").ok(),
+            percent: row.try_get::<Percent, _>("trade_percent").ok(),
         },
     }
 }
