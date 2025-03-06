@@ -943,7 +943,7 @@ pub fn pumpfun(img: &mut RgbaImage, ctx: PumpfunContext) {
                 36 + 120 + 120 + 120 + 120,
             );
 
-            if let Some(change) = &summary.trades.all.change_percent {
+            if let Some(change) = &summary.trades.all.percent {
                 let span = Span {
                     words: vec![Text {
                         content: format!("{}%", change.0),
@@ -1169,7 +1169,7 @@ pub fn pumpfun(img: &mut RgbaImage, ctx: PumpfunContext) {
                 36 + 120 + 120 + 120 + 120 + 120,
             );
 
-            if let Some(change) = &summary.trades.buy.change_percent {
+            if let Some(change) = &summary.trades.buy.percent {
                 let span = Span {
                     words: vec![Text {
                         content: format!("{}%", change.0),
@@ -1405,7 +1405,7 @@ pub fn pumpfun(img: &mut RgbaImage, ctx: PumpfunContext) {
                 36 + 120 + 120 + 120 + 120 + 120 + 120,
             );
 
-            if let Some(change) = &summary.trades.sell.change_percent {
+            if let Some(change) = &summary.trades.sell.percent {
                 let span = Span {
                     words: vec![Text {
                         content: format!("{}%", change.0),

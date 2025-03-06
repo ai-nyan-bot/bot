@@ -673,7 +673,7 @@ mod tests {
     }
 
     #[test]
-    fn test_trades_change_percent() {
+    fn test_trades_percent() {
         assert_eq!(
             Fact::from_comparison(&Trades, &IncreasedByMoreThan, &Value::percent(99.24), true),
             Some(TradesChangePercent)
@@ -729,7 +729,7 @@ mod tests {
     }
 
     #[test]
-    fn test_trades_buy_change_percent() {
+    fn test_trades_buy_percent() {
         assert_eq!(
             Fact::from_comparison(
                 &TradesBuy,
@@ -805,7 +805,7 @@ mod tests {
     }
 
     #[test]
-    fn test_trades_sell_change_percent() {
+    fn test_trades_sell_percent() {
         assert_eq!(
             Fact::from_comparison(
                 &TradesSell,

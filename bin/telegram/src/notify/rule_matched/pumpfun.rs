@@ -2,17 +2,17 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::{markdown, AppState};
-use base::model::{Notification, TokenPairId, TradesChangePercent, User};
+use base::model::{Notification, Percent, TokenPairId, User};
 use base::service::NotificationResult;
 use render::page::{pumpfun, PumpfunContext};
 use render::render;
+use solana::model::{Summary, SummaryTrades, TradesWithChange};
 use teloxide::payloads::SendPhotoSetters;
 use teloxide::requests::Requester;
 use teloxide::types::{
     ChatId, InlineKeyboardButton, InlineKeyboardMarkup, InputFile, ParseMode, Recipient,
 };
 use url::Url;
-use solana::model::{Summary, SummaryTrades, TradesWithChange};
 
 pub(crate) async fn send(
     state: AppState,
@@ -69,7 +69,7 @@ pub(crate) async fn send(
 
     // let trades = token_summary.summary.trades.all.trades.0;
     // let trades_change = token_summary.summary.trades.all.change.unwrap().0;
-    // let trades_change_percent = token_summary.summary.trades.all.change_percent.unwrap().0;
+    // let trades_percent = token_summary.summary.trades.all.change_percent.unwrap().0;
     //
     // let buy_trades = token_summary.summary.trades.buy.trades.0;
     // let sell_trades = token_summary.summary.trades.sell.trades.0;
@@ -94,17 +94,17 @@ pub(crate) async fn send(
                         all: TradesWithChange {
                             trades: 3.into(),
                             change: Some(1.into()),
-                            change_percent: Some(33.3.into()),
+                            percent: Some(33.3.into()),
                         },
                         buy: TradesWithChange {
                             trades: 2.into(),
                             change: Some(2.into()),
-                            change_percent: Some(100.0.into()),
+                            percent: Some(100.0.into()),
                         },
                         sell: TradesWithChange {
                             trades: 1.into(),
                             change: Some(1.into()),
-                            change_percent: Some(TradesChangePercent::from(-50.0)),
+                            percent: Some(Percent::from(-50.0)),
                         },
                     },
                 }),
@@ -114,7 +114,7 @@ pub(crate) async fn send(
     })
     .await
     .unwrap();
-    
+
     let file = InputFile::file(image_path);
 
     let _x = state

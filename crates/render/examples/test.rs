@@ -1,5 +1,5 @@
+use base::model::Percent;
 use image::RgbaImage;
-use base::model::TradesChangePercent;
 use render::page::{pumpfun, PumpfunContext};
 use solana::model::{Summary, SummaryTrades, TradesWithChange};
 
@@ -18,17 +18,17 @@ fn main() {
                     all: TradesWithChange {
                         trades: 3.into(),
                         change: Some(1.into()),
-                        change_percent: Some(33.3.into()),
+                        percent: Some(33.3.into()),
                     },
                     buy: TradesWithChange {
                         trades: 2.into(),
                         change: Some(2.into()),
-                        change_percent: Some(100.0.into()),
+                        percent: Some(100.0.into()),
                     },
                     sell: TradesWithChange {
                         trades: 1.into(),
                         change: Some(1.into()),
-                        change_percent: Some(TradesChangePercent::from(-50.0)),
+                        percent: Some(Percent::from(-50.0)),
                     },
                 },
             }),

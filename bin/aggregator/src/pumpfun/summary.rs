@@ -7,12 +7,12 @@ use sqlx::PgPool;
 use std::time::Duration;
 use tokio::task::JoinHandle;
 
-pub struct RefreshSummary {
+pub struct RefreshSummaries {
     pool: PgPool,
     repo: SummaryRepo,
 }
 
-impl RefreshSummary {
+impl RefreshSummaries {
     pub fn new(pool: PgPool) -> Self {
         Self {
             pool,

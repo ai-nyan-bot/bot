@@ -106,10 +106,8 @@ candles_with_prices as(
     select
        c.token_pair_id as token_pair_id,
        c.timestamp as timestamp,
-       c.amount_buy as amount_buy,
-       c.amount_sell as amount_sell,
-       c.trades_buy as trades_buy,
-       c.trades_sell as trades_sell,
+       c.trade_buy as trade_buy,
+       c.trade_sell as trade_sell,
        c.volume_buy as volume_buy,
        0 as volume_buy_usd,
        c.volume_sell as volume_sell,
@@ -133,12 +131,9 @@ aggregated as (
             when timestamp > (select timestamp from last_candle) - interval '{bucket_separator} {time_unit}' then 'current'
             else 'previous'
         end as time_bucket,
-        sum(amount_buy) as amount_buy,
-        sum(amount_sell) as amount_sell,
-        sum(amount_buy + amount_sell) as amount,
-        sum(trades_buy) as trades_buy,
-        sum(trades_sell) as trades_sell,
-        sum(trades_buy + trades_sell) as trades,
+        sum(trade_buy) as trade_buy,
+        sum(trade_sell) as trade_sell,
+        sum(trade_buy + trade_sell) as trade,
         sum(volume_buy) as volume_buy,
         sum(volume_buy_usd) as volume_buy_usd,
         sum(volume_sell) as volume_sell,
@@ -159,47 +154,47 @@ current as (select * from aggregated where time_bucket = 'current'),
 previous as (select * from aggregated where time_bucket = 'previous')
 insert into {destination_table} (
     token_pair_id,
-    trades, trades_change, trades_change_percent,
-    trades_buy, trades_buy_change, trades_buy_change_percent, 
-    trades_sell, trades_sell_change, trades_sell_change_percent
+    trade, trade_change, trade_percent,
+    trade_buy, trade_buy_change, trade_buy_percent,
+    trade_sell, trade_sell_change, trade_sell_percent
 )
 select
     current.token_pair_id,
-    current.trades_buy + current.trades_sell as trades,
-    current.trades - previous.trades as trades_change,
-    (current.trades::float8 - previous.trades::float8) / nullif(previous.trades::float8, 0) * 100 as trades_change_percent,
+    current.trade_buy + current.trade_sell as trade,
+    current.trade - previous.trade as trade_change,
+    (current.trade::float8 - previous.trade::float8) / nullif(previous.trade::float8, 0) * 100 as trade_percent,
 
-    current.trades_buy,
-    current.trades_buy - previous.trades_buy as trades_buy_change,
-    (current.trades_buy::float8 - previous.trades_buy::float8 ) / nullif(previous.trades_buy::float8, 0) * 100 as trades_buy_change_percent,
+    current.trade_buy,
+    current.trade_buy - previous.trade_buy as trade_buy_change,
+    (current.trade_buy::float8 - previous.trade_buy::float8 ) / nullif(previous.trade_buy::float8, 0) * 100 as trade_buy_percent,
 
-    current.trades_sell,
-    current.trades_sell - previous.trades_sell as trades_sell_change,
-    (current.trades_sell::float8 - previous.trades_sell::float8 ) / nullif(previous.trades_sell::float8, 0) * 100 as trades_sell_change_percent
+    current.trade_sell,
+    current.trade_sell - previous.trade_sell as trade_sell_change,
+    (current.trade_sell::float8 - previous.trade_sell::float8 ) / nullif(previous.trade_sell::float8, 0) * 100 as trade_sell_percent
 from
     current
 left join
     previous on current.token_pair_id = previous.token_pair_id
 on conflict (token_pair_id) do update set
-    trades = excluded.trades,
-    trades_change = excluded.trades_change,
-    trades_change_percent = excluded.trades_change_percent,
-    trades_buy = excluded.trades_buy,
-    trades_buy_change = excluded.trades_buy_change,
-    trades_buy_change_percent = excluded.trades_buy_change_percent,
-    trades_sell = excluded.trades_sell,
-    trades_sell_change = excluded.trades_sell_change,
-    trades_sell_change_percent = excluded.trades_sell_change_percent
+    trade = excluded.trade,
+    trade_change = excluded.trade_change,
+    trade_percent = excluded.trade_percent,
+    trade_buy = excluded.trade_buy,
+    trade_buy_change = excluded.trade_buy_change,
+    trade_buy_percent = excluded.trade_buy_percent,
+    trade_sell = excluded.trade_sell,
+    trade_sell_change = excluded.trade_sell_change,
+    trade_sell_percent = excluded.trade_sell_percent
 where
-    {destination_table}.trades != excluded.trades or
-    {destination_table}.trades_change != excluded.trades_change or
-    {destination_table}.trades_change_percent != excluded.trades_change_percent or
-    {destination_table}.trades_buy != excluded.trades_buy or
-    {destination_table}.trades_buy_change != excluded.trades_buy_change or
-    {destination_table}.trades_buy_change_percent != excluded.trades_buy_change_percent or
-    {destination_table}.trades_sell != excluded.trades_sell or
-    {destination_table}.trades_sell_change != excluded.trades_sell_change or
-    {destination_table}.trades_sell_change_percent != excluded.trades_sell_change_percent
+    {destination_table}.trade != excluded.trade or
+    {destination_table}.trade_change != excluded.trade_change or
+    {destination_table}.trade_percent != excluded.trade_percent or
+    {destination_table}.trade_buy != excluded.trade_buy or
+    {destination_table}.trade_buy_change != excluded.trade_buy_change or
+    {destination_table}.trade_buy_percent != excluded.trade_buy_percent or
+    {destination_table}.trade_sell != excluded.trade_sell or
+    {destination_table}.trade_sell_change != excluded.trade_sell_change or
+    {destination_table}.trade_sell_percent != excluded.trade_sell_percent
 "#
 	);
 

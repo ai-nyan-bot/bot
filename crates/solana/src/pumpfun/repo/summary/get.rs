@@ -3,7 +3,7 @@
 
 use crate::model::{Summary, SummaryTrades, TradesWithChange};
 use crate::pumpfun::repo::SummaryRepo;
-use base::model::{TokenPairId, Trades, TradesChange, TradesChangePercent};
+use base::model::{Change, Percent, TokenPairId, Trades};
 use common::model::Timeframe;
 use common::repo::{RepoResult, Tx};
 use sqlx::postgres::PgRow;
@@ -14,7 +14,7 @@ impl SummaryRepo {
         &self,
         tx: &mut Tx<'a>,
         token_pair: impl Into<TokenPairId> + Send,
-        timeframe: Timeframe
+        timeframe: Timeframe,
     ) -> RepoResult<Summary> {
         let table = format!("pumpfun.summary_{}", timeframe.table());
 
@@ -25,13 +25,13 @@ select
     token_pair_id,
     trades,
     trades_change,
-    trades_change_percent,
+    trades_percent,
     trades_buy,
     trades_buy_change,
-    trades_buy_change_percent,
+    trades_buy_percent,
     trades_sell,
     trades_sell_change,
-    trades_sell_change_percent
+    trades_sell_percent
 from {table}
 where token_pair_id = $1
 "#
@@ -52,24 +52,18 @@ fn row_to_trades(row: &PgRow) -> SummaryTrades {
     SummaryTrades {
         buy: TradesWithChange {
             trades: row.get::<Trades, _>("trades_buy"),
-            change: row.try_get::<TradesChange, _>("trades_buy_change").ok(),
-            change_percent: row
-                .try_get::<TradesChangePercent, _>("trades_buy_change_percent")
-                .ok(),
+            change: row.try_get::<Change, _>("trades_buy_change").ok(),
+            percent: row.try_get::<Percent, _>("trades_buy_percent").ok(),
         },
         sell: TradesWithChange {
             trades: row.get::<Trades, _>("trades_sell"),
-            change: row.try_get::<TradesChange, _>("trades_sell_change").ok(),
-            change_percent: row
-                .try_get::<TradesChangePercent, _>("trades_sell_change_percent")
-                .ok(),
+            change: row.try_get::<Change, _>("trades_sell_change").ok(),
+            percent: row.try_get::<Percent, _>("trades_sell_percent").ok(),
         },
         all: TradesWithChange {
             trades: row.get::<Trades, _>("trades"),
-            change: row.try_get::<TradesChange, _>("trades_change").ok(),
-            change_percent: row
-                .try_get::<TradesChangePercent, _>("trades_change_percent")
-                .ok(),
+            change: row.try_get::<Change, _>("trades_change").ok(),
+            percent: row.try_get::<Percent, _>("trades_percent").ok(),
         },
     }
 }

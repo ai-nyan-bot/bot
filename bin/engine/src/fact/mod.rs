@@ -109,7 +109,7 @@ impl FactService {
                             .unwrap();
                     }
 
-                    if let Some(percent) = summary.trades.all.change_percent {
+                    if let Some(percent) = summary.trades.all.percent {
                         facts
                             .set_timeframe_value(
                                 Fact::TradesChangePercent,
@@ -129,7 +129,7 @@ impl FactService {
                             .unwrap();
                     }
 
-                    if let Some(percent) = summary.trades.buy.change_percent {
+                    if let Some(percent) = summary.trades.buy.percent {
                         facts
                             .set_timeframe_value(
                                 Fact::TradesBuyChangePercent,
@@ -149,7 +149,7 @@ impl FactService {
                             .unwrap();
                     }
 
-                    if let Some(percent) = summary.trades.sell.change_percent {
+                    if let Some(percent) = summary.trades.sell.percent {
                         facts
                             .set_timeframe_value(
                                 Fact::TradesSellChangePercent,

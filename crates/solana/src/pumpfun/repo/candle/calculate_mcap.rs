@@ -9,126 +9,118 @@ use common::model::Partition;
 use common::repo::{RepoResult, Tx};
 
 impl CandleRepo {
-	pub async fn calculate_mcap_1m<'a>(
-		&self,
-		tx: &mut Tx<'a>,
-		partition: Partition,
-	) -> RepoResult<()> {
-		calculate(
-			tx,
-			1,
-			"minute",
-			format!("candle_1m_{}", partition),
-			format!("twap_1m_{}", partition),
-			"sol_price_1m",
-			"candle_market_cap_1m",
-		)
-			.await
-	}
+    pub async fn calculate_mcap_1m<'a>(
+        &self,
+        tx: &mut Tx<'a>,
+        partition: Partition,
+    ) -> RepoResult<()> {
+        calculate(
+            tx,
+            1,
+            "minute",
+            format!("candle_1m_{}", partition),
+            "sol_price_1m",
+            "candle_market_cap_1m",
+        )
+        .await
+    }
 
-	pub async fn calculate_mcap_5m<'a>(
-		&self,
-		tx: &mut Tx<'a>,
-		partition: Partition,
-	) -> RepoResult<()> {
-		calculate(
-			tx,
-			5,
-			"minute",
-			format!("candle_5m_{}", partition),
-			format!("twap_5m_{}", partition),
-			"sol_price_5m",
-			"candle_market_cap_5m",
-		)
-			.await
-	}
+    pub async fn calculate_mcap_5m<'a>(
+        &self,
+        tx: &mut Tx<'a>,
+        partition: Partition,
+    ) -> RepoResult<()> {
+        calculate(
+            tx,
+            5,
+            "minute",
+            format!("candle_5m_{}", partition),
+            "sol_price_5m",
+            "candle_market_cap_5m",
+        )
+        .await
+    }
 
-	pub async fn calculate_mcap_15m<'a>(
-		&self,
-		tx: &mut Tx<'a>,
-		partition: Partition,
-	) -> RepoResult<()> {
-		calculate(
-			tx,
-			15,
-			"minute",
-			format!("candle_15m_{}", partition),
-			format!("twap_15m_{}", partition),
-			"sol_price_15m",
-			"candle_market_cap_15m",
-		)
-			.await
-	}
+    pub async fn calculate_mcap_15m<'a>(
+        &self,
+        tx: &mut Tx<'a>,
+        partition: Partition,
+    ) -> RepoResult<()> {
+        calculate(
+            tx,
+            15,
+            "minute",
+            format!("candle_15m_{}", partition),
+            "sol_price_15m",
+            "candle_market_cap_15m",
+        )
+        .await
+    }
 
-	pub async fn calculate_mcap_1h<'a>(
-		&self,
-		tx: &mut Tx<'a>,
-		partition: Partition,
-	) -> RepoResult<()> {
-		calculate(
-			tx,
-			1,
-			"hour",
-			format!("candle_1h_{}", partition),
-			format!("twap_1h_{}", partition),
-			"sol_price_1h",
-			"candle_market_cap_1h",
-		)
-			.await
-	}
+    pub async fn calculate_mcap_1h<'a>(
+        &self,
+        tx: &mut Tx<'a>,
+        partition: Partition,
+    ) -> RepoResult<()> {
+        calculate(
+            tx,
+            1,
+            "hour",
+            format!("candle_1h_{}", partition),
+            "sol_price_1h",
+            "candle_market_cap_1h",
+        )
+        .await
+    }
 
-	pub async fn calculate_mcap_6h<'a>(
-		&self,
-		tx: &mut Tx<'a>,
-		partition: Partition,
-	) -> RepoResult<()> {
-		calculate(
-			tx,
-			6,
-			"hours",
-			format!("candle_6h_{}", partition),
-			format!("twap_6h_{}", partition),
-			"sol_price_6h",
-			"candle_market_cap_6h",
-		)
-			.await
-	}
+    pub async fn calculate_mcap_6h<'a>(
+        &self,
+        tx: &mut Tx<'a>,
+        partition: Partition,
+    ) -> RepoResult<()> {
+        calculate(
+            tx,
+            6,
+            "hours",
+            format!("candle_6h_{}", partition),
+            "sol_price_6h",
+            "candle_market_cap_6h",
+        )
+        .await
+    }
 
-	pub async fn calculate_mcap_1d<'a>(
-		&self,
-		tx: &mut Tx<'a>,
-		partition: Partition,
-	) -> RepoResult<()> {
-		calculate(
-			tx,
-			1,
-			"day",
-			format!("candle_1d_{}", partition),
-			format!("twap_1d_{}", partition),
-			"sol_price_1d",
-			"candle_market_cap_1d",
-		)
-			.await
-	}
+    pub async fn calculate_mcap_1d<'a>(
+        &self,
+        tx: &mut Tx<'a>,
+        partition: Partition,
+    ) -> RepoResult<()> {
+        calculate(
+            tx,
+            1,
+            "day",
+            format!("candle_1d_{}", partition),
+            "sol_price_1d",
+            "candle_market_cap_1d",
+        )
+        .await
+    }
 }
 
 async fn calculate<'a>(
-	tx: &mut Tx<'a>,
-	window: usize,
-	time_unit: impl AsRef<str>,
-	candle_source_table: impl AsRef<str>,
-	twap_source_table: impl AsRef<str>,
-	sol_price_usd_table: impl AsRef<str>,
-	destination_table: impl AsRef<str>,
+    tx: &mut Tx<'a>,
+    window: usize,
+    time_unit: impl AsRef<str>,
+    candle_source_table: impl AsRef<str>,
+    sol_price_usd_table: impl AsRef<str>,
+    destination_table: impl AsRef<str>,
 ) -> RepoResult<()> {
-	let time_unit = time_unit.as_ref();
-	let candle_source_table = candle_source_table.as_ref();
-	let twap_source_table = twap_source_table.as_ref();
-	let sol_price_usd_table = sol_price_usd_table.as_ref();
-	let destination_table = destination_table.as_ref();
+    let time_unit = time_unit.as_ref();
+    let candle_source_table = candle_source_table.as_ref();
+    let sol_price_usd_table = sol_price_usd_table.as_ref();
+    let destination_table = destination_table.as_ref();
 
-	let query_str = format!(
-		r#"
+    let query_str = format!(
+        r#"
 with
 last_candle_ts as (
     select coalesce(
@@ -212,8 +204,8 @@ where
     {destination_table}.avg != excluded.avg or 
     {destination_table}.avg_usd != excluded.avg_usd
 "#
-	);
+    );
 
-	let _ = sqlx::query(&query_str).execute(&mut **tx).await?;
-	Ok(())
+    let _ = sqlx::query(&query_str).execute(&mut **tx).await?;
+    Ok(())
 }

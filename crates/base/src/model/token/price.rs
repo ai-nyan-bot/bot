@@ -34,19 +34,3 @@ impl PartialEq<f64> for PriceAvgQuote {
         self.0 == *other
     }
 }
-
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize, sqlx::Type)]
-#[sqlx(transparent)]
-pub struct PriceChangeChange(pub f64);
-
-impl From<f64> for PriceChangeChange {
-    fn from(value: f64) -> Self {
-        Self(value)
-    }
-}
-
-impl PartialEq<f64> for PriceChangeChange {
-    fn eq(&self, other: &f64) -> bool {
-        self.0 == *other
-    }
-}

@@ -35,22 +35,6 @@ impl PartialEq<i64> for Amount {
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize, sqlx::Type)]
 #[sqlx(transparent)]
-pub struct AmountChangeChange(pub f64);
-
-impl From<f64> for AmountChangeChange {
-    fn from(value: f64) -> Self {
-        Self(value)
-    }
-}
-
-impl PartialEq<f64> for AmountChangeChange {
-    fn eq(&self, other: &f64) -> bool {
-        self.0 == *other
-    }
-}
-
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize, sqlx::Type)]
-#[sqlx(transparent)]
 pub struct DecimalAmount(pub f64);
 
 impl DecimalAmount {
@@ -88,21 +72,5 @@ impl PartialEq<f64> for DecimalAmount {
 impl PartialOrd<f64> for DecimalAmount {
     fn partial_cmp(&self, other: &f64) -> Option<Ordering> {
         self.0.partial_cmp(other)
-    }
-}
-
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize, sqlx::Type)]
-#[sqlx(transparent)]
-pub struct DecimalAmountChange(pub f64);
-
-impl From<f64> for DecimalAmountChange {
-    fn from(value: f64) -> Self {
-        Self(value)
-    }
-}
-
-impl PartialEq<f64> for DecimalAmountChange {
-    fn eq(&self, other: &f64) -> bool {
-        self.0 == *other
     }
 }

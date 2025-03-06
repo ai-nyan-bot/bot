@@ -37,6 +37,7 @@ fn main() {
         let jupiter_refresh_twaps = jupiter::RefreshTwaps::new(pg_pool.clone());
 
         let pumpfun_refresh_candles = pumpfun::RefreshCandles::new(pg_pool.clone());
+        let pumpfun_refresh_summaries = pumpfun::RefreshSummaries::new(pg_pool.clone());
         let pumpfun_refresh_twaps = pumpfun::RefreshTwaps::new(pg_pool.clone());
 
         let solana_refresh_sol = solana::RefreshSol::new(pg_pool.clone());
@@ -72,14 +73,13 @@ fn main() {
             async { pumpfun_refresh_twaps.h1().await },
             async { pumpfun_refresh_twaps.h6().await },
             async { pumpfun_refresh_twaps.d1().await },
-            // async { refresh_summary.m1().await },
-            // async { refresh_summary.m5().await },
-            // async { refresh_summary.m15().await },
-            // async { refresh_summary.h1().await },
-            // async { refresh_summary.h4().await },
-            // async { refresh_summary.d1().await }
-
-
+            // pumpfun summary
+            async { pumpfun_refresh_summaries.m1().await },
+            async { pumpfun_refresh_summaries.m5().await },
+            async { pumpfun_refresh_summaries.m15().await },
+            async { pumpfun_refresh_summaries.h1().await },
+            async { pumpfun_refresh_summaries.h6().await },
+            async { pumpfun_refresh_summaries.d1().await },
             // solana sol
             async { solana_refresh_sol.m1().await },
             async { solana_refresh_sol.m5().await },
