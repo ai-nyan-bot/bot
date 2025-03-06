@@ -43,7 +43,7 @@ const createCondition = (type: ConditionType): Condition => {
                             id: uuidv4(),
                             type: ConditionType.COMPARE,
                             field: Field.CURVE_PROGRESS,
-                            operator: Operator.LESS_THAN,
+                            operator: Operator.MORE_THAN,
                             value: {
                                 type: ValueType.PERCENT,
                                 value: 95

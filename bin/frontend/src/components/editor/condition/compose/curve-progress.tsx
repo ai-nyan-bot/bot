@@ -17,7 +17,9 @@ export const CurveProgressWidget: FC<CurveProgressWidgetProps> = ({condition, on
     });
 
     const handleChange = (values: number[]) => {
-        setRange(prev => {
+        setRange(_ => {
+            let operator = values[0] == 0.0 ? Operator.MORE_THAN : Operator.LESS_THAN;
+
             onChange({
                 id: condition.id,
                 type: ConditionType.COMPOSE,
@@ -39,7 +41,7 @@ export const CurveProgressWidget: FC<CurveProgressWidgetProps> = ({condition, on
                             id: curveProgress.id,
                             type: ConditionType.COMPARE,
                             field: Field.CURVE_PROGRESS,
-                            operator: Operator.LESS_THAN,
+                            operator,
                             value: {
                                 type: ValueType.PERCENT,
                                 value: values[1]

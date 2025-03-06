@@ -6,7 +6,7 @@ mod summary;
 use crate::pumpfun::fact::summary::add_summary_to_facts;
 use base::model::{Fact, Facts, TokenPairId, Value};
 use common::model::Timeframe::M1;
-use common::model::{Limit, TimeUnit, Timeframe};
+use common::model::{Limit, TimeUnit};
 use solana::pumpfun::repo::{CurveRepo, SummaryQuery, SummaryRepo};
 use sqlx::PgPool;
 use std::collections::HashMap;
@@ -63,7 +63,7 @@ impl FactService {
 
         for summary in summary_1m {
             let facts = result.entry(summary.token_pair).or_insert(Facts::default());
-            add_summary_to_facts(facts, summary, Timeframe::M1);
+            add_summary_to_facts(facts, summary, M1);
         }
 
         tx.commit().await.unwrap();
