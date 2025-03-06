@@ -2,6 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use base::model::{Fact, Facts, TokenPairId, Value};
+use bigdecimal::ToPrimitive;
 use common::model::Timeframe::M1;
 use common::model::{Limit, TimeUnit, Timeframe};
 use solana::pumpfun::repo::{CurveRepo, SummaryQuery, SummaryRepo};
@@ -100,7 +101,7 @@ impl FactService {
                         facts
                             .set_timeframe_value(
                                 Fact::TradesChangeCount,
-                                Value::count(change.0 as i64),
+                                Value::count(change.0.to_i64().unwrap()),
                                 M1,
                             )
                             .unwrap();
@@ -120,7 +121,7 @@ impl FactService {
                         facts
                             .set_timeframe_value(
                                 Fact::TradesBuyCount,
-                                Value::count(change.0 as i64),
+                                Value::count(change.0.to_i64().unwrap()),
                                 M1,
                             )
                             .unwrap();
@@ -140,7 +141,7 @@ impl FactService {
                         facts
                             .set_timeframe_value(
                                 Fact::TradesSellCount,
-                                Value::count(change.0 as i64),
+                                Value::count(change.0.to_i64().unwrap()),
                                 M1,
                             )
                             .unwrap();
