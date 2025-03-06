@@ -1,7 +1,7 @@
-use base::model::Percent;
+use common::model::Percent;
 use image::RgbaImage;
 use render::page::{pumpfun, PumpfunContext};
-use solana::model::{Summary, SummaryTrades, TradesWithChange};
+use solana::model::{ProgressWithChange, Summary, SummaryCurveProgress, SummaryTrade, TradesWithChange};
 
 fn main() {
     let img_width = 1200;
@@ -14,19 +14,26 @@ fn main() {
             m1: None,
             h1: Some(Summary {
                 token_pair: 1.into(),
-                trades: SummaryTrades {
+                curve_progress: SummaryCurveProgress {
+                    open: ProgressWithChange { progress: None, change: None },
+                    high: ProgressWithChange { progress: None, change: None },
+                    low: ProgressWithChange { progress: None, change: None },
+                    close: ProgressWithChange { progress: None, change: None },
+                    avg: ProgressWithChange { progress: None, change: None },
+                },
+                trade: SummaryTrade {
                     all: TradesWithChange {
-                        trades: 3.into(),
+                        count: 3.into(),
                         change: Some(1.into()),
                         percent: Some(33.3.into()),
                     },
                     buy: TradesWithChange {
-                        trades: 2.into(),
+                        count: 2.into(),
                         change: Some(2.into()),
                         percent: Some(100.0.into()),
                     },
                     sell: TradesWithChange {
-                        trades: 1.into(),
+                        count: 1.into(),
                         change: Some(1.into()),
                         percent: Some(Percent::from(-50.0)),
                     },

@@ -1351,6 +1351,7 @@ dependencies = [
 name = "common"
 version = "0.0.1"
 dependencies = [
+ "bigdecimal",
  "lazy_static",
  "log",
  "rand 0.8.5",

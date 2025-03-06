@@ -1,10 +1,10 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::{PriceAvgQuote, Trades};
+use crate::model::PriceAvgQuote;
 use ::serde::{Deserialize, Serialize};
 use bigdecimal::BigDecimal;
-use common::model::TimeUnit;
+use common::model::{Count, TimeUnit};
 pub(crate) use compare::*;
 use std::fmt::{Display, Formatter};
 use std::str::FromStr;
@@ -87,11 +87,9 @@ impl From<PriceAvgQuote> for Value {
     }
 }
 
-impl From<Trades> for Value {
-    fn from(value: Trades) -> Self {
-        Self::Count {
-            value: value.0 as i64,
-        }
+impl From<Count> for Value {
+    fn from(value: Count) -> Self {
+        Self::Count { value: value.0 }
     }
 }
 

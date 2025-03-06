@@ -2,8 +2,8 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::Slot;
-use base::model::{Amount, Percent, TokenPairId};
-use common::model::UpdatedAt;
+use base::model::{Amount, TokenPairId};
+use common::model::{Percent, UpdatedAt};
 pub use progress::calculate_progress;
 
 mod progress;

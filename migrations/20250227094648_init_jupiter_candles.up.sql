@@ -3,8 +3,8 @@
 
 create table jupiter.candle_1s
 (
-    token_pair_id     int4             not null,
-    timestamp         timestamptz      not null,
+    token_pair_id     int4            not null,
+    timestamp         timestamptz     not null,
     open              numeric(36, 12) not null,
     high              numeric(36, 12) not null,
     low               numeric(36, 12) not null,
@@ -14,8 +14,8 @@ create table jupiter.candle_1s
     amount_quote_buy  numeric(36, 12) not null,
     amount_base_sell  numeric(36, 12) not null,
     amount_quote_sell numeric(36, 12) not null,
-    trade_buy         int4             not null,
-    trade_sell        int4             not null,
+    trade_buy         int8            not null,
+    trade_sell        int8            not null,
     volume_buy        numeric(36, 12) not null,
     volume_sell       numeric(36, 12) not null,
     duration          int4,
@@ -44,8 +44,8 @@ create index candle_1s_timestamp ON jupiter.candle_1s (timestamp desc);
 
 create table jupiter.candle_1s_most_recent
 (
-    token_pair_id     int4             not null,
-    timestamp         timestamptz      not null,
+    token_pair_id     int4            not null,
+    timestamp         timestamptz     not null,
     open              numeric(36, 12) not null,
     high              numeric(36, 12) not null,
     low               numeric(36, 12) not null,
@@ -55,8 +55,8 @@ create table jupiter.candle_1s_most_recent
     amount_quote_buy  numeric(36, 12) not null,
     amount_base_sell  numeric(36, 12) not null,
     amount_quote_sell numeric(36, 12) not null,
-    trade_buy         int4             not null,
-    trade_sell        int4             not null,
+    trade_buy         int8            not null,
+    trade_sell        int8            not null,
     volume_buy        numeric(36, 12) not null,
     volume_sell       numeric(36, 12) not null,
     duration          int4,
@@ -87,8 +87,8 @@ create trigger update_most_recent_candle
 
 create table jupiter.candle_1m
 (
-    token_pair_id     int4             not null,
-    timestamp         timestamptz      not null,
+    token_pair_id     int4            not null,
+    timestamp         timestamptz     not null,
     open              numeric(36, 12) not null,
     high              numeric(36, 12) not null,
     low               numeric(36, 12) not null,
@@ -98,8 +98,8 @@ create table jupiter.candle_1m
     amount_quote_buy  numeric(36, 12) not null,
     amount_base_sell  numeric(36, 12) not null,
     amount_quote_sell numeric(36, 12) not null,
-    trade_buy         int4             not null,
-    trade_sell        int4             not null,
+    trade_buy         int8            not null,
+    trade_sell        int8            not null,
     volume_buy        numeric(36, 12) not null,
     volume_sell       numeric(36, 12) not null,
     primary key (token_pair_id, timestamp),
@@ -127,8 +127,8 @@ create index candle_1m_timestamp ON jupiter.candle_1m (timestamp desc);
 
 create table jupiter.candle_1m_most_recent
 (
-    token_pair_id     int4             not null,
-    timestamp         timestamptz      not null,
+    token_pair_id     int4            not null,
+    timestamp         timestamptz     not null,
     open              numeric(36, 12) not null,
     high              numeric(36, 12) not null,
     low               numeric(36, 12) not null,
@@ -138,8 +138,8 @@ create table jupiter.candle_1m_most_recent
     amount_quote_buy  numeric(36, 12) not null,
     amount_base_sell  numeric(36, 12) not null,
     amount_quote_sell numeric(36, 12) not null,
-    trade_buy         int4             not null,
-    trade_sell        int4             not null,
+    trade_buy         int8            not null,
+    trade_sell        int8            not null,
     volume_buy        numeric(36, 12) not null,
     volume_sell       numeric(36, 12) not null,
     primary key (token_pair_id, timestamp),
@@ -168,8 +168,8 @@ create trigger update_most_recent_candle
 
 create table jupiter.candle_5m
 (
-    token_pair_id     int4             not null,
-    timestamp         timestamptz      not null,
+    token_pair_id     int4            not null,
+    timestamp         timestamptz     not null,
     open              numeric(36, 12) not null,
     high              numeric(36, 12) not null,
     low               numeric(36, 12) not null,
@@ -179,8 +179,8 @@ create table jupiter.candle_5m
     amount_quote_buy  numeric(36, 12) not null,
     amount_base_sell  numeric(36, 12) not null,
     amount_quote_sell numeric(36, 12) not null,
-    trade_buy         int4             not null,
-    trade_sell        int4             not null,
+    trade_buy         int8            not null,
+    trade_sell        int8            not null,
     volume_buy        numeric(36, 12) not null,
     volume_sell       numeric(36, 12) not null,
     primary key (token_pair_id, timestamp),
@@ -208,8 +208,8 @@ create index candle_5m_timestamp ON jupiter.candle_5m (timestamp desc);
 
 create table jupiter.candle_5m_most_recent
 (
-    token_pair_id     int4             not null,
-    timestamp         timestamptz      not null,
+    token_pair_id     int4            not null,
+    timestamp         timestamptz     not null,
     open              numeric(36, 12) not null,
     high              numeric(36, 12) not null,
     low               numeric(36, 12) not null,
@@ -219,8 +219,8 @@ create table jupiter.candle_5m_most_recent
     amount_quote_buy  numeric(36, 12) not null,
     amount_base_sell  numeric(36, 12) not null,
     amount_quote_sell numeric(36, 12) not null,
-    trade_buy         int4             not null,
-    trade_sell        int4             not null,
+    trade_buy         int8            not null,
+    trade_sell        int8            not null,
     volume_buy        numeric(36, 12) not null,
     volume_sell       numeric(36, 12) not null,
     primary key (token_pair_id, timestamp),
@@ -249,8 +249,8 @@ create trigger update_most_recent_candle
 
 create table jupiter.candle_15m
 (
-    token_pair_id     int4             not null,
-    timestamp         timestamptz      not null,
+    token_pair_id     int4            not null,
+    timestamp         timestamptz     not null,
     open              numeric(36, 12) not null,
     high              numeric(36, 12) not null,
     low               numeric(36, 12) not null,
@@ -260,8 +260,8 @@ create table jupiter.candle_15m
     amount_quote_buy  numeric(36, 12) not null,
     amount_base_sell  numeric(36, 12) not null,
     amount_quote_sell numeric(36, 12) not null,
-    trade_buy         int4             not null,
-    trade_sell        int4             not null,
+    trade_buy         int8            not null,
+    trade_sell        int8            not null,
     volume_buy        numeric(36, 12) not null,
     volume_sell       numeric(36, 12) not null,
     primary key (token_pair_id, timestamp),
@@ -289,8 +289,8 @@ create index candle_15m_timestamp ON jupiter.candle_15m (timestamp desc);
 
 create table jupiter.candle_15m_most_recent
 (
-    token_pair_id     int4             not null,
-    timestamp         timestamptz      not null,
+    token_pair_id     int4            not null,
+    timestamp         timestamptz     not null,
     open              numeric(36, 12) not null,
     high              numeric(36, 12) not null,
     low               numeric(36, 12) not null,
@@ -300,8 +300,8 @@ create table jupiter.candle_15m_most_recent
     amount_quote_buy  numeric(36, 12) not null,
     amount_base_sell  numeric(36, 12) not null,
     amount_quote_sell numeric(36, 12) not null,
-    trade_buy         int4             not null,
-    trade_sell        int4             not null,
+    trade_buy         int8            not null,
+    trade_sell        int8            not null,
     volume_buy        numeric(36, 12) not null,
     volume_sell       numeric(36, 12) not null,
     primary key (token_pair_id, timestamp),
@@ -330,8 +330,8 @@ create trigger update_most_recent_candle
 
 create table jupiter.candle_1h
 (
-    token_pair_id     int4             not null,
-    timestamp         timestamptz      not null,
+    token_pair_id     int4            not null,
+    timestamp         timestamptz     not null,
     open              numeric(36, 12) not null,
     high              numeric(36, 12) not null,
     low               numeric(36, 12) not null,
@@ -341,8 +341,8 @@ create table jupiter.candle_1h
     amount_quote_buy  numeric(36, 12) not null,
     amount_base_sell  numeric(36, 12) not null,
     amount_quote_sell numeric(36, 12) not null,
-    trade_buy         int4             not null,
-    trade_sell        int4             not null,
+    trade_buy         int8            not null,
+    trade_sell        int8            not null,
     volume_buy        numeric(36, 12) not null,
     volume_sell       numeric(36, 12) not null,
     primary key (token_pair_id, timestamp),
@@ -370,8 +370,8 @@ create index candle_1h_timestamp ON jupiter.candle_1h (timestamp desc);
 
 create table jupiter.candle_1h_most_recent
 (
-    token_pair_id     int4             not null,
-    timestamp         timestamptz      not null,
+    token_pair_id     int4            not null,
+    timestamp         timestamptz     not null,
     open              numeric(36, 12) not null,
     high              numeric(36, 12) not null,
     low               numeric(36, 12) not null,
@@ -381,8 +381,8 @@ create table jupiter.candle_1h_most_recent
     amount_quote_buy  numeric(36, 12) not null,
     amount_base_sell  numeric(36, 12) not null,
     amount_quote_sell numeric(36, 12) not null,
-    trade_buy         int4             not null,
-    trade_sell        int4             not null,
+    trade_buy         int8            not null,
+    trade_sell        int8            not null,
     volume_buy        numeric(36, 12) not null,
     volume_sell       numeric(36, 12) not null,
     primary key (token_pair_id, timestamp),
@@ -411,8 +411,8 @@ create trigger update_most_recent_candle
 
 create table jupiter.candle_6h
 (
-    token_pair_id     int4             not null,
-    timestamp         timestamptz      not null,
+    token_pair_id     int4            not null,
+    timestamp         timestamptz     not null,
     open              numeric(36, 12) not null,
     high              numeric(36, 12) not null,
     low               numeric(36, 12) not null,
@@ -422,8 +422,8 @@ create table jupiter.candle_6h
     amount_quote_buy  numeric(36, 12) not null,
     amount_base_sell  numeric(36, 12) not null,
     amount_quote_sell numeric(36, 12) not null,
-    trade_buy         int4             not null,
-    trade_sell        int4             not null,
+    trade_buy         int8            not null,
+    trade_sell        int8            not null,
     volume_buy        numeric(36, 12) not null,
     volume_sell       numeric(36, 12) not null,
     primary key (token_pair_id, timestamp),
@@ -451,8 +451,8 @@ create index candle_6h_timestamp ON jupiter.candle_6h (timestamp desc);
 
 create table jupiter.candle_6h_most_recent
 (
-    token_pair_id     int4             not null,
-    timestamp         timestamptz      not null,
+    token_pair_id     int4            not null,
+    timestamp         timestamptz     not null,
     open              numeric(36, 12) not null,
     high              numeric(36, 12) not null,
     low               numeric(36, 12) not null,
@@ -462,8 +462,8 @@ create table jupiter.candle_6h_most_recent
     amount_quote_buy  numeric(36, 12) not null,
     amount_base_sell  numeric(36, 12) not null,
     amount_quote_sell numeric(36, 12) not null,
-    trade_buy         int4             not null,
-    trade_sell        int4             not null,
+    trade_buy         int8            not null,
+    trade_sell        int8            not null,
     volume_buy        numeric(36, 12) not null,
     volume_sell       numeric(36, 12) not null,
     primary key (token_pair_id, timestamp),
@@ -492,8 +492,8 @@ create trigger update_most_recent_candle
 
 create table jupiter.candle_1d
 (
-    token_pair_id     int4             not null,
-    timestamp         timestamptz      not null,
+    token_pair_id     int4            not null,
+    timestamp         timestamptz     not null,
     open              numeric(36, 12) not null,
     high              numeric(36, 12) not null,
     low               numeric(36, 12) not null,
@@ -503,8 +503,8 @@ create table jupiter.candle_1d
     amount_quote_buy  numeric(36, 12) not null,
     amount_base_sell  numeric(36, 12) not null,
     amount_quote_sell numeric(36, 12) not null,
-    trade_buy         int4             not null,
-    trade_sell        int4             not null,
+    trade_buy         int8            not null,
+    trade_sell        int8            not null,
     volume_buy        numeric(36, 12) not null,
     volume_sell       numeric(36, 12) not null,
     primary key (token_pair_id, timestamp),
@@ -532,8 +532,8 @@ create index candle_1d_timestamp ON jupiter.candle_1d (timestamp desc);
 
 create table jupiter.candle_1d_most_recent
 (
-    token_pair_id     int4             not null,
-    timestamp         timestamptz      not null,
+    token_pair_id     int4            not null,
+    timestamp         timestamptz     not null,
     open              numeric(36, 12) not null,
     high              numeric(36, 12) not null,
     low               numeric(36, 12) not null,
@@ -543,8 +543,8 @@ create table jupiter.candle_1d_most_recent
     amount_quote_buy  numeric(36, 12) not null,
     amount_base_sell  numeric(36, 12) not null,
     amount_quote_sell numeric(36, 12) not null,
-    trade_buy         int4             not null,
-    trade_sell        int4             not null,
+    trade_buy         int8            not null,
+    trade_sell        int8            not null,
     volume_buy        numeric(36, 12) not null,
     volume_sell       numeric(36, 12) not null,
     primary key (token_pair_id, timestamp),

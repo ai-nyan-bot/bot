@@ -1,9 +1,12 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::{Summary, SummaryTrades, TradesWithChange};
+use crate::model::{
+    ProgressWithChange, Summary, SummaryCurveProgress, SummaryTrade, TradesWithChange,
+};
 use crate::pumpfun::repo::{SummaryQuery, SummaryRepo};
-use base::model::{Change, Percent, TokenPairId, Trades};
+use base::model::TokenPairId;
+use common::model::{Change, Count, Percent};
 use common::repo::{RepoResult, Tx};
 use sqlx::postgres::PgRow;
 use sqlx::{Postgres, QueryBuilder, Row};
@@ -16,6 +19,18 @@ impl SummaryRepo {
             r#"
 select
     token_pair_id,
+
+    curve_progress_open,
+    curve_progress_open_change,
+    curve_progress_high,
+    curve_progress_high_change,
+    curve_progress_low,
+    curve_progress_low_change,
+    curve_progress_close,
+    curve_progress_close_change,
+    curve_progress_avg,
+    curve_progress_avg_change,
+
     trade,
     trade_change,
     trade_percent,
@@ -39,26 +54,52 @@ from {table}
             .into_iter()
             .map(|row| Summary {
                 token_pair: row.get::<TokenPairId, _>("token_pair_id"),
-                trades: row_to_trades(&row),
+                curve_progress: row_to_curve_progress(&row),
+                trade: row_to_trades(&row),
             })
             .collect::<Vec<_>>())
     }
 }
 
-fn row_to_trades(row: &PgRow) -> SummaryTrades {
-    SummaryTrades {
+fn row_to_curve_progress(row: &PgRow) -> SummaryCurveProgress {
+    SummaryCurveProgress {
+        open: ProgressWithChange {
+            progress: row.try_get::<Percent, _>("curve_progress_open").ok(),
+            change: row.try_get::<Percent, _>("curve_progress_change").ok(),
+        },
+        high: ProgressWithChange {
+            progress: row.try_get::<Percent, _>("curve_progress_high").ok(),
+            change: row.try_get::<Percent, _>("curve_progress_change").ok(),
+        },
+        low: ProgressWithChange {
+            progress: row.try_get::<Percent, _>("curve_progress_low").ok(),
+            change: row.try_get::<Percent, _>("curve_progress_change").ok(),
+        },
+        close: ProgressWithChange {
+            progress: row.try_get::<Percent, _>("curve_progress_close").ok(),
+            change: row.try_get::<Percent, _>("curve_progress_change").ok(),
+        },
+        avg: ProgressWithChange {
+            progress: row.try_get::<Percent, _>("curve_progress_avg").ok(),
+            change: row.try_get::<Percent, _>("curve_progress_change").ok(),
+        },
+    }
+}
+
+fn row_to_trades(row: &PgRow) -> SummaryTrade {
+    SummaryTrade {
         buy: TradesWithChange {
-            trades: row.get::<Trades, _>("trade_buy"),
+            count: row.get::<Count, _>("trade_buy"),
             change: row.try_get::<Change, _>("trade_buy_change").ok(),
             percent: row.try_get::<Percent, _>("trade_buy_percent").ok(),
         },
         sell: TradesWithChange {
-            trades: row.get::<Trades, _>("trade_sell"),
+            count: row.get::<Count, _>("trade_sell"),
             change: row.try_get::<Change, _>("trade_sell_change").ok(),
             percent: row.try_get::<Percent, _>("trade_sell_percent").ok(),
         },
         all: TradesWithChange {
-            trades: row.get::<Trades, _>("trade"),
+            count: row.get::<Count, _>("trade"),
             change: row.try_get::<Change, _>("trade_change").ok(),
             percent: row.try_get::<Percent, _>("trade_percent").ok(),
         },

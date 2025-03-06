@@ -10,7 +10,6 @@ pub use name::Name;
 pub use price::*;
 use std::fmt::{Display, Formatter};
 pub use symbol::Symbol;
-pub use trades::*;
 pub use uri::Uri;
 pub use volume::*;
 
@@ -22,7 +21,6 @@ mod mint;
 mod name;
 mod price;
 mod symbol;
-mod trades;
 mod uri;
 mod volume;
 

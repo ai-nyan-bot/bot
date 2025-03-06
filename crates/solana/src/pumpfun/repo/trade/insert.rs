@@ -7,11 +7,9 @@
 use crate::model::{Signature, Slot};
 use crate::pumpfun::model::{calculate_progress, Trade};
 use crate::pumpfun::repo::TradeRepo;
-use base::model::{
-    AddressId, Amount, DecimalAmount, Mint, Percent, PriceQuote, PublicKey, TokenPairId,
-};
+use base::model::{AddressId, Amount, DecimalAmount, Mint, PriceQuote, PublicKey, TokenPairId};
 use base::LoadTokenInfo;
-use common::model::Timestamp;
+use common::model::{Percent, Timestamp};
 use common::repo::{RepoResult, Tx};
 use log::trace;
 use sqlx::Row;

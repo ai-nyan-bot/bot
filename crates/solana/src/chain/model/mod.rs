@@ -7,14 +7,13 @@ pub use indexer::Indexer;
 use serde::{Deserialize, Serialize};
 pub use signature::*;
 pub use slot::*;
-pub use summary::*;
+pub use crate::pumpfun::model::summary::*;
 pub use transaction::*;
 
 mod account;
 mod indexer;
 mod signature;
 mod slot;
-mod summary;
 mod transaction;
 
 #[derive(Debug, Deserialize, Serialize)]

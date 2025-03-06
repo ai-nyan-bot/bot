@@ -1,7 +1,8 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use base::model::{Amount, Percent};
+use base::model::Amount;
+use common::model::Percent;
 
 pub fn calculate_progress(virtual_base_reserves: Amount) -> Percent {
     let base_reserve = virtual_base_reserves.0 / 1_000_000;

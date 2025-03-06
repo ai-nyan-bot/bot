@@ -4,8 +4,8 @@
 use crate::model::Slot;
 use crate::pumpfun::model::{Curve, Trade};
 use crate::pumpfun::repo::curve::CurveRepo;
-use base::model::{Amount, Percent, TokenPairId};
-use common::model::UpdatedAt;
+use base::model::{Amount, TokenPairId};
+use common::model::{Percent, UpdatedAt};
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 
