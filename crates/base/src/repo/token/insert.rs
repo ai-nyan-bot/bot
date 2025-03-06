@@ -55,8 +55,6 @@ impl<L: LoadTokenInfo<Mint>> TokenRepo<L> {
             }
         }
 
-        dbg!(&decimals);
-        dbg!(&supplies);
 
         Ok(sqlx::query(
             r#"with new_token as (

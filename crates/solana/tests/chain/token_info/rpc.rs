@@ -42,8 +42,6 @@ async fn test_no_pda() {
     assert!(result.is_some());
 
     let result = result.unwrap();
-    dbg!(&result);
-
 
     assert_eq!(result.mint.unwrap(), "SLNDpmoWTVADgEdndyvWzroNL7zSi1dF9PC3xHGtPwp");
     assert_eq!(result.name, None);
