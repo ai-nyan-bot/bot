@@ -4,7 +4,7 @@
 #![cfg_attr(not(debug_assertions), deny(warnings))]
 
 use crate::config::Config;
-use crate::fact::FactService;
+use crate::pumpfun::FactService;
 use crate::state::{AppState, AppStateInner, Service};
 use base::model::{Action, Venue};
 use base::repo::{InvocationCreateCmd, InvocationRepo, NotificationRepo, RuleRepo};
@@ -21,7 +21,7 @@ use tracing_subscriber::EnvFilter;
 use Venue::PumpFun;
 
 mod config;
-mod fact;
+mod pumpfun;
 mod state;
 
 fn main() {

@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::fact::FactService;
+use crate::pumpfun::FactService;
 use base::service::{NotificationService, RuleService};
 use std::ops::Deref;
 use std::sync::Arc;

@@ -68,13 +68,9 @@ mod tests {
     fn facts() -> Facts {
         Facts::new()
             .with_value(PriceQuote, Value::quote(1))
-            .unwrap()
             .with_value(PriceUsd, Value::usd(2))
-            .unwrap()
             .with_timeframe_value(VolumeChangeQuote, Value::quote(3), S1)
-            .unwrap()
             .with_timeframe_value(VolumeChangeQuote, Value::quote(4), M1)
-            .unwrap()
     }
 
     mod without_timeframe {
