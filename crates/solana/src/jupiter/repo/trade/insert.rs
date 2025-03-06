@@ -12,6 +12,7 @@ use base::model::{
     Token, TokenPair, TokenPairId, TokenPairMint,
 };
 use base::LoadTokenInfo;
+use bigdecimal::{BigDecimal, Zero};
 use common::model::Timestamp;
 use common::repo::{RepoResult, Tx};
 use log::trace;
@@ -197,7 +198,10 @@ fn calculate_amount_and_side(
     };
 
     if trade.input_mint == base_token.mint {
-        assert!(input_amount > 0.0, "Input amount must not be 0");
+        assert!(
+            input_amount > BigDecimal::zero(),
+            "Input amount must not be 0"
+        );
         (
             PriceAvgQuote(output_amount.0 / input_amount.0),
             amount_base,
@@ -205,7 +209,10 @@ fn calculate_amount_and_side(
             false,
         )
     } else {
-        assert!(output_amount > 0.0, "Output amount must not be 0");
+        assert!(
+            output_amount > BigDecimal::zero(),
+            "Output amount must not be 0"
+        );
         (
             PriceAvgQuote(input_amount.0 / output_amount.0),
             amount_base,

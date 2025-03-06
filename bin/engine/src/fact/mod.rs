@@ -37,10 +37,7 @@ impl FactService {
                 (
                     c.id.clone(),
                     Facts::new()
-                        .with_value(
-                            Fact::CurveProgressPercent,
-                            Value::percent(c.progress.0 as f64),
-                        )
+                        .with_value(Fact::CurveProgressPercent, Value::percent(c.progress.0))
                         .unwrap()
                         .with_value(
                             Fact::CurveProgressAgeDuration,
@@ -113,7 +110,7 @@ impl FactService {
                         facts
                             .set_timeframe_value(
                                 Fact::TradesChangePercent,
-                                Value::percent(percent.0 as f64),
+                                Value::percent(percent.0),
                                 M1,
                             )
                             .unwrap();
@@ -133,7 +130,7 @@ impl FactService {
                         facts
                             .set_timeframe_value(
                                 Fact::TradesBuyChangePercent,
-                                Value::percent(percent.0 as f64),
+                                Value::percent(percent.0),
                                 M1,
                             )
                             .unwrap();
@@ -153,7 +150,7 @@ impl FactService {
                         facts
                             .set_timeframe_value(
                                 Fact::TradesSellChangePercent,
-                                Value::percent(percent.0 as f64),
+                                Value::percent(percent.0),
                                 M1,
                             )
                             .unwrap();

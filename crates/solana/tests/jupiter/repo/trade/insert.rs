@@ -40,9 +40,9 @@ async fn test_ok() {
         assert_eq!(result.address, 1);
         assert_eq!(result.token_pair, 1000);
 
-        assert_eq!(result.amount_base, 1.0);
-        assert_eq!(result.amount_quote, 2.0);
-        assert_eq!(result.price, 2.0);
+        assert_eq!(result.amount_base, "1.0");
+        assert_eq!(result.amount_quote, "2.0");
+        assert_eq!(result.price, "2.0");
         assert!(result.is_buy);
 
         let count = count_all_trades(&mut tx).await;
@@ -90,9 +90,9 @@ async fn test_multiple() {
         assert_eq!(first.address, 2);
         assert_eq!(first.token_pair, 1001);
 
-        assert_eq!(first.amount_base, 5.0);
-        assert_eq!(first.amount_quote, 6.0);
-        assert_eq!(first.price, 1.2);
+        assert_eq!(first.amount_base, "5.0");
+        assert_eq!(first.amount_quote, "6.0");
+        assert_eq!(first.price, "1.2");
         assert!(!first.is_buy);
 
         let second = result.pop().unwrap();
@@ -100,9 +100,9 @@ async fn test_multiple() {
         assert_eq!(second.address, 1);
         assert_eq!(second.token_pair, 1000);
 
-        assert_eq!(second.amount_base, 1.0);
-        assert_eq!(second.amount_quote, 2.0);
-        assert_eq!(second.price, 2.0);
+        assert_eq!(second.amount_base, "1.0");
+        assert_eq!(second.amount_quote, "2.0");
+        assert_eq!(second.price, "2.0");
         assert!(second.is_buy);
 
         let count = count_all_trades(&mut tx).await;

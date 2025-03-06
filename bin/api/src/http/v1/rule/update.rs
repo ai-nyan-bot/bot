@@ -66,7 +66,7 @@ mod tests {
 			"action":{"type":"NOTIFY_TELEGRAM",
 				"buttons":[
 					{"action":"NONE"},
-					{"action":"BUY","value":{"type":"SOL","value":1.2}},
+					{"action":"BUY","value":{"type":"SOL","value":"1.2"}},
 					{"action":"SELL","value":{"type":"PERCENT","value":3.4}},
 					{"action":"NONE"},
 					{"action":"NONE"},
@@ -90,7 +90,7 @@ mod tests {
         assert_eq!(
             buttons.get(1).unwrap(),
             &TelegramActionButtonConfig::Buy {
-                value: Value::sol(1.2)
+                value: Value::sol_from_str("1.2")
             }
         );
         assert_eq!(

@@ -2,10 +2,12 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::{PriceAvgQuote, Trades};
+use ::serde::{Deserialize, Serialize};
+use bigdecimal::BigDecimal;
 use common::model::TimeUnit;
 pub(crate) use compare::*;
-use ::serde::{Deserialize, Serialize};
 use std::fmt::{Display, Formatter};
+use std::str::FromStr;
 
 mod compare;
 mod serde;
@@ -28,30 +30,60 @@ pub enum Value {
     Boolean { value: bool },
     Count { value: i64 },
     Duration { value: i64, unit: TimeUnit },
-    Percent { value: f64 },
-    Quote { value: f64 },
-    Sol { value: f64 },
+    Percent { value: f32 },
+    Quote { value: BigDecimal },
+    Sol { value: BigDecimal },
     String { value: String },
-    Usd { value: f64 },
+    Usd { value: BigDecimal },
 }
 
 impl Value {
-
-    pub fn boolean(value: bool) -> Self { Self::Boolean { value }}
-    pub fn count(value: i64) -> Self { Self::Count { value }}
-    pub fn duration(value: i64, unit: TimeUnit) -> Self { Self::Duration { value, unit } }
-    pub fn percent(value: f64) -> Self { Self::Percent { value }}
-    pub fn quote(value: f64) -> Self { Self::Quote { value }}
-    pub fn sol(value: f64) -> Self { Self::Sol { value }}
-    pub fn string(value: impl Into<String>) -> Self { Self::String { value: value.into() }}
-    pub fn usd(value: f64) -> Self { Self::Usd { value }}
-
+    pub fn boolean(value: bool) -> Self {
+        Self::Boolean { value }
+    }
+    pub fn count(value: impl Into<i64>) -> Self {
+        Self::Count {
+            value: value.into(),
+        }
+    }
+    pub fn duration(value: i64, unit: TimeUnit) -> Self {
+        Self::Duration { value, unit }
+    }
+    pub fn percent(value: impl Into<f32>) -> Self {
+        Self::Percent {
+            value: value.into(),
+        }
+    }
+    pub fn quote(value: impl Into<BigDecimal>) -> Self {
+        Self::Quote {
+            value: value.into(),
+        }
+    }
+    pub fn sol(value: impl Into<BigDecimal>) -> Self {
+        Self::Sol {
+            value: value.into(),
+        }
+    }
+    pub fn sol_from_str(value: impl AsRef<str>) -> Self {
+        Self::Sol {
+            value: BigDecimal::from_str(value.as_ref()).unwrap(),
+        }
+    }
+    pub fn string(value: impl Into<String>) -> Self {
+        Self::String {
+            value: value.into(),
+        }
+    }
+    pub fn usd(value: impl Into<BigDecimal>) -> Self {
+        Self::Usd {
+            value: value.into(),
+        }
+    }
 }
 
 impl From<PriceAvgQuote> for Value {
     fn from(value: PriceAvgQuote) -> Self {
-        // Self::Quote { value: value.0 }
-        todo!()
+        Self::Quote { value: value.0 }
     }
 }
 

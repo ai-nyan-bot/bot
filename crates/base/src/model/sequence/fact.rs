@@ -306,8 +306,8 @@ impl Fact {
 
 #[cfg(test)]
 mod tests {
-    use common::model::TimeUnit::Minute;
     use super::*;
+    use common::model::TimeUnit::Minute;
 
     #[test]
     fn test_curve_progress() {
@@ -344,42 +344,61 @@ mod tests {
     #[test]
     fn test_curve_progress_age() {
         assert_eq!(
-            Fact::from_comparison(&CurveProgressAge, &MoreThan, &Value::duration(1, Minute), false),
+            Fact::from_comparison(
+                &CurveProgressAge,
+                &MoreThan,
+                &Value::duration(1, Minute),
+                false
+            ),
             Some(CurveProgressAgeDuration)
         );
         assert_eq!(
-            Fact::from_comparison(&CurveProgressAge, &MoreThanEqual, &Value::duration(1, Minute), false),
+            Fact::from_comparison(
+                &CurveProgressAge,
+                &MoreThanEqual,
+                &Value::duration(1, Minute),
+                false
+            ),
             Some(CurveProgressAgeDuration)
         );
 
         assert_eq!(
-            Fact::from_comparison(&CurveProgressAge, &LessThan, &Value::duration(1, Minute), false),
+            Fact::from_comparison(
+                &CurveProgressAge,
+                &LessThan,
+                &Value::duration(1, Minute),
+                false
+            ),
             Some(CurveProgressAgeDuration)
         );
 
         assert_eq!(
-            Fact::from_comparison(&CurveProgressAge, &LessThanEqual, &Value::duration(1, Minute), false),
+            Fact::from_comparison(
+                &CurveProgressAge,
+                &LessThanEqual,
+                &Value::duration(1, Minute),
+                false
+            ),
             Some(CurveProgressAgeDuration)
         );
     }
 
-
     #[test]
     fn test_price_quote() {
         assert_eq!(
-            Fact::from_comparison(&Price, &MoreThan, &Value::quote(99.24), false),
+            Fact::from_comparison(&Price, &MoreThan, &Value::quote(99), false),
             Some(PriceQuote)
         );
         assert_eq!(
-            Fact::from_comparison(&Price, &MoreThanEqual, &Value::quote(99.24), false),
+            Fact::from_comparison(&Price, &MoreThanEqual, &Value::quote(99), false),
             Some(PriceQuote)
         );
         assert_eq!(
-            Fact::from_comparison(&Price, &LessThan, &Value::quote(99.24), false),
+            Fact::from_comparison(&Price, &LessThan, &Value::quote(99), false),
             Some(PriceQuote)
         );
         assert_eq!(
-            Fact::from_comparison(&Price, &LessThanEqual, &Value::quote(99.24), false),
+            Fact::from_comparison(&Price, &LessThanEqual, &Value::quote(99), false),
             Some(PriceQuote)
         );
     }
@@ -387,19 +406,19 @@ mod tests {
     #[test]
     fn test_price_usd() {
         assert_eq!(
-            Fact::from_comparison(&Price, &MoreThan, &Value::usd(99.24), false),
+            Fact::from_comparison(&Price, &MoreThan, &Value::usd(99), false),
             Some(PriceUsd)
         );
         assert_eq!(
-            Fact::from_comparison(&Price, &MoreThanEqual, &Value::usd(99.24), false),
+            Fact::from_comparison(&Price, &MoreThanEqual, &Value::usd(99), false),
             Some(PriceUsd)
         );
         assert_eq!(
-            Fact::from_comparison(&Price, &LessThan, &Value::usd(99.24), false),
+            Fact::from_comparison(&Price, &LessThan, &Value::usd(99), false),
             Some(PriceUsd)
         );
         assert_eq!(
-            Fact::from_comparison(&Price, &LessThanEqual, &Value::usd(99.24), false),
+            Fact::from_comparison(&Price, &LessThanEqual, &Value::usd(99), false),
             Some(PriceUsd)
         );
     }
@@ -407,19 +426,19 @@ mod tests {
     #[test]
     fn test_price_avg_quote() {
         assert_eq!(
-            Fact::from_comparison(&PriceAvg, &MoreThan, &Value::quote(99.24), true),
+            Fact::from_comparison(&PriceAvg, &MoreThan, &Value::quote(99), true),
             Some(PriceAvgQuote)
         );
         assert_eq!(
-            Fact::from_comparison(&PriceAvg, &MoreThanEqual, &Value::quote(99.24), true),
+            Fact::from_comparison(&PriceAvg, &MoreThanEqual, &Value::quote(99), true),
             Some(PriceAvgQuote)
         );
         assert_eq!(
-            Fact::from_comparison(&PriceAvg, &LessThan, &Value::quote(99.24), true),
+            Fact::from_comparison(&PriceAvg, &LessThan, &Value::quote(99), true),
             Some(PriceAvgQuote)
         );
         assert_eq!(
-            Fact::from_comparison(&PriceAvg, &LessThanEqual, &Value::quote(99.24), true),
+            Fact::from_comparison(&PriceAvg, &LessThanEqual, &Value::quote(99), true),
             Some(PriceAvgQuote)
         );
     }
@@ -427,19 +446,19 @@ mod tests {
     #[test]
     fn test_price_avg_usd() {
         assert_eq!(
-            Fact::from_comparison(&PriceAvg, &MoreThan, &Value::usd(99.24), true),
+            Fact::from_comparison(&PriceAvg, &MoreThan, &Value::usd(99), true),
             Some(PriceAvgUsd)
         );
         assert_eq!(
-            Fact::from_comparison(&PriceAvg, &MoreThanEqual, &Value::usd(99.24), true),
+            Fact::from_comparison(&PriceAvg, &MoreThanEqual, &Value::usd(99), true),
             Some(PriceAvgUsd)
         );
         assert_eq!(
-            Fact::from_comparison(&PriceAvg, &LessThan, &Value::usd(99.24), true),
+            Fact::from_comparison(&PriceAvg, &LessThan, &Value::usd(99), true),
             Some(PriceAvgUsd)
         );
         assert_eq!(
-            Fact::from_comparison(&PriceAvg, &LessThanEqual, &Value::usd(99.24), true),
+            Fact::from_comparison(&PriceAvg, &LessThanEqual, &Value::usd(99), true),
             Some(PriceAvgUsd)
         );
     }
@@ -883,55 +902,35 @@ mod tests {
     #[test]
     fn test_volume_change_quote() {
         assert_eq!(
-            Fact::from_comparison(&Volume, &IncreasedByMoreThan, &Value::quote(99.24), true),
+            Fact::from_comparison(&Volume, &IncreasedByMoreThan, &Value::quote(99), true),
             Some(VolumeChangeQuote)
         );
         assert_eq!(
-            Fact::from_comparison(
-                &Volume,
-                &IncreasedByMoreThanEqual,
-                &Value::quote(99.24),
-                true
-            ),
+            Fact::from_comparison(&Volume, &IncreasedByMoreThanEqual, &Value::quote(99), true),
             Some(VolumeChangeQuote)
         );
         assert_eq!(
-            Fact::from_comparison(&Volume, &IncreasedByLessThan, &Value::quote(99.24), true),
+            Fact::from_comparison(&Volume, &IncreasedByLessThan, &Value::quote(99), true),
             Some(VolumeChangeQuote)
         );
         assert_eq!(
-            Fact::from_comparison(
-                &Volume,
-                &IncreasedByLessThanEqual,
-                &Value::quote(99.24),
-                true
-            ),
+            Fact::from_comparison(&Volume, &IncreasedByLessThanEqual, &Value::quote(99), true),
             Some(VolumeChangeQuote)
         );
         assert_eq!(
-            Fact::from_comparison(&Volume, &DecreasedByMoreThan, &Value::quote(99.24), true),
+            Fact::from_comparison(&Volume, &DecreasedByMoreThan, &Value::quote(99), true),
             Some(VolumeChangeQuote)
         );
         assert_eq!(
-            Fact::from_comparison(
-                &Volume,
-                &DecreasedByMoreThanEqual,
-                &Value::quote(99.24),
-                true
-            ),
+            Fact::from_comparison(&Volume, &DecreasedByMoreThanEqual, &Value::quote(99), true),
             Some(VolumeChangeQuote)
         );
         assert_eq!(
-            Fact::from_comparison(&Volume, &DecreasedByLessThan, &Value::quote(99.24), true),
+            Fact::from_comparison(&Volume, &DecreasedByLessThan, &Value::quote(99), true),
             Some(VolumeChangeQuote)
         );
         assert_eq!(
-            Fact::from_comparison(
-                &Volume,
-                &DecreasedByLessThanEqual,
-                &Value::quote(99.24),
-                true
-            ),
+            Fact::from_comparison(&Volume, &DecreasedByLessThanEqual, &Value::quote(99), true),
             Some(VolumeChangeQuote)
         );
     }

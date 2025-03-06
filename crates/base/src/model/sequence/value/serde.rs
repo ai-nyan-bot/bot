@@ -41,31 +41,31 @@ mod tests {
 
     #[test]
     fn percent() {
-        let serialised = serde_json::to_string(&Value::percent(1.234)).unwrap();
-        assert_eq!(serialised, r#"{"type":"PERCENT","value":1.234}"#);
+        let serialised = serde_json::to_string(&Value::percent(12.34)).unwrap();
+        assert_eq!(serialised, r#"{"type":"PERCENT","value":12.34}"#);
         assert_eq!(
             serde_json::from_str::<Value>(serialised.as_str()).unwrap(),
-            Value::percent(1.234)
+            Value::percent(12.34)
         );
     }
 
     #[test]
     fn quote() {
-        let serialised = serde_json::to_string(&Value::quote(1.234)).unwrap();
-        assert_eq!(serialised, r#"{"type":"QUOTE","value":1.234}"#);
+        let serialised = serde_json::to_string(&Value::quote(1234)).unwrap();
+        assert_eq!(serialised, r#"{"type":"QUOTE","value":"1234"}"#);
         assert_eq!(
             serde_json::from_str::<Value>(serialised.as_str()).unwrap(),
-            Value::quote(1.234)
+            Value::quote(1234)
         );
     }
 
     #[test]
     fn sol() {
-        let serialised = serde_json::to_string(&Value::sol(1.234)).unwrap();
-        assert_eq!(serialised, r#"{"type":"SOL","value":1.234}"#);
+        let serialised = serde_json::to_string(&Value::sol(1234)).unwrap();
+        assert_eq!(serialised, r#"{"type":"SOL","value":"1234"}"#);
         assert_eq!(
             serde_json::from_str::<Value>(serialised.as_str()).unwrap(),
-            Value::sol(1.234)
+            Value::sol(1234)
         );
     }
 
@@ -81,11 +81,11 @@ mod tests {
 
     #[test]
     fn usd() {
-        let serialised = serde_json::to_string(&Value::usd(1.234)).unwrap();
-        assert_eq!(serialised, r#"{"type":"USD","value":1.234}"#);
+        let serialised = serde_json::to_string(&Value::usd(1234)).unwrap();
+        assert_eq!(serialised, r#"{"type":"USD","value":"1234"}"#);
         assert_eq!(
             serde_json::from_str::<Value>(serialised.as_str()).unwrap(),
-            Value::usd(1.234)
+            Value::usd(1234)
         );
     }
 }

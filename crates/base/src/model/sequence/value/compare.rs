@@ -1,7 +1,8 @@
 // Copyright (c) nyanbot.com 2025.
-// This file is licensed under the AGPL-3.0-or-later.
+// This file is licensed under the AGPL-3-or-later.
 
 use crate::model::{Operator, Value};
+use bigdecimal::{BigDecimal, Zero};
 use common::model::TimeUnit;
 use std::ops::Neg;
 
@@ -74,15 +75,15 @@ pub(crate) fn compare(fact: &Value, operator: &Operator, rule: &Value) -> bool {
             Operator::Equal => fact == rule,
             Operator::NotEqual => fact != rule,
 
-            Operator::IncreasedByMoreThan => *fact > 0.0 && fact > rule,
-            Operator::IncreasedByMoreThanEqual => *fact > 0.0 && fact >= rule,
-            Operator::IncreasedByLessThan => *fact > 0.0 && fact < rule,
-            Operator::IncreasedByLessThanEqual => *fact > 0.0 && fact <= rule,
+            Operator::IncreasedByMoreThan => *fact > BigDecimal::zero() && fact > rule,
+            Operator::IncreasedByMoreThanEqual => *fact > BigDecimal::zero() && fact >= rule,
+            Operator::IncreasedByLessThan => *fact > BigDecimal::zero() && fact < rule,
+            Operator::IncreasedByLessThanEqual => *fact > BigDecimal::zero() && fact <= rule,
 
-            Operator::DecreasedByMoreThan => *fact < 0.0 && *fact > rule.neg(),
-            Operator::DecreasedByMoreThanEqual => *fact < 0.0 && *fact >= rule.neg(),
-            Operator::DecreasedByLessThan => *fact < 0.0 && *fact < rule.neg(),
-            Operator::DecreasedByLessThanEqual => *fact < 0.0 && *fact <= rule.neg(),
+            Operator::DecreasedByMoreThan => *fact < BigDecimal::zero() && *fact > rule.neg(),
+            Operator::DecreasedByMoreThanEqual => *fact < BigDecimal::zero() && *fact >= rule.neg(),
+            Operator::DecreasedByLessThan => *fact < BigDecimal::zero() && *fact < rule.neg(),
+            Operator::DecreasedByLessThanEqual => *fact < BigDecimal::zero() && *fact <= rule.neg(),
 
             Operator::MoreThan => fact > rule,
             Operator::MoreThanEqual => fact >= rule,
@@ -98,15 +99,15 @@ pub(crate) fn compare(fact: &Value, operator: &Operator, rule: &Value) -> bool {
             Operator::Equal => fact == rule,
             Operator::NotEqual => fact != rule,
 
-            Operator::IncreasedByMoreThan => *fact > 0.0 && fact > rule,
-            Operator::IncreasedByMoreThanEqual => *fact > 0.0 && fact >= rule,
-            Operator::IncreasedByLessThan => *fact > 0.0 && fact < rule,
-            Operator::IncreasedByLessThanEqual => *fact > 0.0 && fact <= rule,
+            Operator::IncreasedByMoreThan => *fact > BigDecimal::zero() && fact > rule,
+            Operator::IncreasedByMoreThanEqual => *fact > BigDecimal::zero() && fact >= rule,
+            Operator::IncreasedByLessThan => *fact > BigDecimal::zero() && fact < rule,
+            Operator::IncreasedByLessThanEqual => *fact > BigDecimal::zero() && fact <= rule,
 
-            Operator::DecreasedByMoreThan => *fact < 0.0 && *fact > rule.neg(),
-            Operator::DecreasedByMoreThanEqual => *fact < 0.0 && *fact >= rule.neg(),
-            Operator::DecreasedByLessThan => *fact < 0.0 && *fact < rule.neg(),
-            Operator::DecreasedByLessThanEqual => *fact < 0.0 && *fact <= rule.neg(),
+            Operator::DecreasedByMoreThan => *fact < BigDecimal::zero() && *fact > rule.neg(),
+            Operator::DecreasedByMoreThanEqual => *fact < BigDecimal::zero() && *fact >= rule.neg(),
+            Operator::DecreasedByLessThan => *fact < BigDecimal::zero() && *fact < rule.neg(),
+            Operator::DecreasedByLessThanEqual => *fact < BigDecimal::zero() && *fact <= rule.neg(),
 
             Operator::MoreThan => fact > rule,
             Operator::MoreThanEqual => fact >= rule,
@@ -288,63 +289,55 @@ mod tests {
 
     #[test]
     fn test_quote_comparisons() {
-        assert!(compare(&Value::quote(5.0), &Equal, &Value::quote(5.0)));
-        assert!(compare(&Value::quote(3.0), &NotEqual, &Value::quote(5.0)));
+        assert!(compare(&Value::quote(5), &Equal, &Value::quote(5)));
+        assert!(compare(&Value::quote(3), &NotEqual, &Value::quote(5)));
 
         assert!(compare(
-            &Value::quote(5.0),
+            &Value::quote(5),
             &IncreasedByMoreThan,
-            &Value::quote(3.0)
+            &Value::quote(3)
         ));
         assert!(compare(
-            &Value::quote(5.0),
+            &Value::quote(5),
             &IncreasedByMoreThanEqual,
-            &Value::quote(5.0)
+            &Value::quote(5)
         ));
         assert!(compare(
-            &Value::quote(3.0),
+            &Value::quote(3),
             &IncreasedByLessThan,
-            &Value::quote(5.0)
+            &Value::quote(5)
         ));
         assert!(compare(
-            &Value::quote(3.0),
+            &Value::quote(3),
             &IncreasedByLessThanEqual,
-            &Value::quote(3.0)
+            &Value::quote(3)
         ));
 
         assert!(compare(
-            &Value::quote(-3.0),
+            &Value::quote(-3),
             &DecreasedByMoreThan,
-            &Value::quote(5.0)
+            &Value::quote(5)
         ));
         assert!(compare(
-            &Value::quote(-5.0),
+            &Value::quote(-5),
             &DecreasedByMoreThanEqual,
-            &Value::quote(5.0)
+            &Value::quote(5)
         ));
         assert!(compare(
-            &Value::quote(-5.0),
+            &Value::quote(-5),
             &DecreasedByLessThan,
-            &Value::quote(3.0)
+            &Value::quote(3)
         ));
         assert!(compare(
-            &Value::quote(-3.0),
+            &Value::quote(-3),
             &DecreasedByLessThanEqual,
-            &Value::quote(3.0)
+            &Value::quote(3)
         ));
 
-        assert!(compare(&Value::quote(5.0), &MoreThan, &Value::quote(3.0)));
-        assert!(compare(
-            &Value::quote(5.0),
-            &MoreThanEqual,
-            &Value::quote(5.0)
-        ));
-        assert!(compare(&Value::quote(3.0), &LessThan, &Value::quote(5.0)));
-        assert!(compare(
-            &Value::quote(3.0),
-            &LessThanEqual,
-            &Value::quote(3.0)
-        ));
+        assert!(compare(&Value::quote(5), &MoreThan, &Value::quote(3)));
+        assert!(compare(&Value::quote(5), &MoreThanEqual, &Value::quote(5)));
+        assert!(compare(&Value::quote(3), &LessThan, &Value::quote(5)));
+        assert!(compare(&Value::quote(3), &LessThanEqual, &Value::quote(3)));
     }
 
     #[test]
@@ -368,54 +361,54 @@ mod tests {
 
     #[test]
     fn test_usd_comparisons() {
-        assert!(compare(&Value::usd(5.0), &Equal, &Value::usd(5.0)));
-        assert!(compare(&Value::usd(3.0), &NotEqual, &Value::usd(5.0)));
+        assert!(compare(&Value::usd(5), &Equal, &Value::usd(5)));
+        assert!(compare(&Value::usd(3), &NotEqual, &Value::usd(5)));
 
         assert!(compare(
-            &Value::usd(5.0),
+            &Value::usd(5),
             &IncreasedByMoreThan,
-            &Value::usd(3.0)
+            &Value::usd(3)
         ));
         assert!(compare(
-            &Value::usd(5.0),
+            &Value::usd(5),
             &IncreasedByMoreThanEqual,
-            &Value::usd(5.0)
+            &Value::usd(5)
         ));
         assert!(compare(
-            &Value::usd(3.0),
+            &Value::usd(3),
             &IncreasedByLessThan,
-            &Value::usd(5.0)
+            &Value::usd(5)
         ));
         assert!(compare(
-            &Value::usd(3.0),
+            &Value::usd(3),
             &IncreasedByLessThanEqual,
-            &Value::usd(3.0)
+            &Value::usd(3)
         ));
 
         assert!(compare(
-            &Value::usd(-3.0),
+            &Value::usd(-3),
             &DecreasedByMoreThan,
-            &Value::usd(5.0)
+            &Value::usd(5)
         ));
         assert!(compare(
-            &Value::usd(-5.0),
+            &Value::usd(-5),
             &DecreasedByMoreThanEqual,
-            &Value::usd(5.0)
+            &Value::usd(5)
         ));
         assert!(compare(
-            &Value::usd(-5.0),
+            &Value::usd(-5),
             &DecreasedByLessThan,
-            &Value::usd(3.0)
+            &Value::usd(3)
         ));
         assert!(compare(
-            &Value::usd(-3.0),
+            &Value::usd(-3),
             &DecreasedByLessThanEqual,
-            &Value::usd(3.0)
+            &Value::usd(3)
         ));
 
-        assert!(compare(&Value::usd(5.0), &MoreThan, &Value::usd(3.0)));
-        assert!(compare(&Value::usd(5.0), &MoreThanEqual, &Value::usd(5.0)));
-        assert!(compare(&Value::usd(3.0), &LessThan, &Value::usd(5.0)));
-        assert!(compare(&Value::usd(3.0), &LessThanEqual, &Value::usd(3.0)));
+        assert!(compare(&Value::usd(5), &MoreThan, &Value::usd(3)));
+        assert!(compare(&Value::usd(5), &MoreThanEqual, &Value::usd(5)));
+        assert!(compare(&Value::usd(3), &LessThan, &Value::usd(5)));
+        assert!(compare(&Value::usd(3), &LessThanEqual, &Value::usd(3)));
     }
 }

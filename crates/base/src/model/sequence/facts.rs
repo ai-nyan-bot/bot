@@ -92,7 +92,7 @@ mod tests {
 	fn test_set_and_get_fact_without_timeframe() {
 		let mut test_instance = Facts::new();
 		let fact = Fact::PriceQuote;
-		let value = Value::quote(123.45);
+		let value = Value::quote(123);
 
 		assert!(test_instance.set(fact, value.clone(), None).is_ok());
 		assert_eq!(test_instance.get(&fact), Some(&value));
@@ -114,7 +114,7 @@ mod tests {
 		let mut test_instance = Facts::new();
 		let fact = Fact::PriceQuote;
 		let timeframe = Timeframe::D1;
-		let value = Value::quote(50.0);
+		let value = Value::quote(50);
 
 		let result = test_instance.set(fact, value.clone(), Some(timeframe));
 		assert!(matches!(result, Err(FactError::TimeframeNotAllowed(_))));
@@ -150,7 +150,7 @@ mod tests {
 	fn test_exists_fact_without_timeframe() {
 		let mut test_instance = Facts::new();
 		let fact = Fact::PriceQuote;
-		let value = Value::quote(200.9);
+		let value = Value::quote(200);
 
 		assert!(!test_instance.exists(&fact, None));
 		test_instance.set(fact, value, None).unwrap();
@@ -173,8 +173,8 @@ mod tests {
 	fn test_overwrite_existing_fact_without_timeframe() {
 		let mut test_instance = Facts::new();
 		let fact = Fact::PriceQuote;
-		let value1 = Value::quote(100.0);
-		let value2 = Value::quote(200.0);
+		let value1 = Value::quote(100);
+		let value2 = Value::quote(200);
 
 		test_instance.set(fact, value1.clone(), None).unwrap();
 		assert_eq!(test_instance.get(&fact), Some(&value1));

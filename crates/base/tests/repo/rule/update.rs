@@ -39,14 +39,14 @@ async fn test_update() {
                         condition: Compare {
                             field: Volume,
                             operator: Equal,
-                            value: Value::quote(42.0),
+                            value: Value::quote(42),
                             timeframe: Some(H1),
                         },
                         action: Action::NotifyTelegram {
                             buttons: vec![
                                 TelegramActionButtonConfig::None,
                                 TelegramActionButtonConfig::Buy {
-                                    value: Value::sol(1.2),
+                                    value: Value::sol(12),
                                 },
                                 TelegramActionButtonConfig::Sell {
                                     value: Value::percent(3.4),
@@ -68,7 +68,7 @@ async fn test_update() {
             Compare {
                 field: Volume,
                 operator: Equal,
-                value: Value::quote(42.0),
+                value: Value::quote(42),
                 timeframe: Some(H1),
             }
         );
@@ -78,7 +78,7 @@ async fn test_update() {
                 buttons: vec![
                     TelegramActionButtonConfig::None,
                     TelegramActionButtonConfig::Buy {
-                        value: Value::sol(1.2)
+                        value: Value::sol(12)
                     },
                     TelegramActionButtonConfig::Sell {
                         value: Value::percent(3.4)
@@ -170,7 +170,7 @@ async fn test_different_user() {
                         condition: Compare {
                             field: Volume,
                             operator: Equal,
-                            value: Value::quote(42.0),
+                            value: Value::quote(42),
                             timeframe: Some(H1),
                         },
                         action: Action::Sell,
@@ -221,7 +221,7 @@ async fn test_rule_not_found() {
                         condition: Compare {
                             field: Volume,
                             operator: Equal,
-                            value: Value::quote(42.0),
+                            value: Value::quote(42),
                             timeframe: Some(H1),
                         },
                         action: NotifyTelegram { buttons: vec![] },

@@ -42,7 +42,7 @@ impl<L: LoadTokenInfo<Mint>> TokenRepo<L> {
                 if let Some(amount) = info.supply {
                     supplies.push(DecimalAmount::new(amount, info.decimals.unwrap()))
                 } else {
-                    supplies.push(DecimalAmount::from(-1.0))
+                    supplies.push(DecimalAmount::from(-1i64))
                 }
 
                 metadata.push(info.metadata.unwrap_or("null_value".into()));

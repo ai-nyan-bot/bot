@@ -2,12 +2,12 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::Decimals;
-use bigdecimal::FromPrimitive;
 use serde::{Deserialize, Serialize};
 use sqlx::types::BigDecimal;
 use sqlx::Type;
 use std::cmp::Ordering;
 use std::ops::Div;
+use std::str::FromStr;
 
 #[derive(Copy, Clone, Debug, PartialEq, PartialOrd, Deserialize, Serialize, sqlx::Type)]
 #[sqlx(transparent)]
@@ -67,22 +67,6 @@ impl From<u64> for DecimalAmount {
     }
 }
 
-impl From<f64> for DecimalAmount {
-    fn from(value: f64) -> Self {
-        BigDecimal::from_f64(value)
-            .map(Self)
-            .expect("Failed to create BigDecimal from f64")
-    }
-}
-
-impl PartialEq<f64> for DecimalAmount {
-    fn eq(&self, other: &f64) -> bool {
-        BigDecimal::from_f64(*other)
-            .map(|bd| self.0 == bd)
-            .unwrap_or(false)
-    }
-}
-
 impl PartialEq<i32> for DecimalAmount {
     fn eq(&self, other: &i32) -> bool {
         Self(BigDecimal::from(*other)).0.eq(&self.0)
@@ -95,8 +79,20 @@ impl PartialOrd<i32> for DecimalAmount {
     }
 }
 
-impl PartialOrd<f64> for DecimalAmount {
-    fn partial_cmp(&self, other: &f64) -> Option<Ordering> {
-        BigDecimal::from_f64(*other).and_then(|bd| self.0.partial_cmp(&bd))
+impl PartialEq<BigDecimal> for DecimalAmount {
+    fn eq(&self, other: &BigDecimal) -> bool {
+        self.0.eq(other)
+    }
+}
+
+impl PartialOrd<BigDecimal> for DecimalAmount {
+    fn partial_cmp(&self, other: &BigDecimal) -> Option<Ordering> {
+        self.0.partial_cmp(&other)
+    }
+}
+
+impl PartialEq<&str> for DecimalAmount {
+    fn eq(&self, other: &&str) -> bool {
+        self.eq(&BigDecimal::from_str(other).unwrap())
     }
 }

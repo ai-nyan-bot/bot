@@ -25,7 +25,7 @@ async fn test_ok() {
                 buttons: vec![
                     TelegramActionButtonConfig::None,
                     TelegramActionButtonConfig::Buy {
-                        value: Value::sol(1.2),
+                        value: Value::sol(12),
                     },
                     TelegramActionButtonConfig::Sell {
                         value: Value::percent(3.4),
@@ -52,7 +52,7 @@ async fn test_ok() {
                 assert_eq!(
                     notification.payload("button_1"),
                     Some(TelegramActionButtonConfig::Buy {
-                        value: Value::sol(1.2)
+                        value: Value::sol(12)
                     })
                 );
                 assert_eq!(
