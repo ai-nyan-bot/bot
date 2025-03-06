@@ -136,12 +136,6 @@ async fn calculate_summary<'a>(
 		curve_progress_close,
 		curve_progress_avg,
 	
-		0 as holder_open,
-		0 as holder_high,
-		0 as holder_low,
-		0 as holder_close,
-		0 as holder_avg,
-	
 		market_cap_open,
 		market_cap_open_usd,
 		market_cap_high,
@@ -277,21 +271,6 @@ insert into {destination_table} (
     curve_progress_close_change,
     curve_progress_avg,
     curve_progress_avg_change,
-    holder_open,
-    holder_open_change,
-    holder_open_percent,
-    holder_high,
-    holder_high_change,
-    holder_high_percent,
-    holder_low,
-    holder_low_change,
-    holder_low_percent,
-    holder_close,
-    holder_close_change,
-    holder_close_percent,
-    holder_avg,
-    holder_avg_change,
-    holder_avg_percent,
     market_cap_open,
     market_cap_open_usd,
     market_cap_open_change,
@@ -408,26 +387,6 @@ select
 
     current.curve_progress_avg as curve_progress_avg,
     current.curve_progress_avg - previous.curve_progress_avg as curve_progress_avg_change,
-
-    current.holder_open as holder_open,
-    current.holder_open - previous.holder_open as holder_open_change,
-    (current.holder_open - previous.holder_open) / nullif(previous.holder_open, 0) * 100 as holder_open_percent,
-
-    current.holder_high as holder_high,
-    current.holder_high - previous.holder_high as holder_high_change,
-    (current.holder_high - previous.holder_high) / nullif(previous.holder_high, 0) * 100 as holder_high_percent,
-
-    current.holder_low as holder_low,
-    current.holder_low - previous.holder_low as holder_low_change,
-    (current.holder_low - previous.holder_low) / nullif(previous.holder_low, 0) * 100 as holder_low_percent,
-
-    current.holder_close as holder_close,
-    current.holder_close - previous.holder_close as holder_close_change,
-    (current.holder_close - previous.holder_close) / nullif(previous.holder_close, 0) * 100 as holder_close_percent,
-
-    current.holder_avg as holder_avg,
-    current.holder_avg - previous.holder_avg as holder_avg_change,
-    (current.holder_avg - previous.holder_avg) / nullif(previous.holder_avg, 0) * 100 as holder_avg_percent,
 
     current.market_cap_open as market_cap_open,
     current.market_cap_open_usd as market_cap_open_usd,
@@ -558,26 +517,6 @@ on conflict (token_pair_id) do update set
 	curve_progress_avg = excluded.curve_progress_avg,
 	curve_progress_avg_change = excluded.curve_progress_avg_change,
 	
-	holder_open = excluded.holder_open,
-	holder_open_change = excluded.holder_open_change,
-	holder_open_percent = excluded.holder_open_percent,
-	
-	holder_high = excluded.holder_high,
-	holder_high_change = excluded.holder_high_change,
-	holder_high_percent = excluded.holder_high_percent,
-	
-	holder_low = excluded.holder_low,
-	holder_low_change = excluded.holder_low_change,
-	holder_low_percent = excluded.holder_low_percent,
-	
-	holder_close = excluded.holder_close,
-	holder_close_change = excluded.holder_close_change,
-	holder_close_percent = excluded.holder_close_percent,
-	
-	holder_avg = excluded.holder_avg,
-	holder_avg_change = excluded.holder_avg_change,
-	holder_avg_percent = excluded.holder_avg_percent,
-	
 	market_cap_open = excluded.market_cap_open,
 	market_cap_open_usd = excluded.market_cap_open_usd,
 	market_cap_open_change = excluded.market_cap_open_change,
@@ -698,26 +637,6 @@ where
 
     {destination_table}.curve_progress_avg != excluded.curve_progress_avg or
     {destination_table}.curve_progress_avg_change != excluded.curve_progress_avg_change or
-
-    {destination_table}.holder_open != excluded.holder_open or
-    {destination_table}.holder_open_change != excluded.holder_open_change or
-    {destination_table}.holder_open_percent != excluded.holder_open_percent or
-
-    {destination_table}.holder_high != excluded.holder_high or
-    {destination_table}.holder_high_change != excluded.holder_high_change or
-    {destination_table}.holder_high_percent != excluded.holder_high_percent or
-
-    {destination_table}.holder_low != excluded.holder_low or
-    {destination_table}.holder_low_change != excluded.holder_low_change or
-    {destination_table}.holder_low_percent != excluded.holder_low_percent or
-
-    {destination_table}.holder_close != excluded.holder_close or
-    {destination_table}.holder_close_change != excluded.holder_close_change or
-    {destination_table}.holder_close_percent != excluded.holder_close_percent or
-
-    {destination_table}.holder_avg != excluded.holder_avg or
-    {destination_table}.holder_avg_change != excluded.holder_avg_change or
-    {destination_table}.holder_avg_percent != excluded.holder_avg_percent or
 
     {destination_table}.market_cap_open != excluded.market_cap_open or
     {destination_table}.market_cap_open_usd != excluded.market_cap_open_usd or
