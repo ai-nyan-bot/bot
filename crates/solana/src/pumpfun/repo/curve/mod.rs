@@ -6,8 +6,13 @@ mod get;
 mod list;
 mod upsert;
 
+use common::model::Limit;
 use std::ops::Deref;
 use std::sync::Arc;
+
+pub struct CurveQuery {
+    pub limit: Limit,
+}
 
 #[derive(Debug, Clone)]
 pub struct CurveRepo(pub Arc<CurveRepoInner>);

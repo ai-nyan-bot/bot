@@ -5,7 +5,7 @@ use crate::model::Slot;
 use crate::pumpfun::model::{Curve, Trade};
 use crate::pumpfun::repo::curve::CurveRepo;
 use base::model::{Amount, TokenPairId};
-use common::model::{Percent, UpdatedAt};
+use common::model::{AgeRelativeToLatestInSeconds, Percent};
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 
@@ -41,7 +41,7 @@ impl CurveRepo {
                 virtual_quote_reserves: r.get::<Amount, _>("virtual_quote_reserves"),
                 progress: r.get::<Percent, _>("progress"),
                 complete: r.get::<bool, _>("complete"),
-                updated_at: r.get::<UpdatedAt, _>("updated_at"),
+                age: AgeRelativeToLatestInSeconds(0),
             })?)
     }
 }

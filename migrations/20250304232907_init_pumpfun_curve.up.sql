@@ -17,5 +17,6 @@ create table pumpfun.curve
 create trigger set_updated_at
     before update
     on pumpfun.curve
-
     for each row execute function pumpfun.update_updated_at_column();
+
+create index curve_updated_at_idx on pumpfun.curve (updated_at desc);

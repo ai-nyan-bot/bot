@@ -14,3 +14,20 @@ from pumpfun.curve c
 where progress < 95
 order by progress desc;
 ```
+
+```sql
+with latest as (
+    select updated_at
+    from pumpfun.curve
+    order by updated_at desc
+    limit 1
+    )
+select
+    c.*,
+    extract(epoch from (latest.updated_at - c.updated_at))::int8 as age_seconds
+from
+    pumpfun.curve c,
+    latest
+where
+    c.updated_at > latest.updated_at - interval  '90 seconds';
+```

@@ -4,12 +4,14 @@
 mod summary;
 
 use crate::pumpfun::fact::summary::add_summary_to_facts;
+use base::model::Fact::CurveProgressAgeDuration;
 use base::model::{Fact, Facts, TokenPairId, Value};
 use common::model::Timeframe::M1;
 use common::model::{Limit, TimeUnit};
-use solana::pumpfun::repo::{CurveRepo, SummaryQuery, SummaryRepo};
+use solana::pumpfun::repo::{CurveQuery, CurveRepo, SummaryQuery, SummaryRepo};
 use sqlx::PgPool;
 use std::collections::HashMap;
+use Fact::CurveProgressPercent;
 
 #[derive(Clone)]
 pub struct FactService {
@@ -32,7 +34,12 @@ impl FactService {
 
         let mut result: HashMap<TokenPairId, Facts> = self
             .curve_repo
-            .list_all(&mut tx)
+            .list(
+                &mut tx,
+                CurveQuery {
+                    limit: Limit::unlimited(),
+                },
+            )
             .await
             .unwrap()
             .into_iter()
@@ -40,10 +47,10 @@ impl FactService {
                 (
                     c.id.clone(),
                     Facts::new()
-                        .with_value(Fact::CurveProgressPercent, Value::percent(c.progress.0))
+                        .with_value(CurveProgressPercent, Value::percent(c.progress.0))
                         .with_value(
-                            Fact::CurveProgressAgeDuration,
-                            Value::duration(c.updated_at.age_sec(), TimeUnit::Second),
+                            CurveProgressAgeDuration,
+                            Value::duration(c.age.0, TimeUnit::Second),
                         ),
                 )
             })

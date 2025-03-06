@@ -28,7 +28,7 @@ pub(crate) async fn send(
     let token_summary = state
         .pumpfun_token_service()
         .summarise(token_pair_id)
-        .await?;
+        .await.unwrap();
 
     let symbol = token_summary.pair.symbol().to_string();
     // dbg!(&token_summary);
