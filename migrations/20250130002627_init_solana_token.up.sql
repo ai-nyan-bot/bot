@@ -9,7 +9,7 @@ create table solana.token
     name        text,
     symbol      text,
     decimals    int2 not null,
-    supply      double precision,
+    supply      numeric(36, 12),
     metadata    text,
     description text,
     image       text,

@@ -50,7 +50,8 @@ impl Value {
 
 impl From<PriceAvgQuote> for Value {
     fn from(value: PriceAvgQuote) -> Self {
-        Self::Quote { value: value.0 }
+        // Self::Quote { value: value.0 }
+        todo!()
     }
 }
 

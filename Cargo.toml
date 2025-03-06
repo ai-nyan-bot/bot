@@ -28,6 +28,7 @@ axum = { version = "0.8.1", features = ["form", "http1", "json"] }
 axum-extra = { version = "0.10.0" }
 axum-macros = { version = "0.5.0" }
 async-trait = { version = "0.1.85" }
+bigdecimal = {version = "0.4.7", features = ["serde"]}
 
 dotenv = { version = "0.15.0" }
 
@@ -45,7 +46,7 @@ rand = { version = "0.8.5", features = ["rand_chacha"] }
 serde = { version = "1.0.217" }
 serde_json = { version = "1.0.135" }
 solana-sdk = { version = "2.1.9", features = ["full", "rand"] }
-sqlx = { version = "0.8.3", features = ["macros", "migrate", "postgres", "runtime-tokio", "time"] }
+sqlx = { version = "0.8.3", features = ["macros", "migrate", "postgres", "runtime-tokio", "time", "bigdecimal"] }
 
 teloxide = { version = "0.13.0", features = ["macros"] }
 teloxide_tests = { version = "0.2.0" }

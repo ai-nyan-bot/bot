@@ -2,8 +2,12 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::Decimals;
+use bigdecimal::FromPrimitive;
 use serde::{Deserialize, Serialize};
+use sqlx::types::BigDecimal;
+use sqlx::Type;
 use std::cmp::Ordering;
+use std::ops::Div;
 
 #[derive(Copy, Clone, Debug, PartialEq, PartialOrd, Deserialize, Serialize, sqlx::Type)]
 #[sqlx(transparent)]
@@ -33,44 +37,66 @@ impl PartialEq<i64> for Amount {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize, sqlx::Type)]
+impl PartialOrd<i64> for Amount {
+    fn partial_cmp(&self, other: &i64) -> Option<Ordering> {
+        self.0.partial_cmp(other)
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize, Type)]
 #[sqlx(transparent)]
-pub struct DecimalAmount(pub f64);
+pub struct DecimalAmount(pub BigDecimal);
 
 impl DecimalAmount {
     pub fn new(amount: impl Into<Amount>, decimals: impl Into<Decimals>) -> Self {
-        let amount = amount.into();
-        let decimals = decimals.into();
-        Self(amount.0 as f64 / 10f64.powf(decimals.0 as f64))
+        let amount = BigDecimal::from(amount.into().0);
+        let divisor = 10i64.pow(decimals.into().0 as u32);
+        Self(amount.div(BigDecimal::from(divisor)))
     }
 }
 
 impl From<i64> for DecimalAmount {
     fn from(value: i64) -> Self {
-        Self(value as f64)
+        Self(BigDecimal::from(value))
     }
 }
 
 impl From<u64> for DecimalAmount {
     fn from(value: u64) -> Self {
-        Self(value as f64)
+        Self(BigDecimal::from(value))
     }
 }
 
 impl From<f64> for DecimalAmount {
     fn from(value: f64) -> Self {
-        Self(value)
+        BigDecimal::from_f64(value)
+            .map(Self)
+            .expect("Failed to create BigDecimal from f64")
     }
 }
 
 impl PartialEq<f64> for DecimalAmount {
     fn eq(&self, other: &f64) -> bool {
-        self.0 == *other
+        BigDecimal::from_f64(*other)
+            .map(|bd| self.0 == bd)
+            .unwrap_or(false)
+    }
+}
+
+impl PartialEq<i32> for DecimalAmount {
+    fn eq(&self, other: &i32) -> bool {
+        Self(BigDecimal::from(*other)).0.eq(&self.0)
+    }
+}
+
+impl PartialOrd<i32> for DecimalAmount {
+    fn partial_cmp(&self, other: &i32) -> Option<Ordering> {
+        self.0.partial_cmp(&BigDecimal::from(*other))
     }
 }
 
 impl PartialOrd<f64> for DecimalAmount {
     fn partial_cmp(&self, other: &f64) -> Option<Ordering> {
-        self.0.partial_cmp(other)
+        BigDecimal::from_f64(*other).and_then(|bd| self.0.partial_cmp(&bd))
     }
 }

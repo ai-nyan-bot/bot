@@ -55,6 +55,9 @@ impl<L: LoadTokenInfo<Mint>> TokenRepo<L> {
             }
         }
 
+        dbg!(&decimals);
+        dbg!(&supplies);
+
         Ok(sqlx::query(
             r#"with new_token as (
             insert into solana.token (mint,name,symbol,decimals,supply,metadata,description,image,website)
@@ -63,7 +66,7 @@ impl<L: LoadTokenInfo<Mint>> TokenRepo<L> {
                 unnest(array_replace($2::text[], 'null_value', null)) as name,
                 unnest(array_replace($3::text[], 'null_value', null)) as symbol,
                 unnest($4::int2[]) as decimals,
-                unnest(array_replace($5::int8[], -1, null)) as supply,
+                unnest(array_replace($5::numeric(36, 12)[], -1, null)) as supply,
                 unnest(array_replace($6::text[], 'null_value', null)) as metadata,
                 unnest(array_replace($7::text[], 'null_value', null)) as description,
                 unnest(array_replace($8::text[], 'null_value', null)) as image,

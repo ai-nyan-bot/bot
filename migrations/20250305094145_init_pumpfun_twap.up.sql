@@ -5,7 +5,7 @@ create table pumpfun.twap_1m
 (
     token_pair_id int4                     not null,
     timestamp     timestamp with time zone not null,
-    twap          double precision         not null,
+    twap          numeric(36, 12)         not null,
     primary key (token_pair_id, timestamp),
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
 ) partition by hash (token_pair_id);
@@ -58,7 +58,7 @@ create table pumpfun.twap_5m
 (
     token_pair_id int4                     not null,
     timestamp     timestamp with time zone not null,
-    twap          double precision         not null,
+    twap          numeric(36, 12)         not null,
     primary key (token_pair_id, timestamp),
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
 ) partition by hash (token_pair_id);
@@ -111,7 +111,7 @@ create table pumpfun.twap_15m
 (
     token_pair_id int4                     not null,
     timestamp     timestamp with time zone not null,
-    twap          double precision         not null,
+    twap          numeric(36, 12)         not null,
     primary key (token_pair_id, timestamp),
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
 ) partition by hash (token_pair_id);
@@ -163,7 +163,7 @@ create table pumpfun.twap_1h
 (
     token_pair_id int4                     not null,
     timestamp     timestamp with time zone not null,
-    twap          double precision         not null,
+    twap          numeric(36, 12)         not null,
     primary key (token_pair_id, timestamp),
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
 ) partition by hash (token_pair_id);
@@ -216,7 +216,7 @@ create table pumpfun.twap_6h
 (
     token_pair_id int4                     not null,
     timestamp     timestamp with time zone not null,
-    twap          double precision         not null,
+    twap          numeric(36, 12)         not null,
     primary key (token_pair_id, timestamp),
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
 ) partition by hash (token_pair_id);
@@ -268,7 +268,7 @@ create table pumpfun.twap_1d
 (
     token_pair_id int4                     not null,
     timestamp     timestamp with time zone not null,
-    twap          double precision         not null,
+    twap          numeric(36, 12)         not null,
     primary key (token_pair_id, timestamp),
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
 ) partition by hash (token_pair_id);

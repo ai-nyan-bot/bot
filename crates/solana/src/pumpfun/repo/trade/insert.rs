@@ -101,10 +101,13 @@ impl<L: LoadTokenInfo<Mint>> TradeRepo<L> {
             let amount_base = DecimalAmount::new(trade.amount_base, 6);
             let amount_quote = DecimalAmount::new(trade.amount_quote, 9);
 
+            assert!(amount_base > 0, "base amount required");
+            assert!(amount_quote > 0, "quote amount required");
+
             let base_reserve = trade.virtual_base_reserves;
             let quote_reserve = trade.virtual_quote_reserves;
 
-            let price = PriceQuote(amount_quote.0 / amount_base.0);
+            let price = PriceQuote(amount_quote.0.clone() / amount_base.0.clone());
 
             slots.push(slot.slot);
             address_ids.push(addresses.get(&trade.wallet).unwrap());
@@ -131,9 +134,9 @@ select
     unnest($1::int8[]) as slot,
     unnest($2::int4[]) as address_id,
     unnest($3::int4[]) as token_pair_id,
-    unnest($4::double precision[]) as amount_base,
-    unnest($5::double precision[]) as amount_quote,
-    unnest($6::double precision[]) as price,
+    unnest($4::numeric(36, 12)[]) as amount_base,
+    unnest($5::numeric(36, 12)[]) as amount_quote,
+    unnest($6::numeric(36, 12)[]) as price,
     unnest($7::boolean[]) as is_buy,
     unnest($8::timestamptz[]) as timestamp,
     unnest($9::int8[]) as virtual_base_reserves,

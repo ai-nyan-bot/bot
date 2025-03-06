@@ -101,6 +101,9 @@ impl<L: LoadTokenInfo<Mint>> TradeRepo<L> {
                 let (price, amount_base, amount_quote, is_buy) =
                     calculate_amount_and_side(&trade, &token_pair.base, &token_pair.quote);
 
+                assert!(amount_base > 0, "base amount required");
+                assert!(amount_quote > 0, "quote amount required");
+
                 slots.push(slot.slot);
                 address_ids.push(keys.get(&trade.wallet).unwrap());
                 token_pair_ids.push(token_pair.id);
@@ -120,9 +123,9 @@ impl<L: LoadTokenInfo<Mint>> TradeRepo<L> {
                     unnest($1::int8[]) as slot,
                     unnest($2::int4[]) as address_id,
                     unnest($3::int4[]) as token_pair_id,
-                    unnest($4::double precision[]) as amount_base,
-                    unnest($5::double precision[]) as amount_quote,
-                    unnest($6::double precision[]) as price,
+                    unnest($4::numeric(36, 12)[]) as amount_base,
+                    unnest($5::numeric(36, 12)[]) as amount_quote,
+                    unnest($6::numeric(36, 12)[]) as price,
                     unnest($7::boolean[]) as is_buy,
                     unnest($8::timestamptz[]) as timestamp,
                     unnest($9::text[]) as signature

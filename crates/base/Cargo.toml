@@ -7,6 +7,7 @@ edition.workspace = true
 [dependencies]
 common = { path = "../common" }
 async-trait = { workspace = true }
+bigdecimal = { workspace = true }
 futures-util = { workspace = true }
 
 log = { workspace = true }
