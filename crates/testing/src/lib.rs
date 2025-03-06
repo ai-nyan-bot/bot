@@ -16,6 +16,7 @@ use sqlx::{Executor, PgPool};
 use std::future::Future;
 use std::panic;
 use token_pair::get_or_create_token_pair;
+use tokio::sync::OnceCell;
 
 pub mod address;
 pub mod auth;
@@ -31,14 +32,71 @@ pub mod user;
 pub mod wallet;
 
 fn generate_db_name() -> String {
+    const CHARSET: &[u8] = b"abcdefghijklmnopqrstuvwxyz";
+    let mut rng = thread_rng();
+    let name: String = (0..32)
+        .map(|_| CHARSET[rng.gen_range(0..CHARSET.len())] as char)
+        .collect();
+    format!("test_{}", name)
+}
+
+fn generate_snapshot_db_name() -> String {
     let mut rng = thread_rng();
     let charset: Vec<char> = ('a'..='z').collect();
     format!(
-        "test_{}",
+        "snapshot_{}",
         (0..32)
             .map(|_| charset[rng.gen_range(0..charset.len())])
             .collect::<String>()
     )
+}
+
+static SNAPSHOT: OnceCell<String> = OnceCell::const_new();
+
+async fn with_snapshot() -> &'static str {
+    SNAPSHOT
+        .get_or_init(|| async {
+            let admin_pool = PgPool::connect_with(
+                PgConnectOptions::new()
+                    .host("localhost")
+                    .port(2345)
+                    .username("user")
+                    .password("pass")
+                    .database("postgres"),
+            )
+            .await
+            .unwrap();
+
+            let snapshot_db_name = generate_snapshot_db_name();
+
+            admin_pool
+                .execute(format!("create database {}", snapshot_db_name).as_str())
+                .await
+                .unwrap();
+            info!("Created test database: {}", snapshot_db_name);
+
+            let snapshot_pool = PgPoolOptions::new()
+                .connect_with(
+                    PgConnectOptions::new()
+                        .host("localhost")
+                        .port(2345)
+                        .username("user")
+                        .password("pass")
+                        .database(snapshot_db_name.as_str()),
+                )
+                .await
+                .unwrap();
+
+            sqlx::migrate!("../../migrations")
+                .run(&snapshot_pool)
+                .await
+                .unwrap();
+
+            drop(snapshot_pool);
+
+            snapshot_db_name
+        })
+        .await
 }
 
 pub async fn get_test_pool() -> PgPool {
@@ -53,15 +111,13 @@ pub async fn get_test_pool() -> PgPool {
     .await
     .unwrap();
 
-    let db_name = generate_db_name();
+    let snapshot = with_snapshot().await;
+    let test_db = generate_db_name();
 
     admin_pool
-        .execute(format!("create database {}", db_name).as_str())
+        .execute(format!("create database {test_db} template {snapshot};").as_str())
         .await
         .unwrap();
-    info!("Created test database: {}", db_name);
-
-    drop(admin_pool);
 
     let pool = PgPoolOptions::new()
         .connect_with(
@@ -70,12 +126,10 @@ pub async fn get_test_pool() -> PgPool {
                 .port(2345)
                 .username("user")
                 .password("pass")
-                .database(db_name.as_str()),
+                .database(test_db.as_str()),
         )
         .await
         .unwrap();
-
-    sqlx::migrate!("../../migrations").run(&pool).await.unwrap();
 
     pool
 }
