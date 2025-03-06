@@ -36,7 +36,7 @@ impl RefreshCandles {
                             .await
                             .unwrap();
                         let _ = tx.commit().await;
-                        tokio::time::sleep(Duration::from_millis(100)).await;
+                        tokio::time::sleep(Duration::from_millis(400)).await;
                     })
                     .await
                     .unwrap();
@@ -67,7 +67,7 @@ impl RefreshCandles {
                         repo.calculate_usd_1m(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
-                        tokio::time::sleep(Duration::from_millis(100)).await;
+                        tokio::time::sleep(Duration::from_millis(400)).await;
                     })
                     .await
                     .unwrap();
@@ -98,7 +98,7 @@ impl RefreshCandles {
                         repo.calculate_usd_5m(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
-                        tokio::time::sleep(Duration::from_millis(100)).await;
+                        tokio::time::sleep(Duration::from_millis(400)).await;
                     })
                     .await
                     .unwrap();
@@ -129,7 +129,7 @@ impl RefreshCandles {
                         repo.calculate_usd_15m(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
-                        tokio::time::sleep(Duration::from_millis(100)).await;
+                        tokio::time::sleep(Duration::from_millis(400)).await;
                     })
                     .await
                     .unwrap();
@@ -160,7 +160,7 @@ impl RefreshCandles {
                         repo.calculate_usd_1h(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
-                        tokio::time::sleep(Duration::from_millis(100)).await;
+                        tokio::time::sleep(Duration::from_millis(400)).await;
                     })
                     .await
                     .unwrap();
@@ -191,7 +191,7 @@ impl RefreshCandles {
                         repo.calculate_usd_6h(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
-                        tokio::time::sleep(Duration::from_millis(100)).await;
+                        tokio::time::sleep(Duration::from_millis(400)).await;
                     })
                     .await
                     .unwrap();
@@ -222,7 +222,7 @@ impl RefreshCandles {
                         repo.calculate_usd_1d(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
-                        tokio::time::sleep(Duration::from_millis(100)).await;
+                        tokio::time::sleep(Duration::from_millis(400)).await;
                     })
                     .await
                     .unwrap();

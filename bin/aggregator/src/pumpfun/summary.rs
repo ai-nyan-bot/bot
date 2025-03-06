@@ -35,7 +35,7 @@ impl RefreshSummaries {
                         repo.calculate_1m(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
-                        tokio::time::sleep(Duration::from_secs(5)).await;
+                        tokio::time::sleep(Duration::from_millis(400)).await;
                     })
                     .await
                     .unwrap();
@@ -59,7 +59,7 @@ impl RefreshSummaries {
                         repo.calculate_5m(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
-                        tokio::time::sleep(Duration::from_secs(10)).await;
+                        tokio::time::sleep(Duration::from_millis(400)).await;
                     })
                     .await
                     .unwrap();
@@ -83,7 +83,7 @@ impl RefreshSummaries {
                         repo.calculate_15m(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
-                        tokio::time::sleep(Duration::from_secs(10)).await;
+                        tokio::time::sleep(Duration::from_millis(400)).await;
                     })
                     .await
                     .unwrap();
@@ -107,7 +107,7 @@ impl RefreshSummaries {
                         repo.calculate_1h(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
-                        tokio::time::sleep(Duration::from_secs(10)).await;
+                        tokio::time::sleep(Duration::from_millis(400)).await;
                     })
                     .await
                     .unwrap();
@@ -131,7 +131,7 @@ impl RefreshSummaries {
                         repo.calculate_6h(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
-                        tokio::time::sleep(Duration::from_secs(10)).await;
+                        tokio::time::sleep(Duration::from_millis(400)).await;
                     })
                     .await
                     .unwrap();
@@ -155,7 +155,7 @@ impl RefreshSummaries {
                         repo.calculate_1d(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
-                        tokio::time::sleep(Duration::from_secs(10)).await;
+                        tokio::time::sleep(Duration::from_millis(400)).await;
                     })
                     .await
                     .unwrap();

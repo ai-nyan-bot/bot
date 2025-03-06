@@ -32,7 +32,7 @@ impl RefreshSol {
                     repo.calculate_1m(&mut tx).await.unwrap();
 
                     let _ = tx.commit().await;
-                    tokio::time::sleep(Duration::from_millis(100)).await;
+                    tokio::time::sleep(Duration::from_millis(400)).await;
                 })
                 .await
                 .unwrap();
@@ -53,7 +53,7 @@ impl RefreshSol {
                     repo.calculate_5m(&mut tx).await.unwrap();
 
                     let _ = tx.commit().await;
-                    tokio::time::sleep(Duration::from_millis(100)).await;
+                    tokio::time::sleep(Duration::from_millis(400)).await;
                 })
                 .await
                 .unwrap();
@@ -74,7 +74,7 @@ impl RefreshSol {
                     repo.calculate_15m(&mut tx).await.unwrap();
 
                     let _ = tx.commit().await;
-                    tokio::time::sleep(Duration::from_millis(100)).await;
+                    tokio::time::sleep(Duration::from_millis(400)).await;
                 })
                 .await
                 .unwrap();
@@ -95,7 +95,7 @@ impl RefreshSol {
                     repo.calculate_1h(&mut tx).await.unwrap();
 
                     let _ = tx.commit().await;
-                    tokio::time::sleep(Duration::from_millis(100)).await;
+                    tokio::time::sleep(Duration::from_millis(400)).await;
                 })
                 .await
                 .unwrap();
@@ -116,7 +116,7 @@ impl RefreshSol {
                     repo.calculate_6h(&mut tx).await.unwrap();
 
                     let _ = tx.commit().await;
-                    tokio::time::sleep(Duration::from_millis(100)).await;
+                    tokio::time::sleep(Duration::from_millis(400)).await;
                 })
                 .await
                 .unwrap();
@@ -137,7 +137,7 @@ impl RefreshSol {
                     repo.calculate_1d(&mut tx).await.unwrap();
 
                     let _ = tx.commit().await;
-                    tokio::time::sleep(Duration::from_millis(100)).await;
+                    tokio::time::sleep(Duration::from_millis(400)).await;
                 })
                 .await
                 .unwrap();
