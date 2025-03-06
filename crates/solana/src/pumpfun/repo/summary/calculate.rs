@@ -29,12 +29,12 @@ impl SummaryRepo {
             tx,
             10,
             "minutes",
-			"pumpfun.candle_5m_most_recent",
-			format!("pumpfun.candle_5m_{partition}"),
-			format!("pumpfun.candle_market_cap_5m_{partition}"),
-			format!("pumpfun.candle_progress_5m_{partition}"),
-			format!("pumpfun.candle_usd_5m_{partition}"),
-			"pumpfun.summary_5m",
+            "pumpfun.candle_5m_most_recent",
+            format!("pumpfun.candle_5m_{partition}"),
+            format!("pumpfun.candle_market_cap_5m_{partition}"),
+            format!("pumpfun.candle_progress_5m_{partition}"),
+            format!("pumpfun.candle_usd_5m_{partition}"),
+            "pumpfun.summary_5m",
         )
         .await
     }
@@ -44,12 +44,12 @@ impl SummaryRepo {
             tx,
             30,
             "minutes",
-			"pumpfun.candle_15m_most_recent",
-			format!("pumpfun.candle_15m_{partition}"),
-			format!("pumpfun.candle_market_cap_15m_{partition}"),
-			format!("pumpfun.candle_progress_15m_{partition}"),
-			format!("pumpfun.candle_usd_15m_{partition}"),
-			"pumpfun.summary_15m",
+            "pumpfun.candle_15m_most_recent",
+            format!("pumpfun.candle_15m_{partition}"),
+            format!("pumpfun.candle_market_cap_15m_{partition}"),
+            format!("pumpfun.candle_progress_15m_{partition}"),
+            format!("pumpfun.candle_usd_15m_{partition}"),
+            "pumpfun.summary_15m",
         )
         .await
     }
@@ -59,12 +59,12 @@ impl SummaryRepo {
             tx,
             2,
             "hours",
-			"pumpfun.candle_1h_most_recent",
-			format!("pumpfun.candle_1h_{partition}"),
-			format!("pumpfun.candle_market_cap_1h_{partition}"),
-			format!("pumpfun.candle_progress_1h_{partition}"),
-			format!("pumpfun.candle_usd_1h_{partition}"),
-			"pumpfun.summary_1h",
+            "pumpfun.candle_1h_most_recent",
+            format!("pumpfun.candle_1h_{partition}"),
+            format!("pumpfun.candle_market_cap_1h_{partition}"),
+            format!("pumpfun.candle_progress_1h_{partition}"),
+            format!("pumpfun.candle_usd_1h_{partition}"),
+            "pumpfun.summary_1h",
         )
         .await
     }
@@ -72,14 +72,14 @@ impl SummaryRepo {
     pub async fn calculate_6h<'a>(&self, tx: &mut Tx<'a>, partition: Partition) -> RepoResult<()> {
         calculate_summary(
             tx,
-            8,
+            12,
             "hours",
-			"pumpfun.candle_6h_most_recent",
-			format!("pumpfun.candle_6h_{partition}"),
-			format!("pumpfun.candle_market_cap_6h_{partition}"),
-			format!("pumpfun.candle_progress_6h_{partition}"),
-			format!("pumpfun.candle_usd_6h_{partition}"),
-			"pumpfun.summary_6h",
+            "pumpfun.candle_6h_most_recent",
+            format!("pumpfun.candle_6h_{partition}"),
+            format!("pumpfun.candle_market_cap_6h_{partition}"),
+            format!("pumpfun.candle_progress_6h_{partition}"),
+            format!("pumpfun.candle_usd_6h_{partition}"),
+            "pumpfun.summary_6h",
         )
         .await
     }
@@ -89,12 +89,12 @@ impl SummaryRepo {
             tx,
             2,
             "days",
-			"pumpfun.candle_1d_most_recent",
-			format!("pumpfun.candle_1d_{partition}"),
-			format!("pumpfun.candle_market_cap_1d_{partition}"),
-			format!("pumpfun.candle_progress_1d_{partition}"),
-			format!("pumpfun.candle_usd_1d_{partition}"),
-			"pumpfun.summary_1d",
+            "pumpfun.candle_1d_most_recent",
+            format!("pumpfun.candle_1d_{partition}"),
+            format!("pumpfun.candle_market_cap_1d_{partition}"),
+            format!("pumpfun.candle_progress_1d_{partition}"),
+            format!("pumpfun.candle_usd_1d_{partition}"),
+            "pumpfun.summary_1d",
         )
         .await
     }
@@ -117,10 +117,10 @@ async fn calculate_summary<'a>(
     let candle_progress_table = candle_progress_table.as_ref();
     let candle_usd_table = candle_usd_table.as_ref();
     let destination_table = destination_table.as_ref();
+	let bucket_separator = window / 2;
 
-    let bucket_separator = window / 2;
-    let query_str = format!(
-        r#"
+	let query_str = format!(
+		r#"
 with
 last_candle as (
     select timestamp from {candle_most_recent_table} order by timestamp desc limit 1
@@ -182,6 +182,7 @@ aggregated as (
             when timestamp > (select timestamp from last_candle) - interval '{bucket_separator} {time_unit}' then 'current'
             else 'previous'
         end as time_bucket,
+        
         sum(amount_base_buy) as amount_base_buy,
         sum(amount_quote_buy) as amount_quote_buy,
         sum(amount_base_buy + amount_base_sell) as amount_base,
@@ -189,22 +190,38 @@ aggregated as (
         sum(amount_base_sell) as amount_base_sell,
         sum(amount_quote_sell) as amount_quote_sell,
         sum(amount_quote_buy + amount_quote_sell) as amount_quote,
-
+		
+		0 as curve_progress_open,
 		max(curve_progress_high) as curve_progress_high,
         min(curve_progress_low) as curve_progress_low,
+        0 as curve_progress_close,
         avg(curve_progress_avg) as curve_progress_avg,
-
-        max(price_high) as price_high,
-        max(price_high_usd) as price_high_usd,
-        min(price_low) as price_low,
-        min(price_low_usd) as price_low_usd,
-        avg(price_avg) as price_avg,
-        avg(price_avg_usd) as price_avg_usd,
         
+        0 as holder_open,
+        0 as holder_high,
+        0 as holder_low,
+        0 as holder_close,
+        0 as holder_avg,
+
+		0 as market_cap_open,
+		0 as market_cap_open_usd,
+        max(market_cap_high) as market_cap_high,
+        max(market_cap_high_usd) as market_cap_high_usd,
+        min(market_cap_low) as market_cap_low,
+        min(market_cap_low_usd) as market_cap_low_usd,
+        0 as market_cap_close,
+		0 as market_cap_close_usd,
+        avg(market_cap_avg) as market_cap_avg,
+        avg(market_cap_avg_usd) as market_cap_avg_usd,
+        
+        0 as price_open,
+        0 as price_open_usd,
         max(price_high) as price_high,
         max(price_high_usd) as price_high_usd,
         min(price_low) as price_low,
         min(price_low_usd) as price_low_usd,
+        0 as price_close,
+        0 as price_close_usd,
         avg(price_avg) as price_avg,
         avg(price_avg_usd) as price_avg_usd,
         
@@ -347,264 +364,155 @@ insert into {destination_table} (
 )
 select
     current.token_pair_id,
-    -- amount_base
-    null,
-    -- amount_base_change
-    null,
-    -- amount_base_percent
-    null,
-    -- amount_base_buy
-    null,
-    -- amount_base_buy_change
-    null,
-    -- amount_base_buy_percent
-    null,
-    -- amount_base_sell
-    null,
-    -- amount_base_sell_change
-    null,
-    -- amount_base_sell_percent
-    null,
-
-    -- amount_quote
-    null,
-    -- amount_quote_change
-    null,
-    -- amount_quote_percent
-    null,
-    -- amount_quote_buy
-    null,
-    -- amount_quote_buy_change
-    null,
-    -- amount_quote_buy_percent
-    null,
-    -- amount_quote_sell
-    null,
-    -- amount_quote_sell_change
-    null,
-    -- amount_quote_sell_percent
-    null,
-
-    -- curve_progress_open
-    null,
-    -- curve_progress_open_change
-    null,
-
-    -- curve_progress_high
-    null,
-    -- curve_progress_high_change
-    null,
-
-    -- curve_progress_low
-    null,
-    -- curve_progress_low_change
-    null,
-
-    -- curve_progress_close
-    null,
-    -- curve_progress_close_change
-    null,
-
-    -- curve_progress_avg
-    null,
-    -- curve_progress_avg_change
-    null,
-
-    -- holder_open
-    null,
-    -- holder_open_change
-    null,
-    -- holder_open_percent
-    null,
-
-    -- holder_high
-    null,
-    -- holder_high_change
-    null,
-    -- holder_high_percent
-    null,
-
-    -- holder_low
-    null,
-    -- holder_low_change
-    null,
-    -- holder_low_percent
-    null,
-
-    -- holder_close
-    null,
-    -- holder_close_change
-    null,
-    -- holder_close_percent
-    null,
-
-    -- holder_avg
-    null,
-    -- holder_avg_change
-    null,
-    -- holder_avg_percent
-    null,
-
-    -- market_cap_open
-    null,
-    -- market_cap_open_usd
-    null,
-    -- market_cap_open_change
-    null,
-    -- market_cap_open_usd_change
-    null,
-    -- market_cap_open_percent
-    null,
-
-    -- market_cap_high
-    null,
-    -- market_cap_high_usd
-    null,
-    -- market_cap_high_change
-    null,
-    -- market_cap_high_usd_change
-    null,
-    -- market_cap_high_percent
-    null,
-
-    -- market_cap_low
-    null,
-    -- market_cap_low_usd
-    null,
-    -- market_cap_low_change
-    null,
-    -- market_cap_low_usd_change
-    null,
-    -- market_cap_low_percent
-    null,
-
-    -- market_cap_close
-    null,
-    -- market_cap_close_usd
-    null,
-    -- market_cap_close_change
-    null,
-    -- market_cap_close_usd_change
-    null,
-    -- market_cap_close_percent
-    null,
-
-    -- market_cap_avg
-    null,
-    -- market_cap_avg_usd
-    null,
-    -- market_cap_avg_change
-    null,
-    -- market_cap_avg_usd_change
-    null,
-    -- market_cap_avg_percent
-    null,
-
-    -- price_open
-    null,
-    -- price_open_usd
-    null,
-    -- price_open_change
-    null,
-    -- price_open_usd_change
-    null,
-    -- price_open_percent
-    null,
-
-    -- price_high
-    null,
-    -- price_high_usd
-    null,
-    -- price_high_change
-    null,
-    -- price_high_usd_change
-    null,
-    -- price_high_percent
-    null,
-
-    -- price_low
-    null,
-    -- price_low_usd
-    null,
-    -- price_low_change
-    null,
-    -- price_low_usd_change
-    null,
-    -- price_low_percent
-    null,
-
-    -- price_close
-    null,
-    -- price_close_usd
-    null,
-    -- price_close_change
-    null,
-    -- price_close_usd_change
-    null,
-    -- price_close_percent
-    null,
-
-    -- price_avg
-    null,
-    -- price_avg_usd
-    null,
-    -- price_avg_change
-    null,
-    -- price_avg_usd_change
-    null,
-    -- price_avg_percent
-    null,
-
-    -- trade
-    null,
-    -- trade_change
-    null,
-    -- trade_percent
-    null,
-    -- trade_buy
-    null,
-    -- trade_buy_change
-    null,
-    -- trade_buy_percent
-    null,
-    -- trade_sell
-    null,
-    -- trade_sell_change
-    null,
-    -- trade_sell_percent
-    null,
-
-    -- volume
-    null,
-    -- volume_usd
-    null,
-    -- volume_change
-    null,
-    -- volume_usd_change
-    null,
-    -- volume_percent
-    null,
-    -- volume_buy
-    null,
-    -- volume_buy_usd
-    null,
-    -- volume_buy_change
-    null,
-    -- volume_buy_usd_change
-    null,
-    -- volume_buy_percent
-    null,
-    -- volume_sell
-    null,
-    -- volume_sell_usd
-    null,
-    -- volume_sell_change
-    null,
-    -- volume_sell_usd_change
-    null,
-    -- volume_sell_percent
-    null
     
+    current.amount_base as amount_base,
+    current.amount_base - previous.amount_base as amount_base_change,
+    coalesce((current.amount_base - previous.amount_base) / nullif(previous.amount_base, 0) * 100, 0) as amount_base_percent,
+
+    current.amount_base_buy as amount_base_buy,
+    current.amount_base_buy - previous.amount_base_buy as amount_base_buy_change,
+    coalesce((current.amount_base_buy - previous.amount_base_buy) / nullif(previous.amount_base_buy, 0) * 100, 0) as amount_base_buy_percent,
+
+    current.amount_base_sell as amount_base_sell,
+    current.amount_base_sell - previous.amount_base_sell as amount_base_sell_change,
+    coalesce((current.amount_base_sell - previous.amount_base_sell) / nullif(previous.amount_base_sell, 0) * 100, 0) as amount_base_sell_percent,
+
+    current.amount_quote as amount_quote,
+    current.amount_quote - previous.amount_quote as amount_quote_change,
+    coalesce((current.amount_quote - previous.amount_quote) / nullif(previous.amount_quote, 0) * 100, 0) as amount_quote_percent,
+
+    current.amount_quote_buy as amount_quote_buy,
+    current.amount_quote_buy - previous.amount_quote_buy as amount_quote_buy_change,
+    coalesce((current.amount_quote_buy - previous.amount_quote_buy) / nullif(previous.amount_quote_buy, 0) * 100, 0) as amount_quote_buy_percent,
+
+    current.amount_quote_sell as amount_quote_sell,
+    current.amount_quote_sell - previous.amount_quote_sell as amount_quote_sell_change,
+    coalesce((current.amount_quote_sell - previous.amount_quote_sell) / nullif(previous.amount_quote_sell, 0) * 100, 0) as amount_quote_sell_percent,
+
+    current.curve_progress_open as curve_progress_open,
+    current.curve_progress_open - previous.curve_progress_open as curve_progress_open_change,
+
+    current.curve_progress_high as curve_progress_high,
+    current.curve_progress_high - previous.curve_progress_high as curve_progress_high_change,
+
+    current.curve_progress_low as curve_progress_low,
+    current.curve_progress_low - previous.curve_progress_low as curve_progress_low_change,
+
+    current.curve_progress_close as curve_progress_close,
+    current.curve_progress_close - previous.curve_progress_close as curve_progress_close_change,
+
+    current.curve_progress_avg as curve_progress_avg,
+    current.curve_progress_avg - previous.curve_progress_avg as curve_progress_avg_change,
+
+    current.holder_open as holder_open,
+    current.holder_open - previous.holder_open as holder_open_change,
+    coalesce((current.holder_open - previous.holder_open) / nullif(previous.holder_open, 0) * 100, 0) as holder_open_percent,
+
+    current.holder_high as holder_high,
+    current.holder_high - previous.holder_high as holder_high_change,
+    coalesce((current.holder_high - previous.holder_high) / nullif(previous.holder_high, 0) * 100, 0) as holder_high_percent,
+
+    current.holder_low as holder_low,
+    current.holder_low - previous.holder_low as holder_low_change,
+    coalesce((current.holder_low - previous.holder_low) / nullif(previous.holder_low, 0) * 100, 0) as holder_low_percent,
+
+    current.holder_close as holder_close,
+    current.holder_close - previous.holder_close as holder_close_change,
+    coalesce((current.holder_close - previous.holder_close) / nullif(previous.holder_close, 0) * 100, 0) as holder_close_percent,
+
+    current.holder_avg as holder_avg,
+    current.holder_avg - previous.holder_avg as holder_avg_change,
+    coalesce((current.holder_avg - previous.holder_avg) / nullif(previous.holder_avg, 0) * 100, 0) as holder_avg_percent,
+
+    current.market_cap_open as market_cap_open,
+    current.market_cap_open_usd as market_cap_open_usd,
+    current.market_cap_open - previous.market_cap_open as market_cap_open_change,
+    current.market_cap_open_usd - previous.market_cap_open_usd as market_cap_open_usd_change,
+    coalesce((current.market_cap_open - previous.market_cap_open) / nullif(previous.market_cap_open, 0) * 100, 0) as market_cap_open_percent,
+
+    current.market_cap_high as market_cap_high,
+    current.market_cap_high_usd as market_cap_high_usd,
+    current.market_cap_high - previous.market_cap_high as market_cap_high_change,
+    current.market_cap_high_usd - previous.market_cap_high_usd as market_cap_high_usd_change,
+    coalesce((current.market_cap_high - previous.market_cap_high) / nullif(previous.market_cap_high, 0) * 100, 0) as market_cap_high_percent,
+
+    current.market_cap_low as market_cap_low,
+    current.market_cap_low_usd as market_cap_low_usd,
+    current.market_cap_low - previous.market_cap_low as market_cap_low_change,
+    current.market_cap_low_usd - previous.market_cap_low_usd as market_cap_low_usd_change,
+    coalesce((current.market_cap_low - previous.market_cap_low) / nullif(previous.market_cap_low, 0) * 100, 0) as market_cap_low_percent,
+
+    current.market_cap_close as market_cap_close,
+    current.market_cap_close_usd as market_cap_close_usd,
+    current.market_cap_close - previous.market_cap_close as market_cap_close_change,
+    current.market_cap_close_usd - previous.market_cap_close_usd as market_cap_close_usd_change,
+    coalesce((current.market_cap_close - previous.market_cap_close) / nullif(previous.market_cap_close, 0) * 100, 0) as market_cap_close_percent,
+
+    current.market_cap_avg as market_cap_avg,
+    current.market_cap_avg_usd as market_cap_avg_usd,
+    current.market_cap_avg - previous.market_cap_avg as market_cap_avg_change,
+    current.market_cap_avg_usd - previous.market_cap_avg_usd as market_cap_avg_usd_change,
+    coalesce((current.market_cap_avg - previous.market_cap_avg) / nullif(previous.market_cap_avg, 0) * 100, 0) as market_cap_avg_percent,
+
+    current.price_open as price_open,
+    current.price_open_usd as price_open_usd,
+    current.price_open - previous.price_open as price_open_change,
+    current.price_open_usd - previous.price_open_usd as price_open_usd_change,
+    coalesce((current.price_open - previous.price_open) / nullif(previous.price_open, 0) * 100, 0) as price_open_percent,
+
+    current.price_high as price_high,
+    current.price_high_usd as price_high_usd,
+    current.price_high - previous.price_high as price_high_change,
+    current.price_high_usd - previous.price_high_usd as price_high_usd_change,
+    coalesce((current.price_high - previous.price_high) / nullif(previous.price_high, 0) * 100, 0) as price_high_percent,
+
+    current.price_low as price_low,
+    current.price_low_usd as price_low_usd,
+    current.price_low - previous.price_low as price_low_change,
+    current.price_low_usd - previous.price_low_usd as price_low_usd_change,
+    coalesce((current.price_low - previous.price_low) / nullif(previous.price_low, 0) * 100, 0) as price_low_percent,
+
+    current.price_close as price_close,
+    current.price_close_usd as price_close_usd,
+    current.price_close - previous.price_close as price_close_change,
+    current.price_close_usd - previous.price_close_usd as price_close_usd_change,
+    coalesce((current.price_close - previous.price_close) / nullif(previous.price_close, 0) * 100, 0) as price_close_percent,
+
+    current.price_avg as price_avg,
+    current.price_avg_usd as price_avg_usd,
+    current.price_avg - previous.price_avg as price_avg_change,
+    current.price_avg_usd - previous.price_avg_usd as price_avg_usd_change,
+    coalesce((current.price_avg - previous.price_avg) / nullif(previous.price_avg, 0) * 100, 0) as price_avg_percent,
+
+    current.trade as trade,
+    current.trade - previous.trade as trade_change,
+    coalesce((current.trade - previous.trade) / nullif(previous.trade, 0) * 100, 0) as trade_percent,
+
+    current.trade_buy as trade_buy,
+    current.trade_buy - previous.trade_buy as trade_buy_change,
+    coalesce((current.trade_buy - previous.trade_buy) / nullif(previous.trade_buy, 0) * 100, 0) as trade_buy_percent,
+
+    current.trade_sell as trade_sell,
+    current.trade_sell - previous.trade_sell as trade_sell_change,
+    coalesce((current.trade_sell - previous.trade_sell) / nullif(previous.trade_sell, 0) * 100, 0) as trade_sell_percent,
+
+    current.volume as volume,
+    current.volume_usd as volume_usd,
+    current.volume - previous.volume as volume_change,
+    current.volume_usd - previous.volume_usd as volume_usd_change,
+    coalesce((current.volume - previous.volume) / nullif(previous.volume, 0) * 100, 0) as volume_percent,
+
+    current.volume_buy as volume_buy,
+    current.volume_buy_usd as volume_buy_usd,
+    current.volume_buy - previous.volume_buy as volume_buy_change,
+    current.volume_buy_usd - previous.volume_buy_usd as volume_buy_usd_change,
+    coalesce((current.volume_buy - previous.volume_buy) / nullif(previous.volume_buy, 0) * 100, 0) as volume_buy_percent,
+
+    current.volume_sell as volume_sell,
+    current.volume_sell_usd as volume_sell_usd,
+    current.volume_sell - previous.volume_sell as volume_sell_change,
+    current.volume_sell_usd - previous.volume_sell_usd as volume_sell_usd_change,
+    coalesce((current.volume_sell - previous.volume_sell) / nullif(previous.volume_sell, 0) * 100, 0) as volume_sell_percent
 from
     current
 left join
@@ -892,7 +800,7 @@ where
     {destination_table}.volume_sell_usd_change != excluded.volume_sell_usd_change or
     {destination_table}.volume_sell_percent != excluded.volume_sell_percent
 "#
-    );
+	);
 
     let _ = sqlx::query(&query_str).execute(&mut **tx).await?;
     Ok(())

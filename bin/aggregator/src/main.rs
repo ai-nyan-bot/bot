@@ -25,7 +25,7 @@ fn main() {
     let config = Config::load();
 
     let runtime = Builder::new_multi_thread()
-        .worker_threads(4)
+        .worker_threads(16)
         .enable_all()
         .build()
         .unwrap();

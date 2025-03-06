@@ -34,7 +34,7 @@ impl RefreshTwaps {
                         repo.calculate_1m(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
-                        tokio::time::sleep(Duration::from_millis(10)).await;
+                        tokio::time::sleep(Duration::from_millis(100)).await;
                     })
                     .await
                     .unwrap();
@@ -57,7 +57,7 @@ impl RefreshTwaps {
                         repo.calculate_5m(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
-                        tokio::time::sleep(Duration::from_millis(10)).await;
+                        tokio::time::sleep(Duration::from_millis(100)).await;
                     })
                     .await
                     .unwrap();
@@ -80,7 +80,7 @@ impl RefreshTwaps {
                         repo.calculate_15m(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
-                        tokio::time::sleep(Duration::from_millis(10)).await;
+                        tokio::time::sleep(Duration::from_millis(100)).await;
                     })
                     .await
                     .unwrap();
@@ -103,7 +103,7 @@ impl RefreshTwaps {
                         repo.calculate_1h(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
-                        tokio::time::sleep(Duration::from_millis(10)).await;
+                        tokio::time::sleep(Duration::from_millis(100)).await;
                     })
                     .await
                     .unwrap();
@@ -126,7 +126,7 @@ impl RefreshTwaps {
                         repo.calculate_6h(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
-                        tokio::time::sleep(Duration::from_millis(10)).await;
+                        tokio::time::sleep(Duration::from_millis(100)).await;
                     })
                     .await
                     .unwrap();
@@ -149,7 +149,7 @@ impl RefreshTwaps {
                         repo.calculate_1d(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
-                        tokio::time::sleep(Duration::from_millis(10)).await;
+                        tokio::time::sleep(Duration::from_millis(100)).await;
                     })
                     .await
                     .unwrap();
