@@ -28,32 +28,6 @@ create table jupiter.twap_1m_7 partition of jupiter.twap_1m for values with (mod
 
 create table jupiter.twap_1m_8 partition of jupiter.twap_1m for values with (modulus 8, remainder 7);
 
-create table jupiter.twap_1m_most_recent as
-select distinct on
-(
-    token_pair_id
-) * from jupiter.twap_1m order by token_pair_id, timestamp desc;
-
-create unique index twap_1m_most_recent_idx on jupiter.twap_1m_most_recent (token_pair_id);
-
-create function jupiter.update_most_recent_twap_1m() returns trigger as $$
-begin
-delete
-from jupiter.twap_1m_most_recent
-where token_pair_id = new.token_pair_id;
-insert into jupiter.twap_1m_most_recent
-values (new.*);
-return new;
-end;
-$$
-language plpgsql;
-
-create trigger update_most_recent
-    after insert
-    on jupiter.twap_1m
-    for each row execute function jupiter.update_most_recent_twap_1m();
-
-
 create table jupiter.twap_5m
 (
     token_pair_id int4                     not null,
@@ -80,32 +54,6 @@ create table jupiter.twap_5m_6 partition of jupiter.twap_5m for values with (mod
 create table jupiter.twap_5m_7 partition of jupiter.twap_5m for values with (modulus 8, remainder 6);
 
 create table jupiter.twap_5m_8 partition of jupiter.twap_5m for values with (modulus 8, remainder 7);
-
-create table jupiter.twap_5m_most_recent as
-select distinct on
-(
-    token_pair_id
-) * from jupiter.twap_5m order by token_pair_id, timestamp desc;
-
-create unique index twap_5m_most_recent_idx on jupiter.twap_5m_most_recent (token_pair_id);
-
-create function jupiter.update_most_recent_twap_5m() returns trigger as $$
-begin
-delete
-from jupiter.twap_5m_most_recent
-where token_pair_id = new.token_pair_id;
-insert into jupiter.twap_5m_most_recent
-values (new.*);
-return new;
-end;
-$$
-language plpgsql;
-
-create trigger update_most_recent
-    after insert
-    on jupiter.twap_5m
-    for each row execute function jupiter.update_most_recent_twap_5m();
-
 
 create table jupiter.twap_15m
 (
@@ -134,31 +82,6 @@ create table jupiter.twap_15m_7 partition of jupiter.twap_15m for values with (m
 
 create table jupiter.twap_15m_8 partition of jupiter.twap_15m for values with (modulus 8, remainder 7);
 
-create table jupiter.twap_15m_most_recent as
-select distinct on
-(
-    token_pair_id
-) * from jupiter.twap_15m order by token_pair_id, timestamp desc;
-
-create unique index twap_15m_most_recent_idx on jupiter.twap_15m_most_recent (token_pair_id);
-
-create function jupiter.update_most_recent_twap_15m() returns trigger as $$
-begin
-delete
-from jupiter.twap_15m_most_recent
-where token_pair_id = new.token_pair_id;
-insert into jupiter.twap_15m_most_recent
-values (new.*);
-return new;
-end;
-$$
-language plpgsql;
-
-create trigger update_most_recent
-    after insert
-    on jupiter.twap_15m
-    for each row execute function jupiter.update_most_recent_twap_15m();
-
 create table jupiter.twap_1h
 (
     token_pair_id int4                     not null,
@@ -185,32 +108,6 @@ create table jupiter.twap_1h_6 partition of jupiter.twap_1h for values with (mod
 create table jupiter.twap_1h_7 partition of jupiter.twap_1h for values with (modulus 8, remainder 6);
 
 create table jupiter.twap_1h_8 partition of jupiter.twap_1h for values with (modulus 8, remainder 7);
-
-create table jupiter.twap_1h_most_recent as
-select distinct on
-(
-    token_pair_id
-) * from jupiter.twap_1h order by token_pair_id, timestamp desc;
-
-create unique index twap_1h_most_recent_idx on jupiter.twap_1h_most_recent (token_pair_id);
-
-create function jupiter.update_most_recent_twap_1h() returns trigger as $$
-begin
-delete
-from jupiter.twap_1h_most_recent
-where token_pair_id = new.token_pair_id;
-insert into jupiter.twap_1h_most_recent
-values (new.*);
-return new;
-end;
-$$
-language plpgsql;
-
-create trigger update_most_recent
-    after insert
-    on jupiter.twap_1h
-    for each row execute function jupiter.update_most_recent_twap_1h();
-
 
 create table jupiter.twap_6h
 (
@@ -239,31 +136,6 @@ create table jupiter.twap_6h_7 partition of jupiter.twap_6h for values with (mod
 
 create table jupiter.twap_6h_8 partition of jupiter.twap_6h for values with (modulus 8, remainder 7);
 
-create table jupiter.twap_6h_most_recent as
-select distinct on
-(
-    token_pair_id
-) * from jupiter.twap_6h order by token_pair_id, timestamp desc;
-
-create unique index twap_6h_most_recent_idx on jupiter.twap_6h_most_recent (token_pair_id);
-
-create function jupiter.update_most_recent_twap_6h() returns trigger as $$
-begin
-delete
-from jupiter.twap_6h_most_recent
-where token_pair_id = new.token_pair_id;
-insert into jupiter.twap_6h_most_recent
-values (new.*);
-return new;
-end;
-$$
-language plpgsql;
-
-create trigger update_most_recent
-    after insert
-    on jupiter.twap_6h
-    for each row execute function jupiter.update_most_recent_twap_6h();
-
 create table jupiter.twap_1d
 (
     token_pair_id int4                     not null,
@@ -290,29 +162,3 @@ create table jupiter.twap_1d_6 partition of jupiter.twap_1d for values with (mod
 create table jupiter.twap_1d_7 partition of jupiter.twap_1d for values with (modulus 8, remainder 6);
 
 create table jupiter.twap_1d_8 partition of jupiter.twap_1d for values with (modulus 8, remainder 7);
-
-create table jupiter.twap_1d_most_recent as
-select distinct on
-(
-    token_pair_id
-) * from jupiter.twap_1d order by token_pair_id, timestamp desc;
-
-create unique index twap_1d_most_recent_idx on jupiter.twap_1d_most_recent (token_pair_id);
-
-create function jupiter.update_most_recent_twap_1d() returns trigger as $$
-begin
-delete
-from jupiter.twap_1d_most_recent
-where token_pair_id = new.token_pair_id;
-insert into jupiter.twap_1d_most_recent
-values (new.*);
-return new;
-end;
-$$
-language plpgsql;
-
-create trigger update_most_recent
-    after insert
-    on jupiter.twap_1d
-    for each row execute function jupiter.update_most_recent_twap_1d();
-

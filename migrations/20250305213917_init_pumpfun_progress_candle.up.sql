@@ -99,39 +99,6 @@ create table pumpfun.candle_progress_1m_8 partition of pumpfun.candle_progress_1
 
 create index candle_progress_1m_timestamp ON pumpfun.candle_progress_1m (timestamp desc);
 
-create table pumpfun.candle_progress_1m_most_recent
-(
-    token_pair_id int4        not null,
-    timestamp     timestamptz not null,
-    open          real        not null,
-    high          real        not null,
-    low           real        not null,
-    close         real        not null,
-    avg           real        not null,
-    primary key (token_pair_id, timestamp),
-
-    constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
-);
-
-create
-or replace function pumpfun.candle_progress_1m_update_most_recent() returns trigger as $$
-begin
-delete
-from pumpfun.candle_progress_1m_most_recent
-where token_pair_id = new.token_pair_id;
-
-insert into pumpfun.candle_progress_1m_most_recent
-values (new.*);
-return new;
-end;
-$$
-language plpgsql;
-
-create trigger update_most_recent_candle
-    after insert
-    on pumpfun.candle_progress_1m
-    for each row execute function pumpfun.candle_progress_1m_update_most_recent();
-
 create table pumpfun.candle_progress_5m
 (
     token_pair_id int4        not null,
@@ -163,40 +130,6 @@ create table pumpfun.candle_progress_5m_7 partition of pumpfun.candle_progress_5
 create table pumpfun.candle_progress_5m_8 partition of pumpfun.candle_progress_5m for values with (modulus 8, remainder 7);
 
 create index candle_progress_5m_timestamp ON pumpfun.candle_progress_5m (timestamp desc);
-
-create table pumpfun.candle_progress_5m_most_recent
-(
-    token_pair_id int4        not null,
-    timestamp     timestamptz not null,
-    open          real        not null,
-    high          real        not null,
-    low           real        not null,
-    close         real        not null,
-    avg           real        not null,
-    primary key (token_pair_id, timestamp),
-
-    constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
-);
-
-create
-or replace function pumpfun.candle_progress_5m_update_most_recent() returns trigger as $$
-begin
-delete
-from pumpfun.candle_progress_5m_most_recent
-where token_pair_id = new.token_pair_id;
-
-insert into pumpfun.candle_progress_5m_most_recent
-values (new.*);
-return new;
-end;
-$$
-language plpgsql;
-
-create trigger update_most_recent_candle
-    after insert
-    on pumpfun.candle_progress_5m
-    for each row execute function pumpfun.candle_progress_5m_update_most_recent();
-
 
 create table pumpfun.candle_progress_15m
 (
@@ -230,40 +163,6 @@ create table pumpfun.candle_progress_15m_8 partition of pumpfun.candle_progress_
 
 create index candle_progress_15m_timestamp ON pumpfun.candle_progress_15m (timestamp desc);
 
-create table pumpfun.candle_progress_15m_most_recent
-(
-    token_pair_id int4        not null,
-    timestamp     timestamptz not null,
-    open          real        not null,
-    high          real        not null,
-    low           real        not null,
-    close         real        not null,
-    avg           real        not null,
-    primary key (token_pair_id, timestamp),
-
-    constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
-);
-
-create
-or replace function pumpfun.candle_progress_15m_update_most_recent() returns trigger as $$
-begin
-delete
-from pumpfun.candle_progress_15m_most_recent
-where token_pair_id = new.token_pair_id;
-
-insert into pumpfun.candle_progress_15m_most_recent
-values (new.*);
-return new;
-end;
-$$
-language plpgsql;
-
-create trigger update_most_recent_candle
-    after insert
-    on pumpfun.candle_progress_15m
-    for each row execute function pumpfun.candle_progress_15m_update_most_recent();
-
-
 create table pumpfun.candle_progress_1h
 (
     token_pair_id int4        not null,
@@ -295,40 +194,6 @@ create table pumpfun.candle_progress_1h_7 partition of pumpfun.candle_progress_1
 create table pumpfun.candle_progress_1h_8 partition of pumpfun.candle_progress_1h for values with (modulus 8, remainder 7);
 
 create index candle_progress_1h_timestamp ON pumpfun.candle_progress_1h (timestamp desc);
-
-create table pumpfun.candle_progress_1h_most_recent
-(
-    token_pair_id int4        not null,
-    timestamp     timestamptz not null,
-    open          real        not null,
-    high          real        not null,
-    low           real        not null,
-    close         real        not null,
-    avg           real        not null,
-    primary key (token_pair_id, timestamp),
-
-    constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
-);
-
-create
-or replace function pumpfun.candle_progress_1h_update_most_recent() returns trigger as $$
-begin
-delete
-from pumpfun.candle_progress_1h_most_recent
-where token_pair_id = new.token_pair_id;
-
-insert into pumpfun.candle_progress_1h_most_recent
-values (new.*);
-return new;
-end;
-$$
-language plpgsql;
-
-create trigger update_most_recent_candle
-    after insert
-    on pumpfun.candle_progress_1h
-    for each row execute function pumpfun.candle_progress_1h_update_most_recent();
-
 
 create table pumpfun.candle_progress_6h
 (
@@ -362,40 +227,6 @@ create table pumpfun.candle_progress_6h_8 partition of pumpfun.candle_progress_6
 
 create index candle_progress_6h_timestamp ON pumpfun.candle_progress_6h (timestamp desc);
 
-create table pumpfun.candle_progress_6h_most_recent
-(
-    token_pair_id int4        not null,
-    timestamp     timestamptz not null,
-    open          real        not null,
-    high          real        not null,
-    low           real        not null,
-    close         real        not null,
-    avg           real        not null,
-    primary key (token_pair_id, timestamp),
-
-    constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
-);
-
-create
-or replace function pumpfun.candle_progress_6h_update_most_recent() returns trigger as $$
-begin
-delete
-from pumpfun.candle_progress_6h_most_recent
-where token_pair_id = new.token_pair_id;
-
-insert into pumpfun.candle_progress_6h_most_recent
-values (new.*);
-return new;
-end;
-$$
-language plpgsql;
-
-create trigger update_most_recent_candle
-    after insert
-    on pumpfun.candle_progress_6h
-    for each row execute function pumpfun.candle_progress_6h_update_most_recent();
-
-
 create table pumpfun.candle_progress_1d
 (
     token_pair_id int4        not null,
@@ -427,36 +258,3 @@ create table pumpfun.candle_progress_1d_7 partition of pumpfun.candle_progress_1
 create table pumpfun.candle_progress_1d_8 partition of pumpfun.candle_progress_1d for values with (modulus 8, remainder 7);
 
 create index candle_progress_1d_timestamp ON pumpfun.candle_progress_1d (timestamp desc);
-
-create table pumpfun.candle_progress_1d_most_recent
-(
-    token_pair_id int4        not null,
-    timestamp     timestamptz not null,
-    open          real        not null,
-    high          real        not null,
-    low           real        not null,
-    close         real        not null,
-    avg           real        not null,
-    primary key (token_pair_id, timestamp),
-
-    constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
-);
-
-create
-or replace function pumpfun.candle_progress_1d_update_most_recent() returns trigger as $$
-begin
-delete
-from pumpfun.candle_progress_1d_most_recent
-where token_pair_id = new.token_pair_id;
-
-insert into pumpfun.candle_progress_1d_most_recent
-values (new.*);
-return new;
-end;
-$$
-language plpgsql;
-
-create trigger update_most_recent_candle
-    after insert
-    on pumpfun.candle_progress_1d
-    for each row execute function pumpfun.candle_progress_1d_update_most_recent();
