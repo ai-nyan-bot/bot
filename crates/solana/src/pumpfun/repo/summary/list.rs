@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::{
-    ProgressWithChange, Summary, SummaryCurveProgress, SummarySwap, SwapsWithChange,
+    ProgressWithChange, SummaryCurveProgress, SummarySwap, SwapsWithChange, TimeframeSummary,
 };
 use crate::pumpfun::repo::{SummaryQuery, SummaryRepo};
 use base::model::TokenPairId;
@@ -12,7 +12,11 @@ use sqlx::postgres::PgRow;
 use sqlx::{Postgres, QueryBuilder, Row};
 
 impl SummaryRepo {
-    pub async fn list<'a>(&self, tx: &mut Tx<'a>, query: SummaryQuery) -> RepoResult<Vec<Summary>> {
+    pub async fn list<'a>(
+        &self,
+        tx: &mut Tx<'a>,
+        query: SummaryQuery,
+    ) -> RepoResult<Vec<(TokenPairId, TimeframeSummary)>> {
         let table = format!("pumpfun.summary_{}", query.timeframe.table());
 
         let mut query_builder: QueryBuilder<Postgres> = QueryBuilder::new(format!(
@@ -52,10 +56,14 @@ from {table}
             .fetch_all(&mut **tx)
             .await?
             .into_iter()
-            .map(|row| Summary {
-                token_pair: row.get::<TokenPairId, _>("token_pair_id"),
-                curve_progress: row_to_curve_progress(&row),
-                swap: row_to_swaps(&row),
+            .map(|row| {
+                (
+                    row.get::<TokenPairId, _>("token_pair_id"),
+                    TimeframeSummary {
+                        curve: row_to_curve_progress(&row),
+                        swap: row_to_swaps(&row),
+                    },
+                )
             })
             .collect::<Vec<_>>())
     }

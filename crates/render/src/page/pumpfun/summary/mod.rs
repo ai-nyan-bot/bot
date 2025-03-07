@@ -8,7 +8,7 @@ use crate::page::pumpfun::summary::table::{
 };
 use crate::{Font, FontType, RenderBackground, RenderWatermark, Text};
 use image::{Rgba, RgbaImage};
-use solana::model::Summary;
+use solana::model::TimeframeSummary;
 
 pub const PADDING_WIDTH: u32 = 40;
 pub const CELL_WIDTH: u32 = 160;
@@ -36,12 +36,12 @@ pub fn cell_y_end(idx: u32) -> u32 {
 }
 
 pub struct PumpfunSummary {
-    pub m1: Option<Summary>,
-    pub m5: Option<Summary>,
-    pub m15: Option<Summary>,
-    pub h1: Option<Summary>,
-    pub h6: Option<Summary>,
-    pub d1: Option<Summary>,
+    pub m1: Option<TimeframeSummary>,
+    pub m5: Option<TimeframeSummary>,
+    pub m15: Option<TimeframeSummary>,
+    pub h1: Option<TimeframeSummary>,
+    pub h6: Option<TimeframeSummary>,
+    pub d1: Option<TimeframeSummary>,
 }
 
 // struct Span {

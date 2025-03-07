@@ -1,13 +1,25 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use base::model::TokenPairId;
+use base::model::TokenPair;
 use common::model::{Change, Count, Percent};
+use crate::pumpfun::model::Curve;
 
 #[derive(Clone, Debug)]
-pub struct Summary {
-    pub token_pair: TokenPairId,
-    pub curve_progress: SummaryCurveProgress,
+pub struct PumpfunSummary {
+    pub pair: TokenPair,
+    pub curve: Curve,
+    pub m1: Option<TimeframeSummary>,
+    pub m5: Option<TimeframeSummary>,
+    pub m15: Option<TimeframeSummary>,
+    pub h1: Option<TimeframeSummary>,
+    pub h6: Option<TimeframeSummary>,
+    pub d1: Option<TimeframeSummary>,
+}
+
+#[derive(Clone, Debug)]
+pub struct TimeframeSummary {
+    pub curve: SummaryCurveProgress,
     pub swap: SummarySwap,
 }
 

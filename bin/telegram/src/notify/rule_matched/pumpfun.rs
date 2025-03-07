@@ -4,12 +4,8 @@
 use crate::{markdown, AppState};
 use base::model::{Notification, TokenPairId, User};
 use base::service::NotificationResult;
-use common::model::Percent;
 use render::page::pumpfun::{pumpfun_summary, PumpfunSummary};
 use render::render;
-use solana::model::{
-    ProgressWithChange, Summary, SummaryCurveProgress, SummarySwap, SwapsWithChange,
-};
 use teloxide::payloads::SendPhotoSetters;
 use teloxide::requests::Requester;
 use teloxide::types::{
@@ -91,53 +87,12 @@ pub(crate) async fn send(
         pumpfun_summary(
             img,
             PumpfunSummary {
-                m1: None,
-                m5: None,
-                m15: None,
-                h1: Some(Summary {
-                    token_pair: 1.into(),
-                    curve_progress: SummaryCurveProgress {
-                        open: ProgressWithChange {
-                            progress: None,
-                            change: None,
-                        },
-                        high: ProgressWithChange {
-                            progress: None,
-                            change: None,
-                        },
-                        low: ProgressWithChange {
-                            progress: None,
-                            change: None,
-                        },
-                        close: ProgressWithChange {
-                            progress: None,
-                            change: None,
-                        },
-                        avg: ProgressWithChange {
-                            progress: None,
-                            change: None,
-                        },
-                    },
-                    swap: SummarySwap {
-                        all: SwapsWithChange {
-                            count: 3.into(),
-                            change: Some(1.into()),
-                            percent: Some(33.3.into()),
-                        },
-                        buy: SwapsWithChange {
-                            count: 2.into(),
-                            change: Some(2.into()),
-                            percent: Some(100.0.into()),
-                        },
-                        sell: SwapsWithChange {
-                            count: 1.into(),
-                            change: Some(1.into()),
-                            percent: Some(Percent::from(-50.0)),
-                        },
-                    },
-                }),
-                h6: None,
-                d1: None,
+                m1: token_summary.m1,
+                m5: token_summary.m5,
+                m15: token_summary.m15,
+                h1: token_summary.h1,
+                h6: token_summary.h6,
+                d1: token_summary.d1,
             },
         )
     })

@@ -6,7 +6,7 @@ use crate::page::pumpfun::summary::{
 };
 use crate::{Font, FontSize, Line, Point, RenderLine, RenderText, Text};
 use image::{Rgba, RgbaImage};
-use solana::model::{Summary, SummaryCurveProgress};
+use solana::model::{TimeframeSummary, SummaryCurveProgress};
 use std::ops::Div;
 
 pub(crate) fn draw_table(img: &mut RgbaImage) {
@@ -90,8 +90,8 @@ pub(crate) fn draw_cell_bottom(img: &mut RgbaImage, font: &Font, x: u32, y: u32,
     RenderText::render(img, &font, centered_x, bottom_y, text);
 }
 
-pub(crate) fn draw_summary(img: &mut RgbaImage, font: &Font, x: u32, summary: Summary) {
-    draw_bonding_curve(img, font, x, summary.curve_progress)
+pub(crate) fn draw_summary(img: &mut RgbaImage, font: &Font, x: u32, summary: TimeframeSummary) {
+    draw_bonding_curve(img, font, x, summary.curve)
 }
 
 fn draw_bonding_curve(

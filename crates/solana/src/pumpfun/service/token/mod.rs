@@ -1,9 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-pub use summarise::TokenSummary;
-
-mod summarise;
+mod summary;
 
 use crate::pumpfun::repo::{CurveRepo, SummaryRepo};
 use base::repo::ReadTokenPairRepo;

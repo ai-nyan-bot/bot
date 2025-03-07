@@ -8,7 +8,7 @@ pub use progress::calculate_progress;
 
 mod progress;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Curve {
     pub id: TokenPairId,
     pub slot: Slot,

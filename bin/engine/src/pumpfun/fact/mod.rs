@@ -68,8 +68,8 @@ impl FactService {
             .await
             .unwrap();
 
-        for summary in summary_1m {
-            let facts = result.entry(summary.token_pair).or_insert(Facts::default());
+        for (token_pair_id, summary) in summary_1m {
+            let facts = result.entry(token_pair_id).or_insert(Facts::default());
             add_summary_to_facts(facts, summary, M1);
         }
 

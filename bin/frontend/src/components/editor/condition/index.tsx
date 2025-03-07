@@ -95,7 +95,7 @@ const Group: FC<GroupProps> = ({
                     />
                 )}
                 <Button variant="outline" onClick={() => onAdd(condition.id, ConditionType.COMPOSE)}>
-                    + Filter
+                    + Condition
                 </Button>
                 {/*<Button variant="outline" onClick={() => onAdd(condition.id, ConditionType.AND)}>*/}
                 {/*    + And*/}

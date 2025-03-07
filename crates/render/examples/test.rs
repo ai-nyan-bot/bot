@@ -2,7 +2,7 @@ use common::model::Percent;
 use image::RgbaImage;
 use render::page::pumpfun::{pumpfun_summary, PumpfunSummary};
 use solana::model::{
-    ProgressWithChange, Summary, SummaryCurveProgress, SummarySwap, SwapsWithChange,
+    ProgressWithChange, SummaryCurveProgress, SummarySwap, SwapsWithChange, TimeframeSummary,
 };
 
 fn main() {
@@ -13,9 +13,8 @@ fn main() {
     pumpfun_summary(
         &mut img,
         PumpfunSummary {
-            m1: Some(Summary {
-                token_pair: 1.into(),
-                curve_progress: SummaryCurveProgress {
+            m1: Some(TimeframeSummary {
+                curve: SummaryCurveProgress {
                     open: ProgressWithChange {
                         progress: None,
                         change: None,
@@ -57,9 +56,8 @@ fn main() {
             }),
             m5: None,
             m15: None,
-            h1: Some(Summary {
-                token_pair: 1.into(),
-                curve_progress: SummaryCurveProgress {
+            h1: Some(TimeframeSummary {
+                curve: SummaryCurveProgress {
                     open: ProgressWithChange {
                         progress: None,
                         change: None,

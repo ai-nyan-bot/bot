@@ -4,9 +4,9 @@
 use base::model::{Fact, Facts, Value};
 use bigdecimal::ToPrimitive;
 use common::model::Timeframe;
-use solana::model::Summary;
+use solana::model::TimeframeSummary;
 
-pub(crate) fn add_summary_to_facts(facts: &mut Facts, summary: Summary, timeframe: Timeframe) {
+pub(crate) fn add_summary_to_facts(facts: &mut Facts, summary: TimeframeSummary, timeframe: Timeframe) {
     facts.set_timeframe_value(Fact::SwapsCount, summary.swap.all.count, timeframe);
     facts.set_timeframe_value(Fact::SwapsBuyCount, summary.swap.buy.count, timeframe);
     facts.set_timeframe_value(Fact::SwapsSellCount, summary.swap.sell.count, timeframe);

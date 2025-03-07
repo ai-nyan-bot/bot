@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::{ProgressWithChange, Summary, SummaryCurveProgress, SummarySwap, SwapsWithChange};
+use crate::model::{ProgressWithChange, TimeframeSummary, SummaryCurveProgress, SummarySwap, SwapsWithChange};
 use crate::pumpfun::repo::SummaryRepo;
 use base::model::TokenPairId;
 use common::model::{Change, Count, Percent, Timeframe};
@@ -11,20 +11,19 @@ use sqlx::Row;
 
 
 impl SummaryRepo {
+
 	pub async fn get<'a>(
 		&self,
 		tx: &mut Tx<'a>,
 		token_pair: impl Into<TokenPairId> + Send,
 		timeframe: Timeframe,
-	) -> RepoResult<Summary> {
+	) -> RepoResult<TimeframeSummary> {
 		let table = format!("pumpfun.summary_{}", timeframe.table());
 
 		Ok(sqlx::query(
 			format!(
 				r#"
 select
-    token_pair_id,
-    
     curve_progress_open,
     curve_progress_open_change,
     curve_progress_high,
@@ -54,9 +53,8 @@ where token_pair_id = $1
 			.bind(token_pair.into())
 			.fetch_one(&mut **tx)
 			.await
-			.map(|row| Summary {
-				token_pair: row.get::<TokenPairId, _>("token_pair_id"),
-				curve_progress: row_to_curve_progress(&row),
+			.map(|row| TimeframeSummary {
+				curve: row_to_curve_progress(&row),
 				swap: row_to_swaps(&row),
 			})?)
 	}
