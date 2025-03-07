@@ -28,7 +28,7 @@ export const ConditionList: FC<ConditionListProps> = ({
                                                           onConditionChange
                                                       }) => {
     return (
-        <Card className="border bg-gray-50 relative">
+        <Card className={`p-1 rounded-none ${!isRoot ? "p-4 border-4" : ""} bg-gray-50 relative`}>
             {
                 !isRoot && (
                     <div className={"flex flex-row justify-end m-2"}>
@@ -81,9 +81,9 @@ const Group: FC<GroupProps> = ({
 
     return (
         <div key={condition.id}>
-            <span>And</span>
+            <span className={"text-yellow-600 font-bold"}>And</span>
 
-            <div className="ml-4 mt-2 border-l-2 pl-4 border-gray-400 space-y-2">
+            <div className="ml-4 mt-2 border-l-2 pl-4 border-yellow-600 space-y-2">
                 {condition.conditions?.map((child, index) =>
                     <ConditionList
                         key={child.id}
@@ -95,11 +95,11 @@ const Group: FC<GroupProps> = ({
                     />
                 )}
                 <Button variant="outline" onClick={() => onAdd(condition.id, ConditionType.COMPOSE)}>
-                    + Condition
+                    + Filter
                 </Button>
-                <Button variant="outline" onClick={() => onAdd(condition.id, ConditionType.AND)}>
-                    + Group
-                </Button>
+                {/*<Button variant="outline" onClick={() => onAdd(condition.id, ConditionType.AND)}>*/}
+                {/*    + And*/}
+                {/*</Button>*/}
             </div>
         </div>
     )

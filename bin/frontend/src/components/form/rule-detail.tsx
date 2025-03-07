@@ -12,7 +12,7 @@ export type RuleDetailFormProps = {
 export const RuleDetailForm: FC<RuleDetailFormProps> = ({id, name, onNameChanged}) => {
     const [ruleName, setRuleName] = useState(name);
     return (
-        <Card className="w-full">
+        <Card className="w-full bg-gray-50 border-0 shadow-none">
             <CardHeader>
                 <CardTitle>Rule {ruleName}</CardTitle>
             </CardHeader>

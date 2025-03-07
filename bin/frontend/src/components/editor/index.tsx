@@ -187,25 +187,26 @@ export const Editor: React.FC<EditorProps> = ({sequence, onChange}) => {
 
     return (
         <div className={"flex flex-col space-y-2"}>
-            <Card className="w-full">
+            <Card className="w-full shadow-none border-0">
                 <CardHeader>
                     <CardTitle className="font-semibold text-yellow-600 flex items-center">IF</CardTitle>
                 </CardHeader>
-                <CardContent>
-                    <div className="max-w-4xl mx-auto space-y-6">
+                <CardContent className="w-full p-0">
+                    <div className="w-full">
                         <ConditionList
                             condition={condition}
                             isRoot={true}
                             onAdd={addCondition}
                             onRemove={removeCondition}
                             onConditionChange={(condition: Condition) => {
-                                updateCondition(condition)
+                                updateCondition(condition);
                             }}
                         />
                     </div>
                 </CardContent>
             </Card>
-            <Card className="w-full">
+
+            <Card className="w-full shadow-none border-0">
                 <CardHeader>
                     <CardTitle className="font-semibold text-blue-600 flex items-center">THEN</CardTitle>
                 </CardHeader>
