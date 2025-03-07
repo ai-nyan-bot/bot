@@ -15,7 +15,7 @@ use base::LoadTokenInfo;
 use bigdecimal::{BigDecimal, Zero};
 use common::model::Timestamp;
 use common::repo::{RepoResult, Tx};
-use log::{trace, warn};
+use log::trace;
 use sqlx::Row;
 use std::collections::HashMap;
 
