@@ -1,9 +1,9 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use crate::pumpfun::model::Curve;
 use base::model::TokenPair;
 use common::model::{Change, Count, Percent};
-use crate::pumpfun::model::Curve;
 
 #[derive(Clone, Debug)]
 pub struct PumpfunSummary {
@@ -41,7 +41,7 @@ pub struct SummarySwap {
 
 #[derive(Clone, Debug)]
 pub struct SwapsWithChange {
-    pub count: Count,
+    pub count: Option<Count>,
     pub change: Option<Change>,
     pub percent: Option<Percent>,
 }

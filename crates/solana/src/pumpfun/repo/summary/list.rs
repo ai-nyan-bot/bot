@@ -97,17 +97,17 @@ fn row_to_curve_progress(row: &PgRow) -> SummaryCurveProgress {
 fn row_to_swaps(row: &PgRow) -> SummarySwap {
     SummarySwap {
         buy: SwapsWithChange {
-            count: row.get::<Count, _>("swap_buy"),
+            count: row.try_get::<Count, _>("swap_buy").ok(),
             change: row.try_get::<Change, _>("swap_buy_change").ok(),
             percent: row.try_get::<Percent, _>("swap_buy_percent").ok(),
         },
         sell: SwapsWithChange {
-            count: row.get::<Count, _>("swap_sell"),
+            count: row.try_get::<Count, _>("swap_sell").ok(),
             change: row.try_get::<Change, _>("swap_sell_change").ok(),
             percent: row.try_get::<Percent, _>("swap_sell_percent").ok(),
         },
         all: SwapsWithChange {
-            count: row.get::<Count, _>("swap"),
+            count: row.try_get::<Count, _>("swap").ok(),
             change: row.try_get::<Change, _>("swap_change").ok(),
             percent: row.try_get::<Percent, _>("swap_percent").ok(),
         },

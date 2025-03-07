@@ -9,9 +9,8 @@ pub use signal::{Signal, SignalType};
 
 mod byte;
 mod config;
+pub mod format;
 pub mod model;
 pub mod repo;
 pub mod service;
-
-pub mod format;
 mod signal;

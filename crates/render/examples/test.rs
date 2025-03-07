@@ -38,19 +38,19 @@ fn main() {
                 },
                 swap: SummarySwap {
                     all: SwapsWithChange {
-                        count: 3.into(),
+                        count: Some(3.into()),
                         change: Some(1.into()),
                         percent: Some(33.3.into()),
                     },
                     buy: SwapsWithChange {
-                        count: 2.into(),
+                        count: Some(2.into()),
                         change: Some(2.into()),
                         percent: Some(100.0.into()),
                     },
                     sell: SwapsWithChange {
-                        count: 1.into(),
+                        count: Some(10_200.into()),
                         change: Some(1.into()),
-                        percent: Some(Percent::from(-50.0)),
+                        percent: Some(Percent::from(-51.0)),
                     },
                 },
             }),
@@ -81,17 +81,17 @@ fn main() {
                 },
                 swap: SummarySwap {
                     all: SwapsWithChange {
-                        count: 3.into(),
+                        count: Some(3.into()),
                         change: Some(1.into()),
                         percent: Some(33.3.into()),
                     },
                     buy: SwapsWithChange {
-                        count: 2.into(),
+                        count: Some(2.into()),
                         change: Some(2.into()),
                         percent: Some(100.0.into()),
                     },
                     sell: SwapsWithChange {
-                        count: 1.into(),
+                        count: Some(1.into()),
                         change: Some(1.into()),
                         percent: Some(Percent::from(-50.0)),
                     },

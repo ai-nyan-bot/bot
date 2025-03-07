@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
 use std::fmt::{Display, Formatter};
 
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize, sqlx::Type)]
+#[derive(Copy, Clone, Debug, PartialEq, Deserialize, Serialize, sqlx::Type)]
 #[sqlx(transparent)]
 pub struct Percent(pub f32);
 

@@ -5,9 +5,9 @@ use crate::page::pumpfun::summary::{
     cell_x_end, cell_x_start, cell_y_end, cell_y_start, DECREASED, INCREASED, PADDING_HEIGHT,
 };
 use crate::{Font, FontSize, Line, Point, RenderLine, RenderText, Text};
-use common::format::format_f64;
+use common::format::{format_count, format_percent};
 use image::{Rgba, RgbaImage};
-use solana::model::{SummaryCurveProgress, TimeframeSummary};
+use solana::model::{SummaryCurveProgress, SwapsWithChange, TimeframeSummary};
 use std::ops::Div;
 
 pub(crate) fn draw_table(img: &mut RgbaImage) {
@@ -92,7 +92,10 @@ pub(crate) fn draw_cell_bottom(img: &mut RgbaImage, font: &Font, x: u32, y: u32,
 }
 
 pub(crate) fn draw_summary(img: &mut RgbaImage, font: &Font, x: u32, summary: TimeframeSummary) {
-    draw_bonding_curve(img, font, x, summary.curve)
+    draw_bonding_curve(img, font, x, summary.curve);
+    draw_total_txs(img, font, x, summary.swap.all);
+    draw_buy_txs(img, font, x, summary.swap.buy);
+    draw_sell_txs(img, font, x, summary.swap.sell);
 }
 
 fn draw_bonding_curve(
@@ -109,11 +112,7 @@ fn draw_bonding_curve(
                 font,
                 x,
                 1,
-                Text::new(
-                    format!("{}%", format_f64(change.0)),
-                    32,
-                    Rgba([120, 120, 120, 255]),
-                ),
+                Text::new(format_percent(change), 32, Rgba([120, 120, 120, 255])),
             );
 
             let color = if change > 0.0 {
@@ -129,7 +128,7 @@ fn draw_bonding_curve(
                 font,
                 x,
                 1,
-                Text::new(format!("{}%", format_f64(change.0)), 32, color),
+                Text::new(format_percent(change), 32, color),
             );
         } else {
             draw_cell_center(
@@ -137,11 +136,121 @@ fn draw_bonding_curve(
                 font,
                 x,
                 1,
-                Text::new(
-                    format!("{}%", format_f64(percent.0)),
-                    32,
-                    Rgba([120, 120, 120, 255]),
-                ),
+                Text::new(format_percent(percent), 32, Rgba([120, 120, 120, 255])),
+            );
+        }
+    }
+}
+
+fn draw_total_txs(img: &mut RgbaImage, font: &Font, x: u32, swap: SwapsWithChange) {
+    if let Some(count) = swap.count {
+        if let (Some(_change), Some(percent)) = (swap.change, swap.percent) {
+            draw_cell_top(
+                img,
+                font,
+                x,
+                7,
+                Text::new(format_count(count), 32, Rgba([120, 120, 120, 255])),
+            );
+
+            let color = if percent > 0.0 {
+                INCREASED
+            } else if percent < 0.0 {
+                DECREASED
+            } else {
+                Rgba([120, 120, 120, 255])
+            };
+
+            draw_cell_bottom(
+                img,
+                font,
+                x,
+                7,
+                Text::new(format_percent(percent), 32, color),
+            );
+        } else {
+            draw_cell_center(
+                img,
+                font,
+                x,
+                7,
+                Text::new(format_count(count), 32, Rgba([120, 120, 120, 255])),
+            );
+        }
+    }
+}
+
+fn draw_buy_txs(img: &mut RgbaImage, font: &Font, x: u32, swap: SwapsWithChange) {
+    if let Some(count) = swap.count {
+        if let (Some(_change), Some(percent)) = (swap.change, swap.percent) {
+            draw_cell_top(
+                img,
+                font,
+                x,
+                8,
+                Text::new(format_count(count), 32, Rgba([120, 120, 120, 255])),
+            );
+
+            let color = if percent > 0.0 {
+                INCREASED
+            } else if percent < 0.0 {
+                DECREASED
+            } else {
+                Rgba([120, 120, 120, 255])
+            };
+
+            draw_cell_bottom(
+                img,
+                font,
+                x,
+                8,
+                Text::new(format_percent(percent), 32, color),
+            );
+        } else {
+            draw_cell_center(
+                img,
+                font,
+                x,
+                8,
+                Text::new(format_count(count), 32, Rgba([120, 120, 120, 255])),
+            );
+        }
+    }
+}
+
+fn draw_sell_txs(img: &mut RgbaImage, font: &Font, x: u32, swap: SwapsWithChange) {
+    if let Some(count) = swap.count {
+        if let (Some(_change), Some(percent)) = (swap.change, swap.percent) {
+            draw_cell_top(
+                img,
+                font,
+                x,
+                9,
+                Text::new(format_count(count), 32, Rgba([120, 120, 120, 255])),
+            );
+
+            let color = if percent > 0.0 {
+                INCREASED
+            } else if percent < 0.0 {
+                DECREASED
+            } else {
+                Rgba([120, 120, 120, 255])
+            };
+
+            draw_cell_bottom(
+                img,
+                font,
+                x,
+                9,
+                Text::new(format_percent(percent), 32, color),
+            );
+        } else {
+            draw_cell_center(
+                img,
+                font,
+                x,
+                9,
+                Text::new(format_count(count), 32, Rgba([120, 120, 120, 255])),
             );
         }
     }

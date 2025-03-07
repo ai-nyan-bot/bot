@@ -1,10 +1,12 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use crate::model::Change;
+use bigdecimal::ToPrimitive;
 use serde::{Deserialize, Serialize};
 use std::fmt::{Display, Formatter};
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, sqlx::Type)]
+#[derive(Copy, Clone, Debug, PartialEq, Serialize, Deserialize, sqlx::Type)]
 #[sqlx(transparent, no_pg_array)]
 pub struct Count(pub i64);
 
@@ -23,5 +25,11 @@ impl PartialEq<i64> for Count {
 impl Display for Count {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(&self.0, f)
+    }
+}
+
+impl From<Change> for Count {
+    fn from(value: Change) -> Self {
+        Self(value.0.to_i64().unwrap())
     }
 }
