@@ -1,5 +1,6 @@
 -- Copyright (c) nyanbot.com 2025.
 -- This file is licensed under the AGPL-3.0-or-later.
+
 create table pumpfun.candle_market_cap_1m
 (
     token_pair_id int4            not null,
@@ -35,7 +36,14 @@ create table pumpfun.candle_market_cap_1m_7 partition of pumpfun.candle_market_c
 
 create table pumpfun.candle_market_cap_1m_8 partition of pumpfun.candle_market_cap_1m for values with (modulus 8, remainder 7);
 
-create index candle_market_cap_1m_timestamp ON pumpfun.candle_market_cap_1m (timestamp desc);
+create index candle_market_cap_1m_1_timestamp ON pumpfun.candle_market_cap_1m_1 (timestamp desc);
+create index candle_market_cap_1m_2_timestamp ON pumpfun.candle_market_cap_1m_2 (timestamp desc);
+create index candle_market_cap_1m_3_timestamp ON pumpfun.candle_market_cap_1m_3 (timestamp desc);
+create index candle_market_cap_1m_4_timestamp ON pumpfun.candle_market_cap_1m_4 (timestamp desc);
+create index candle_market_cap_1m_5_timestamp ON pumpfun.candle_market_cap_1m_5 (timestamp desc);
+create index candle_market_cap_1m_6_timestamp ON pumpfun.candle_market_cap_1m_6 (timestamp desc);
+create index candle_market_cap_1m_7_timestamp ON pumpfun.candle_market_cap_1m_7 (timestamp desc);
+create index candle_market_cap_1m_8_timestamp ON pumpfun.candle_market_cap_1m_8 (timestamp desc);
 
 create table pumpfun.candle_market_cap_5m
 (
@@ -72,7 +80,14 @@ create table pumpfun.candle_market_cap_5m_7 partition of pumpfun.candle_market_c
 
 create table pumpfun.candle_market_cap_5m_8 partition of pumpfun.candle_market_cap_5m for values with (modulus 8, remainder 7);
 
-create index candle_market_cap_5m_timestamp ON pumpfun.candle_market_cap_5m (timestamp desc);
+create index candle_market_cap_5m_1_timestamp ON pumpfun.candle_market_cap_5m_1 (timestamp desc);
+create index candle_market_cap_5m_2_timestamp ON pumpfun.candle_market_cap_5m_2 (timestamp desc);
+create index candle_market_cap_5m_3_timestamp ON pumpfun.candle_market_cap_5m_3 (timestamp desc);
+create index candle_market_cap_5m_4_timestamp ON pumpfun.candle_market_cap_5m_4 (timestamp desc);
+create index candle_market_cap_5m_5_timestamp ON pumpfun.candle_market_cap_5m_5 (timestamp desc);
+create index candle_market_cap_5m_6_timestamp ON pumpfun.candle_market_cap_5m_6 (timestamp desc);
+create index candle_market_cap_5m_7_timestamp ON pumpfun.candle_market_cap_5m_7 (timestamp desc);
+create index candle_market_cap_5m_8_timestamp ON pumpfun.candle_market_cap_5m_8 (timestamp desc);
 
 create table pumpfun.candle_market_cap_15m
 (
@@ -109,7 +124,14 @@ create table pumpfun.candle_market_cap_15m_7 partition of pumpfun.candle_market_
 
 create table pumpfun.candle_market_cap_15m_8 partition of pumpfun.candle_market_cap_15m for values with (modulus 8, remainder 7);
 
-create index candle_market_cap_15m_timestamp ON pumpfun.candle_market_cap_15m (timestamp desc);
+create index candle_market_cap_15m_1_timestamp ON pumpfun.candle_market_cap_15m_1 (timestamp desc);
+create index candle_market_cap_15m_2_timestamp ON pumpfun.candle_market_cap_15m_2 (timestamp desc);
+create index candle_market_cap_15m_3_timestamp ON pumpfun.candle_market_cap_15m_3 (timestamp desc);
+create index candle_market_cap_15m_4_timestamp ON pumpfun.candle_market_cap_15m_4 (timestamp desc);
+create index candle_market_cap_15m_5_timestamp ON pumpfun.candle_market_cap_15m_5 (timestamp desc);
+create index candle_market_cap_15m_6_timestamp ON pumpfun.candle_market_cap_15m_6 (timestamp desc);
+create index candle_market_cap_15m_7_timestamp ON pumpfun.candle_market_cap_15m_7 (timestamp desc);
+create index candle_market_cap_15m_8_timestamp ON pumpfun.candle_market_cap_15m_8 (timestamp desc);
 
 create table pumpfun.candle_market_cap_1h
 (
@@ -146,7 +168,14 @@ create table pumpfun.candle_market_cap_1h_7 partition of pumpfun.candle_market_c
 
 create table pumpfun.candle_market_cap_1h_8 partition of pumpfun.candle_market_cap_1h for values with (modulus 8, remainder 7);
 
-create index candle_market_cap_1h_timestamp ON pumpfun.candle_market_cap_1h (timestamp desc);
+create index candle_market_cap_1h_1_timestamp ON pumpfun.candle_market_cap_1h_1 (timestamp desc);
+create index candle_market_cap_1h_2_timestamp ON pumpfun.candle_market_cap_1h_2 (timestamp desc);
+create index candle_market_cap_1h_3_timestamp ON pumpfun.candle_market_cap_1h_3 (timestamp desc);
+create index candle_market_cap_1h_4_timestamp ON pumpfun.candle_market_cap_1h_4 (timestamp desc);
+create index candle_market_cap_1h_5_timestamp ON pumpfun.candle_market_cap_1h_5 (timestamp desc);
+create index candle_market_cap_1h_6_timestamp ON pumpfun.candle_market_cap_1h_6 (timestamp desc);
+create index candle_market_cap_1h_7_timestamp ON pumpfun.candle_market_cap_1h_7 (timestamp desc);
+create index candle_market_cap_1h_8_timestamp ON pumpfun.candle_market_cap_1h_8 (timestamp desc);
 
 create table pumpfun.candle_market_cap_6h
 (
@@ -183,7 +212,14 @@ create table pumpfun.candle_market_cap_6h_7 partition of pumpfun.candle_market_c
 
 create table pumpfun.candle_market_cap_6h_8 partition of pumpfun.candle_market_cap_6h for values with (modulus 8, remainder 7);
 
-create index candle_market_cap_6h_timestamp ON pumpfun.candle_market_cap_6h (timestamp desc);
+create index candle_market_cap_6h_1_timestamp ON pumpfun.candle_market_cap_6h_1 (timestamp desc);
+create index candle_market_cap_6h_2_timestamp ON pumpfun.candle_market_cap_6h_2 (timestamp desc);
+create index candle_market_cap_6h_3_timestamp ON pumpfun.candle_market_cap_6h_3 (timestamp desc);
+create index candle_market_cap_6h_4_timestamp ON pumpfun.candle_market_cap_6h_4 (timestamp desc);
+create index candle_market_cap_6h_5_timestamp ON pumpfun.candle_market_cap_6h_5 (timestamp desc);
+create index candle_market_cap_6h_6_timestamp ON pumpfun.candle_market_cap_6h_6 (timestamp desc);
+create index candle_market_cap_6h_7_timestamp ON pumpfun.candle_market_cap_6h_7 (timestamp desc);
+create index candle_market_cap_6h_8_timestamp ON pumpfun.candle_market_cap_6h_8 (timestamp desc);
 
 create table pumpfun.candle_market_cap_1d
 (
@@ -220,4 +256,11 @@ create table pumpfun.candle_market_cap_1d_7 partition of pumpfun.candle_market_c
 
 create table pumpfun.candle_market_cap_1d_8 partition of pumpfun.candle_market_cap_1d for values with (modulus 8, remainder 7);
 
-create index candle_market_cap_1d_timestamp ON pumpfun.candle_market_cap_1d (timestamp desc);
+create index candle_market_cap_1d_1_timestamp ON pumpfun.candle_market_cap_1d_1 (timestamp desc);
+create index candle_market_cap_1d_2_timestamp ON pumpfun.candle_market_cap_1d_2 (timestamp desc);
+create index candle_market_cap_1d_3_timestamp ON pumpfun.candle_market_cap_1d_3 (timestamp desc);
+create index candle_market_cap_1d_4_timestamp ON pumpfun.candle_market_cap_1d_4 (timestamp desc);
+create index candle_market_cap_1d_5_timestamp ON pumpfun.candle_market_cap_1d_5 (timestamp desc);
+create index candle_market_cap_1d_6_timestamp ON pumpfun.candle_market_cap_1d_6 (timestamp desc);
+create index candle_market_cap_1d_7_timestamp ON pumpfun.candle_market_cap_1d_7 (timestamp desc);
+create index candle_market_cap_1d_8_timestamp ON pumpfun.candle_market_cap_1d_8 (timestamp desc);

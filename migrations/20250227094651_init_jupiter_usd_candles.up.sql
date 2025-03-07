@@ -33,7 +33,14 @@ create table jupiter.candle_usd_1m_7 partition of jupiter.candle_usd_1m for valu
 
 create table jupiter.candle_usd_1m_8 partition of jupiter.candle_usd_1m for values with (modulus 8, remainder 7);
 
-create index candle_usd_1m_timestamp ON jupiter.candle_usd_1m (timestamp desc);
+create index candle_usd_1m_1_timestamp ON jupiter.candle_usd_1m_1 (timestamp desc);
+create index candle_usd_1m_2_timestamp ON jupiter.candle_usd_1m_2 (timestamp desc);
+create index candle_usd_1m_3_timestamp ON jupiter.candle_usd_1m_3 (timestamp desc);
+create index candle_usd_1m_4_timestamp ON jupiter.candle_usd_1m_4 (timestamp desc);
+create index candle_usd_1m_5_timestamp ON jupiter.candle_usd_1m_5 (timestamp desc);
+create index candle_usd_1m_6_timestamp ON jupiter.candle_usd_1m_6 (timestamp desc);
+create index candle_usd_1m_7_timestamp ON jupiter.candle_usd_1m_7 (timestamp desc);
+create index candle_usd_1m_8_timestamp ON jupiter.candle_usd_1m_8 (timestamp desc);
 
 create table jupiter.candle_usd_5m
 (
@@ -68,7 +75,15 @@ create table jupiter.candle_usd_5m_7 partition of jupiter.candle_usd_5m for valu
 
 create table jupiter.candle_usd_5m_8 partition of jupiter.candle_usd_5m for values with (modulus 8, remainder 7);
 
-create index candle_usd_5m_timestamp ON jupiter.candle_usd_5m (timestamp desc);
+create index candle_usd_5m_1_timestamp ON jupiter.candle_usd_5m_1 (timestamp desc);
+create index candle_usd_5m_2_timestamp ON jupiter.candle_usd_5m_2 (timestamp desc);
+create index candle_usd_5m_3_timestamp ON jupiter.candle_usd_5m_3 (timestamp desc);
+create index candle_usd_5m_4_timestamp ON jupiter.candle_usd_5m_4 (timestamp desc);
+create index candle_usd_5m_5_timestamp ON jupiter.candle_usd_5m_5 (timestamp desc);
+create index candle_usd_5m_6_timestamp ON jupiter.candle_usd_5m_6 (timestamp desc);
+create index candle_usd_5m_7_timestamp ON jupiter.candle_usd_5m_7 (timestamp desc);
+create index candle_usd_5m_8_timestamp ON jupiter.candle_usd_5m_8 (timestamp desc);
+
 
 create table jupiter.candle_usd_15m
 (
@@ -103,7 +118,14 @@ create table jupiter.candle_usd_15m_7 partition of jupiter.candle_usd_15m for va
 
 create table jupiter.candle_usd_15m_8 partition of jupiter.candle_usd_15m for values with (modulus 8, remainder 7);
 
-create index candle_usd_15m_timestamp ON jupiter.candle_usd_15m (timestamp desc);
+create index candle_usd_15m_1_timestamp ON jupiter.candle_usd_15m_1 (timestamp desc);
+create index candle_usd_15m_2_timestamp ON jupiter.candle_usd_15m_2 (timestamp desc);
+create index candle_usd_15m_3_timestamp ON jupiter.candle_usd_15m_3 (timestamp desc);
+create index candle_usd_15m_4_timestamp ON jupiter.candle_usd_15m_4 (timestamp desc);
+create index candle_usd_15m_5_timestamp ON jupiter.candle_usd_15m_5 (timestamp desc);
+create index candle_usd_15m_6_timestamp ON jupiter.candle_usd_15m_6 (timestamp desc);
+create index candle_usd_15m_7_timestamp ON jupiter.candle_usd_15m_7 (timestamp desc);
+create index candle_usd_15m_8_timestamp ON jupiter.candle_usd_15m_8 (timestamp desc);
 
 create table jupiter.candle_usd_1h
 (
@@ -138,7 +160,15 @@ create table jupiter.candle_usd_1h_7 partition of jupiter.candle_usd_1h for valu
 
 create table jupiter.candle_usd_1h_8 partition of jupiter.candle_usd_1h for values with (modulus 8, remainder 7);
 
-create index candle_usd_1h_timestamp ON jupiter.candle_usd_1h (timestamp desc);
+create index candle_usd_1h_1_timestamp ON jupiter.candle_usd_1h_1 (timestamp desc);
+create index candle_usd_1h_2_timestamp ON jupiter.candle_usd_1h_2 (timestamp desc);
+create index candle_usd_1h_3_timestamp ON jupiter.candle_usd_1h_3 (timestamp desc);
+create index candle_usd_1h_4_timestamp ON jupiter.candle_usd_1h_4 (timestamp desc);
+create index candle_usd_1h_5_timestamp ON jupiter.candle_usd_1h_5 (timestamp desc);
+create index candle_usd_1h_6_timestamp ON jupiter.candle_usd_1h_6 (timestamp desc);
+create index candle_usd_1h_7_timestamp ON jupiter.candle_usd_1h_7 (timestamp desc);
+create index candle_usd_1h_8_timestamp ON jupiter.candle_usd_1h_8 (timestamp desc);
+
 
 create table jupiter.candle_usd_6h
 (
@@ -173,7 +203,15 @@ create table jupiter.candle_usd_6h_7 partition of jupiter.candle_usd_6h for valu
 
 create table jupiter.candle_usd_6h_8 partition of jupiter.candle_usd_6h for values with (modulus 8, remainder 7);
 
-create index candle_usd_6h_timestamp ON jupiter.candle_usd_6h (timestamp desc);
+create index candle_usd_6h_1_timestamp ON jupiter.candle_usd_6h_1 (timestamp desc);
+create index candle_usd_6h_2_timestamp ON jupiter.candle_usd_6h_2 (timestamp desc);
+create index candle_usd_6h_3_timestamp ON jupiter.candle_usd_6h_3 (timestamp desc);
+create index candle_usd_6h_4_timestamp ON jupiter.candle_usd_6h_4 (timestamp desc);
+create index candle_usd_6h_5_timestamp ON jupiter.candle_usd_6h_5 (timestamp desc);
+create index candle_usd_6h_6_timestamp ON jupiter.candle_usd_6h_6 (timestamp desc);
+create index candle_usd_6h_7_timestamp ON jupiter.candle_usd_6h_7 (timestamp desc);
+create index candle_usd_6h_8_timestamp ON jupiter.candle_usd_6h_8 (timestamp desc);
+
 
 create table jupiter.candle_usd_1d
 (
@@ -208,4 +246,11 @@ create table jupiter.candle_usd_1d_7 partition of jupiter.candle_usd_1d for valu
 
 create table jupiter.candle_usd_1d_8 partition of jupiter.candle_usd_1d for values with (modulus 8, remainder 7);
 
-create index candle_usd_1d_timestamp ON jupiter.candle_usd_1d (timestamp desc);
+create index candle_usd_1d_1_timestamp ON jupiter.candle_usd_1d_1 (timestamp desc);
+create index candle_usd_1d_2_timestamp ON jupiter.candle_usd_1d_2 (timestamp desc);
+create index candle_usd_1d_3_timestamp ON jupiter.candle_usd_1d_3 (timestamp desc);
+create index candle_usd_1d_4_timestamp ON jupiter.candle_usd_1d_4 (timestamp desc);
+create index candle_usd_1d_5_timestamp ON jupiter.candle_usd_1d_5 (timestamp desc);
+create index candle_usd_1d_6_timestamp ON jupiter.candle_usd_1d_6 (timestamp desc);
+create index candle_usd_1d_7_timestamp ON jupiter.candle_usd_1d_7 (timestamp desc);
+create index candle_usd_1d_8_timestamp ON jupiter.candle_usd_1d_8 (timestamp desc);
