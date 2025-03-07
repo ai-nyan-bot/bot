@@ -14,7 +14,7 @@ impl CandleRepo {
         tx: &mut Tx<'a>,
         partition: Partition,
     ) -> RepoResult<()> {
-        let candle_price_table = format!("pumpfun.candle_1s_{partition}");
+        let candle_table = format!("pumpfun.candle_1s_{partition}");
         let swap_table = format!("pumpfun.swap_{partition}");
 
         sqlx::query(
@@ -22,7 +22,7 @@ impl CandleRepo {
                 r#"
 with last_timestamp as (
     select coalesce(
-       (select date_trunc('second', timestamp) as ts from {candle_price_table} order by timestamp desc limit 1) ,
+       (select date_trunc('second', timestamp) as ts from {candle_table} order by timestamp desc limit 1) ,
        (select timestamp - interval '1 second' as ts from {swap_table} order by timestamp limit 1),
        '1900-01-01 00:00:00'::timestamp
    ) as ts
@@ -216,7 +216,7 @@ previous_candles as (
                  c.second != r.timestamp
 ),
 insert_current_candle as (
-    insert into {candle_price_table} (
+    insert into {candle_table} (
         token_pair_id,
         timestamp,
         open,
@@ -276,19 +276,19 @@ insert_current_candle as (
         volume_sell = excluded.volume_sell,
         swap_sell = excluded.swap_sell
     where (
-           {candle_price_table}.open != excluded.open or
-           {candle_price_table}.high != excluded.high or
-           {candle_price_table}.low != excluded.low or
-           {candle_price_table}.close != excluded.close or
-           {candle_price_table}.avg != excluded.avg or
-           {candle_price_table}.amount_base_buy != excluded.amount_base_buy or
-           {candle_price_table}.amount_quote_buy != excluded.amount_quote_buy or
-           {candle_price_table}.volume_buy != excluded.volume_buy or
-           {candle_price_table}.swap_buy != excluded.swap_buy or
-           {candle_price_table}.amount_base_sell != excluded.amount_base_sell or
-           {candle_price_table}.amount_quote_sell != excluded.amount_quote_sell or
-           {candle_price_table}.volume_sell != excluded.volume_sell or
-           {candle_price_table}.swap_sell != excluded.swap_sell
+           {candle_table}.open != excluded.open or
+           {candle_table}.high != excluded.high or
+           {candle_table}.low != excluded.low or
+           {candle_table}.close != excluded.close or
+           {candle_table}.avg != excluded.avg or
+           {candle_table}.amount_base_buy != excluded.amount_base_buy or
+           {candle_table}.amount_quote_buy != excluded.amount_quote_buy or
+           {candle_table}.volume_buy != excluded.volume_buy or
+           {candle_table}.swap_buy != excluded.swap_buy or
+           {candle_table}.amount_base_sell != excluded.amount_base_sell or
+           {candle_table}.amount_quote_sell != excluded.amount_quote_sell or
+           {candle_table}.volume_sell != excluded.volume_sell or
+           {candle_table}.swap_sell != excluded.swap_sell
         )
     returning 1
 ),
@@ -300,12 +300,12 @@ previous_candles_to_update as (
     from previous_candles prev
 ),
 update_previous_candles as (
-    update {candle_price_table}
+    update {candle_table}
         set duration = prev.duration
     from previous_candles_to_update prev
     where
-        {candle_price_table}.token_pair_id = prev.token_pair_id and
-        {candle_price_table}.timestamp = prev.timestamp
+        {candle_table}.token_pair_id = prev.token_pair_id and
+        {candle_table}.timestamp = prev.timestamp
     returning 1
 )
 select * from update_previous_candles
