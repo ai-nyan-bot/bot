@@ -13,6 +13,11 @@ pub const USDC_MINT_STR: &str = "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v";
 pub const USDT_MINT_STR: &str = "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB";
 pub const WSOL_MINT_STR: &str = "So11111111111111111111111111111111111111112";
 
+pub const JITO_SOL_STR: &str = "J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn";
+pub const JUPSOL_MINT_STR: &str = "jupSoLaHXQiZZTSfEWMTRRgpnyFm8f6sZdosWBjx93v";
+pub const MSOL_MINT_STR: &str = "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So";
+pub const BNSOL_MINT_STR: &str = "BNso1VUJnh4zcfpZa6986Ea66P6TCp59hvtNJ8b1X85";
+
 #[derive(Debug, Clone, PartialEq, PartialOrd, Eq, Hash, Deserialize, Serialize, sqlx::Type)]
 #[sqlx(transparent)]
 pub struct Mint(pub PublicKey);
@@ -108,6 +113,22 @@ pub fn determine_mints(a: impl Into<Mint>, b: impl Into<Mint>) -> Option<(Mint, 
         Some((b, a))
     } else if b == WSOL_MINT_STR {
         Some((a, b))
+    } else if a == JITO_SOL_STR {
+        Some((b, a))
+    } else if b == JITO_SOL_STR {
+        Some((a, b))
+    } else if a == BNSOL_MINT_STR {
+        Some((b, a))
+    } else if b == BNSOL_MINT_STR {
+        Some((a, b))
+    } else if a == MSOL_MINT_STR {
+        Some((b, a))
+    } else if b == MSOL_MINT_STR {
+        Some((a, b))
+    } else if a == JUPSOL_MINT_STR {
+        Some((b, a))
+    } else if b == JUPSOL_MINT_STR {
+        Some((a, b))
     } else {
         None
     }
@@ -118,7 +139,8 @@ mod tests {
 
     mod determine_mints {
         use crate::model::token::mint::{
-            determine_mints, USDC_MINT_STR, USDT_MINT_STR, WSOL_MINT_STR,
+            determine_mints, JUPSOL_MINT_STR, MSOL_MINT_STR, USDC_MINT_STR, USDT_MINT_STR,
+            WSOL_MINT_STR,
         };
 
         #[test]
@@ -155,6 +177,15 @@ mod tests {
             };
             assert_eq!(base, BONK_MINT_STR);
             assert_eq!(quote, WSOL_MINT_STR);
+        }
+
+        #[test]
+        fn test_jupsol_msol() {
+            let Some((base, quote)) = determine_mints(JUPSOL_MINT_STR, MSOL_MINT_STR) else {
+                panic!()
+            };
+            assert_eq!(base, JUPSOL_MINT_STR);
+            assert_eq!(quote, MSOL_MINT_STR);
         }
 
         #[test]

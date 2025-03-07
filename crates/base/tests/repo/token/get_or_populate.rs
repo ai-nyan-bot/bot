@@ -25,7 +25,7 @@ async fn test_wsol() {
         assert_eq!(result.decimals, 9);
 
         let count = count_all(&mut tx).await;
-        assert_eq!(count, 3);
+        assert_eq!(count, 7);
     })
     .await
 }
@@ -44,7 +44,7 @@ async fn test_usdt() {
         assert_eq!(result.decimals, 6);
 
         let count = count_all(&mut tx).await;
-        assert_eq!(count, 3);
+        assert_eq!(count, 7);
     })
     .await
 }
@@ -63,7 +63,7 @@ async fn test_usdc() {
         assert_eq!(result.decimals, 6);
 
         let count = count_all(&mut tx).await;
-        assert_eq!(count, 3);
+        assert_eq!(count, 7);
     })
     .await
 }
@@ -83,7 +83,7 @@ async fn test_in_db() {
         assert_eq!(result.symbol.unwrap(), "1000");
 
         let count = count_all(&mut tx).await;
-        assert_eq!(count, 4);
+        assert_eq!(count, 8);
     })
     .await
 }
@@ -101,7 +101,7 @@ async fn test_in_cache() {
         assert_eq!(result.symbol.unwrap(), "1000");
 
         let count = count_all(&mut tx).await;
-        assert_eq!(count, 4);
+        assert_eq!(count, 8);
     })
     .await
 }
@@ -118,7 +118,7 @@ async fn test_insert() {
         assert_eq!(result.symbol.unwrap(), "1000");
 
         let count = count_all(&mut tx).await;
-        assert_eq!(count, 4);
+        assert_eq!(count, 8);
     })
     .await
 }
@@ -132,7 +132,7 @@ async fn unable_to_load() {
         assert_eq!(result.err().unwrap(), NotFound);
 
         let count = count_all(&mut tx).await;
-        assert_eq!(count, 3);
+        assert_eq!(count, 7);
     })
     .await
 }

@@ -39,7 +39,7 @@ async fn test_wsol_usdt() {
         assert_eq!(count, 3);
 
         let count = token::count_all(&mut tx).await;
-        assert_eq!(count, 3);
+        assert_eq!(count, 7);
     })
     .await
 }
@@ -74,7 +74,7 @@ async fn test_wsol_usdc() {
         assert_eq!(count, 3);
 
         let count = token::count_all(&mut tx).await;
-        assert_eq!(count, 3);
+        assert_eq!(count, 7);
     })
     .await
 }
@@ -109,7 +109,7 @@ async fn test_usdc_usdt() {
         assert_eq!(count, 3);
 
         let count = token::count_all(&mut tx).await;
-        assert_eq!(count, 3);
+        assert_eq!(count, 7);
     })
     .await
 }
@@ -146,7 +146,7 @@ async fn test_already_in_db() {
         assert_eq!(count, 4);
 
         let count = token::count_all(&mut tx).await;
-        assert_eq!(count, 4);
+        assert_eq!(count, 8);
     })
     .await
 }
@@ -182,7 +182,7 @@ async fn test_already_in_cache() {
         assert_eq!(count, 4);
 
         let count = token::count_all(&mut tx).await;
-        assert_eq!(count, 4);
+        assert_eq!(count, 8);
     })
     .await
 }
@@ -215,7 +215,7 @@ async fn test_insert_one() {
         assert_eq!(count, 4);
 
         let count = token::count_all(&mut tx).await;
-        assert_eq!(count, 4);
+        assert_eq!(count, 8);
     })
     .await
 }
@@ -315,7 +315,7 @@ async fn test_insert_many() {
         assert_eq!(count, 6);
 
         let count = token::count_all(&mut tx).await;
-        assert_eq!(count, 6);
+        assert_eq!(count, 10);
     })
     .await
 }
@@ -334,7 +334,7 @@ async fn test_unable_to_load() {
         assert_eq!(count, 3);
 
         let count = token::count_all(&mut tx).await;
-        assert_eq!(count, 3);
+        assert_eq!(count, 7);
     })
     .await
 }

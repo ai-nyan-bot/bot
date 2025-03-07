@@ -1,11 +1,13 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::Slot;
-use base::model::{AddressId, DecimalAmount, PriceQuote, TokenPairId};
+use crate::model::{Signature, Slot};
+use base::model::{AddressId, DecimalAmount, PriceQuote, TokenPairId, TradeId};
 use common::model::Timestamp;
 
+#[derive(Debug)]
 pub struct Trade {
+    pub id: TradeId,
     pub slot: Slot,
     pub address: AddressId,
     pub token_pair: TokenPairId,
@@ -14,4 +16,5 @@ pub struct Trade {
     pub price: PriceQuote,
     pub is_buy: bool,
     pub timestamp: Timestamp,
+    pub signature: Signature,
 }

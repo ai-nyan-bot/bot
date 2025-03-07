@@ -20,9 +20,9 @@ pub async fn list_all_trades<'a>(tx: &mut Tx<'a>) -> Vec<Trade> {
     ReadTradeRepo::new().list(tx).await.unwrap()
 }
 
-pub async fn list_of_tx<'a>(tx: &mut Tx<'a>, signature: impl Into<Signature>) -> Vec<Trade> {
+pub async fn list_with_signature<'a>(tx: &mut Tx<'a>, signature: impl Into<Signature>) -> Vec<Trade> {
     ReadTradeRepo::new()
-        .list_of_tx(tx, signature)
+        .list_with_signature(tx, signature)
         .await
         .unwrap()
 }

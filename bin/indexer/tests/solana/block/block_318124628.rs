@@ -43,7 +43,7 @@ async fn test_index_block_318124628() {
 		assert_pumpfun_trades(&mut tx).await;
 
 		let count = jupiter::count_all_trades(&mut tx).await;
-		assert_eq!(count, 5);
+		assert_eq!(count, 7);
 		assert_jupiter_trades(&mut tx).await;
 	})
 		.await
@@ -51,12 +51,11 @@ async fn test_index_block_318124628() {
 
 async fn assert_jupiter_trades<'a>(tx: &mut Tx<'a>) {
     let trades = jupiter::list_all_trades(tx).await;
-    assert_eq!(trades.len(), 5);
+    assert_eq!(trades.len(), 7);
 
-    // DYbMBUwwEdeMiQ6iCHRsKZuDRvkVLvKfkvdAF1rFbshRoNRb2cS5GQEVwwgGJG4vgTxB2TxmYtKX8jfrgmaQN44
     let trade = trades
         .iter()
-        .find(|t| t.amount_base == "0.000010703")
+        .find(|t| t.signature == "DYbMBUwwEdeMiQ6iCHRsKZuDRvkVLvKfkvdAF1rFbshRoNRb2cS5GQEVwwgGJG4vgTxB2TxmYtKX8jfrgmaQN44")
         .unwrap();
 
     assert_eq!(trade.address, 6);
@@ -70,49 +69,64 @@ async fn assert_jupiter_trades<'a>(tx: &mut Tx<'a>) {
         Timestamp::from_epoch_second(1738554016).unwrap()
     );
 
-    // 5tC86xHQJHj2oFd23P58bjNtkjQhAE3UDUAigLLJiKf3fmVhDP5YW9KzuZjSMxU5nzKf83njzcMNxoCbHDWNuv13
-    let trade = trades
-        .iter()
-        .find(|t| t.amount_base == "0.000010697")
-        .unwrap();
+	let trade = trades.iter().find(|t| t.signature == "5Nf5fuXHg1WRYvDcNPeq8ciDQHPGdqUvG1FHU3nEXVfDMqCCP9pMAanGK6YyqDP515tQ4kZJaQVQX5w1NUJXkdoS").unwrap();
 
-    assert_eq!(trade.address, 6);
-    assert_eq!(trade.token_pair, 2);
-    assert_eq!(trade.amount_base, "0.000010697");
-    assert_eq!(trade.amount_quote, "0.002072");
-    assert_eq!(trade.price, "193.699167991026");
-    assert!(!trade.is_buy);
-    assert_eq!(
-        trade.timestamp,
-        Timestamp::from_epoch_second(1738554016).unwrap()
-    );
+	assert_eq!(trade.address, 5);
+	assert_eq!(trade.amount_base, "920.381148");
+	assert_eq!(trade.amount_quote, "0.503951337");
 
-    // iMLZWF2Y26uvJL49yAqWBS2kQnC6D14Jr6Vyn2LpeYFZqWR5vsFMfiXm4pm7b8yobdEqoRTpT9VpADo9RWNQ3pB
-    let trade = trades.iter().find(|t| t.token_pair == 1004).unwrap();
+	assert_eq!(trade.price, "0.000547546349");
+	assert!(trade.is_buy);
+	assert_eq!(
+		trade.timestamp,
+		Timestamp::from_epoch_second(1738554016).unwrap()
+	);
 
-    assert_eq!(trade.address, 5);
-    assert_eq!(trade.amount_base, "274.241866");
-    assert_eq!(trade.amount_quote, "1.0");
-    assert_eq!(trade.price, "0.003646416262");
-    assert!(trade.is_buy);
-    assert_eq!(
-        trade.timestamp,
-        Timestamp::from_epoch_second(1738554016).unwrap()
-    );
-
-    // 5Nf5fuXHg1WRYvDcNPeq8ciDQHPGdqUvG1FHU3nEXVfDMqCCP9pMAanGK6YyqDP515tQ4kZJaQVQX5w1NUJXkdoS
-    let trade = trades.iter().find(|t| t.token_pair == 1005).unwrap();
-
-    assert_eq!(trade.address, 5);
-    assert_eq!(trade.amount_base, "920.381148");
-    assert_eq!(trade.amount_quote, "0.503951337");
+    let mut trades = trades
+        .into_iter()
+        .filter(|t| t.signature == "5tC86xHQJHj2oFd23P58bjNtkjQhAE3UDUAigLLJiKf3fmVhDP5YW9KzuZjSMxU5nzKf83njzcMNxoCbHDWNuv13")
+        .collect::<Vec<_>>();
+        
+    assert_eq!(trades.len(), 3);
     
-    assert_eq!(trade.price, "0.000547546349");
-    assert!(trade.is_buy);
+    let first = trades.pop().unwrap();
+    assert_eq!(first.address, 6);
+    assert_eq!(first.token_pair, 1006);
+    assert_eq!(first.amount_base, "8486000e-12");
+    assert_eq!(first.amount_quote, "10697000e-12");
+    assert_eq!(first.price, "1260546782937e-12");
+    assert!(first.is_buy);
     assert_eq!(
-        trade.timestamp,
+		first.timestamp,
         Timestamp::from_epoch_second(1738554016).unwrap()
     );
+
+
+	let second = trades.pop().unwrap();
+	assert_eq!(second.address, 6);
+	assert_eq!(second.token_pair, 1007);
+	assert_eq!(second.amount_base, "9906000e-12");
+	assert_eq!(second.amount_quote, "8486000e-12");
+	assert_eq!(second.price, "856652533818e-12");
+	assert!(second.is_buy);
+	assert_eq!(
+		second.timestamp,
+		Timestamp::from_epoch_second(1738554016).unwrap()
+	);
+
+
+	let third = trades.pop().unwrap();
+	assert_eq!(third.address, 6);
+	assert_eq!(third.token_pair, 1008);
+	assert_eq!(third.amount_base, "9906000e-12");
+	assert_eq!(third.amount_quote, "207200e-8");
+	assert_eq!(third.price, "209166161922067e-12");
+	assert!(!third.is_buy);
+	assert_eq!(
+		third.timestamp,
+		Timestamp::from_epoch_second(1738554016).unwrap()
+	);
+	
 }
 
 async fn assert_pumpfun_trades<'a>(tx: &mut Tx<'a>) {

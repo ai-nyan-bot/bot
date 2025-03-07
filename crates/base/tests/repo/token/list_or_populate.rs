@@ -28,7 +28,7 @@ async fn test_wsol() {
         assert_eq!(result.decimals, 9);
 
         let count = count_all(&mut tx).await;
-        assert_eq!(count, 3);
+        assert_eq!(count, 7);
     })
     .await
 }
@@ -49,7 +49,7 @@ async fn test_usdt() {
         assert_eq!(result.decimals, 6);
 
         let count = count_all(&mut tx).await;
-        assert_eq!(count, 3);
+        assert_eq!(count, 7);
     })
     .await
 }
@@ -70,7 +70,7 @@ async fn test_usdc() {
         assert_eq!(result.decimals, 6);
 
         let count = count_all(&mut tx).await;
-        assert_eq!(count, 3);
+        assert_eq!(count, 7);
     })
     .await
 }
@@ -93,7 +93,7 @@ async fn test_already_in_db() {
         assert_eq!(result.symbol.unwrap(), "1000");
 
         let count = count_all(&mut tx).await;
-        assert_eq!(count, 4);
+        assert_eq!(count,8);
     })
     .await
 }
@@ -112,7 +112,7 @@ async fn test_already_in_cache() {
         assert_eq!(result.symbol.unwrap(), "1000");
 
         let count = count_all(&mut tx).await;
-        assert_eq!(count, 4);
+        assert_eq!(count,8);
     })
     .await
 }
@@ -132,7 +132,7 @@ async fn test_insert_one() {
         assert_eq!(result.symbol.unwrap(), "1000");
 
         let count = count_all(&mut tx).await;
-        assert_eq!(count, 4);
+        assert_eq!(count,8);
     })
     .await
 }
@@ -185,7 +185,7 @@ async fn test_one_in_cache_one_in_db_one_insert() {
         assert_eq!(first.symbol.unwrap(), "1000");
 
         let count = count_all(&mut tx).await;
-        assert_eq!(count, 6);
+        assert_eq!(count, 10);
     })
     .await
 }
@@ -221,7 +221,7 @@ async fn test_insert_many() {
         assert_eq!(third.mint, "53nHsQXkzZUp5MF1BK6Qoa48ud3aXfDFJBbe1oECPucC");
 
         let count = count_all(&mut tx).await;
-        assert_eq!(count, 6);
+        assert_eq!(count, 10);
     })
     .await
 }
@@ -235,7 +235,7 @@ async fn test_unable_to_load() {
         assert_eq!(result.err().unwrap(), RepoError::NotFound);
 
         let count = count_all(&mut tx).await;
-        assert_eq!(count, 3);
+        assert_eq!(count, 7);
     })
     .await
 }

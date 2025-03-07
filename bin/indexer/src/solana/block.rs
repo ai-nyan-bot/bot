@@ -86,20 +86,19 @@ pub async fn index_block<L: LoadTokenInfo<Mint> + Clone>(state: State<L>, block:
                     for instruction in instructions {
                         match instruction {
                             solana::jupiter::model::Instruction::Trade { swaps, signer } => {
-                                let first = swaps.first().unwrap();
-                                let last = swaps.last().unwrap();
-
-                                if first.input_amount > 0 && last.output_amount > 0 {
-                                    jupiter_slot_trades.trades.push(
-                                        solana::jupiter::repo::SlotTrade {
-                                            input_mint: first.input_mint.clone(),
-                                            input_amount: first.input_amount,
-                                            output_mint: last.output_mint.clone(),
-                                            output_amount: last.output_amount,
-                                            wallet: signer,
-                                            signature: transaction.signature.clone(),
-                                        },
-                                    );
+                                for swap in &swaps {
+                                    if swap.input_amount > 0 && swap.output_amount > 0 {
+                                        jupiter_slot_trades.trades.push(
+                                            solana::jupiter::repo::SlotTrade {
+                                                input_mint: swap.input_mint.clone(),
+                                                input_amount: swap.input_amount,
+                                                output_mint: swap.output_mint.clone(),
+                                                output_amount: swap.output_amount,
+                                                wallet: signer.clone(),
+                                                signature: transaction.signature.clone(),
+                                            },
+                                        );
+                                    }
                                 }
                             }
                         }

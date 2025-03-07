@@ -64,7 +64,9 @@ insert into solana.token (id, version, mint, name, symbol, decimals, supply, met
         (1045, 0, 'Gjw4VmFEe7g2S2HFe8BXXNbHXtBAauYU34BgQZPL22Ja', 'Pi Network', 'PI', 6, 99999999883403548, 'https://ipfs.io/ipfs/QmRk5ZvFkP95kuGRz6HGnHb9w8EMGdUhvv9TarKGFUtSrE', null, null, null, '2025-02-28 23:15:51.718564 +00:00'),
         (1046, 0, '4Cnk9EPnW5ixfLZatCPJjDB1PUtcRpVVgTQukm9epump', 'DADDY TATE', 'DADDY', 6, 599643130922137, 'https://ipfs.io/ipfs/QmTY3L4rGs7Cu5aVsQSDaxcMMmwGk1AfeQRqi22vUBbUcE', null, null, null, '2025-02-28 23:15:51.718564 +00:00'),
         (1047, 0, 'AsP4pMLwSaGzWPFdKwdF6QoFDAcF6A3VqRWE8LYfpump', 'amm.pump.fun', 'amm.p.f', 6, 999687737338981, 'https://ipfs.io/ipfs/QmSqzU7fmgRFGJnmYBy9jWS92EMiH3Ah3TmGk5JTYt67Lx', null, null, null, '2025-02-28 23:15:51.718564 +00:00'),
-        (1048, 0, 'BKzpnzrePYoBz5x8GoACaneAS3XodkaXfVUZMs3nRFQN', 'Pi Network', 'PI', 6, 99999999983652428, 'https://ipfs.io/ipfs/QmRk5ZvFkP95kuGRz6HGnHb9w8EMGdUhvv9TarKGFUtSrE', null, null, null, '2025-02-28 23:15:51.718564 +00:00');
+        (1048, 0, 'BKzpnzrePYoBz5x8GoACaneAS3XodkaXfVUZMs3nRFQN', 'Pi Network', 'PI', 6, 99999999983652428, 'https://ipfs.io/ipfs/QmRk5ZvFkP95kuGRz6HGnHb9w8EMGdUhvv9TarKGFUtSrE', null, null, null, '2025-02-28 23:15:51.718564 +00:00'),
+        (1049, 0, 'FrkF4GNdqKZLuzWXTk1imqMJRGK9uxCRE3PaBKZbpump', 'Metadrip', 'DRIP', 6, 99999999983652428, 'https://ipfs.io/ipfs/', null, null, null, '2025-02-28 23:15:51.718564 +00:00'),
+        (1050, 0, '2sNvt9tRAW29cZgj3cVmwEGLJFfqb127GKnAiEN8iBxY', 'JobSeek AI', 'JOBSEEK', 9, 99999999983652428, 'https://ipfs.io/ipfs/', null, null, null, '2025-02-28 23:15:51.718564 +00:00');
         "#).await.unwrap();
 
 		let pumpfun_trade_repo = solana::pumpfun::repo::TradeRepo::testing(NeverCalledTokenInfoLoader{});
@@ -83,7 +85,7 @@ insert into solana.token (id, version, mint, name, symbol, decimals, supply, met
 		let count = pumpfun::count_all_trades(&mut tx).await;
 		assert_eq!(count, 41);
 
-		let mut trades = pumpfun::list_of_tx(&mut tx, "3QVGwMZgNUg4xoLd8eNNo6mXYNXVzro2MbKDZQ2Mz6Yogf22uswTcWZ7K5WKxGhrZccbtrV12rFVa6BGArfpFmn8").await;
+		let mut trades = pumpfun::list_with_signature(&mut tx, "3QVGwMZgNUg4xoLd8eNNo6mXYNXVzro2MbKDZQ2Mz6Yogf22uswTcWZ7K5WKxGhrZccbtrV12rFVa6BGArfpFmn8").await;
 		assert_eq!(trades.len(), 1);
 		let trade = trades.pop().unwrap();
 		assert_eq!(trade.amount_base, "0.035724");
@@ -95,9 +97,9 @@ insert into solana.token (id, version, mint, name, symbol, decimals, supply, met
 
 		let count = jupiter::count_all_trades(&mut tx).await;
 		// might be not correct - I just quickly eyeballed it
-		assert_eq!(count, 25);
+		assert_eq!(count, 34);
 
-		let mut trades = jupiter::list_of_tx(&mut tx, "74CYf6mYrv3bmAvfHfT1wQdZsSoRoUMYtN2w5fDS3CbdLSa51AZtvXD7RUHTYe5ff1TQ6H3XsaVoiebpHHB6Erm").await;
+		let mut trades = jupiter::list_with_signature(&mut tx, "74CYf6mYrv3bmAvfHfT1wQdZsSoRoUMYtN2w5fDS3CbdLSa51AZtvXD7RUHTYe5ff1TQ6H3XsaVoiebpHHB6Erm").await;
 		assert_eq!(trades.len(), 1);
 		let trade = trades.pop().unwrap();
 		assert_eq!(trade.amount_base, "136.264182");

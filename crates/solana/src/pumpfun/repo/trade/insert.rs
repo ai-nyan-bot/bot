@@ -7,7 +7,9 @@
 use crate::model::{Signature, Slot};
 use crate::pumpfun::model::{calculate_progress, Trade};
 use crate::pumpfun::repo::TradeRepo;
-use base::model::{AddressId, Amount, DecimalAmount, Mint, PriceQuote, PublicKey, TokenPairId};
+use base::model::{
+    AddressId, Amount, DecimalAmount, Mint, PriceQuote, PublicKey, TokenPairId, TradeId,
+};
 use base::LoadTokenInfo;
 use common::model::{Percent, Timestamp};
 use common::repo::{RepoResult, Tx};
@@ -142,7 +144,7 @@ select
     unnest($11::real[]) as progress,
     unnest($12::text[]) as signature
 on conflict (token_pair_id,signature) do nothing
-returning slot, address_id, token_pair_id, amount_base, amount_quote, price, is_buy, timestamp, virtual_base_reserves, virtual_quote_reserves, progress;  "#,
+returning id, slot, address_id, token_pair_id, amount_base, amount_quote, price, is_buy, timestamp, virtual_base_reserves, virtual_quote_reserves, progress, signature;  "#,
         )
         .bind(&slots)
         .bind(&address_ids)
@@ -162,6 +164,7 @@ returning slot, address_id, token_pair_id, amount_base, amount_quote, price, is_
         let inserted_trades = rows
             .into_iter()
             .map(|r| Trade {
+                id: r.get::<TradeId, _>("id"),
                 slot: r.get::<Slot, _>("slot"),
                 address: r.get::<AddressId, _>("address_id"),
                 token_pair: r.get::<TokenPairId, _>("token_pair_id"),
@@ -173,6 +176,7 @@ returning slot, address_id, token_pair_id, amount_base, amount_quote, price, is_
                 virtual_base_reserves: r.get::<Amount, _>("virtual_base_reserves"),
                 virtual_quote_reserves: r.get::<Amount, _>("virtual_quote_reserves"),
                 progress: r.get::<Percent, _>("progress"),
+                signature: r.get::<Signature, _>("signature"),
             })
             .collect::<Vec<_>>();
 

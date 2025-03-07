@@ -26,7 +26,11 @@ create trigger set_updated_at
 insert into solana.token (id, mint, name, symbol, decimals)
 values (1, 'So11111111111111111111111111111111111111112', 'Wrapped SOL', 'WSOL', 9),
        (2, 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB', 'USDT', 'USDT', 6),
-       (3, 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 'USD Coin', 'USDC', 6);
+       (3, 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 'USD Coin', 'USDC', 6),
+       (4, 'J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn', 'Jito Staked SOL', 'JitoSOL', 9),
+       (5, 'jupSoLaHXQiZZTSfEWMTRRgpnyFm8f6sZdosWBjx93v', 'Jupiter Staked SOL', 'JupSOL', 9),
+       (6, 'mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So', 'Marinade staked SOL', 'mSOL', 9),
+       (7, 'BNso1VUJnh4zcfpZa6986Ea66P6TCp59hvtNJ8b1X85', 'Binance Staked SOL', 'BNSOL', 9);
 
 alter sequence solana.token_id_seq restart with 1000;
 

@@ -9,13 +9,13 @@ use crate::jupiter::repo::TradeRepo;
 use crate::model::{Signature, Slot};
 use base::model::{
     determine_mints, AddressId, Amount, DecimalAmount, Mint, PriceAvgQuote, PriceQuote, PublicKey,
-    Token, TokenPair, TokenPairId, TokenPairMint,
+    Token, TokenPair, TokenPairId, TokenPairMint, TradeId,
 };
 use base::LoadTokenInfo;
 use bigdecimal::{BigDecimal, Zero};
 use common::model::Timestamp;
 use common::repo::{RepoResult, Tx};
-use log::trace;
+use log::{trace, warn};
 use sqlx::Row;
 use std::collections::HashMap;
 
@@ -72,6 +72,11 @@ impl<L: LoadTokenInfo<Mint>> TradeRepo<L> {
                 if !token_pairs.contains(&pair) {
                     token_pairs.push(pair);
                 }
+            } else {
+                warn!(
+                    "unable to determine mints for {} and {}",
+                    trade.input_mint, trade.output_mint
+                )
             }
         }
 
@@ -131,7 +136,7 @@ impl<L: LoadTokenInfo<Mint>> TradeRepo<L> {
                     unnest($8::timestamptz[]) as timestamp,
                     unnest($9::text[]) as signature
 on conflict (token_pair_id,signature) do nothing
-returning slot, address_id, token_pair_id, amount_base, amount_quote, price, is_buy, timestamp;
+returning id, slot, address_id, token_pair_id, amount_base, amount_quote, price, is_buy, timestamp, signature;
             "#,
             )
             .bind(&slots)
@@ -149,6 +154,7 @@ returning slot, address_id, token_pair_id, amount_base, amount_quote, price, is_
         let inserted_trades = rows
             .into_iter()
             .map(|r| Trade {
+                id: r.get::<TradeId, _>("id"),
                 slot: r.get::<Slot, _>("slot"),
                 address: r.get::<AddressId, _>("address_id"),
                 token_pair: r.get::<TokenPairId, _>("token_pair_id"),
@@ -157,6 +163,7 @@ returning slot, address_id, token_pair_id, amount_base, amount_quote, price, is_
                 price: r.get::<PriceQuote, _>("price"),
                 is_buy: r.get::<bool, _>("is_buy"),
                 timestamp: r.get::<Timestamp, _>("timestamp"),
+                signature: r.get::<Signature, _>("signature"),
             })
             .collect::<Vec<_>>();
 

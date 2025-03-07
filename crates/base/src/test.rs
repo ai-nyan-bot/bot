@@ -58,7 +58,7 @@ pub struct NeverCalledTokenInfoLoader {}
 
 #[async_trait]
 impl LoadTokenInfo<Mint> for NeverCalledTokenInfoLoader {
-    async fn load(&self, _mint: impl Into<Mint> + Send) -> Option<TokenInfo> {
-        panic!("This function shall never be called")
+    async fn load(&self, mint: impl Into<Mint> + Send) -> Option<TokenInfo> {
+        panic!("This function shall never be called for - {}", mint.into())
     }
 }
