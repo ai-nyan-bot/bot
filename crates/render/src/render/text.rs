@@ -10,6 +10,16 @@ pub struct Text {
     pub color: Rgba<u8>,
 }
 
+impl Text {
+    pub fn new(content: impl Into<String>, size: impl Into<FontSize>, color: Rgba<u8>) -> Self {
+        Self {
+            content: content.into(),
+            size: size.into(),
+            color,
+        }
+    }
+}
+
 pub struct RenderText {}
 
 impl RenderText {
@@ -18,7 +28,7 @@ impl RenderText {
         font: &Font,
         start_x: u32,
         start_y: u32,
-        text: &Text,
+        text: Text,
     ) -> Size {
         // let mut x_offset = (start_x + self.padding.0) as u32;
         let x_offset = start_x as u32;

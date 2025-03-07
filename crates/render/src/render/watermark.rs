@@ -17,7 +17,7 @@ impl RenderWatermark {
 
         // Reduce opacity to make it a watermark
         for pixel in watermark.pixels_mut() {
-            pixel.0[3] = 40; // Set transparency (0-255, lower = more transparent)
+            pixel.0[3] = 20; // Set transparency (0-255, lower = more transparent)
         }
 
         overlay(img, &watermark, 0, 0); // Position in bottom-right corner

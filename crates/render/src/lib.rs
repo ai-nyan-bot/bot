@@ -122,6 +122,15 @@ pub struct Point {
     pub y: Y,
 }
 
+impl Point {
+    pub fn new(x: impl Into<X>, y: impl Into<Y>) -> Self {
+        Self {
+            x: x.into(),
+            y: y.into(),
+        }
+    }
+}
+
 impl PartialEq<(u32, u32)> for Point {
     fn eq(&self, other: &(u32, u32)) -> bool {
         self.x.0 == other.0 && self.y == other.1

@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::{Point, Size};
-use rusttype::{Font as UnderlyingFont, LayoutIter, Scale};
+use rusttype::{point, Font as UnderlyingFont, LayoutIter, Scale};
 
 pub enum FontType {
     DejaVuSans,
@@ -47,11 +47,16 @@ impl<'font> Font<'font> {
         let v_metrics = self.font.v_metrics(scale);
         let height = (v_metrics.ascent - v_metrics.descent).ceil() as u32;
 
-        let width: u32 = text
-            .as_ref()
-            .chars()
-            .map(|c| self.font.glyph(c).scaled(scale).h_metrics().advance_width)
-            .sum::<f32>()
+        let glyphs: Vec<_> = self
+            .font
+            .layout(text.as_ref(), scale, point(0.0, 0.0))
+            .collect();
+
+        let width = if let Some(last) = glyphs.last() {
+            last.position().x + last.unpositioned().h_metrics().advance_width
+        } else {
+            0.0
+        }
             .ceil() as u32;
 
         Size {
@@ -59,6 +64,7 @@ impl<'font> Font<'font> {
             height: height.into(),
         }
     }
+
 
     pub fn layout<'s>(
         &'font self,

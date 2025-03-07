@@ -5,7 +5,7 @@ use crate::{markdown, AppState};
 use base::model::{Notification, TokenPairId, User};
 use base::service::NotificationResult;
 use common::model::Percent;
-use render::page::{pumpfun, PumpfunContext};
+use render::page::pumpfun::{pumpfun_summary, PumpfunSummary};
 use render::render;
 use solana::model::{
     ProgressWithChange, Summary, SummaryCurveProgress, SummarySwap, SwapsWithChange,
@@ -28,7 +28,8 @@ pub(crate) async fn send(
     let token_summary = state
         .pumpfun_token_service()
         .summarise(token_pair_id)
-        .await.unwrap();
+        .await
+        .unwrap();
 
     let symbol = token_summary.pair.symbol().to_string();
     // dbg!(&token_summary);
@@ -87,10 +88,12 @@ pub(crate) async fn send(
     // println!("{}", text);
 
     let image_path = render(|img| {
-        pumpfun(
+        pumpfun_summary(
             img,
-            PumpfunContext {
+            PumpfunSummary {
                 m1: None,
+                m5: None,
+                m15: None,
                 h1: Some(Summary {
                     token_pair: 1.into(),
                     curve_progress: SummaryCurveProgress {
@@ -133,6 +136,7 @@ pub(crate) async fn send(
                         },
                     },
                 }),
+                h6: None,
                 d1: None,
             },
         )
