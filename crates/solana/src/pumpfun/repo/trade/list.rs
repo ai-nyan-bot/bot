@@ -10,27 +10,6 @@ use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 
 impl ReadTradeRepo {
-    pub async fn list_most_recent<'a>(&self, tx: &mut Tx<'a>) -> RepoResult<Box<[Trade]>> {
-        Ok(sqlx::query("select * from pumpfun.trade_most_recent;")
-            .fetch_all(&mut **tx)
-            .await?
-            .iter()
-            .map(|r| Trade {
-                slot: r.get::<Slot, _>("slot"),
-                address: r.get::<AddressId, _>("address_id"),
-                token_pair: r.get::<TokenPairId, _>("token_pair_id"),
-                amount_base: r.get::<DecimalAmount, _>("amount_base"),
-                amount_quote: r.get::<DecimalAmount, _>("amount_quote"),
-                price: r.get::<PriceQuote, _>("price"),
-                is_buy: r.get::<bool, _>("is_buy"),
-                timestamp: r.get::<Timestamp, _>("timestamp"),
-                virtual_base_reserves: r.get::<Amount, _>("virtual_base_reserves"),
-                virtual_quote_reserves: r.get::<Amount, _>("virtual_quote_reserves"),
-                progress: r.get::<Percent, _>("progress"),
-            })
-            .collect::<Vec<_>>()
-            .into_boxed_slice())
-    }
 
     pub async fn list<'a>(&self, tx: &mut Tx<'a>) -> RepoResult<Vec<Trade>> {
         Ok(sqlx::query("select * from pumpfun.trade;")
