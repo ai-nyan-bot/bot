@@ -2,11 +2,12 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::page::pumpfun::summary::{
-	cell_x_end, cell_x_start, cell_y_end, cell_y_start, DECREASED, INCREASED, PADDING_HEIGHT,
+    cell_x_end, cell_x_start, cell_y_end, cell_y_start, DECREASED, INCREASED, PADDING_HEIGHT,
 };
 use crate::{Font, FontSize, Line, Point, RenderLine, RenderText, Text};
+use common::format::format_f64;
 use image::{Rgba, RgbaImage};
-use solana::model::{TimeframeSummary, SummaryCurveProgress};
+use solana::model::{SummaryCurveProgress, TimeframeSummary};
 use std::ops::Div;
 
 pub(crate) fn draw_table(img: &mut RgbaImage) {
@@ -108,7 +109,11 @@ fn draw_bonding_curve(
                 font,
                 x,
                 1,
-                Text::new(format!("{percent}%"), 32, Rgba([50, 50, 50, 255])),
+                Text::new(
+                    format!("{}%", format_f64(change.0)),
+                    32,
+                    Rgba([120, 120, 120, 255]),
+                ),
             );
 
             let color = if change > 0.0 {
@@ -116,7 +121,7 @@ fn draw_bonding_curve(
             } else if change < 0.0 {
                 DECREASED
             } else {
-                Rgba([50, 50, 50, 255])
+                Rgba([120, 120, 120, 255])
             };
 
             draw_cell_bottom(
@@ -124,7 +129,7 @@ fn draw_bonding_curve(
                 font,
                 x,
                 1,
-                Text::new(format!("{change}%"), 32, color),
+                Text::new(format!("{}%", format_f64(change.0)), 32, color),
             );
         } else {
             draw_cell_center(
@@ -132,7 +137,11 @@ fn draw_bonding_curve(
                 font,
                 x,
                 1,
-                Text::new(format!("{percent}%"), 32, Rgba([50, 50, 50, 255])),
+                Text::new(
+                    format!("{}%", format_f64(percent.0)),
+                    32,
+                    Rgba([120, 120, 120, 255]),
+                ),
             );
         }
     }

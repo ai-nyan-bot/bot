@@ -5,14 +5,10 @@ rust-version.workspace = true
 edition.workspace = true
 
 [dependencies]
-base = { path = "../../crates/base" }
 common = { path = "../../crates/common" }
 solana = { path = "../../crates/solana" }
 
-#ab_glyph = { version = "0.2.29" }
 image = { version = "0.25.5" }
-#imageproc = { version = "0.25.0" }
-rand = { workspace = true }
 rusttype = { version = "0.9.3" }
 tokio = { workspace = true }
 
