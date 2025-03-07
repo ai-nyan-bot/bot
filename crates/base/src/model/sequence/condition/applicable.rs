@@ -63,7 +63,7 @@ mod tests {
 
     mod and {
         use crate::model::Condition::Compare;
-        use crate::model::Field::{TradesBuy, TwitterAccountHandle};
+        use crate::model::Field::{SwapsBuy, TwitterAccountHandle};
         use crate::model::Operator::{Equal, MoreThan, NotEqual};
         use crate::model::{Condition, Value};
         use common::model::Timeframe::M15;
@@ -105,7 +105,7 @@ mod tests {
             let test_instance = Condition::And {
                 conditions: vec![
                     Compare {
-                        field: TradesBuy,
+                        field: SwapsBuy,
                         operator: MoreThan,
                         value: Value::count(1),
                         timeframe: Some(M15),
@@ -127,7 +127,7 @@ mod tests {
                 conditions: vec![
                     // applicable
                     Compare {
-                        field: TradesBuy,
+                        field: SwapsBuy,
                         operator: MoreThan,
                         value: Value::percent(1.0),
                         timeframe: Some(M15),
@@ -159,7 +159,7 @@ mod tests {
 
     mod or {
         use crate::model::Condition::Compare;
-        use crate::model::Field::{TradesBuy, TwitterAccountHandle};
+        use crate::model::Field::{SwapsBuy, TwitterAccountHandle};
         use crate::model::Operator::{Equal, IncreasedByMoreThan, MoreThan, NotEqual};
         use crate::model::{Condition, Value};
         use common::model::Timeframe::M15;
@@ -202,7 +202,7 @@ mod tests {
             let test_instance = Or {
                 conditions: vec![
                     Compare {
-                        field: TradesBuy,
+                        field: SwapsBuy,
                         operator: IncreasedByMoreThan,
                         value: Value::percent(1.0),
                         timeframe: Some(M15),
@@ -224,7 +224,7 @@ mod tests {
                 conditions: vec![
                     // applicable
                     Compare {
-                        field: TradesBuy,
+                        field: SwapsBuy,
                         operator: MoreThan,
                         value: Value::percent(1.0),
                         timeframe: Some(M15),
@@ -256,7 +256,7 @@ mod tests {
 
     mod and_not {
         use crate::model::Condition::{And, Compare, Or};
-        use crate::model::Field::{TradesBuy, TwitterAccountHandle};
+        use crate::model::Field::{SwapsBuy, TwitterAccountHandle};
         use crate::model::Operator::{Equal, IncreasedByMoreThan, MoreThan, NotEqual};
         use crate::model::{Condition, Value};
         use common::model::Timeframe::M15;
@@ -299,7 +299,7 @@ mod tests {
             let test_instance = AndNot {
                 conditions: vec![
                     Compare {
-                        field: TradesBuy,
+                        field: SwapsBuy,
                         operator: IncreasedByMoreThan,
                         value: Value::percent(1.0),
                         timeframe: Some(M15),
@@ -321,7 +321,7 @@ mod tests {
                 conditions: vec![
                     // applicable
                     Compare {
-                        field: TradesBuy,
+                        field: SwapsBuy,
                         operator: MoreThan,
                         value: Value::percent(1.0),
                         timeframe: Some(M15),

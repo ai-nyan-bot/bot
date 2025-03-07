@@ -3,9 +3,9 @@
 
 pub use curve::*;
 pub use instruction::*;
-pub use trade::*;
+pub use swap::*;
 
 mod curve;
 mod instruction;
-mod trade;
 pub mod summary;
+mod swap;

@@ -4,11 +4,11 @@
 pub use candle::{CandleQuery, CandleRepo};
 pub use curve::{CurveQuery, CurveRepo};
 pub use summary::{SummaryQuery, SummaryRepo};
-pub use trade::{ReadTradeRepo, SlotTrade, SlotTrades, TradeQueryAll, TradeRepo};
+pub use swap::{ReadSwapRepo, SlotSwap, SlotSwaps, SwapQueryAll, SwapRepo};
 pub use twap::{TwapQuery, TwapRepo};
 
 mod candle;
 mod curve;
 mod summary;
-mod trade;
+mod swap;
 mod twap;

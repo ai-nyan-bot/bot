@@ -150,9 +150,9 @@ async fn calculate_summary<'a>(
 		price_avg,
 		price_avg_usd,
 	
-		trade_buy,
-		trade_sell,
-		trade_buy + trade_sell as trade,
+		swap_buy,
+		swap_sell,
+		swap_buy + swap_sell as swap,
 	
 		volume_buy,
 		volume_buy_usd,
@@ -205,8 +205,8 @@ candles as(
 		   c.avg               as price_avg,
 		   cu.avg              as price_avg_usd,
 	
-		   c.trade_buy         as trade_buy,
-		   c.trade_sell        as trade_sell,
+		   c.swap_buy         as swap_buy,
+		   c.swap_sell        as swap_sell,
 	
 		   c.volume_buy        as volume_buy,
 		   cu.volume_buy       as volume_buy_usd,
@@ -313,15 +313,15 @@ insert into {destination_table} (
     price_avg_change,
     price_avg_usd_change,
     price_avg_percent,
-    trade,
-    trade_change,
-    trade_percent,
-    trade_buy,
-    trade_buy_change,
-    trade_buy_percent,
-    trade_sell,
-    trade_sell_change,
-    trade_sell_percent,
+    swap,
+    swap_change,
+    swap_percent,
+    swap_buy,
+    swap_buy_change,
+    swap_buy_percent,
+    swap_sell,
+    swap_sell_change,
+    swap_sell_percent,
     volume,
     volume_usd,
     volume_change,
@@ -440,17 +440,17 @@ select
     current.price_avg_usd - previous.price_avg_usd as price_avg_usd_change,
     (current.price_avg - previous.price_avg) / nullif(previous.price_avg, 0) * 100 as price_avg_percent,
 
-    current.trade as trade,
-    current.trade - previous.trade as trade_change,
-    (current.trade - previous.trade) / nullif(previous.trade, 0) * 100 as trade_percent,
+    current.swap as swap,
+    current.swap - previous.swap as swap_change,
+    (current.swap - previous.swap) / nullif(previous.swap, 0) * 100 as swap_percent,
 
-    current.trade_buy as trade_buy,
-    current.trade_buy - previous.trade_buy as trade_buy_change,
-    (current.trade_buy - previous.trade_buy) / nullif(previous.trade_buy, 0) * 100 as trade_buy_percent,
+    current.swap_buy as swap_buy,
+    current.swap_buy - previous.swap_buy as swap_buy_change,
+    (current.swap_buy - previous.swap_buy) / nullif(previous.swap_buy, 0) * 100 as swap_buy_percent,
 
-    current.trade_sell as trade_sell,
-    current.trade_sell - previous.trade_sell as trade_sell_change,
-    (current.trade_sell - previous.trade_sell) / nullif(previous.trade_sell, 0) * 100 as trade_sell_percent,
+    current.swap_sell as swap_sell,
+    current.swap_sell - previous.swap_sell as swap_sell_change,
+    (current.swap_sell - previous.swap_sell) / nullif(previous.swap_sell, 0) * 100 as swap_sell_percent,
 
     current.volume as volume,
     current.volume_usd as volume_usd,
@@ -569,15 +569,15 @@ on conflict (token_pair_id) do update set
 	price_avg_usd_change = excluded.price_avg_usd_change,
 	price_avg_percent = excluded.price_avg_percent,
 	
-	trade = excluded.trade,
-	trade_change = excluded.trade_change,
-	trade_percent = excluded.trade_percent,
-	trade_buy = excluded.trade_buy,
-	trade_buy_change = excluded.trade_buy_change,
-	trade_buy_percent = excluded.trade_buy_percent,
-	trade_sell = excluded.trade_sell,
-	trade_sell_change = excluded.trade_sell_change,
-	trade_sell_percent = excluded.trade_sell_percent,
+	swap = excluded.swap,
+	swap_change = excluded.swap_change,
+	swap_percent = excluded.swap_percent,
+	swap_buy = excluded.swap_buy,
+	swap_buy_change = excluded.swap_buy_change,
+	swap_buy_percent = excluded.swap_buy_percent,
+	swap_sell = excluded.swap_sell,
+	swap_sell_change = excluded.swap_sell_change,
+	swap_sell_percent = excluded.swap_sell_percent,
 	
 	volume = excluded.volume,
 	volume_usd = excluded.volume_usd,
@@ -690,15 +690,15 @@ where
     {destination_table}.price_avg_usd_change != excluded.price_avg_usd_change or
     {destination_table}.price_avg_percent != excluded.price_avg_percent or
     
-    {destination_table}.trade != excluded.trade or
-    {destination_table}.trade_change != excluded.trade_change or
-    {destination_table}.trade_percent != excluded.trade_percent or
-    {destination_table}.trade_buy != excluded.trade_buy or
-    {destination_table}.trade_buy_change != excluded.trade_buy_change or
-    {destination_table}.trade_buy_percent != excluded.trade_buy_percent or
-    {destination_table}.trade_sell != excluded.trade_sell or
-    {destination_table}.trade_sell_change != excluded.trade_sell_change or
-    {destination_table}.trade_sell_percent != excluded.trade_sell_percent or
+    {destination_table}.swap != excluded.swap or
+    {destination_table}.swap_change != excluded.swap_change or
+    {destination_table}.swap_percent != excluded.swap_percent or
+    {destination_table}.swap_buy != excluded.swap_buy or
+    {destination_table}.swap_buy_change != excluded.swap_buy_change or
+    {destination_table}.swap_buy_percent != excluded.swap_buy_percent or
+    {destination_table}.swap_sell != excluded.swap_sell or
+    {destination_table}.swap_sell_change != excluded.swap_sell_change or
+    {destination_table}.swap_sell_percent != excluded.swap_sell_percent or
 
     {destination_table}.volume != excluded.volume or
     {destination_table}.volume_usd != excluded.volume_usd or

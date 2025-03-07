@@ -69,43 +69,43 @@ insert into solana.token (id, version, mint, name, symbol, decimals, supply, met
         (1050, 0, '2sNvt9tRAW29cZgj3cVmwEGLJFfqb127GKnAiEN8iBxY', 'JobSeek AI', 'JOBSEEK', 9, 99999999983652428, 'https://ipfs.io/ipfs/', null, null, null, '2025-02-28 23:15:51.718564 +00:00');
         "#).await.unwrap();
 
-		let pumpfun_trade_repo = solana::pumpfun::repo::TradeRepo::testing(NeverCalledTokenInfoLoader{});
-		let jupiter_trade_repo = solana::jupiter::repo::TradeRepo::testing(NeverCalledTokenInfoLoader{});
+		let pumpfun_swap_repo = solana::pumpfun::repo::SwapRepo::testing(NeverCalledTokenInfoLoader{});
+		let jupiter_swap_repo = solana::jupiter::repo::SwapRepo::testing(NeverCalledTokenInfoLoader{});
 
 		let state = State(Arc::new(StateInner {
 			pool: pool.clone(),
-			pumpfun_trade_repo,
+			pumpfun_swap_repo,
 			pumpfun_curve_repo: Default::default(),
-			jupiter_trade_repo,
+			jupiter_swap_repo,
 		}));
 
 		index_block(state, block).await;
 
 		let mut tx = pool.begin().await.unwrap();
-		let count = pumpfun::count_all_trades(&mut tx).await;
+		let count = pumpfun::count_all_swaps(&mut tx).await;
 		assert_eq!(count, 41);
 
-		let mut trades = pumpfun::list_with_signature(&mut tx, "3QVGwMZgNUg4xoLd8eNNo6mXYNXVzro2MbKDZQ2Mz6Yogf22uswTcWZ7K5WKxGhrZccbtrV12rFVa6BGArfpFmn8").await;
-		assert_eq!(trades.len(), 1);
-		let trade = trades.pop().unwrap();
-		assert_eq!(trade.amount_base, "0.035724");
-		assert_eq!(trade.amount_quote, "0.000000001");
-		assert_eq!(trade.price, "2.7992E-8");
-		assert!(trade.is_buy);
-		assert_eq!(trade.virtual_base_reserves, 1072373976445263);
-		assert_eq!(trade.virtual_quote_reserves, 30017513238);
+		let mut swaps = pumpfun::list_with_signature(&mut tx, "3QVGwMZgNUg4xoLd8eNNo6mXYNXVzro2MbKDZQ2Mz6Yogf22uswTcWZ7K5WKxGhrZccbtrV12rFVa6BGArfpFmn8").await;
+		assert_eq!(swaps.len(), 1);
+		let swap = swaps.pop().unwrap();
+		assert_eq!(swap.amount_base, "0.035724");
+		assert_eq!(swap.amount_quote, "0.000000001");
+		assert_eq!(swap.price, "2.7992E-8");
+		assert!(swap.is_buy);
+		assert_eq!(swap.virtual_base_reserves, 1072373976445263);
+		assert_eq!(swap.virtual_quote_reserves, 30017513238);
 
-		let count = jupiter::count_all_trades(&mut tx).await;
+		let count = jupiter::count_all_swaps(&mut tx).await;
 		// might be not correct - I just quickly eyeballed it
 		assert_eq!(count, 34);
 
-		let mut trades = jupiter::list_with_signature(&mut tx, "74CYf6mYrv3bmAvfHfT1wQdZsSoRoUMYtN2w5fDS3CbdLSa51AZtvXD7RUHTYe5ff1TQ6H3XsaVoiebpHHB6Erm").await;
-		assert_eq!(trades.len(), 1);
-		let trade = trades.pop().unwrap();
-		assert_eq!(trade.amount_base, "136.264182");
-		assert_eq!(trade.amount_quote, "522.089475");
-		assert_eq!(trade.price, "3.831450549492");
-		assert!(trade.is_buy);
+		let mut swaps = jupiter::list_with_signature(&mut tx, "74CYf6mYrv3bmAvfHfT1wQdZsSoRoUMYtN2w5fDS3CbdLSa51AZtvXD7RUHTYe5ff1TQ6H3XsaVoiebpHHB6Erm").await;
+		assert_eq!(swaps.len(), 1);
+		let swap = swaps.pop().unwrap();
+		assert_eq!(swap.amount_base, "136.264182");
+		assert_eq!(swap.amount_quote, "522.089475");
+		assert_eq!(swap.price, "3.831450549492");
+		assert!(swap.is_buy);
 	})
 		.await
 }

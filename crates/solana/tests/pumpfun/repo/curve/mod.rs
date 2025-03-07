@@ -2,15 +2,15 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use common::model::Timestamp;
-use solana::pumpfun::repo::{SlotTrade, SlotTrades};
+use solana::pumpfun::repo::{SlotSwap, SlotSwaps};
 
 mod upsert;
 
-pub(crate) fn inserting_slot_trades() -> SlotTrades {
-    SlotTrades {
+pub(crate) fn inserting_slot_swaps() -> SlotSwaps {
+    SlotSwaps {
         slot: 12345.into(),
         timestamp: Timestamp::now(),
-        trades: vec![SlotTrade {
+        swaps: vec![SlotSwap {
             mint: "mint1".into(),
             amount_base: 1_000_000.into(),
             amount_quote: 2_000_000_000.into(),
@@ -23,11 +23,11 @@ pub(crate) fn inserting_slot_trades() -> SlotTrades {
     }
 }
 
-pub(crate) fn updating_slot_trades() -> SlotTrades {
-    SlotTrades {
+pub(crate) fn updating_slot_swaps() -> SlotSwaps {
+    SlotSwaps {
         slot: 23456.into(),
         timestamp: Timestamp::now(),
-        trades: vec![SlotTrade {
+        swaps: vec![SlotSwap {
             mint: "mint1".into(),
             amount_base: 1_000_000.into(),
             amount_quote: 2_000_000_000.into(),

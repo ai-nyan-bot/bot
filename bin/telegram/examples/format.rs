@@ -45,9 +45,9 @@ pub async fn main() {
     let symbol = "NYAN/WSOL";
     let progress = "12.34";
 
-    // let trades = 100;
-    let buy_trades = 75;
-    let sell_trades = 25;
+    // let swaps = 100;
+    let buy_swaps = 75;
+    let sell_swaps = 25;
 
     // let font = Font::default();
     // let bold_font = Font::new(Style::Bold);
@@ -57,15 +57,15 @@ pub async fn main() {
     //     ;* {symbol} ;*
     //     is ;* {progress} % ;* along the bonding curve and on its way to graduate to Raydium 🔥🚀
     //
-    //     ;*Trades;*
-    //     ;`All:    ;`;*{trades};*;`  ;`(+23 | +15.42%)🚀
-    //     ;`Buy:    ;`;*{buy_trades};*;`  ;`(+24 | +12.42%)🚀
-    //     ;`Sell:   ;`;*{sell_trades};*;`    ;`(+12 | +23.42%)🚀
+    //     ;*Swaps;*
+    //     ;`All:    ;`;*{swaps};*;`  ;`(+23 | +15.42%)🚀
+    //     ;`Buy:    ;`;*{buy_swaps};*;`  ;`(+24 | +12.42%)🚀
+    //     ;`Sell:   ;`;*{sell_swaps};*;`    ;`(+12 | +23.42%)🚀
     //
-    //     ;*Trades;*
-    //     All:;`     ;`;*{trades};*;`  ;`(+23 | +15.42%)🚀
-    //     Buy:;`     ;`;*{buy_trades};*;`  ;`(+24 | +12.42%)🚀
-    //     Sell:;`   ;`;*{sell_trades};*;`    ;`(+12 | +23.42%)🚀
+    //     ;*Swaps;*
+    //     All:;`     ;`;*{swaps};*;`  ;`(+23 | +15.42%)🚀
+    //     Buy:;`     ;`;*{buy_swaps};*;`  ;`(+24 | +12.42%)🚀
+    //     Sell:;`   ;`;*{sell_swaps};*;`    ;`(+12 | +23.42%)🚀
     //
     //     {}
     //     {}
@@ -98,26 +98,26 @@ pub async fn main() {
     // let builder = format!(
     //     "{}{}",
     //     builder,
-    //     block_formatter.trades(SummaryTrades {
-    //         buy: TradesWithChange {
-    //             trades: 0.into(),
+    //     block_formatter.swaps(SummarySwaps {
+    //         buy: SwapsWithChange {
+    //             swaps: 0.into(),
     //             change: None,
     //             change_percent: None,
     //         },
-    //         sell: TradesWithChange {
-    //             trades: 0.into(),
+    //         sell: SwapsWithChange {
+    //             swaps: 0.into(),
     //             change: None,
     //             change_percent: None,
     //         },
-    //         all: TradesWithChange {
-    //             trades: 0.into(),
+    //         all: SwapsWithChange {
+    //             swaps: 0.into(),
     //             change: None,
     //             change_percent: None,
     //         },
     //     })
     // );
 
-    // builder += markdown!("{}",bold_font.format("Trades")).as_str();
+    // builder += markdown!("{}",bold_font.format("Swaps")).as_str();
     // builder += "\n";
     // builder += markdown!("{}",font.format("All:")).as_str();
     // builder += "`  `";

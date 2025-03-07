@@ -44,19 +44,19 @@ pub fn index_solana(runtime: Runtime, config: Config) {
 
         let wallet_repo = AddressRepo::new();
 
-        let pumpfun_trade_repo =
-            solana::pumpfun::repo::TradeRepo::new(token_pair_repo.clone(), wallet_repo.clone());
-        let jupiter_trade_repo =
-            solana::jupiter::repo::TradeRepo::new(token_pair_repo.clone(), wallet_repo.clone());
+        let pumpfun_swap_repo =
+            solana::pumpfun::repo::SwapRepo::new(token_pair_repo.clone(), wallet_repo.clone());
+        let jupiter_swap_repo =
+            solana::jupiter::repo::SwapRepo::new(token_pair_repo.clone(), wallet_repo.clone());
 
         let state = State(Arc::new(StateInner {
             pool: pool.clone(),
             // token_repo: token_repo.clone(),
             // token_pair_repo,
             // wallet_repo,
-            pumpfun_trade_repo,
+            pumpfun_swap_repo,
             pumpfun_curve_repo: solana::pumpfun::repo::CurveRepo::new(),
-            jupiter_trade_repo,
+            jupiter_swap_repo,
         }));
 
         // let jupiter_parser = JupiterParser::new();

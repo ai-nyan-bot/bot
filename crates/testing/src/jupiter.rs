@@ -4,31 +4,31 @@
 use base::test::SuccessfulTokenInfoLoader;
 use common::model::Count;
 use common::repo::Tx;
-use solana::jupiter::model::Trade;
-use solana::jupiter::repo::{ReadTradeRepo, SlotTrades, TradeRepo};
+use solana::jupiter::model::Swap;
+use solana::jupiter::repo::{ReadSwapRepo, SlotSwaps, SwapRepo};
 use solana::model::Signature;
 
-pub async fn list_all_trades<'a>(tx: &mut Tx<'a>) -> Vec<Trade> {
-    ReadTradeRepo::new().list(tx).await.unwrap()
+pub async fn list_all_swaps<'a>(tx: &mut Tx<'a>) -> Vec<Swap> {
+    ReadSwapRepo::new().list(tx).await.unwrap()
 }
 
 pub async fn list_with_signature<'a>(
     tx: &mut Tx<'a>,
     signature: impl Into<Signature>,
-) -> Vec<Trade> {
-    ReadTradeRepo::new()
+) -> Vec<Swap> {
+    ReadSwapRepo::new()
         .list_with_signature(tx, signature)
         .await
         .unwrap()
 }
 
-pub async fn count_all_trades<'a>(tx: &mut Tx<'a>) -> Count {
-    ReadTradeRepo::new().count_all(tx).await.unwrap()
+pub async fn count_all_swaps<'a>(tx: &mut Tx<'a>) -> Count {
+    ReadSwapRepo::new().count_all(tx).await.unwrap()
 }
 
-pub async fn insert_trade<'a>(tx: &mut Tx<'a>, slot_trades: SlotTrades) -> Vec<Trade> {
-    TradeRepo::testing(SuccessfulTokenInfoLoader::default())
-        .insert_trades(tx, slot_trades)
+pub async fn insert_swap<'a>(tx: &mut Tx<'a>, slot_swaps: SlotSwaps) -> Vec<Swap> {
+    SwapRepo::testing(SuccessfulTokenInfoLoader::default())
+        .insert_swaps(tx, slot_swaps)
         .await
         .unwrap()
 }

@@ -35,10 +35,10 @@ impl Parser<Vec<Instruction>> for PumpFunParser {
                     reader.seek(8)?; // skip anchor method identifier
                     let disc = reader.read_range(8)?;
 
-                    if disc == TRADE_DISCRIMINANT {
-                        match parse_trade(&reader) {
+                    if disc == SWAP_DISCRIMINANT {
+                        match parse_swap(&reader) {
                             Err(err) => {
-                                return Err(log_and_return_parse_error(err, &tx.signature, "trade"))
+                                return Err(log_and_return_parse_error(err, &tx.signature, "swap"))
                             }
                             Ok(instr) => result.push(instr),
                         }
@@ -62,7 +62,7 @@ impl Parser<Vec<Instruction>> for PumpFunParser {
 }
 
 const CREATE_DISCRIMINANT: [u8; 8] = [27, 114, 169, 77, 222, 235, 99, 118];
-const TRADE_DISCRIMINANT: [u8; 8] = [189, 219, 127, 211, 78, 230, 97, 238];
+const SWAP_DISCRIMINANT: [u8; 8] = [189, 219, 127, 211, 78, 230, 97, 238];
 
 fn parse_create(reader: &ByteReader) -> ParseResult<Instruction> {
     Ok(Instruction::Create {
@@ -81,8 +81,8 @@ fn parse_create(reader: &ByteReader) -> ParseResult<Instruction> {
     })
 }
 
-fn parse_trade(reader: &ByteReader) -> ParseResult<Instruction> {
-    Ok(Instruction::Trade {
+fn parse_swap(reader: &ByteReader) -> ParseResult<Instruction> {
+    Ok(Instruction::Swap {
         mint: reader
             .read_range(32)
             .map(|d| Pubkey::try_from(d).ok())?
@@ -122,7 +122,7 @@ mod tests {
         let mut result = test_instance.parse(&tx).unwrap();
         assert_eq!(result.len(), 2);
 
-        let Instruction::Trade {
+        let Instruction::Swap {
             mint,
             sol_amount,
             token_amount,
@@ -170,14 +170,14 @@ mod tests {
     }
 
     #[test]
-    fn test_trade_sell() {
+    fn test_swap_sell() {
         let test_instance = PumpFunParser::new();
         let tx = transaction("2RqhBZykXDPG6qt5fDRJujKuZL9yqAXxQuMkJ4JC9u9fAJEe774dBVNi4E8UpAbdWB47GpBm1avug1a6VGNN3Ujv");
 
         let mut result = test_instance.parse(&tx).unwrap();
         assert_eq!(result.len(), 1);
 
-        let Instruction::Trade {
+        let Instruction::Swap {
             mint,
             sol_amount,
             token_amount,
@@ -201,14 +201,14 @@ mod tests {
     }
 
     #[test]
-    fn test_trade_with_multiple_transfers() {
+    fn test_swap_with_multiple_transfers() {
         let test_instance = PumpFunParser::new();
         let tx = transaction("AUvnh9oF5xEAG2f2ccZ8vbaKNcHwQf4CcD5Bas8HuAw8qXd26B5XxJkJYLmjVYyyVzxmwUp9AzZeDZqm4JRYE7X");
 
         let mut result = test_instance.parse(&tx).unwrap();
         assert_eq!(result.len(), 1);
 
-        let Instruction::Trade {
+        let Instruction::Swap {
             mint,
             sol_amount,
             token_amount,

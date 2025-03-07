@@ -30,16 +30,16 @@ pub async fn index_block<L: LoadTokenInfo<Mint> + Clone>(state: State<L>, block:
 
     // FIXME it would be interesting to see what the time difference is between indexing a block and the actual block time
 
-    let mut jupiter_slot_trades = solana::jupiter::repo::SlotTrades {
+    let mut jupiter_slot_swaps = solana::jupiter::repo::SlotSwaps {
         slot: block.slot,
         timestamp: block.timestamp,
-        trades: vec![],
+        swaps: vec![],
     };
 
-    let mut pumpfun_slot_trades = solana::pumpfun::repo::SlotTrades {
+    let mut pumpfun_slot_swaps = solana::pumpfun::repo::SlotSwaps {
         slot: block.slot,
         timestamp: block.timestamp,
-        trades: vec![],
+        swaps: vec![],
     };
 
     let tx_parsing_start = Instant::now();
@@ -51,7 +51,7 @@ pub async fn index_block<L: LoadTokenInfo<Mint> + Clone>(state: State<L>, block:
                     for instruction in instructions {
                         match instruction {
                             solana::pumpfun::model::Instruction::Create { .. } => {}
-                            solana::pumpfun::model::Instruction::Trade {
+                            solana::pumpfun::model::Instruction::Swap {
                                 mint,
                                 sol_amount,
                                 token_amount,
@@ -62,8 +62,8 @@ pub async fn index_block<L: LoadTokenInfo<Mint> + Clone>(state: State<L>, block:
                                 ..
                             } => {
                                 if sol_amount > 0 && token_amount > 0 {
-                                    pumpfun_slot_trades.trades.push(
-                                        solana::pumpfun::repo::SlotTrade {
+                                    pumpfun_slot_swaps.swaps.push(
+                                        solana::pumpfun::repo::SlotSwap {
                                             mint,
                                             amount_base: token_amount,
                                             amount_quote: sol_amount,
@@ -85,11 +85,11 @@ pub async fn index_block<L: LoadTokenInfo<Mint> + Clone>(state: State<L>, block:
                 if let Ok(instructions) = jupiter_parser.parse(&transaction) {
                     for instruction in instructions {
                         match instruction {
-                            solana::jupiter::model::Instruction::Trade { swaps, signer } => {
+                            solana::jupiter::model::Instruction::Swap { swaps, signer } => {
                                 for swap in &swaps {
                                     if swap.input_amount > 0 && swap.output_amount > 0 {
-                                        jupiter_slot_trades.trades.push(
-                                            solana::jupiter::repo::SlotTrade {
+                                        jupiter_slot_swaps.swaps.push(
+                                            solana::jupiter::repo::SlotSwap {
                                                 input_mint: swap.input_mint.clone(),
                                                 input_amount: swap.input_amount,
                                                 output_mint: swap.output_mint.clone(),
@@ -117,8 +117,8 @@ pub async fn index_block<L: LoadTokenInfo<Mint> + Clone>(state: State<L>, block:
     let slot = block.slot;
 
     let indexing_start = Instant::now();
-    pumpfun::index_trade(&mut tx, state.clone(), pumpfun_slot_trades).await;
-    jupiter::index_trade(&mut tx, state.clone(), jupiter_slot_trades).await;
+    pumpfun::index_swap(&mut tx, state.clone(), pumpfun_slot_swaps).await;
+    jupiter::index_swap(&mut tx, state.clone(), jupiter_slot_swaps).await;
     let indexing_done = Instant::now();
 
     debug!(

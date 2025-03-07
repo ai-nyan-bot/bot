@@ -8,7 +8,7 @@ use common::model::{Change, Count, Percent};
 pub struct Summary {
     pub token_pair: TokenPairId,
     pub curve_progress: SummaryCurveProgress,
-    pub trade: SummaryTrade,
+    pub swap: SummarySwap,
 }
 
 #[derive(Clone, Debug)]
@@ -21,14 +21,14 @@ pub struct SummaryCurveProgress {
 }
 
 #[derive(Clone, Debug)]
-pub struct SummaryTrade {
-    pub all: TradesWithChange,
-    pub buy: TradesWithChange,
-    pub sell: TradesWithChange,
+pub struct SummarySwap {
+    pub all: SwapsWithChange,
+    pub buy: SwapsWithChange,
+    pub sell: SwapsWithChange,
 }
 
 #[derive(Clone, Debug)]
-pub struct TradesWithChange {
+pub struct SwapsWithChange {
     pub count: Count,
     pub change: Option<Change>,
     pub percent: Option<Percent>,

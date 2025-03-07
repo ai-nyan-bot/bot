@@ -28,14 +28,14 @@ mod block_323481688;
 // 			env::var("SOLANA_RPC_URL").expect("SOLANA_RPC_URL must be set"),
 // 		);
 //
-// 		let pumpfun_trade_repo = solana::pumpfun::repo::TradeRepo::testing(rpc_loader.clone());
-// 		let jupiter_trade_repo = solana::jupiter::repo::TradeRepo::testing(rpc_loader.clone());
+// 		let pumpfun_swap_repo = solana::pumpfun::repo::SwapRepo::testing(rpc_loader.clone());
+// 		let jupiter_swap_repo = solana::jupiter::repo::SwapRepo::testing(rpc_loader.clone());
 //
 // 		let state = State(Arc::new(StateInner {
 // 			pool: pool.clone(),
-// 			pumpfun_trade_repo: pumpfun_trade_repo,
+// 			pumpfun_swap_repo: pumpfun_swap_repo,
 // 			pumpfun_curve_repo: Default::default(),
-// 			jupiter_trade_repo: jupiter_trade_repo,
+// 			jupiter_swap_repo: jupiter_swap_repo,
 // 		}));
 //
 // 		index_block(state, block).await;

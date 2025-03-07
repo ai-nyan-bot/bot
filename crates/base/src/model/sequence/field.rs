@@ -11,9 +11,9 @@ pub enum Field {
 
     Price,
     PriceAvg,
-    Trades,
-    TradesBuy,
-    TradesSell,
+    Swaps,
+    SwapsBuy,
+    SwapsSell,
     Volume,
 
     //

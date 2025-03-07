@@ -12,10 +12,10 @@ use std::str::FromStr;
 use std::sync::Arc;
 use std::u64;
 
-const TRADE_EVENT_DISCRIMINANT: [u8; 8] = [189, 219, 127, 211, 78, 230, 97, 238];
+const SWAP_EVENT_DISCRIMINANT: [u8; 8] = [189, 219, 127, 211, 78, 230, 97, 238];
 
 #[derive(Clone, Debug)]
-pub struct TradeEvent {
+pub struct SwapEvent {
     pub mint: Pubkey,
     pub sol_amount: u64,
     pub token_amount: u64,
@@ -26,9 +26,9 @@ pub struct TradeEvent {
     pub virtual_token_reserves: u64,
 }
 
-impl TradeEvent {
+impl SwapEvent {
     pub fn decode(reader: &ByteReader) -> Self {
-        TradeEvent {
+        SwapEvent {
             mint: Pubkey::try_from(reader.read_range(32).unwrap()).unwrap(),
             sol_amount: reader.read_u64().unwrap(),
             token_amount: reader.read_u64().unwrap(),
@@ -78,10 +78,10 @@ pub async fn main() {
                         reader.seek(8).unwrap(); // skip anchor method identifier
 
                         let disc = reader.read_range(8).unwrap();
-                        if disc == TRADE_EVENT_DISCRIMINANT {
-                            assert_eq!(disc, TRADE_EVENT_DISCRIMINANT);
+                        if disc == SWAP_EVENT_DISCRIMINANT {
+                            assert_eq!(disc, SWAP_EVENT_DISCRIMINANT);
 
-                            let evt = TradeEvent::decode(&reader);
+                            let evt = SwapEvent::decode(&reader);
                             dbg!(&evt);
                         }
                     }

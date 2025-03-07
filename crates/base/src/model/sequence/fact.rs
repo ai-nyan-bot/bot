@@ -9,12 +9,12 @@ use crate::model::{Condition, FactError, Field, Operator, Value, ValueType};
 use serde::{Deserialize, Serialize};
 use Fact::{
     CurveProgressAgeDuration, PriceAvgQuote, PriceAvgUsd, PriceQuote, PriceUsd, TelegramGroup,
-    TelegramGroupHandle, TradesBuyChangeCount, TradesBuyChangePercent, TradesBuyCount,
-    TradesChangeCount, TradesChangePercent, TradesCount, TradesSellChangeCount,
-    TradesSellChangePercent, TradesSellCount, TwitterAccount, TwitterAccountHandle,
+    TelegramGroupHandle, SwapsBuyChangeCount, SwapsBuyChangePercent, SwapsBuyCount,
+    SwapsChangeCount, SwapsChangePercent, SwapsCount, SwapsSellChangeCount,
+    SwapsSellChangePercent, SwapsSellCount, TwitterAccount, TwitterAccountHandle,
     VolumeChangeQuote,
 };
-use Field::{CurveProgress, CurveProgressAge, Price, Trades, TradesBuy, TradesSell, Volume};
+use Field::{CurveProgress, CurveProgressAge, Price, Swaps, SwapsBuy, SwapsSell, Volume};
 use Operator::{
     DecreasedByLessThan, DecreasedByLessThanEqual, DecreasedByMoreThan, DecreasedByMoreThanEqual,
     Equal, IncreasedByLessThan, IncreasedByLessThanEqual, IncreasedByMoreThan,
@@ -35,17 +35,17 @@ pub enum Fact {
     // PriceChangePercent,
     // PriceChangeQuote,
     // PriceChangeUsd,
-    TradesCount,
-    TradesBuyCount,
-    TradesSellCount,
+    SwapsCount,
+    SwapsBuyCount,
+    SwapsSellCount,
 
-    TradesChangeCount,
-    TradesBuyChangeCount,
-    TradesSellChangeCount,
+    SwapsChangeCount,
+    SwapsBuyChangeCount,
+    SwapsSellChangeCount,
 
-    TradesChangePercent,
-    TradesBuyChangePercent,
-    TradesSellChangePercent,
+    SwapsChangePercent,
+    SwapsBuyChangePercent,
+    SwapsSellChangePercent,
 
     // VolumeQuote,
     // VolumeUsd,
@@ -74,17 +74,17 @@ impl Fact {
             // PriceChangeQuote => true,
             // PriceChangePercent => true,
             // PriceChangeUsd => true,
-            TradesCount => true,
-            TradesBuyCount => true,
-            TradesSellCount => true,
+            SwapsCount => true,
+            SwapsBuyCount => true,
+            SwapsSellCount => true,
 
-            TradesChangeCount => true,
-            TradesBuyChangeCount => true,
-            TradesSellChangeCount => true,
+            SwapsChangeCount => true,
+            SwapsBuyChangeCount => true,
+            SwapsSellChangeCount => true,
 
-            TradesChangePercent => true,
-            TradesBuyChangePercent => true,
-            TradesSellChangePercent => true,
+            SwapsChangePercent => true,
+            SwapsBuyChangePercent => true,
+            SwapsSellChangePercent => true,
 
             // VolumeQuote => false,
             // VolumeUsd => false,
@@ -113,17 +113,17 @@ impl Fact {
             // PriceChangeQuote => Quote,
             // PriceChangeUsd => Usd,
             // PriceChangePercent => Percent,
-            TradesCount => Count,
-            TradesBuyCount => Count,
-            TradesSellCount => Count,
+            SwapsCount => Count,
+            SwapsBuyCount => Count,
+            SwapsSellCount => Count,
 
-            TradesChangeCount => Count,
-            TradesBuyChangeCount => Count,
-            TradesSellChangeCount => Count,
+            SwapsChangeCount => Count,
+            SwapsBuyChangeCount => Count,
+            SwapsSellChangeCount => Count,
 
-            TradesChangePercent => Percent,
-            TradesBuyChangePercent => Percent,
-            TradesSellChangePercent => Percent,
+            SwapsChangePercent => Percent,
+            SwapsBuyChangePercent => Percent,
+            SwapsSellChangePercent => Percent,
 
             // VolumeQuote => Quote,
             // VolumeUsd => Usd,
@@ -203,83 +203,83 @@ impl Fact {
             (PriceAvg, LessThan, Usd, true) => PriceAvgUsd,
             (PriceAvg, LessThanEqual, Usd, true) => PriceAvgUsd,
 
-            // TradesCount
-            (Trades, MoreThan, Count, true) => TradesCount,
-            (Trades, MoreThanEqual, Count, true) => TradesCount,
-            (Trades, LessThan, Count, true) => TradesCount,
-            (Trades, LessThanEqual, Count, true) => TradesCount,
+            // SwapsCount
+            (Swaps, MoreThan, Count, true) => SwapsCount,
+            (Swaps, MoreThanEqual, Count, true) => SwapsCount,
+            (Swaps, LessThan, Count, true) => SwapsCount,
+            (Swaps, LessThanEqual, Count, true) => SwapsCount,
 
-            // TradesBuyCount
-            (TradesBuy, MoreThan, Count, true) => TradesBuyCount,
-            (TradesBuy, MoreThanEqual, Count, true) => TradesBuyCount,
-            (TradesBuy, LessThan, Count, true) => TradesBuyCount,
-            (TradesBuy, LessThanEqual, Count, true) => TradesBuyCount,
+            // SwapsBuyCount
+            (SwapsBuy, MoreThan, Count, true) => SwapsBuyCount,
+            (SwapsBuy, MoreThanEqual, Count, true) => SwapsBuyCount,
+            (SwapsBuy, LessThan, Count, true) => SwapsBuyCount,
+            (SwapsBuy, LessThanEqual, Count, true) => SwapsBuyCount,
 
-            // TradesSellCount
-            (TradesSell, MoreThan, Count, true) => TradesSellCount,
-            (TradesSell, MoreThanEqual, Count, true) => TradesSellCount,
-            (TradesSell, LessThan, Count, true) => TradesSellCount,
-            (TradesSell, LessThanEqual, Count, true) => TradesSellCount,
+            // SwapsSellCount
+            (SwapsSell, MoreThan, Count, true) => SwapsSellCount,
+            (SwapsSell, MoreThanEqual, Count, true) => SwapsSellCount,
+            (SwapsSell, LessThan, Count, true) => SwapsSellCount,
+            (SwapsSell, LessThanEqual, Count, true) => SwapsSellCount,
 
-            // TradesChangeCount
-            (Trades, IncreasedByMoreThan, Count, true) => TradesChangeCount,
-            (Trades, IncreasedByMoreThanEqual, Count, true) => TradesChangeCount,
-            (Trades, IncreasedByLessThan, Count, true) => TradesChangeCount,
-            (Trades, IncreasedByLessThanEqual, Count, true) => TradesChangeCount,
-            (Trades, DecreasedByMoreThan, Count, true) => TradesChangeCount,
-            (Trades, DecreasedByMoreThanEqual, Count, true) => TradesChangeCount,
-            (Trades, DecreasedByLessThan, Count, true) => TradesChangeCount,
-            (Trades, DecreasedByLessThanEqual, Count, true) => TradesChangeCount,
+            // SwapsChangeCount
+            (Swaps, IncreasedByMoreThan, Count, true) => SwapsChangeCount,
+            (Swaps, IncreasedByMoreThanEqual, Count, true) => SwapsChangeCount,
+            (Swaps, IncreasedByLessThan, Count, true) => SwapsChangeCount,
+            (Swaps, IncreasedByLessThanEqual, Count, true) => SwapsChangeCount,
+            (Swaps, DecreasedByMoreThan, Count, true) => SwapsChangeCount,
+            (Swaps, DecreasedByMoreThanEqual, Count, true) => SwapsChangeCount,
+            (Swaps, DecreasedByLessThan, Count, true) => SwapsChangeCount,
+            (Swaps, DecreasedByLessThanEqual, Count, true) => SwapsChangeCount,
 
-            // TradesBuyChangeCount
-            (TradesBuy, IncreasedByMoreThan, Count, true) => TradesBuyChangeCount,
-            (TradesBuy, IncreasedByMoreThanEqual, Count, true) => TradesBuyChangeCount,
-            (TradesBuy, IncreasedByLessThan, Count, true) => TradesBuyChangeCount,
-            (TradesBuy, IncreasedByLessThanEqual, Count, true) => TradesBuyChangeCount,
-            (TradesBuy, DecreasedByMoreThan, Count, true) => TradesBuyChangeCount,
-            (TradesBuy, DecreasedByMoreThanEqual, Count, true) => TradesBuyChangeCount,
-            (TradesBuy, DecreasedByLessThan, Count, true) => TradesBuyChangeCount,
-            (TradesBuy, DecreasedByLessThanEqual, Count, true) => TradesBuyChangeCount,
+            // SwapsBuyChangeCount
+            (SwapsBuy, IncreasedByMoreThan, Count, true) => SwapsBuyChangeCount,
+            (SwapsBuy, IncreasedByMoreThanEqual, Count, true) => SwapsBuyChangeCount,
+            (SwapsBuy, IncreasedByLessThan, Count, true) => SwapsBuyChangeCount,
+            (SwapsBuy, IncreasedByLessThanEqual, Count, true) => SwapsBuyChangeCount,
+            (SwapsBuy, DecreasedByMoreThan, Count, true) => SwapsBuyChangeCount,
+            (SwapsBuy, DecreasedByMoreThanEqual, Count, true) => SwapsBuyChangeCount,
+            (SwapsBuy, DecreasedByLessThan, Count, true) => SwapsBuyChangeCount,
+            (SwapsBuy, DecreasedByLessThanEqual, Count, true) => SwapsBuyChangeCount,
 
-            // TradesSellChangeCount
-            (TradesSell, IncreasedByMoreThan, Count, true) => TradesSellChangeCount,
-            (TradesSell, IncreasedByMoreThanEqual, Count, true) => TradesSellChangeCount,
-            (TradesSell, IncreasedByLessThan, Count, true) => TradesSellChangeCount,
-            (TradesSell, IncreasedByLessThanEqual, Count, true) => TradesSellChangeCount,
-            (TradesSell, DecreasedByMoreThan, Count, true) => TradesSellChangeCount,
-            (TradesSell, DecreasedByMoreThanEqual, Count, true) => TradesSellChangeCount,
-            (TradesSell, DecreasedByLessThan, Count, true) => TradesSellChangeCount,
-            (TradesSell, DecreasedByLessThanEqual, Count, true) => TradesSellChangeCount,
+            // SwapsSellChangeCount
+            (SwapsSell, IncreasedByMoreThan, Count, true) => SwapsSellChangeCount,
+            (SwapsSell, IncreasedByMoreThanEqual, Count, true) => SwapsSellChangeCount,
+            (SwapsSell, IncreasedByLessThan, Count, true) => SwapsSellChangeCount,
+            (SwapsSell, IncreasedByLessThanEqual, Count, true) => SwapsSellChangeCount,
+            (SwapsSell, DecreasedByMoreThan, Count, true) => SwapsSellChangeCount,
+            (SwapsSell, DecreasedByMoreThanEqual, Count, true) => SwapsSellChangeCount,
+            (SwapsSell, DecreasedByLessThan, Count, true) => SwapsSellChangeCount,
+            (SwapsSell, DecreasedByLessThanEqual, Count, true) => SwapsSellChangeCount,
 
-            // TradesChangePercent
-            (Trades, IncreasedByMoreThan, Percent, true) => TradesChangePercent,
-            (Trades, IncreasedByMoreThanEqual, Percent, true) => TradesChangePercent,
-            (Trades, IncreasedByLessThan, Percent, true) => TradesChangePercent,
-            (Trades, IncreasedByLessThanEqual, Percent, true) => TradesChangePercent,
-            (Trades, DecreasedByMoreThan, Percent, true) => TradesChangePercent,
-            (Trades, DecreasedByMoreThanEqual, Percent, true) => TradesChangePercent,
-            (Trades, DecreasedByLessThan, Percent, true) => TradesChangePercent,
-            (Trades, DecreasedByLessThanEqual, Percent, true) => TradesChangePercent,
+            // SwapsChangePercent
+            (Swaps, IncreasedByMoreThan, Percent, true) => SwapsChangePercent,
+            (Swaps, IncreasedByMoreThanEqual, Percent, true) => SwapsChangePercent,
+            (Swaps, IncreasedByLessThan, Percent, true) => SwapsChangePercent,
+            (Swaps, IncreasedByLessThanEqual, Percent, true) => SwapsChangePercent,
+            (Swaps, DecreasedByMoreThan, Percent, true) => SwapsChangePercent,
+            (Swaps, DecreasedByMoreThanEqual, Percent, true) => SwapsChangePercent,
+            (Swaps, DecreasedByLessThan, Percent, true) => SwapsChangePercent,
+            (Swaps, DecreasedByLessThanEqual, Percent, true) => SwapsChangePercent,
 
-            // TradesBuyChangePercent
-            (TradesBuy, IncreasedByMoreThan, Percent, true) => TradesBuyChangePercent,
-            (TradesBuy, IncreasedByMoreThanEqual, Percent, true) => TradesBuyChangePercent,
-            (TradesBuy, IncreasedByLessThan, Percent, true) => TradesBuyChangePercent,
-            (TradesBuy, IncreasedByLessThanEqual, Percent, true) => TradesBuyChangePercent,
-            (TradesBuy, DecreasedByMoreThan, Percent, true) => TradesBuyChangePercent,
-            (TradesBuy, DecreasedByMoreThanEqual, Percent, true) => TradesBuyChangePercent,
-            (TradesBuy, DecreasedByLessThan, Percent, true) => TradesBuyChangePercent,
-            (TradesBuy, DecreasedByLessThanEqual, Percent, true) => TradesBuyChangePercent,
+            // SwapsBuyChangePercent
+            (SwapsBuy, IncreasedByMoreThan, Percent, true) => SwapsBuyChangePercent,
+            (SwapsBuy, IncreasedByMoreThanEqual, Percent, true) => SwapsBuyChangePercent,
+            (SwapsBuy, IncreasedByLessThan, Percent, true) => SwapsBuyChangePercent,
+            (SwapsBuy, IncreasedByLessThanEqual, Percent, true) => SwapsBuyChangePercent,
+            (SwapsBuy, DecreasedByMoreThan, Percent, true) => SwapsBuyChangePercent,
+            (SwapsBuy, DecreasedByMoreThanEqual, Percent, true) => SwapsBuyChangePercent,
+            (SwapsBuy, DecreasedByLessThan, Percent, true) => SwapsBuyChangePercent,
+            (SwapsBuy, DecreasedByLessThanEqual, Percent, true) => SwapsBuyChangePercent,
 
-            // TradesSellChangePercent
-            (TradesSell, IncreasedByMoreThan, Percent, true) => TradesSellChangePercent,
-            (TradesSell, IncreasedByMoreThanEqual, Percent, true) => TradesSellChangePercent,
-            (TradesSell, IncreasedByLessThan, Percent, true) => TradesSellChangePercent,
-            (TradesSell, IncreasedByLessThanEqual, Percent, true) => TradesSellChangePercent,
-            (TradesSell, DecreasedByMoreThan, Percent, true) => TradesSellChangePercent,
-            (TradesSell, DecreasedByMoreThanEqual, Percent, true) => TradesSellChangePercent,
-            (TradesSell, DecreasedByLessThan, Percent, true) => TradesSellChangePercent,
-            (TradesSell, DecreasedByLessThanEqual, Percent, true) => TradesSellChangePercent,
+            // SwapsSellChangePercent
+            (SwapsSell, IncreasedByMoreThan, Percent, true) => SwapsSellChangePercent,
+            (SwapsSell, IncreasedByMoreThanEqual, Percent, true) => SwapsSellChangePercent,
+            (SwapsSell, IncreasedByLessThan, Percent, true) => SwapsSellChangePercent,
+            (SwapsSell, IncreasedByLessThanEqual, Percent, true) => SwapsSellChangePercent,
+            (SwapsSell, DecreasedByMoreThan, Percent, true) => SwapsSellChangePercent,
+            (SwapsSell, DecreasedByMoreThanEqual, Percent, true) => SwapsSellChangePercent,
+            (SwapsSell, DecreasedByLessThan, Percent, true) => SwapsSellChangePercent,
+            (SwapsSell, DecreasedByLessThanEqual, Percent, true) => SwapsSellChangePercent,
 
             // VolumeChangeQuote
             (Volume, IncreasedByMoreThan, Quote, true) => VolumeChangeQuote,
@@ -464,438 +464,438 @@ mod tests {
     }
 
     #[test]
-    fn test_trades_count() {
+    fn test_swaps_count() {
         assert_eq!(
-            Fact::from_comparison(&Trades, &MoreThan, &Value::count(9924), true),
-            Some(TradesCount)
+            Fact::from_comparison(&Swaps, &MoreThan, &Value::count(9924), true),
+            Some(SwapsCount)
         );
         assert_eq!(
-            Fact::from_comparison(&Trades, &MoreThanEqual, &Value::count(9924), true),
-            Some(TradesCount)
+            Fact::from_comparison(&Swaps, &MoreThanEqual, &Value::count(9924), true),
+            Some(SwapsCount)
         );
         assert_eq!(
-            Fact::from_comparison(&Trades, &LessThan, &Value::count(9924), true),
-            Some(TradesCount)
+            Fact::from_comparison(&Swaps, &LessThan, &Value::count(9924), true),
+            Some(SwapsCount)
         );
         assert_eq!(
-            Fact::from_comparison(&Trades, &LessThanEqual, &Value::count(9924), true),
-            Some(TradesCount)
-        );
-    }
-
-    #[test]
-    fn test_trades_buy_count() {
-        assert_eq!(
-            Fact::from_comparison(&TradesBuy, &MoreThan, &Value::count(9924), true),
-            Some(TradesBuyCount)
-        );
-        assert_eq!(
-            Fact::from_comparison(&TradesBuy, &MoreThanEqual, &Value::count(9924), true),
-            Some(TradesBuyCount)
-        );
-        assert_eq!(
-            Fact::from_comparison(&TradesBuy, &LessThan, &Value::count(9924), true),
-            Some(TradesBuyCount)
-        );
-        assert_eq!(
-            Fact::from_comparison(&TradesBuy, &LessThanEqual, &Value::count(9924), true),
-            Some(TradesBuyCount)
+            Fact::from_comparison(&Swaps, &LessThanEqual, &Value::count(9924), true),
+            Some(SwapsCount)
         );
     }
 
     #[test]
-    fn test_trades_sell_count() {
+    fn test_swaps_buy_count() {
         assert_eq!(
-            Fact::from_comparison(&TradesSell, &MoreThan, &Value::count(9924), true),
-            Some(TradesSellCount)
+            Fact::from_comparison(&SwapsBuy, &MoreThan, &Value::count(9924), true),
+            Some(SwapsBuyCount)
         );
         assert_eq!(
-            Fact::from_comparison(&TradesSell, &MoreThanEqual, &Value::count(9924), true),
-            Some(TradesSellCount)
+            Fact::from_comparison(&SwapsBuy, &MoreThanEqual, &Value::count(9924), true),
+            Some(SwapsBuyCount)
         );
         assert_eq!(
-            Fact::from_comparison(&TradesSell, &LessThan, &Value::count(9924), true),
-            Some(TradesSellCount)
+            Fact::from_comparison(&SwapsBuy, &LessThan, &Value::count(9924), true),
+            Some(SwapsBuyCount)
         );
         assert_eq!(
-            Fact::from_comparison(&TradesSell, &LessThanEqual, &Value::count(9924), true),
-            Some(TradesSellCount)
+            Fact::from_comparison(&SwapsBuy, &LessThanEqual, &Value::count(9924), true),
+            Some(SwapsBuyCount)
         );
     }
 
     #[test]
-    fn test_trades_change_count() {
+    fn test_swaps_sell_count() {
         assert_eq!(
-            Fact::from_comparison(&Trades, &IncreasedByMoreThan, &Value::count(9924), true),
-            Some(TradesChangeCount)
+            Fact::from_comparison(&SwapsSell, &MoreThan, &Value::count(9924), true),
+            Some(SwapsSellCount)
+        );
+        assert_eq!(
+            Fact::from_comparison(&SwapsSell, &MoreThanEqual, &Value::count(9924), true),
+            Some(SwapsSellCount)
+        );
+        assert_eq!(
+            Fact::from_comparison(&SwapsSell, &LessThan, &Value::count(9924), true),
+            Some(SwapsSellCount)
+        );
+        assert_eq!(
+            Fact::from_comparison(&SwapsSell, &LessThanEqual, &Value::count(9924), true),
+            Some(SwapsSellCount)
+        );
+    }
+
+    #[test]
+    fn test_swaps_change_count() {
+        assert_eq!(
+            Fact::from_comparison(&Swaps, &IncreasedByMoreThan, &Value::count(9924), true),
+            Some(SwapsChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
-                &Trades,
+                &Swaps,
                 &IncreasedByMoreThanEqual,
                 &Value::count(9924),
                 true
             ),
-            Some(TradesChangeCount)
+            Some(SwapsChangeCount)
         );
         assert_eq!(
-            Fact::from_comparison(&Trades, &IncreasedByLessThan, &Value::count(9924), true),
-            Some(TradesChangeCount)
+            Fact::from_comparison(&Swaps, &IncreasedByLessThan, &Value::count(9924), true),
+            Some(SwapsChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
-                &Trades,
+                &Swaps,
                 &IncreasedByLessThanEqual,
                 &Value::count(9924),
                 true
             ),
-            Some(TradesChangeCount)
+            Some(SwapsChangeCount)
         );
         assert_eq!(
-            Fact::from_comparison(&Trades, &DecreasedByMoreThan, &Value::count(9924), true),
-            Some(TradesChangeCount)
+            Fact::from_comparison(&Swaps, &DecreasedByMoreThan, &Value::count(9924), true),
+            Some(SwapsChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
-                &Trades,
+                &Swaps,
                 &DecreasedByMoreThanEqual,
                 &Value::count(9924),
                 true
             ),
-            Some(TradesChangeCount)
+            Some(SwapsChangeCount)
         );
         assert_eq!(
-            Fact::from_comparison(&Trades, &DecreasedByLessThan, &Value::count(9924), true),
-            Some(TradesChangeCount)
+            Fact::from_comparison(&Swaps, &DecreasedByLessThan, &Value::count(9924), true),
+            Some(SwapsChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
-                &Trades,
+                &Swaps,
                 &DecreasedByLessThanEqual,
                 &Value::count(9924),
                 true
             ),
-            Some(TradesChangeCount)
+            Some(SwapsChangeCount)
         );
     }
 
     #[test]
-    fn test_trades_buy_change_count() {
+    fn test_swaps_buy_change_count() {
         assert_eq!(
-            Fact::from_comparison(&TradesBuy, &IncreasedByMoreThan, &Value::count(9924), true),
-            Some(TradesBuyChangeCount)
+            Fact::from_comparison(&SwapsBuy, &IncreasedByMoreThan, &Value::count(9924), true),
+            Some(SwapsBuyChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
-                &TradesBuy,
+                &SwapsBuy,
                 &IncreasedByMoreThanEqual,
                 &Value::count(9924),
                 true
             ),
-            Some(TradesBuyChangeCount)
+            Some(SwapsBuyChangeCount)
         );
         assert_eq!(
-            Fact::from_comparison(&TradesBuy, &IncreasedByLessThan, &Value::count(9924), true),
-            Some(TradesBuyChangeCount)
+            Fact::from_comparison(&SwapsBuy, &IncreasedByLessThan, &Value::count(9924), true),
+            Some(SwapsBuyChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
-                &TradesBuy,
+                &SwapsBuy,
                 &IncreasedByLessThanEqual,
                 &Value::count(9924),
                 true
             ),
-            Some(TradesBuyChangeCount)
+            Some(SwapsBuyChangeCount)
         );
         assert_eq!(
-            Fact::from_comparison(&TradesBuy, &DecreasedByMoreThan, &Value::count(9924), true),
-            Some(TradesBuyChangeCount)
+            Fact::from_comparison(&SwapsBuy, &DecreasedByMoreThan, &Value::count(9924), true),
+            Some(SwapsBuyChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
-                &TradesBuy,
+                &SwapsBuy,
                 &DecreasedByMoreThanEqual,
                 &Value::count(9924),
                 true
             ),
-            Some(TradesBuyChangeCount)
+            Some(SwapsBuyChangeCount)
         );
         assert_eq!(
-            Fact::from_comparison(&TradesBuy, &DecreasedByLessThan, &Value::count(9924), true),
-            Some(TradesBuyChangeCount)
+            Fact::from_comparison(&SwapsBuy, &DecreasedByLessThan, &Value::count(9924), true),
+            Some(SwapsBuyChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
-                &TradesBuy,
+                &SwapsBuy,
                 &DecreasedByLessThanEqual,
                 &Value::count(9924),
                 true
             ),
-            Some(TradesBuyChangeCount)
+            Some(SwapsBuyChangeCount)
         );
     }
 
     #[test]
-    fn test_trades_sell_change_count() {
+    fn test_swaps_sell_change_count() {
         assert_eq!(
-            Fact::from_comparison(&TradesSell, &IncreasedByMoreThan, &Value::count(9924), true),
-            Some(TradesSellChangeCount)
+            Fact::from_comparison(&SwapsSell, &IncreasedByMoreThan, &Value::count(9924), true),
+            Some(SwapsSellChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
-                &TradesSell,
+                &SwapsSell,
                 &IncreasedByMoreThanEqual,
                 &Value::count(9924),
                 true
             ),
-            Some(TradesSellChangeCount)
+            Some(SwapsSellChangeCount)
         );
         assert_eq!(
-            Fact::from_comparison(&TradesSell, &IncreasedByLessThan, &Value::count(9924), true),
-            Some(TradesSellChangeCount)
+            Fact::from_comparison(&SwapsSell, &IncreasedByLessThan, &Value::count(9924), true),
+            Some(SwapsSellChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
-                &TradesSell,
+                &SwapsSell,
                 &IncreasedByLessThanEqual,
                 &Value::count(9924),
                 true
             ),
-            Some(TradesSellChangeCount)
+            Some(SwapsSellChangeCount)
         );
         assert_eq!(
-            Fact::from_comparison(&TradesSell, &DecreasedByMoreThan, &Value::count(9924), true),
-            Some(TradesSellChangeCount)
+            Fact::from_comparison(&SwapsSell, &DecreasedByMoreThan, &Value::count(9924), true),
+            Some(SwapsSellChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
-                &TradesSell,
+                &SwapsSell,
                 &DecreasedByMoreThanEqual,
                 &Value::count(9924),
                 true
             ),
-            Some(TradesSellChangeCount)
+            Some(SwapsSellChangeCount)
         );
         assert_eq!(
-            Fact::from_comparison(&TradesSell, &DecreasedByLessThan, &Value::count(9924), true),
-            Some(TradesSellChangeCount)
+            Fact::from_comparison(&SwapsSell, &DecreasedByLessThan, &Value::count(9924), true),
+            Some(SwapsSellChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
-                &TradesSell,
+                &SwapsSell,
                 &DecreasedByLessThanEqual,
                 &Value::count(9924),
                 true
             ),
-            Some(TradesSellChangeCount)
+            Some(SwapsSellChangeCount)
         );
     }
 
     #[test]
-    fn test_trades_percent() {
+    fn test_swaps_percent() {
         assert_eq!(
-            Fact::from_comparison(&Trades, &IncreasedByMoreThan, &Value::percent(99.24), true),
-            Some(TradesChangePercent)
+            Fact::from_comparison(&Swaps, &IncreasedByMoreThan, &Value::percent(99.24), true),
+            Some(SwapsChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
-                &Trades,
+                &Swaps,
                 &IncreasedByMoreThanEqual,
                 &Value::percent(99.24),
                 true
             ),
-            Some(TradesChangePercent)
+            Some(SwapsChangePercent)
         );
         assert_eq!(
-            Fact::from_comparison(&Trades, &IncreasedByLessThan, &Value::percent(99.24), true),
-            Some(TradesChangePercent)
+            Fact::from_comparison(&Swaps, &IncreasedByLessThan, &Value::percent(99.24), true),
+            Some(SwapsChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
-                &Trades,
+                &Swaps,
                 &IncreasedByLessThanEqual,
                 &Value::percent(99.24),
                 true
             ),
-            Some(TradesChangePercent)
+            Some(SwapsChangePercent)
         );
         assert_eq!(
-            Fact::from_comparison(&Trades, &DecreasedByMoreThan, &Value::percent(99.24), true),
-            Some(TradesChangePercent)
+            Fact::from_comparison(&Swaps, &DecreasedByMoreThan, &Value::percent(99.24), true),
+            Some(SwapsChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
-                &Trades,
+                &Swaps,
                 &DecreasedByMoreThanEqual,
                 &Value::percent(99.24),
                 true
             ),
-            Some(TradesChangePercent)
+            Some(SwapsChangePercent)
         );
         assert_eq!(
-            Fact::from_comparison(&Trades, &DecreasedByLessThan, &Value::percent(99.24), true),
-            Some(TradesChangePercent)
+            Fact::from_comparison(&Swaps, &DecreasedByLessThan, &Value::percent(99.24), true),
+            Some(SwapsChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
-                &Trades,
+                &Swaps,
                 &DecreasedByLessThanEqual,
                 &Value::percent(99.24),
                 true
             ),
-            Some(TradesChangePercent)
+            Some(SwapsChangePercent)
         );
     }
 
     #[test]
-    fn test_trades_buy_percent() {
+    fn test_swaps_buy_percent() {
         assert_eq!(
             Fact::from_comparison(
-                &TradesBuy,
+                &SwapsBuy,
                 &IncreasedByMoreThan,
                 &Value::percent(99.24),
                 true
             ),
-            Some(TradesBuyChangePercent)
+            Some(SwapsBuyChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
-                &TradesBuy,
+                &SwapsBuy,
                 &IncreasedByMoreThanEqual,
                 &Value::percent(99.24),
                 true
             ),
-            Some(TradesBuyChangePercent)
+            Some(SwapsBuyChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
-                &TradesBuy,
+                &SwapsBuy,
                 &IncreasedByLessThan,
                 &Value::percent(99.24),
                 true
             ),
-            Some(TradesBuyChangePercent)
+            Some(SwapsBuyChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
-                &TradesBuy,
+                &SwapsBuy,
                 &IncreasedByLessThanEqual,
                 &Value::percent(99.24),
                 true
             ),
-            Some(TradesBuyChangePercent)
+            Some(SwapsBuyChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
-                &TradesBuy,
+                &SwapsBuy,
                 &DecreasedByMoreThan,
                 &Value::percent(99.24),
                 true
             ),
-            Some(TradesBuyChangePercent)
+            Some(SwapsBuyChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
-                &TradesBuy,
+                &SwapsBuy,
                 &DecreasedByMoreThanEqual,
                 &Value::percent(99.24),
                 true
             ),
-            Some(TradesBuyChangePercent)
+            Some(SwapsBuyChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
-                &TradesBuy,
+                &SwapsBuy,
                 &DecreasedByLessThan,
                 &Value::percent(99.24),
                 true
             ),
-            Some(TradesBuyChangePercent)
+            Some(SwapsBuyChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
-                &TradesBuy,
+                &SwapsBuy,
                 &DecreasedByLessThanEqual,
                 &Value::percent(99.24),
                 true
             ),
-            Some(TradesBuyChangePercent)
+            Some(SwapsBuyChangePercent)
         );
     }
 
     #[test]
-    fn test_trades_sell_percent() {
+    fn test_swaps_sell_percent() {
         assert_eq!(
             Fact::from_comparison(
-                &TradesSell,
+                &SwapsSell,
                 &IncreasedByMoreThan,
                 &Value::percent(99.24),
                 true
             ),
-            Some(TradesSellChangePercent)
+            Some(SwapsSellChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
-                &TradesSell,
+                &SwapsSell,
                 &IncreasedByMoreThanEqual,
                 &Value::percent(99.24),
                 true
             ),
-            Some(TradesSellChangePercent)
+            Some(SwapsSellChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
-                &TradesSell,
+                &SwapsSell,
                 &IncreasedByLessThan,
                 &Value::percent(99.24),
                 true
             ),
-            Some(TradesSellChangePercent)
+            Some(SwapsSellChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
-                &TradesSell,
+                &SwapsSell,
                 &IncreasedByLessThanEqual,
                 &Value::percent(99.24),
                 true
             ),
-            Some(TradesSellChangePercent)
+            Some(SwapsSellChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
-                &TradesSell,
+                &SwapsSell,
                 &DecreasedByMoreThan,
                 &Value::percent(99.24),
                 true
             ),
-            Some(TradesSellChangePercent)
+            Some(SwapsSellChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
-                &TradesSell,
+                &SwapsSell,
                 &DecreasedByMoreThanEqual,
                 &Value::percent(99.24),
                 true
             ),
-            Some(TradesSellChangePercent)
+            Some(SwapsSellChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
-                &TradesSell,
+                &SwapsSell,
                 &DecreasedByLessThan,
                 &Value::percent(99.24),
                 true
             ),
-            Some(TradesSellChangePercent)
+            Some(SwapsSellChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
-                &TradesSell,
+                &SwapsSell,
                 &DecreasedByLessThanEqual,
                 &Value::percent(99.24),
                 true
             ),
-            Some(TradesSellChangePercent)
+            Some(SwapsSellChangePercent)
         );
     }
 

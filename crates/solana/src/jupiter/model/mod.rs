@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 pub use instruction::*;
-pub use trade::*;
+pub use swap::*;
 
 mod instruction;
-mod trade;
+mod swap;

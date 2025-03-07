@@ -15,7 +15,7 @@ impl CandleRepo {
         partition: Partition,
     ) -> RepoResult<()> {
         let candle_progress_table = format!("pumpfun.candle_progress_1s_{partition}");
-        let trade_table = format!("pumpfun.trade_{partition}");
+        let swap_table = format!("pumpfun.swap_{partition}");
 
         sqlx::query(
             format!(
@@ -23,36 +23,36 @@ impl CandleRepo {
 with last_timestamp as (
     select coalesce(
        (select date_trunc('second', timestamp) as ts from {candle_progress_table} order by timestamp desc limit 1) ,
-       (select timestamp - interval '1 second' as ts from {trade_table} order by timestamp limit 1),
+       (select timestamp - interval '1 second' as ts from {swap_table} order by timestamp limit 1),
        '1900-01-01 00:00:00'::timestamp
    ) as ts
 ),
-next_trade_timestamp as (
+next_swap_timestamp as (
     select timestamp as ts
-    from {trade_table} trade
-    where trade.timestamp > (select ts from last_timestamp)
+    from {swap_table} swap
+    where swap.timestamp > (select ts from last_timestamp)
     order by timestamp
     limit 1
 ),
 timestamp as (
     select
-        (select ts from next_trade_timestamp) as start_ts,
-        (select ts from next_trade_timestamp) + interval '1 seconds' as end_ts
+        (select ts from next_swap_timestamp) as start_ts,
+        (select ts from next_swap_timestamp) + interval '1 seconds' as end_ts
 ),
-trades as (
+swaps as (
     select
         token_pair_id,
         timestamp as second,
         progress
     from
-        {trade_table}
+        {swap_table}
     where
-        -- to ensure that we get all trades, we are trailing the processing by one second
+        -- to ensure that we get all swaps, we are trailing the processing by one second
         timestamp <= date_trunc('second', now()) - interval '1 second' and
         timestamp >= (select start_ts from timestamp) and
         timestamp < (select end_ts from timestamp)
-         -- limit drastically reduces the search space - there should not be more than 100 trades per second so
-         -- so limiting it to 50k trades per second seems to be reasonable, which gives us a 500x speed up
+         -- limit drastically reduces the search space - there should not be more than 100 swaps per second so
+         -- so limiting it to 50k swaps per second seems to be reasonable, which gives us a 500x speed up
         limit 50000
 ),
 open_progress as (
@@ -61,7 +61,7 @@ open_progress as (
         second,
         progress as open_progress
     from
-        trades
+        swaps
     order by
         token_pair_id, second asc
 ),
@@ -71,7 +71,7 @@ close_progress as (
         second,
         progress as close_progress
     from
-        trades
+        swaps
     order by
         token_pair_id, second desc
 ),
@@ -85,7 +85,7 @@ current_candles as (
         min(t.progress) as low_progress,
         avg(t.progress) as avg
     from
-        trades t
+        swaps t
     join open_progress o on t.token_pair_id = o.token_pair_id and t.second = o.second
     join close_progress c on t.token_pair_id = c.token_pair_id and t.second = c.second
     group by

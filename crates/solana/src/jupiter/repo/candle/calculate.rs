@@ -15,7 +15,7 @@ impl CandleRepo {
         partition: Partition,
     ) -> RepoResult<()> {
         let candle_price_table = format!("jupiter.candle_1s_{partition}");
-        let trade_table = format!("jupiter.trade_{partition}");
+        let swap_table = format!("jupiter.swap_{partition}");
 
         sqlx::query(
             format!(
@@ -23,23 +23,23 @@ impl CandleRepo {
 with last_timestamp as (
     select coalesce(
        (select date_trunc('second', timestamp) as ts from {candle_price_table} order by timestamp desc limit 1) ,
-       (select timestamp - interval '1 second' as ts from {trade_table} order by timestamp limit 1),
+       (select timestamp - interval '1 second' as ts from {swap_table} order by timestamp limit 1),
        '1900-01-01 00:00:00'::timestamp
    ) as ts
 ),
-next_trade_timestamp as (
+next_swap_timestamp as (
     select timestamp as ts
-    from {trade_table} trade
-    where trade.timestamp > (select ts from last_timestamp)
+    from {swap_table} swap
+    where swap.timestamp > (select ts from last_timestamp)
     order by timestamp
     limit 1
 ),
 timestamp as (
     select
-        (select ts from next_trade_timestamp) as start_ts,
-        (select ts from next_trade_timestamp) + interval '1 seconds' as end_ts
+        (select ts from next_swap_timestamp) as start_ts,
+        (select ts from next_swap_timestamp) + interval '1 seconds' as end_ts
 ),
-trades as (
+swaps as (
     select
         token_pair_id,
         timestamp as second,
@@ -48,14 +48,14 @@ trades as (
         amount_quote as amount_quote,
         is_buy
     from
-        {trade_table}
+        {swap_table}
     where
-        -- to ensure that we get all trades, we are trailing the processing by one second
+        -- to ensure that we get all swaps, we are trailing the processing by one second
         timestamp <= date_trunc('second', now()) - interval '1 second' and
         timestamp >= (select start_ts from timestamp) and
         timestamp < (select end_ts from timestamp)
-         -- limit drastically reduces the search space - there should not be more than 100 trades per second so
-         -- so limiting it to 50k trades per second seems to be reasonable, which gives us a 500x speed up
+         -- limit drastically reduces the search space - there should not be more than 100 swaps per second so
+         -- so limiting it to 50k swaps per second seems to be reasonable, which gives us a 500x speed up
         limit 50000
 ),
 open_price as (
@@ -64,7 +64,7 @@ open_price as (
         second,
         price as open_price
     from
-        trades
+        swaps
     order by
         token_pair_id, second asc
 ),
@@ -74,7 +74,7 @@ close_price as (
         second,
         price as close_price
     from
-        trades
+        swaps
     order by
         token_pair_id, second desc
 ),
@@ -84,7 +84,7 @@ amount_base_buy as (
         second,
         sum(amount_base) as amount
     from
-        trades
+        swaps
     where is_buy = true
     group by
         token_pair_id, second
@@ -95,7 +95,7 @@ amount_quote_buy as (
         second,
         sum(amount_quote) as amount
     from
-        trades
+        swaps
     where is_buy = true
     group by
         token_pair_id, second
@@ -106,18 +106,18 @@ volume_buy as (
         second,
         sum(amount_quote * price) as volume
     from
-        trades
+        swaps
     where is_buy = true
     group by
         token_pair_id, second
 ),
-trade_buy as (
+swap_buy as (
     select
         token_pair_id,
         second,
-        count(*) as trades
+        count(*) as swaps
     from
-        trades
+        swaps
     where is_buy = true
     group by
         token_pair_id, second
@@ -128,7 +128,7 @@ amount_base_sell as (
         second,
         sum(amount_base) as amount
     from
-        trades
+        swaps
     where is_buy = false
     group by
         token_pair_id, second
@@ -139,7 +139,7 @@ amount_quote_sell as (
         second,
         sum(amount_quote) as amount
     from
-        trades
+        swaps
     where is_buy = false
     group by
         token_pair_id, second
@@ -150,18 +150,18 @@ volume_sell as (
         second,
         sum(amount_base * price) as volume
     from
-        trades
+        swaps
     where is_buy = false
     group by
         token_pair_id, second
 ),
-trade_sell as (
+swap_sell as (
     select
         token_pair_id,
         second,
-        count(*) as trades
+        count(*) as swaps
     from
-        trades
+        swaps
     where is_buy = false
     group by
         token_pair_id, second
@@ -177,24 +177,24 @@ current_candles as (
         avg(t.price) as avg,
         coalesce(bab.amount,0) as amount_base_buy,
         coalesce(baq.amount,0) as amount_quote_buy,
-        coalesce(bt.trades,0) as trade_buy,
+        coalesce(bt.swaps,0) as swap_buy,
         coalesce(bv.volume,0) as volume_buy,
         coalesce(sab.amount,0) as amount_base_sell,
         coalesce(saq.amount,0) as amount_quote_sell,
-        coalesce(st.trades,0) as trade_sell,
+        coalesce(st.swaps,0) as swap_sell,
         coalesce(sv.volume,0) as volume_sell
     from
-        trades t
+        swaps t
     join open_price o on t.token_pair_id = o.token_pair_id and t.second = o.second
     join close_price c on t.token_pair_id = c.token_pair_id and t.second = c.second
     left join amount_base_buy bab on t.token_pair_id = bab.token_pair_id and t.second = bab.second
     left join amount_quote_buy baq on t.token_pair_id = baq.token_pair_id and t.second = baq.second
     left join volume_buy bv on t.token_pair_id = bv.token_pair_id  and t.second = bv.second
-    left join trade_buy bt on t.token_pair_id = bt.token_pair_id  and t.second = bt.second
+    left join swap_buy bt on t.token_pair_id = bt.token_pair_id  and t.second = bt.second
     left join amount_base_sell sab on t.token_pair_id = sab.token_pair_id  and t.second = sab.second
     left join amount_quote_sell saq on t.token_pair_id = saq.token_pair_id  and t.second = saq.second
     left join volume_sell sv on t.token_pair_id = sv.token_pair_id  and t.second = sv.second
-    left join trade_sell st on t.token_pair_id = st.token_pair_id  and t.second = st.second
+    left join swap_sell st on t.token_pair_id = st.token_pair_id  and t.second = st.second
     group by
         t.token_pair_id,
         t.second,
@@ -202,11 +202,11 @@ current_candles as (
         c.close_price,
         bab.amount,
         baq.amount,
-        bt.trades,
+        bt.swaps,
         bv.volume,
         sab.amount,
         saq.amount,
-        st.trades,
+        st.swaps,
         sv.volume
 ),
 previous_candles as (
@@ -226,11 +226,11 @@ insert_current_candle as (
         avg,
         amount_base_buy,
         amount_quote_buy,
-        trade_buy,
+        swap_buy,
         volume_buy,
         amount_base_sell,
         amount_quote_sell,
-        trade_sell,
+        swap_sell,
         volume_sell,
         duration
     )
@@ -244,11 +244,11 @@ insert_current_candle as (
         cur.avg,
         cur.amount_base_buy,
         cur.amount_quote_buy,
-        cur.trade_buy,
+        cur.swap_buy,
         cur.volume_buy,
         cur.amount_base_sell,
         cur.amount_quote_sell,
-        cur.trade_sell,
+        cur.swap_sell,
         cur.volume_sell,
         null
     from
@@ -270,11 +270,11 @@ insert_current_candle as (
         amount_base_buy = excluded.amount_base_buy,
         amount_quote_buy = excluded.amount_quote_buy,
         volume_buy = excluded.volume_buy,
-        trade_buy = excluded.trade_buy,
+        swap_buy = excluded.swap_buy,
         amount_base_sell = excluded.amount_base_sell,
         amount_quote_sell = excluded.amount_quote_sell,
         volume_sell = excluded.volume_sell,
-        trade_sell = excluded.trade_sell
+        swap_sell = excluded.swap_sell
     where (
            {candle_price_table}.open != excluded.open or
            {candle_price_table}.high != excluded.high or
@@ -284,11 +284,11 @@ insert_current_candle as (
            {candle_price_table}.amount_base_buy != excluded.amount_base_buy or
            {candle_price_table}.amount_quote_buy != excluded.amount_quote_buy or
            {candle_price_table}.volume_buy != excluded.volume_buy or
-           {candle_price_table}.trade_buy != excluded.trade_buy or
+           {candle_price_table}.swap_buy != excluded.swap_buy or
            {candle_price_table}.amount_base_sell != excluded.amount_base_sell or
            {candle_price_table}.amount_quote_sell != excluded.amount_quote_sell or
            {candle_price_table}.volume_sell != excluded.volume_sell or
-           {candle_price_table}.trade_sell != excluded.trade_sell
+           {candle_price_table}.swap_sell != excluded.swap_sell
         )
     returning 1
 ),
@@ -449,17 +449,17 @@ aggregated_candles as (
         coalesce(avg(avg),0) as avg,
         sum(amount_base_buy) as amount_base_buy,
         sum(amount_quote_buy) as amount_quote_buy,
-        sum(trade_buy) as trade_buy,
+        sum(swap_buy) as swap_buy,
         sum(volume_buy) as volume_buy,
         sum(amount_base_sell) as amount_base_sell,
         sum(amount_quote_sell) as amount_quote_sell,
-        sum(trade_sell) as trade_sell,
+        sum(swap_sell) as swap_sell,
         sum(volume_sell) as volume_sell
     from {source_table}
         where
             timestamp > (select start_ts from timestamp) and
             timestamp < (select end_ts from timestamp) and
-            (trade_buy + trade_sell) > 0
+            (swap_buy + swap_sell) > 0
     group by token_pair_id, date_trunc('{time_unit}', timestamp) - (extract({time_unit} from timestamp)::int % {window}) * interval '1 {time_unit}'
 )
 insert into {destination_table} (
@@ -472,11 +472,11 @@ insert into {destination_table} (
     avg,
     amount_base_buy,
     amount_quote_buy,
-    trade_buy,
+    swap_buy,
     volume_buy,
     amount_base_sell,
     amount_quote_sell,
-    trade_sell,
+    swap_sell,
     volume_sell
 )
 select
@@ -489,11 +489,11 @@ select
     avg,
     amount_base_buy,
     amount_quote_buy,
-    trade_buy,
+    swap_buy,
     volume_buy,
     amount_base_sell,
     amount_quote_sell,
-    trade_sell,
+    swap_sell,
     volume_sell
 from aggregated_candles
 on conflict (token_pair_id, timestamp)
@@ -505,11 +505,11 @@ do update set
     avg = excluded.avg,
     amount_base_buy = excluded.amount_base_buy,
     amount_quote_buy = excluded.amount_quote_buy,
-    trade_buy = excluded.trade_buy,
+    swap_buy = excluded.swap_buy,
     volume_buy = excluded.volume_buy,
     amount_base_sell = excluded.amount_base_sell,
     amount_quote_sell = excluded.amount_quote_sell,
-    trade_sell = excluded.trade_sell,
+    swap_sell = excluded.swap_sell,
     volume_sell = excluded.volume_sell
 where (
        {destination_table}.open != excluded.open or
@@ -519,11 +519,11 @@ where (
        {destination_table}.avg != excluded.avg or
        {destination_table}.amount_base_buy != excluded.amount_base_buy or
        {destination_table}.amount_quote_buy != excluded.amount_quote_buy or
-       {destination_table}.trade_buy != excluded.trade_buy or
+       {destination_table}.swap_buy != excluded.swap_buy or
        {destination_table}.volume_buy != excluded.volume_buy or
        {destination_table}.amount_base_sell != excluded.amount_base_sell or
        {destination_table}.amount_quote_sell != excluded.amount_quote_sell or
-       {destination_table}.trade_sell != excluded.trade_sell or
+       {destination_table}.swap_sell != excluded.swap_sell or
        {destination_table}.volume_sell != excluded.volume_sell
     )
         "#

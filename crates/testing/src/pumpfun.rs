@@ -5,31 +5,31 @@ use base::test::SuccessfulTokenInfoLoader;
 use common::model::Count;
 use common::repo::Tx;
 use solana::model::Signature;
-use solana::pumpfun::model::Trade;
-use solana::pumpfun::repo::{CurveRepo, ReadTradeRepo, SlotTrades, TradeRepo};
+use solana::pumpfun::model::Swap;
+use solana::pumpfun::repo::{CurveRepo, ReadSwapRepo, SlotSwaps, SwapRepo};
 
 pub async fn count_all_curves<'a>(tx: &mut Tx<'a>) -> Count {
     CurveRepo::new().count_all(tx).await.unwrap()
 }
 
-pub async fn count_all_trades<'a>(tx: &mut Tx<'a>) -> Count {
-    ReadTradeRepo::new().count_all(tx).await.unwrap()
+pub async fn count_all_swaps<'a>(tx: &mut Tx<'a>) -> Count {
+    ReadSwapRepo::new().count_all(tx).await.unwrap()
 }
 
-pub async fn list_all_trades<'a>(tx: &mut Tx<'a>) -> Vec<Trade> {
-    ReadTradeRepo::new().list(tx).await.unwrap()
+pub async fn list_all_swaps<'a>(tx: &mut Tx<'a>) -> Vec<Swap> {
+    ReadSwapRepo::new().list(tx).await.unwrap()
 }
 
-pub async fn list_with_signature<'a>(tx: &mut Tx<'a>, signature: impl Into<Signature>) -> Vec<Trade> {
-    ReadTradeRepo::new()
+pub async fn list_with_signature<'a>(tx: &mut Tx<'a>, signature: impl Into<Signature>) -> Vec<Swap> {
+    ReadSwapRepo::new()
         .list_with_signature(tx, signature)
         .await
         .unwrap()
 }
 
-pub async fn insert_trade<'a>(tx: &mut Tx<'a>, slot_trades: SlotTrades) -> Vec<Trade> {
-    TradeRepo::testing(SuccessfulTokenInfoLoader::default())
-        .insert_trades(tx, slot_trades)
+pub async fn insert_swap<'a>(tx: &mut Tx<'a>, slot_swaps: SlotSwaps) -> Vec<Swap> {
+    SwapRepo::testing(SuccessfulTokenInfoLoader::default())
+        .insert_swaps(tx, slot_swaps)
         .await
         .unwrap()
 }

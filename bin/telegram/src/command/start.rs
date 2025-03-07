@@ -71,11 +71,11 @@ pub(crate) async fn start(bot: Bot, msg: Message, state: AppState) -> HandlerRes
     // 🟢 Market Cap Filter: Set a min/max market cap (e.g., $10-100k) to spot hidden gems or avoid pumps.
     // 🟢 Bonding Curve Progress: Aim for pump.fun tokens <50% bonded for early entries, or >80% for safer bets.
     // 🟢 Volume Spike Filter: Look for tokens that pumped >$30k over last 6 hours.
-    // 🟢 Trades per hour: Watch out for tokens that have rapid buy activity, like >30+ trades per hour as they are nearing the graduation threshold.
+    // 🟢 Swaps per hour: Watch out for tokens that have rapid buy activity, like >30+ swaps per hour as they are nearing the graduation threshold.
     // 🟢 1st 70 buyers: Check if the first 70 buyers are still holding, or if they bought more, and if the tokens have high concentration, e.g. >50% screams insider control or dev dumping!
-    // 🟢 Wallet Setup: Ensure your SOL balance is >0.1 SOL for trades—don’t get caught napping!
+    // 🟢 Wallet Setup: Ensure your SOL balance is >0.1 SOL for swaps—don’t get caught napping!
     //
-    // Verify trades via official links only.
+    // Verify swaps via official links only.
     //  ⚠️Ad Disclaimer:
     //  Heads up! We don’t control ads shown by Telegram here. Beware of fake airdrops, phishing links, or sketchy login pages—stick to https://nyan.bot for the real deal.
     //
@@ -101,7 +101,7 @@ Trading Tips & Rules💡:
 Set Your Conditions:
 🟢 Bonding Curve Progress: Aim for pump.fun tokens <50% bonded for early entries, or >80% for safer bets.  
  
-Verify trades via official links only.
+Verify swaps via official links only.
 
 ⚠️Ad Disclaimer⚠️:
 Heads up! We don’t control ads shown by Telegram here.

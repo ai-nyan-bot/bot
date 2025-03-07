@@ -819,7 +819,7 @@ pub fn pumpfun(img: &mut RgbaImage, ctx: PumpfunContext) {
     {
         let span = Span {
             words: vec![Text {
-                content: "Trades".into(),
+                content: "Swaps".into(),
                 size: 36.into(),
                 color: Rgba([100, 100, 100, 255]),
             }],
@@ -929,7 +929,7 @@ pub fn pumpfun(img: &mut RgbaImage, ctx: PumpfunContext) {
         if let Some(summary) = &ctx.h1 {
             let span = Span {
                 words: vec![Text {
-                    content: format!("{}", summary.trade.all.count.0),
+                    content: format!("{}", summary.swap.all.count.0),
                     size: 36.into(),
                     color: count,
                 }],
@@ -943,7 +943,7 @@ pub fn pumpfun(img: &mut RgbaImage, ctx: PumpfunContext) {
                 36 + 120 + 120 + 120 + 120,
             );
 
-            if let Some(change) = &summary.trade.all.percent {
+            if let Some(change) = &summary.swap.all.percent {
                 let span = Span {
                     words: vec![Text {
                         content: format!("{}%", change.0),
@@ -1155,7 +1155,7 @@ pub fn pumpfun(img: &mut RgbaImage, ctx: PumpfunContext) {
         if let Some(summary) = &ctx.h1 {
             let span = Span {
                 words: vec![Text {
-                    content: format!("{}", summary.trade.buy.count.0),
+                    content: format!("{}", summary.swap.buy.count.0),
                     size: 36.into(),
                     color: count,
                 }],
@@ -1169,7 +1169,7 @@ pub fn pumpfun(img: &mut RgbaImage, ctx: PumpfunContext) {
                 36 + 120 + 120 + 120 + 120 + 120,
             );
 
-            if let Some(change) = &summary.trade.buy.percent {
+            if let Some(change) = &summary.swap.buy.percent {
                 let span = Span {
                     words: vec![Text {
                         content: format!("{}%", change.0),
@@ -1391,7 +1391,7 @@ pub fn pumpfun(img: &mut RgbaImage, ctx: PumpfunContext) {
         if let Some(summary) = &ctx.h1 {
             let span = Span {
                 words: vec![Text {
-                    content: format!("{}", summary.trade.sell.count.0),
+                    content: format!("{}", summary.swap.sell.count.0),
                     size: 36.into(),
                     color: count,
                 }],
@@ -1405,7 +1405,7 @@ pub fn pumpfun(img: &mut RgbaImage, ctx: PumpfunContext) {
                 36 + 120 + 120 + 120 + 120 + 120 + 120,
             );
 
-            if let Some(change) = &summary.trade.sell.percent {
+            if let Some(change) = &summary.swap.sell.percent {
                 let span = Span {
                     words: vec![Text {
                         content: format!("{}%", change.0),

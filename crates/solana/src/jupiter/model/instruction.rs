@@ -5,7 +5,7 @@ use base::model::{Amount, Mint, PublicKey};
 
 #[derive(Debug)]
 pub enum Instruction {
-    Trade {
+    Swap {
         swaps: Vec<Jupiter6Swap>,
         signer: PublicKey,
     },

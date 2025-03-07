@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::{
-    ProgressWithChange, Summary, SummaryCurveProgress, SummaryTrade, TradesWithChange,
+    ProgressWithChange, Summary, SummaryCurveProgress, SummarySwap, SwapsWithChange,
 };
 use crate::pumpfun::repo::{SummaryQuery, SummaryRepo};
 use base::model::TokenPairId;
@@ -31,15 +31,15 @@ select
     curve_progress_avg,
     curve_progress_avg_change,
 
-    trade,
-    trade_change,
-    trade_percent,
-    trade_buy,
-    trade_buy_change,
-    trade_buy_percent,
-    trade_sell,
-    trade_sell_change,
-    trade_sell_percent
+    swap,
+    swap_change,
+    swap_percent,
+    swap_buy,
+    swap_buy_change,
+    swap_buy_percent,
+    swap_sell,
+    swap_sell_change,
+    swap_sell_percent
 from {table}
 "#,
         ));
@@ -55,7 +55,7 @@ from {table}
             .map(|row| Summary {
                 token_pair: row.get::<TokenPairId, _>("token_pair_id"),
                 curve_progress: row_to_curve_progress(&row),
-                trade: row_to_trades(&row),
+                swap: row_to_swaps(&row),
             })
             .collect::<Vec<_>>())
     }
@@ -86,22 +86,22 @@ fn row_to_curve_progress(row: &PgRow) -> SummaryCurveProgress {
     }
 }
 
-fn row_to_trades(row: &PgRow) -> SummaryTrade {
-    SummaryTrade {
-        buy: TradesWithChange {
-            count: row.get::<Count, _>("trade_buy"),
-            change: row.try_get::<Change, _>("trade_buy_change").ok(),
-            percent: row.try_get::<Percent, _>("trade_buy_percent").ok(),
+fn row_to_swaps(row: &PgRow) -> SummarySwap {
+    SummarySwap {
+        buy: SwapsWithChange {
+            count: row.get::<Count, _>("swap_buy"),
+            change: row.try_get::<Change, _>("swap_buy_change").ok(),
+            percent: row.try_get::<Percent, _>("swap_buy_percent").ok(),
         },
-        sell: TradesWithChange {
-            count: row.get::<Count, _>("trade_sell"),
-            change: row.try_get::<Change, _>("trade_sell_change").ok(),
-            percent: row.try_get::<Percent, _>("trade_sell_percent").ok(),
+        sell: SwapsWithChange {
+            count: row.get::<Count, _>("swap_sell"),
+            change: row.try_get::<Change, _>("swap_sell_change").ok(),
+            percent: row.try_get::<Percent, _>("swap_sell_percent").ok(),
         },
-        all: TradesWithChange {
-            count: row.get::<Count, _>("trade"),
-            change: row.try_get::<Change, _>("trade_change").ok(),
-            percent: row.try_get::<Percent, _>("trade_percent").ok(),
+        all: SwapsWithChange {
+            count: row.get::<Count, _>("swap"),
+            change: row.try_get::<Change, _>("swap_change").ok(),
+            percent: row.try_get::<Percent, _>("swap_percent").ok(),
         },
     }
 }

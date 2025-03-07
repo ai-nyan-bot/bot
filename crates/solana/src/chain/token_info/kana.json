@@ -4319,7 +4319,7 @@
     "address": "FNFKRV3V8DtA3gVJN6UshMiLGYA8izxFwkNWmJbFjmRj",
     "chainId": 101,
     "decimals": 6,
-    "name": "TabTrader Token",
+    "name": "TabSwapr Token",
     "symbol": "TTT",
     "logoURI": "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/FNFKRV3V8DtA3gVJN6UshMiLGYA8izxFwkNWmJbFjmRj/logo.svg",
     "tags": [
@@ -4327,7 +4327,7 @@
       "solana-fm"
     ],
     "extensions": {
-      "coingeckoId": "tabtrader"
+      "coingeckoId": "tabswapr"
     }
   },
   {
@@ -7680,7 +7680,7 @@
     "address": "EBQ6gWBQNxA2zB4twR5GWP6CkeAhqZZZeDgeP7BTtdM3",
     "chainId": 101,
     "decimals": 2,
-    "name": "PerpeTraders",
+    "name": "PerpeSwaprs",
     "symbol": "PERP",
     "logoURI": "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EBQ6gWBQNxA2zB4twR5GWP6CkeAhqZZZeDgeP7BTtdM3/logo.jpg",
     "tags": [

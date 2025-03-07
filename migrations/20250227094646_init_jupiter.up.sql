@@ -13,7 +13,7 @@ $$
 language plpgsql;
 
 
-create table jupiter.trade
+create table jupiter.swap
 (
     id            bigserial       not null,
     slot          int8            not null,
@@ -34,20 +34,20 @@ create table jupiter.trade
 
 ) partition by hash (token_pair_id);
 
-create index trade_token_pair_idx on jupiter.trade (token_pair_id);
+create index swap_token_pair_idx on jupiter.swap (token_pair_id);
 
-create table jupiter.trade_1 partition of jupiter.trade for values with (modulus 8, remainder 0);
+create table jupiter.swap_1 partition of jupiter.swap for values with (modulus 8, remainder 0);
 
-create table jupiter.trade_2 partition of jupiter.trade for values with (modulus 8, remainder 1);
+create table jupiter.swap_2 partition of jupiter.swap for values with (modulus 8, remainder 1);
 
-create table jupiter.trade_3 partition of jupiter.trade for values with (modulus 8, remainder 2);
+create table jupiter.swap_3 partition of jupiter.swap for values with (modulus 8, remainder 2);
 
-create table jupiter.trade_4 partition of jupiter.trade for values with (modulus 8, remainder 3);
+create table jupiter.swap_4 partition of jupiter.swap for values with (modulus 8, remainder 3);
 
-create table jupiter.trade_5 partition of jupiter.trade for values with (modulus 8, remainder 4);
+create table jupiter.swap_5 partition of jupiter.swap for values with (modulus 8, remainder 4);
 
-create table jupiter.trade_6 partition of jupiter.trade for values with (modulus 8, remainder 5);
+create table jupiter.swap_6 partition of jupiter.swap for values with (modulus 8, remainder 5);
 
-create table jupiter.trade_7 partition of jupiter.trade for values with (modulus 8, remainder 6);
+create table jupiter.swap_7 partition of jupiter.swap for values with (modulus 8, remainder 6);
 
-create table jupiter.trade_8 partition of jupiter.trade for values with (modulus 8, remainder 7);
+create table jupiter.swap_8 partition of jupiter.swap for values with (modulus 8, remainder 7);

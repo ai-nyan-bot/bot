@@ -13,7 +13,7 @@ $$
 language plpgsql;
 
 
-create table pumpfun.trade
+create table pumpfun.swap
 (
     id                     bigserial       not null,
     slot                   int8            not null,
@@ -37,20 +37,20 @@ create table pumpfun.trade
 
 ) partition by hash (token_pair_id);
 
-create index trade_token_pair_idx on pumpfun.trade (token_pair_id);
+create index swap_token_pair_idx on pumpfun.swap (token_pair_id);
 
-create table pumpfun.trade_1 partition of pumpfun.trade for values with (modulus 8, remainder 0);
+create table pumpfun.swap_1 partition of pumpfun.swap for values with (modulus 8, remainder 0);
 
-create table pumpfun.trade_2 partition of pumpfun.trade for values with (modulus 8, remainder 1);
+create table pumpfun.swap_2 partition of pumpfun.swap for values with (modulus 8, remainder 1);
 
-create table pumpfun.trade_3 partition of pumpfun.trade for values with (modulus 8, remainder 2);
+create table pumpfun.swap_3 partition of pumpfun.swap for values with (modulus 8, remainder 2);
 
-create table pumpfun.trade_4 partition of pumpfun.trade for values with (modulus 8, remainder 3);
+create table pumpfun.swap_4 partition of pumpfun.swap for values with (modulus 8, remainder 3);
 
-create table pumpfun.trade_5 partition of pumpfun.trade for values with (modulus 8, remainder 4);
+create table pumpfun.swap_5 partition of pumpfun.swap for values with (modulus 8, remainder 4);
 
-create table pumpfun.trade_6 partition of pumpfun.trade for values with (modulus 8, remainder 5);
+create table pumpfun.swap_6 partition of pumpfun.swap for values with (modulus 8, remainder 5);
 
-create table pumpfun.trade_7 partition of pumpfun.trade for values with (modulus 8, remainder 6);
+create table pumpfun.swap_7 partition of pumpfun.swap for values with (modulus 8, remainder 6);
 
-create table pumpfun.trade_8 partition of pumpfun.trade for values with (modulus 8, remainder 7);
+create table pumpfun.swap_8 partition of pumpfun.swap for values with (modulus 8, remainder 7);

@@ -23,7 +23,7 @@ pub struct StateInner<L: LoadTokenInfo<Mint>> {
     // pub token_repo: TokenRepo<RpcTokenInfoLoader>,
     // pub token_pair_repo: TokenPairRepo<RpcTokenInfoLoader>,
     // pub wallet_repo: AddressRepo,
-    pub pumpfun_trade_repo: solana::pumpfun::repo::TradeRepo<L>,
+    pub pumpfun_swap_repo: solana::pumpfun::repo::SwapRepo<L>,
     pub pumpfun_curve_repo: solana::pumpfun::repo::CurveRepo,
-    pub jupiter_trade_repo: solana::jupiter::repo::TradeRepo<L>,
+    pub jupiter_swap_repo: solana::jupiter::repo::SwapRepo<L>,
 }

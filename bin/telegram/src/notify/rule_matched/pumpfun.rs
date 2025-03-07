@@ -8,7 +8,7 @@ use common::model::Percent;
 use render::page::{pumpfun, PumpfunContext};
 use render::render;
 use solana::model::{
-    ProgressWithChange, Summary, SummaryCurveProgress, SummaryTrade, TradesWithChange,
+    ProgressWithChange, Summary, SummaryCurveProgress, SummarySwap, SwapsWithChange,
 };
 use teloxide::payloads::SendPhotoSetters;
 use teloxide::requests::Requester;
@@ -62,7 +62,7 @@ pub(crate) async fn send(
     // Liquidity:
     // Price:
     // Vol:
-    // Trades:
+    // Swaps:
     // Age: xx days or hours
     // "#
     //                 ),
@@ -70,12 +70,12 @@ pub(crate) async fn send(
     let progress = token_summary.curve.progress;
     let progress = format!("{:.2}", progress);
 
-    // let trades = token_summary.summary.trades.all.trades.0;
-    // let trades_change = token_summary.summary.trades.all.change.unwrap().0;
-    // let trades_percent = token_summary.summary.trades.all.change_percent.unwrap().0;
+    // let swaps = token_summary.summary.swaps.all.swaps.0;
+    // let swaps_change = token_summary.summary.swaps.all.change.unwrap().0;
+    // let swaps_percent = token_summary.summary.swaps.all.change_percent.unwrap().0;
     //
-    // let buy_trades = token_summary.summary.trades.buy.trades.0;
-    // let sell_trades = token_summary.summary.trades.sell.trades.0;
+    // let buy_swaps = token_summary.summary.swaps.buy.swaps.0;
+    // let sell_swaps = token_summary.summary.swaps.sell.swaps.0;
 
     let caption = markdown!(
         r#"
@@ -115,18 +115,18 @@ pub(crate) async fn send(
                             change: None,
                         },
                     },
-                    trade: SummaryTrade {
-                        all: TradesWithChange {
+                    swap: SummarySwap {
+                        all: SwapsWithChange {
                             count: 3.into(),
                             change: Some(1.into()),
                             percent: Some(33.3.into()),
                         },
-                        buy: TradesWithChange {
+                        buy: SwapsWithChange {
                             count: 2.into(),
                             change: Some(2.into()),
                             percent: Some(100.0.into()),
                         },
-                        sell: TradesWithChange {
+                        sell: SwapsWithChange {
                             count: 1.into(),
                             change: Some(1.into()),
                             percent: Some(Percent::from(-50.0)),

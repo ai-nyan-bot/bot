@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::Slot;
-use crate::pumpfun::model::{Curve, Trade};
+use crate::pumpfun::model::{Curve, Swap};
 use crate::pumpfun::repo::curve::CurveRepo;
 use base::model::{Amount, TokenPairId};
 use common::model::{AgeRelativeToLatestInSeconds, Percent};
@@ -10,7 +10,7 @@ use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 
 impl CurveRepo {
-    pub async fn upsert<'a>(&self, tx: &mut Tx<'a>, trade: Trade) -> RepoResult<Curve> {
+    pub async fn upsert<'a>(&self, tx: &mut Tx<'a>, swap: Swap) -> RepoResult<Curve> {
         Ok(sqlx::query(
             r#"
             insert into pumpfun.curve (
@@ -26,12 +26,12 @@ impl CurveRepo {
             returning id, slot, virtual_base_reserves, virtual_quote_reserves, progress, complete, updated_at
         "#
         )
-            .bind(trade.token_pair)
-            .bind(trade.slot)
-            .bind(trade.virtual_base_reserves)
-            .bind(trade.virtual_quote_reserves)
-            .bind(trade.progress.clone())
-            .bind(trade.progress >= 100.0)
+            .bind(swap.token_pair)
+            .bind(swap.slot)
+            .bind(swap.virtual_base_reserves)
+            .bind(swap.virtual_quote_reserves)
+            .bind(swap.progress.clone())
+            .bind(swap.progress >= 100.0)
             .fetch_one(&mut **tx)
             .await
             .map(|r| Curve {

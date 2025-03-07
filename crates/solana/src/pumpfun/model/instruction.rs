@@ -1,10 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use base::model::{
-	Amount, PublicKey, Mint, Name,
-	Symbol, Uri,
-};
+use base::model::{Amount, Mint, Name, PublicKey, Symbol, Uri};
 use common::model::Timestamp;
 
 #[derive(Debug)]
@@ -17,7 +14,7 @@ pub enum Instruction {
         bonding_curve: PublicKey,
         user: PublicKey,
     },
-    Trade {
+    Swap {
         mint: Mint,
         sol_amount: Amount,
         token_amount: Amount,
@@ -28,4 +25,3 @@ pub enum Instruction {
         virtual_token_reserves: Amount,
     },
 }
-

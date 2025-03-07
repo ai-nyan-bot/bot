@@ -14,9 +14,9 @@ pub async fn main() {
     let symbol = "NYAN/WSOL";
     let progress = "12.34";
 
-    // let trades = 100;
-    let buy_trades = 75;
-    let sell_trades = 25;
+    // let swaps = 100;
+    let buy_swaps = 75;
+    let sell_swaps = 25;
 
     let font = Font::new(FontType::DejaVuSans);
 
@@ -31,15 +31,15 @@ pub async fn main() {
     //     ;* {symbol} ;*
     //     is ;* {progress} % ;* along the bonding curve and on its way to graduate to Raydium 🔥🚀
     //
-    //     ;*Trades;*
-    //     ;`All:    ;`;*{trades};*;`  ;`(+23 | +15.42%)🚀
-    //     ;`Buy:    ;`;*{buy_trades};*;`  ;`(+24 | +12.42%)🚀
-    //     ;`Sell:   ;`;*{sell_trades};*;`    ;`(+12 | +23.42%)🚀
+    //     ;*Swaps;*
+    //     ;`All:    ;`;*{swaps};*;`  ;`(+23 | +15.42%)🚀
+    //     ;`Buy:    ;`;*{buy_swaps};*;`  ;`(+24 | +12.42%)🚀
+    //     ;`Sell:   ;`;*{sell_swaps};*;`    ;`(+12 | +23.42%)🚀
     //
-    //     ;*Trades;*
-    //     All:;`     ;`;*{trades};*;`  ;`(+23 | +15.42%)🚀
-    //     Buy:;`     ;`;*{buy_trades};*;`  ;`(+24 | +12.42%)🚀
-    //     Sell:;`   ;`;*{sell_trades};*;`    ;`(+12 | +23.42%)🚀
+    //     ;*Swaps;*
+    //     All:;`     ;`;*{swaps};*;`  ;`(+23 | +15.42%)🚀
+    //     Buy:;`     ;`;*{buy_swaps};*;`  ;`(+24 | +12.42%)🚀
+    //     Sell:;`   ;`;*{sell_swaps};*;`    ;`(+12 | +23.42%)🚀
     //
     //     {}
     //     {}
@@ -72,26 +72,26 @@ pub async fn main() {
     // let builder = format!(
     //     "{}{}",
     //     builder,
-    //     block_formatter.trades(SummaryTrades {
-    //         buy: TradesWithChange {
-    //             trades: 0.into(),
+    //     block_formatter.swaps(SummarySwaps {
+    //         buy: SwapsWithChange {
+    //             swaps: 0.into(),
     //             change: None,
     //             change_percent: None,
     //         },
-    //         sell: TradesWithChange {
-    //             trades: 0.into(),
+    //         sell: SwapsWithChange {
+    //             swaps: 0.into(),
     //             change: None,
     //             change_percent: None,
     //         },
-    //         all: TradesWithChange {
-    //             trades: 0.into(),
+    //         all: SwapsWithChange {
+    //             swaps: 0.into(),
     //             change: None,
     //             change_percent: None,
     //         },
     //     })
     // );
 
-    // builder += markdown!("{}",bold_font.format("Trades")).as_str();
+    // builder += markdown!("{}",bold_font.format("Swaps")).as_str();
     // builder += "\n";
     // builder += markdown!("{}",font.format("All:")).as_str();
     // builder += "`  `";
@@ -297,7 +297,7 @@ fn create_image() -> Result<(), Box<dyn std::error::Error>> {
     // let mut x = 0;
     // let mut y = 300;
     // // for line in 0..45 {
-    // // 	draw_text_mut(&mut img, black, x, y, scale, &font, "Trades");
+    // // 	draw_text_mut(&mut img, black, x, y, scale, &font, "Swaps");
     // // 	draw_text_mut(&mut img, black, x, y + s, scale, &font, "All: 1200");
     // // 	// draw_text_mut(&mut img, green, 400, y + 90, scale, &font, "+200");
     // // 	draw_text_mut(&mut img, green, 300, y + s, scale, &font, "3.24% (200)");
@@ -318,9 +318,9 @@ fn create_image() -> Result<(), Box<dyn std::error::Error>> {
     // // y += s;
     // // y += s;
     //
-    // println!("{:?}", measure_text_size("Trades: All 1200", 45.0));
+    // println!("{:?}", measure_text_size("Swaps: All 1200", 45.0));
     //
-    // draw_text_mut(&mut dyn_img, white, x, y, scale, &font, "Trades: All 1200");
+    // draw_text_mut(&mut dyn_img, white, x, y, scale, &font, "Swaps: All 1200");
     // draw_text_mut(&mut dyn_img, green, 300, y, scale, &font, "(3.24%)");
     // draw_text_mut(&mut dyn_img, white, 450, y, scale, &font, "Buy 1200");
     // draw_text_mut(&mut dyn_img, green, 650, y, scale, &font, "(3.24%)");

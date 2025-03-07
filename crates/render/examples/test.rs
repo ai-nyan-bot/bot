@@ -1,7 +1,7 @@
 use common::model::Percent;
 use image::RgbaImage;
 use render::page::{pumpfun, PumpfunContext};
-use solana::model::{ProgressWithChange, Summary, SummaryCurveProgress, SummaryTrade, TradesWithChange};
+use solana::model::{ProgressWithChange, Summary, SummaryCurveProgress, SummarySwap, SwapsWithChange};
 
 fn main() {
     let img_width = 1200;
@@ -21,18 +21,18 @@ fn main() {
                     close: ProgressWithChange { progress: None, change: None },
                     avg: ProgressWithChange { progress: None, change: None },
                 },
-                trade: SummaryTrade {
-                    all: TradesWithChange {
+                swap: SummarySwap {
+                    all: SwapsWithChange {
                         count: 3.into(),
                         change: Some(1.into()),
                         percent: Some(33.3.into()),
                     },
-                    buy: TradesWithChange {
+                    buy: SwapsWithChange {
                         count: 2.into(),
                         change: Some(2.into()),
                         percent: Some(100.0.into()),
                     },
-                    sell: TradesWithChange {
+                    sell: SwapsWithChange {
                         count: 1.into(),
                         change: Some(1.into()),
                         percent: Some(Percent::from(-50.0)),
