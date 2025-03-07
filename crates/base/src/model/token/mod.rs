@@ -7,11 +7,10 @@ pub use description::Description;
 pub use id::{TokenId, TokenPairId};
 pub use mint::{determine_mints, Mint, TokenPairMint};
 pub use name::Name;
-pub use price::*;
+pub use common::model::price::*;
 use std::fmt::{Display, Formatter};
 pub use symbol::Symbol;
 pub use uri::Uri;
-pub use volume::*;
 
 mod amount;
 mod decimals;
@@ -19,10 +18,8 @@ mod description;
 mod id;
 mod mint;
 mod name;
-mod price;
 mod symbol;
 mod uri;
-mod volume;
 
 #[derive(Debug, Clone)]
 pub struct Token {

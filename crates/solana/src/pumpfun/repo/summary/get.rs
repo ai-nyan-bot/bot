@@ -2,11 +2,14 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::{
-    ProgressWithChange, SummaryCurveProgress, SummarySwap, SwapsWithChange, TimeframeSummary,
+    ProgressWithChange, SummaryCurveProgress, SummarySwap, SummaryVolume, SwapWithChange,
+    TimeframeSummary, VolumeWithChange,
 };
 use crate::pumpfun::repo::SummaryRepo;
 use base::model::TokenPairId;
-use common::model::{Change, Count, Percent, Timeframe};
+use bigdecimal::{BigDecimal, ToPrimitive};
+use common::model::volume::{Volume, VolumeUsd};
+use common::model::{Count, Percent, Timeframe};
 use common::repo::{RepoResult, Tx};
 use sqlx::postgres::PgRow;
 use sqlx::Row;
@@ -43,7 +46,23 @@ select
     swap_buy_percent,
     swap_sell,
     swap_sell_change,
-    swap_sell_percent
+    swap_sell_percent,
+
+    volume,
+    volume_usd,
+    volume_change,
+    volume_usd_change,
+    volume_percent,
+    volume_buy,
+    volume_buy_usd,
+    volume_buy_change,
+    volume_buy_usd_change,
+    volume_buy_percent,
+    volume_sell,
+    volume_sell_usd,
+    volume_sell_change,
+    volume_sell_usd_change,
+    volume_sell_percent
 from {table}
 where token_pair_id = $1
 "#
@@ -56,6 +75,7 @@ where token_pair_id = $1
         .map(|row| TimeframeSummary {
             curve: row_to_curve_progress(&row),
             swap: row_to_swaps(&row),
+            volume: row_to_volume(&row),
         })?)
     }
 }
@@ -87,20 +107,55 @@ fn row_to_curve_progress(row: &PgRow) -> SummaryCurveProgress {
 
 fn row_to_swaps(row: &PgRow) -> SummarySwap {
     SummarySwap {
-        buy: SwapsWithChange {
+        buy: SwapWithChange {
             count: row.try_get::<Count, _>("swap_buy").ok(),
-            change: row.try_get::<Change, _>("swap_buy_change").ok(),
+            change: row
+                .try_get::<BigDecimal, _>("swap_buy_change")
+                .ok()
+                .map(|v| Count(v.to_i64().unwrap())),
             percent: row.try_get::<Percent, _>("swap_buy_percent").ok(),
         },
-        sell: SwapsWithChange {
+        sell: SwapWithChange {
             count: row.try_get::<Count, _>("swap_sell").ok(),
-            change: row.try_get::<Change, _>("swap_sell_change").ok(),
+            change: row
+                .try_get::<BigDecimal, _>("swap_sell_change")
+                .ok()
+                .map(|v| Count(v.to_i64().unwrap())),
             percent: row.try_get::<Percent, _>("swap_sell_percent").ok(),
         },
-        all: SwapsWithChange {
+        all: SwapWithChange {
             count: row.try_get::<Count, _>("swap").ok(),
-            change: row.try_get::<Change, _>("swap_change").ok(),
+            change: row
+                .try_get::<BigDecimal, _>("swap_change")
+                .ok()
+                .map(|v| Count(v.to_i64().unwrap())),
             percent: row.try_get::<Percent, _>("swap_percent").ok(),
+        },
+    }
+}
+
+fn row_to_volume(row: &PgRow) -> SummaryVolume {
+    SummaryVolume {
+        all: VolumeWithChange {
+            quote: row.try_get::<Volume, _>("volume").ok(),
+            usd: row.try_get::<VolumeUsd, _>("volume_usd").ok(),
+            quote_change: row.try_get::<Volume, _>("volume_change").ok(),
+            usd_change: row.try_get::<VolumeUsd, _>("volume_usd_change").ok(),
+            percent: row.try_get::<Percent, _>("volume_percent").ok(),
+        },
+        buy: VolumeWithChange {
+            quote: row.try_get::<Volume, _>("volume_buy").ok(),
+            usd: row.try_get::<VolumeUsd, _>("volume_buy_usd").ok(),
+            quote_change: row.try_get::<Volume, _>("volume_buy_change").ok(),
+            usd_change: row.try_get::<VolumeUsd, _>("volume_buy_usd_change").ok(),
+            percent: row.try_get::<Percent, _>("volume_buy_percent").ok(),
+        },
+        sell: VolumeWithChange {
+            quote: row.try_get::<Volume, _>("volume_sell").ok(),
+            usd: row.try_get::<VolumeUsd, _>("volume_sell_usd").ok(),
+            quote_change: row.try_get::<Volume, _>("volume_sell_change").ok(),
+            usd_change: row.try_get::<VolumeUsd, _>("volume_sell_usd_change").ok(),
+            percent: row.try_get::<Percent, _>("volume_sell_percent").ok(),
         },
     }
 }

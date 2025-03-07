@@ -1,9 +1,7 @@
 use common::model::Percent;
 use image::RgbaImage;
 use render::page::pumpfun::{pumpfun_summary, PumpfunSummary};
-use solana::model::{
-    ProgressWithChange, SummaryCurveProgress, SummarySwap, SwapsWithChange, TimeframeSummary,
-};
+use solana::model::{ProgressWithChange, SummaryCurveProgress, SummarySwap, SummaryVolume, SwapWithChange, TimeframeSummary, VolumeWithChange};
 
 fn main() {
     let img_width = 1200;
@@ -37,20 +35,43 @@ fn main() {
                     },
                 },
                 swap: SummarySwap {
-                    all: SwapsWithChange {
+                    all: SwapWithChange {
                         count: Some(3.into()),
                         change: Some(1.into()),
                         percent: Some(33.3.into()),
                     },
-                    buy: SwapsWithChange {
+                    buy: SwapWithChange {
                         count: Some(2.into()),
                         change: Some(2.into()),
                         percent: Some(100.0.into()),
                     },
-                    sell: SwapsWithChange {
+                    sell: SwapWithChange {
                         count: Some(10_200.into()),
                         change: Some(1.into()),
                         percent: Some(Percent::from(-51.0)),
+                    },
+                },
+                volume: SummaryVolume {
+                    all: VolumeWithChange {
+                        quote: None,
+                        usd: None,
+                        quote_change: None,
+                        usd_change: None,
+                        percent: None,
+                    },
+                    buy: VolumeWithChange {
+                        quote: None,
+                        usd: None,
+                        quote_change: None,
+                        usd_change: None,
+                        percent: None,
+                    },
+                    sell: VolumeWithChange {
+                        quote: None,
+                        usd: Some(10_200.into()),
+                        quote_change: None,
+                        usd_change: None,
+                        percent: None,
                     },
                 },
             }),
@@ -80,20 +101,43 @@ fn main() {
                     },
                 },
                 swap: SummarySwap {
-                    all: SwapsWithChange {
+                    all: SwapWithChange {
                         count: Some(3.into()),
                         change: Some(1.into()),
                         percent: Some(33.3.into()),
                     },
-                    buy: SwapsWithChange {
+                    buy: SwapWithChange {
                         count: Some(2.into()),
                         change: Some(2.into()),
                         percent: Some(100.0.into()),
                     },
-                    sell: SwapsWithChange {
+                    sell: SwapWithChange {
                         count: Some(1.into()),
                         change: Some(1.into()),
                         percent: Some(Percent::from(-50.0)),
+                    },
+                },
+                volume: SummaryVolume {
+                    all: VolumeWithChange {
+                        quote: None,
+                        usd: None,
+                        quote_change: None,
+                        usd_change: None,
+                        percent: None,
+                    },
+                    buy: VolumeWithChange {
+                        quote: None,
+                        usd: None,
+                        quote_change: None,
+                        usd_change: None,
+                        percent: None,
+                    },
+                    sell: VolumeWithChange {
+                        quote: None,
+                        usd: None,
+                        quote_change: None,
+                        usd_change: None,
+                        percent: None,
                     },
                 },
             }),

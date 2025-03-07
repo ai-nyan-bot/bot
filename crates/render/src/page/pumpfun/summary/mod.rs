@@ -112,11 +112,11 @@ pub fn pumpfun_summary(img: &mut RgbaImage, summary: PumpfunSummary) {
     );
 
     draw_legend(img, &font, 1, "Bonding Curve");
-    // draw_legend(img, &font, 2, "Price");
-    // draw_legend(img, &font, 3, "Market Cap");
-    // draw_legend(img, &font, 4, "Total Volume");
-    // draw_legend(img, &font, 5, "Buy Volume");
-    // draw_legend(img, &font, 6, "Sell Volume");
+    draw_legend(img, &font, 2, "Price");
+    draw_legend(img, &font, 3, "Market Cap");
+    draw_legend(img, &font, 4, "Total Volume");
+    draw_legend(img, &font, 5, "Buy Volume");
+    draw_legend(img, &font, 6, "Sell Volume");
     draw_legend(img, &font, 7, "Total Txs");
     draw_legend(img, &font, 8, "Buy Txs");
     draw_legend(img, &font, 9, "Sell Txs");

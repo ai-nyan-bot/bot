@@ -2,7 +2,6 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 pub use age::*;
-pub use change::*;
 pub use count::*;
 pub use limit::*;
 pub use partition::*;
@@ -14,7 +13,6 @@ pub use timeunit::TimeUnit;
 pub use url::*;
 
 mod age;
-mod change;
 mod count;
 mod limit;
 mod partition;
@@ -24,3 +22,5 @@ mod timeframe;
 mod timestamp;
 mod timeunit;
 mod url;
+pub mod volume;
+pub mod price;
