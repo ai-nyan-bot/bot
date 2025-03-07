@@ -31,7 +31,6 @@ impl RefreshSummaries {
                     tokio::spawn(async move {
                         let mut tx = pool.begin().await.unwrap();
 
-                        repo.clean_1m(&mut tx).await.unwrap();
                         repo.calculate_1m(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
@@ -55,7 +54,6 @@ impl RefreshSummaries {
                     tokio::spawn(async move {
                         let mut tx = pool.begin().await.unwrap();
 
-                        repo.clean_5m(&mut tx).await.unwrap();
                         repo.calculate_5m(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
@@ -79,7 +77,6 @@ impl RefreshSummaries {
                     tokio::spawn(async move {
                         let mut tx = pool.begin().await.unwrap();
 
-                        repo.clean_15m(&mut tx).await.unwrap();
                         repo.calculate_15m(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
@@ -103,7 +100,6 @@ impl RefreshSummaries {
                     tokio::spawn(async move {
                         let mut tx = pool.begin().await.unwrap();
 
-                        repo.clean_1h(&mut tx).await.unwrap();
                         repo.calculate_1h(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
@@ -127,7 +123,6 @@ impl RefreshSummaries {
                     tokio::spawn(async move {
                         let mut tx = pool.begin().await.unwrap();
 
-                        repo.clean_6h(&mut tx).await.unwrap();
                         repo.calculate_6h(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
@@ -151,7 +146,6 @@ impl RefreshSummaries {
                     tokio::spawn(async move {
                         let mut tx = pool.begin().await.unwrap();
 
-                        repo.clean_1d(&mut tx).await.unwrap();
                         repo.calculate_1d(&mut tx, partition).await.unwrap();
 
                         let _ = tx.commit().await;
@@ -164,4 +158,3 @@ impl RefreshSummaries {
         })
     }
 }
-

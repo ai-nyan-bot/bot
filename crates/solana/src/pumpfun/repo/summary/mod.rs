@@ -6,7 +6,6 @@ use std::ops::Deref;
 use std::sync::Arc;
 
 mod calculate;
-mod clean;
 mod count;
 mod get;
 mod list;
