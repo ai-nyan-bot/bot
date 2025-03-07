@@ -14,7 +14,6 @@ impl SummaryRepo {
             tx,
             2,
             "minutes",
-            "pumpfun.candle_1m_most_recent",
             format!("pumpfun.candle_1m_{partition}"),
             format!("pumpfun.candle_market_cap_1m_{partition}"),
             format!("pumpfun.candle_progress_1m_{partition}"),
@@ -29,7 +28,6 @@ impl SummaryRepo {
             tx,
             10,
             "minutes",
-            "pumpfun.candle_5m_most_recent",
             format!("pumpfun.candle_5m_{partition}"),
             format!("pumpfun.candle_market_cap_5m_{partition}"),
             format!("pumpfun.candle_progress_5m_{partition}"),
@@ -44,7 +42,6 @@ impl SummaryRepo {
             tx,
             30,
             "minutes",
-            "pumpfun.candle_15m_most_recent",
             format!("pumpfun.candle_15m_{partition}"),
             format!("pumpfun.candle_market_cap_15m_{partition}"),
             format!("pumpfun.candle_progress_15m_{partition}"),
@@ -59,7 +56,6 @@ impl SummaryRepo {
             tx,
             2,
             "hours",
-            "pumpfun.candle_1h_most_recent",
             format!("pumpfun.candle_1h_{partition}"),
             format!("pumpfun.candle_market_cap_1h_{partition}"),
             format!("pumpfun.candle_progress_1h_{partition}"),
@@ -74,7 +70,6 @@ impl SummaryRepo {
             tx,
             12,
             "hours",
-            "pumpfun.candle_6h_most_recent",
             format!("pumpfun.candle_6h_{partition}"),
             format!("pumpfun.candle_market_cap_6h_{partition}"),
             format!("pumpfun.candle_progress_6h_{partition}"),
@@ -89,7 +84,6 @@ impl SummaryRepo {
             tx,
             2,
             "days",
-            "pumpfun.candle_1d_most_recent",
             format!("pumpfun.candle_1d_{partition}"),
             format!("pumpfun.candle_market_cap_1d_{partition}"),
             format!("pumpfun.candle_progress_1d_{partition}"),
@@ -104,22 +98,20 @@ async fn calculate_summary<'a>(
     tx: &mut Tx<'a>,
     window: usize,
     time_unit: &str,
-    candle_most_recent_table: impl AsRef<str>,
     candle_table: impl AsRef<str>,
     candle_market_cap_table: impl AsRef<str>,
     candle_progress_table: impl AsRef<str>,
     candle_usd_table: impl AsRef<str>,
     destination_table: impl AsRef<str>,
 ) -> RepoResult<()> {
-    let candle_most_recent_table = candle_most_recent_table.as_ref();
     let candle_table = candle_table.as_ref();
     let candle_market_cap_table = candle_market_cap_table.as_ref();
     let candle_progress_table = candle_progress_table.as_ref();
     let candle_usd_table = candle_usd_table.as_ref();
     let destination_table = destination_table.as_ref();
-	let bucket_separator = window / 2;
+    let bucket_separator = window / 2;
 
-	let aggregate = r#"
+    let aggregate = r#"
 		token_pair_id,
 
 		amount_base_buy,
@@ -170,11 +162,11 @@ async fn calculate_summary<'a>(
 		volume_buy_usd + volume_sell_usd as volume_usd
 	"#;
 
-	let query_str = format!(
-		r#"
+    let query_str = format!(
+        r#"
 with
 last_candle as (
-    select timestamp from {candle_most_recent_table} order by timestamp desc limit 1
+    select timestamp from {candle_table} order by timestamp desc limit 1
 ),
 candles as(
 	select c.token_pair_id     as token_pair_id,
@@ -724,7 +716,7 @@ where
     {destination_table}.volume_sell_usd_change != excluded.volume_sell_usd_change or
     {destination_table}.volume_sell_percent != excluded.volume_sell_percent
 "#
-	);
+    );
 
     let _ = sqlx::query(&query_str).execute(&mut **tx).await?;
     Ok(())
