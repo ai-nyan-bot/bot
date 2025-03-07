@@ -3,6 +3,8 @@
 
 pub use count::format_count;
 pub use percent::format_percent;
+pub use volume::format_volume_usd;
 
 mod count;
 mod percent;
+mod volume;
