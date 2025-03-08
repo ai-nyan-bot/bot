@@ -3,13 +3,15 @@
 
 create table pumpfun.candle_progress_1s
 (
-    token_pair_id int4        not null,
+    token_pair_id int8        not null,
     timestamp     timestamptz not null,
     open          real        not null,
     high          real        not null,
     low           real        not null,
     close         real        not null,
     avg           real        not null,
+    created_at    timestamptz default (timezone('utc', now())),
+    updated_at    timestamptz default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -42,13 +44,15 @@ create index candle_progress_1s_8_timestamp ON pumpfun.candle_progress_1s_8 (tim
 
 create table pumpfun.candle_progress_1s_most_recent
 (
-    token_pair_id int4        not null,
+    token_pair_id int8        not null,
     timestamp     timestamptz not null,
     open          real        not null,
     high          real        not null,
     low           real        not null,
     close         real        not null,
     avg           real        not null,
+    created_at    timestamptz default (timezone('utc', now())),
+    updated_at    timestamptz default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -76,13 +80,15 @@ create trigger update_most_recent_candle
 
 create table pumpfun.candle_progress_1m
 (
-    token_pair_id int4        not null,
+    token_pair_id int8        not null,
     timestamp     timestamptz not null,
     open          real        not null,
     high          real        not null,
     low           real        not null,
     close         real        not null,
     avg           real        not null,
+    created_at    timestamptz default (timezone('utc', now())),
+    updated_at    timestamptz default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -115,13 +121,15 @@ create index candle_progress_1m_8_timestamp ON pumpfun.candle_progress_1m_8 (tim
 
 create table pumpfun.candle_progress_5m
 (
-    token_pair_id int4        not null,
+    token_pair_id int8        not null,
     timestamp     timestamptz not null,
     open          real        not null,
     high          real        not null,
     low           real        not null,
     close         real        not null,
     avg           real        not null,
+    created_at    timestamptz default (timezone('utc', now())),
+    updated_at    timestamptz default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -154,13 +162,15 @@ create index candle_progress_5m_8_timestamp ON pumpfun.candle_progress_5m_8 (tim
 
 create table pumpfun.candle_progress_15m
 (
-    token_pair_id int4        not null,
+    token_pair_id int8        not null,
     timestamp     timestamptz not null,
     open          real        not null,
     high          real        not null,
     low           real        not null,
     close         real        not null,
     avg           real        not null,
+    created_at    timestamptz default (timezone('utc', now())),
+    updated_at    timestamptz default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -193,13 +203,15 @@ create index candle_progress_15m_8_timestamp ON pumpfun.candle_progress_15m_8 (t
 
 create table pumpfun.candle_progress_1h
 (
-    token_pair_id int4        not null,
+    token_pair_id int8        not null,
     timestamp     timestamptz not null,
     open          real        not null,
     high          real        not null,
     low           real        not null,
     close         real        not null,
     avg           real        not null,
+    created_at    timestamptz default (timezone('utc', now())),
+    updated_at    timestamptz default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -232,13 +244,15 @@ create index candle_progress_1h_8_timestamp ON pumpfun.candle_progress_1h_8 (tim
 
 create table pumpfun.candle_progress_6h
 (
-    token_pair_id int4        not null,
+    token_pair_id int8        not null,
     timestamp     timestamptz not null,
     open          real        not null,
     high          real        not null,
     low           real        not null,
     close         real        not null,
     avg           real        not null,
+    created_at    timestamptz default (timezone('utc', now())),
+    updated_at    timestamptz default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -271,13 +285,15 @@ create index candle_progress_6h_8_timestamp ON pumpfun.candle_progress_6h_8 (tim
 
 create table pumpfun.candle_progress_1d
 (
-    token_pair_id int4        not null,
+    token_pair_id int8        not null,
     timestamp     timestamptz not null,
     open          real        not null,
     high          real        not null,
     low           real        not null,
     close         real        not null,
     avg           real        not null,
+    created_at    timestamptz default (timezone('utc', now())),
+    updated_at    timestamptz default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)

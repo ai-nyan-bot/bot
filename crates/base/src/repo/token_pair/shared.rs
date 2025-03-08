@@ -239,7 +239,7 @@ select
 from solana.token_pair tp
 join solana.token base on tp.base_id = base.id
 join solana.token quote on tp.quote_id = quote.id
-where tp.id in (select unnest($1::int4[]));
+where tp.id in (select unnest($1::int8[]));
 "#,
         )
         .bind(ids)

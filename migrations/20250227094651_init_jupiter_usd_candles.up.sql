@@ -2,7 +2,7 @@
 -- This file is licensed under the AGPL-3.0-or-later.
 create table jupiter.candle_usd_1m
 (
-    token_pair_id int4            not null,
+    token_pair_id int8            not null,
     timestamp     timestamptz     not null,
     open          numeric(36, 12) not null,
     high          numeric(36, 12) not null,
@@ -12,6 +12,8 @@ create table jupiter.candle_usd_1m
     twap          numeric(36, 12) not null,
     volume_buy    numeric(36, 12) not null,
     volume_sell   numeric(36, 12) not null,
+    created_at    timestamptz default (timezone('utc', now())),
+    updated_at    timestamptz default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -44,7 +46,7 @@ create index candle_usd_1m_8_timestamp ON jupiter.candle_usd_1m_8 (timestamp des
 
 create table jupiter.candle_usd_5m
 (
-    token_pair_id int4            not null,
+    token_pair_id int8            not null,
     timestamp     timestamptz     not null,
     open          numeric(36, 12) not null,
     high          numeric(36, 12) not null,
@@ -54,6 +56,8 @@ create table jupiter.candle_usd_5m
     twap          numeric(36, 12) not null,
     volume_buy    numeric(36, 12) not null,
     volume_sell   numeric(36, 12) not null,
+    created_at    timestamptz default (timezone('utc', now())),
+    updated_at    timestamptz default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -87,7 +91,7 @@ create index candle_usd_5m_8_timestamp ON jupiter.candle_usd_5m_8 (timestamp des
 
 create table jupiter.candle_usd_15m
 (
-    token_pair_id int4            not null,
+    token_pair_id int8            not null,
     timestamp     timestamptz     not null,
     open          numeric(36, 12) not null,
     high          numeric(36, 12) not null,
@@ -97,6 +101,8 @@ create table jupiter.candle_usd_15m
     twap          numeric(36, 12) not null,
     volume_buy    numeric(36, 12) not null,
     volume_sell   numeric(36, 12) not null,
+    created_at    timestamptz default (timezone('utc', now())),
+    updated_at    timestamptz default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -129,7 +135,7 @@ create index candle_usd_15m_8_timestamp ON jupiter.candle_usd_15m_8 (timestamp d
 
 create table jupiter.candle_usd_1h
 (
-    token_pair_id int4            not null,
+    token_pair_id int8            not null,
     timestamp     timestamptz     not null,
     open          numeric(36, 12) not null,
     high          numeric(36, 12) not null,
@@ -139,6 +145,8 @@ create table jupiter.candle_usd_1h
     twap          numeric(36, 12) not null,
     volume_buy    numeric(36, 12) not null,
     volume_sell   numeric(36, 12) not null,
+    created_at    timestamptz default (timezone('utc', now())),
+    updated_at    timestamptz default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -172,7 +180,7 @@ create index candle_usd_1h_8_timestamp ON jupiter.candle_usd_1h_8 (timestamp des
 
 create table jupiter.candle_usd_6h
 (
-    token_pair_id int4            not null,
+    token_pair_id int8            not null,
     timestamp     timestamptz     not null,
     open          numeric(36, 12) not null,
     high          numeric(36, 12) not null,
@@ -182,6 +190,8 @@ create table jupiter.candle_usd_6h
     twap          numeric(36, 12) not null,
     volume_buy    numeric(36, 12) not null,
     volume_sell   numeric(36, 12) not null,
+    created_at    timestamptz default (timezone('utc', now())),
+    updated_at    timestamptz default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -215,7 +225,7 @@ create index candle_usd_6h_8_timestamp ON jupiter.candle_usd_6h_8 (timestamp des
 
 create table jupiter.candle_usd_1d
 (
-    token_pair_id int4            not null,
+    token_pair_id int8            not null,
     timestamp     timestamptz     not null,
     open          numeric(36, 12) not null,
     high          numeric(36, 12) not null,
@@ -225,6 +235,8 @@ create table jupiter.candle_usd_1d
     twap          numeric(36, 12) not null,
     volume_buy    numeric(36, 12) not null,
     volume_sell   numeric(36, 12) not null,
+    created_at    timestamptz default (timezone('utc', now())),
+    updated_at    timestamptz default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)

@@ -593,7 +593,8 @@ on conflict (token_pair_id) do update set
 	volume_sell_usd = excluded.volume_sell_usd,
 	volume_sell_change = excluded.volume_sell_change,
 	volume_sell_usd_change = excluded.volume_sell_usd_change,
-	volume_sell_percent = excluded.volume_sell_percent
+	volume_sell_percent = excluded.volume_sell_percent,
+	updated_at = now()
 "#
     );
 

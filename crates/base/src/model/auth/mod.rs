@@ -7,16 +7,16 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Eq, Hash, Copy, Clone, Debug, PartialEq, sqlx::Type)]
 #[sqlx(transparent)]
-pub struct AuthId(pub i32);
+pub struct AuthId(pub i64);
 
-impl PartialEq<i32> for AuthId {
-    fn eq(&self, other: &i32) -> bool {
+impl PartialEq<i64> for AuthId {
+    fn eq(&self, other: &i64) -> bool {
         self.0 == *other
     }
 }
 
-impl From<i32> for AuthId {
-    fn from(value: i32) -> Self {
+impl From<i64> for AuthId {
+    fn from(value: i64) -> Self {
         Self(value)
     }
 }

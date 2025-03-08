@@ -16,7 +16,7 @@ pub struct RuleUpdateCmd {
 
 impl RuleRepo {
     pub async fn update<'a>(&self, tx: &mut Tx<'a>, cmd: RuleUpdateCmd) -> RepoResult<Rule> {
-        let rule_id = query("update solana.rule set name = $3, sequence = $4 where id = $1 and user_id = $2 returning id")
+        let rule_id = query("update solana.rule set name = $3, sequence = $4 where id = $1 and user_id = $2 returning id, updated_at = now();")
             .bind(cmd.id)
             .bind(cmd.user)
             .bind(cmd.name)

@@ -132,7 +132,8 @@ insert into {candle_progress_table} (
         high = excluded.high,
         low = excluded.low,
         close = excluded.close,
-        avg = excluded.avg
+        avg = excluded.avg,
+        updated_at = now()
     where (
            {candle_progress_table}.open != excluded.open or
            {candle_progress_table}.high != excluded.high or
@@ -306,7 +307,8 @@ do update set
     high = excluded.high,
     low = excluded.low,
     close = excluded.close,
-    avg = excluded.avg
+    avg = excluded.avg,
+    updated_at = now()
 where (
        {destination_table}.open != excluded.open or
        {destination_table}.high != excluded.high or

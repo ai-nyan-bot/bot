@@ -274,7 +274,8 @@ insert_current_candle as (
         amount_base_sell = excluded.amount_base_sell,
         amount_quote_sell = excluded.amount_quote_sell,
         volume_sell = excluded.volume_sell,
-        swap_sell = excluded.swap_sell
+        swap_sell = excluded.swap_sell,
+        updated_at = now()
     where (
            {candle_price_table}.open != excluded.open or
            {candle_price_table}.high != excluded.high or
@@ -510,7 +511,8 @@ do update set
     amount_base_sell = excluded.amount_base_sell,
     amount_quote_sell = excluded.amount_quote_sell,
     swap_sell = excluded.swap_sell,
-    volume_sell = excluded.volume_sell
+    volume_sell = excluded.volume_sell,
+    updated_at = now()
 where (
        {destination_table}.open != excluded.open or
        {destination_table}.high != excluded.high or

@@ -10,8 +10,8 @@ impl IndexerRepo {
     pub async fn set<'a>(&self, tx: &mut Tx<'a>, slot: impl Into<Slot> + Send) -> RepoResult<()> {
         query(
             r#"
-insert into solana.indexer (id, slot) values (1, $1)
-on conflict (id) do update set slot = $1
+insert into solana.indexer (id, slot, updated_at) values (1, $1, now())
+on conflict (id) do update set slot = $1, updated_at = now();
 "#,
         )
         .bind(slot.into())

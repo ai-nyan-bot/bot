@@ -3,22 +3,12 @@
 
 create schema pumpfun;
 
-create function pumpfun.update_updated_at_column() returns trigger as $$
-begin
-    NEW.updated_at
-= timezone('utc', now());
-return NEW;
-end;
-$$
-language plpgsql;
-
-
 create table pumpfun.swap
 (
     id                     bigserial       not null,
     slot                   int8            not null,
-    address_id             int4            not null,
-    token_pair_id          int4            not null,
+    address_id             int8            not null,
+    token_pair_id          int8            not null,
     amount_base            numeric(36, 12) not null,
     amount_quote           numeric(36, 12) not null,
     price                  numeric(36, 12) not null,
@@ -28,6 +18,8 @@ create table pumpfun.swap
     virtual_quote_reserves int8            not null,
     progress               real            not null,
     signature              text            not null,
+    created_at             timestamptz default (timezone('utc', now())),
+    updated_at             timestamptz default (timezone('utc', now())),
 
     constraint fk_wallet foreign key (address_id) references solana.address (id),
 
@@ -54,3 +46,12 @@ create table pumpfun.swap_6 partition of pumpfun.swap for values with (modulus 8
 create table pumpfun.swap_7 partition of pumpfun.swap for values with (modulus 8, remainder 6);
 
 create table pumpfun.swap_8 partition of pumpfun.swap for values with (modulus 8, remainder 7);
+
+create index swap_1_timestamp ON pumpfun.swap_1 (timestamp desc);
+create index swap_2_timestamp ON pumpfun.swap_2 (timestamp desc);
+create index swap_3_timestamp ON pumpfun.swap_3 (timestamp desc);
+create index swap_4_timestamp ON pumpfun.swap_4 (timestamp desc);
+create index swap_5_timestamp ON pumpfun.swap_5 (timestamp desc);
+create index swap_6_timestamp ON pumpfun.swap_6 (timestamp desc);
+create index swap_7_timestamp ON pumpfun.swap_7 (timestamp desc);
+create index swap_8_timestamp ON pumpfun.swap_8 (timestamp desc);

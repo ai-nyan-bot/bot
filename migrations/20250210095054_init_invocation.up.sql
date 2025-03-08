@@ -3,27 +3,27 @@
 
 create table solana.invocation
 (
-    id              serial not null,
-    user_id         int4 not null,
-    rule_id         int4 not null,
-    token_pair_id   int4 not null,
-    next            jsonb,
-    created_at      timestamptz default (timezone('utc', now())),
+    id            bigserial not null,
+    user_id       int8   not null,
+    rule_id       int8   not null,
+    token_pair_id int8   not null,
+    next          jsonb,
+    created_at    timestamptz default (timezone('utc', now())),
 
     primary key (rule_id, token_pair_id),
 
     constraint fk_user
         foreign key (user_id)
-        references nyanbot.user(id)
-        on delete cascade,
+            references nyanbot.user (id)
+            on delete cascade,
 
     constraint fk_rule
         foreign key (rule_id)
-        references solana.rule(id)
-        on delete cascade,
+            references solana.rule (id)
+            on delete cascade,
 
     constraint fk_token_pair
         foreign key (token_pair_id)
-        references solana.token_pair(id)
-        on delete cascade
+            references solana.token_pair (id)
+            on delete cascade
 );

@@ -124,7 +124,7 @@ impl ReadTokenRepo {
                 symbol,
                 decimals
               from solana.token
-              where id in (select unnest($1::int4[]))"#,
+              where id in (select unnest($1::int8[]))"#,
         )
         .bind(ids)
         .fetch_all(&mut **tx)

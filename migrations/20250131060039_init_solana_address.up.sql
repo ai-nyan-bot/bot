@@ -3,8 +3,8 @@
 
 create table solana.address
 (
-    id      serial primary key,
+    id      bigserial primary key,
     address text not null
 );
 
-create unique index address_unique_address_idx on solana.address(address);
+create unique index address_unique_address_idx on solana.address (address);

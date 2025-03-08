@@ -3,23 +3,18 @@
 
 create table nyanbot.wallet
 (
-    id                  serial primary key,
-    user_id             int4 not null,
-    solana_public_key   text not null,
-    solana_private_key  text not null,
-    created_at          timestamptz default (timezone('utc', now())),
-    updated_at          timestamptz default (timezone('utc', now())),
+    id                 bigserial primary key,
+    user_id            int8 not null,
+    solana_public_key  text not null,
+    solana_private_key text not null,
+    created_at         timestamptz default (timezone('utc', now())),
+    updated_at         timestamptz default (timezone('utc', now())),
 
     constraint fk_user
         foreign key (user_id)
-        references nyanbot.user(id)
+            references nyanbot.user (id)
 );
 
 create unique index unique_user_id on nyanbot.wallet (user_id);
 create unique index unique_solana_solana_public_key on nyanbot.wallet (solana_public_key);
 create unique index unique_solana_solana_private_key on nyanbot.wallet (solana_private_key);
-
-create trigger set_updated_at
-before update on nyanbot.wallet
-for each row
-execute function nyanbot.update_updated_at_column();

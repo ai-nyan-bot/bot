@@ -6,7 +6,7 @@ use std::fmt::{Display, Formatter};
 
 #[derive(Eq, Hash, Copy, Clone, Debug, PartialEq, PartialOrd, Ord, Deserialize, Serialize, sqlx::Type)]
 #[sqlx(transparent)]
-pub struct RuleId(pub i32);
+pub struct RuleId(pub i64);
 
 impl AsRef<RuleId> for RuleId {
     fn as_ref(&self) -> &RuleId {
@@ -14,21 +14,21 @@ impl AsRef<RuleId> for RuleId {
     }
 }
 
-impl PartialEq<i32> for RuleId {
-    fn eq(&self, other: &i32) -> bool {
+impl PartialEq<i64> for RuleId {
+    fn eq(&self, other: &i64) -> bool {
         self.0 == *other
     }
 }
 
-impl From<i32> for RuleId {
-    fn from(value: i32) -> Self {
+impl From<i64> for RuleId {
+    fn from(value: i64) -> Self {
         Self(value)
     }
 }
 
 impl From<String> for RuleId {
     fn from(value: String) -> Self {
-        Self(value.parse::<i32>().unwrap_or(0))
+        Self(value.parse::<i64>().unwrap_or(0))
     }
 }
 

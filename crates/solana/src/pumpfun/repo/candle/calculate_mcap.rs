@@ -191,7 +191,8 @@ do update set
     close = excluded.close,
     close_usd = excluded.close_usd,
     avg = excluded.avg,
-    avg_usd = excluded.avg_usd
+    avg_usd = excluded.avg_usd,
+    updated_at = now()
 where
     {destination_table}.open != excluded.open or
     {destination_table}.open_usd != excluded.open_usd or

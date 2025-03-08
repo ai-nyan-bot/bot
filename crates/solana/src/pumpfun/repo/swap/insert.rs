@@ -130,8 +130,8 @@ insert into pumpfun.swap (
 )
 select
     unnest($1::int8[]) as slot,
-    unnest($2::int4[]) as address_id,
-    unnest($3::int4[]) as token_pair_id,
+    unnest($2::int8[]) as address_id,
+    unnest($3::int8[]) as token_pair_id,
     unnest($4::numeric(36, 12)[]) as amount_base,
     unnest($5::numeric(36, 12)[]) as amount_quote,
     unnest($6::numeric(36, 12)[]) as price,

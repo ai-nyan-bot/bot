@@ -3,7 +3,7 @@
 
 create table solana.token
 (
-    id          serial primary key,
+    id          bigserial primary key,
     version     int2 not null default (0),
     mint        text not null,
     name        text,
@@ -16,12 +16,6 @@ create table solana.token
     website     text,
     updated_at  timestamptz   default (timezone('utc', now()))
 );
-
-create trigger set_updated_at
-    before update
-    on solana.token
-    for each row execute function solana.update_updated_at_column();
-
 
 insert into solana.token (id, mint, name, symbol, decimals)
 values (1, 'So11111111111111111111111111111111111111112', 'Wrapped SOL', 'WSOL', 9),
@@ -39,9 +33,9 @@ create unique index token_unique_mint_idx on solana.token (mint);
 
 create table solana.token_pair
 (
-    id       serial primary key,
-    base_id  int4 not null,
-    quote_id int4 not null,
+    id       bigserial primary key,
+    base_id  int8 not null,
+    quote_id int8 not null,
 
     constraint fk_base foreign key (base_id) references solana.token (id),
 

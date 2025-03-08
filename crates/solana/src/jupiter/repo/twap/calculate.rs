@@ -104,7 +104,7 @@ join start_offset so on so.token_pair_id = pd.token_pair_id
 group by
     pd.token_pair_id, bucket, so.start_offset
 on conflict (token_pair_id, timestamp)
-do update set twap = excluded.twap
+do update set twap = excluded.twap, updated_at = now()
 where jupiter.{destination_table}.twap != excluded.twap;
         "#
     );

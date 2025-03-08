@@ -207,7 +207,8 @@ do update set
     avg = excluded.avg,
     twap = excluded.twap,
     volume_buy = excluded.volume_buy,
-    volume_sell = excluded.volume_sell
+    volume_sell = excluded.volume_sell,
+    updated_at = now()
 where
     {destination_table}.open != excluded.open or
     {destination_table}.high != excluded.high or

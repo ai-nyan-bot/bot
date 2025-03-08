@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Eq, Hash, Copy, Clone, Debug, PartialEq, PartialOrd, Ord, Deserialize, Serialize, sqlx::Type)]
 #[sqlx(transparent)]
-pub struct NotificationId(pub i32);
+pub struct NotificationId(pub i64);
 
 impl AsRef<NotificationId> for NotificationId {
     fn as_ref(&self) -> &NotificationId {
@@ -13,14 +13,14 @@ impl AsRef<NotificationId> for NotificationId {
     }
 }
 
-impl PartialEq<i32> for NotificationId {
-    fn eq(&self, other: &i32) -> bool {
+impl PartialEq<i64> for NotificationId {
+    fn eq(&self, other: &i64) -> bool {
         self.0 == *other
     }
 }
 
-impl From<i32> for NotificationId {
-    fn from(value: i32) -> Self {
+impl From<i64> for NotificationId {
+    fn from(value: i64) -> Self {
         Self(value)
     }
 }

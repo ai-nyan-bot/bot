@@ -14,15 +14,16 @@ impl CurveRepo {
         Ok(sqlx::query(
             r#"
             insert into pumpfun.curve (
-                id, slot, virtual_base_reserves, virtual_quote_reserves, progress, complete
+                id, slot, virtual_base_reserves, virtual_quote_reserves, progress, complete, updated_at
             )
-            values ($1, $2, $3, $4, $5, $6)
+            values ($1, $2, $3, $4, $5, $6, now())
             on conflict (id) do update set
                 slot = excluded.slot,
                 virtual_base_reserves = excluded.virtual_base_reserves,
                 virtual_quote_reserves = excluded.virtual_quote_reserves,
                 progress = excluded.progress,
-                complete = excluded.complete
+                complete = excluded.complete,
+                updated_at = now()
             returning id, slot, virtual_base_reserves, virtual_quote_reserves, progress, complete, updated_at
         "#
         )

@@ -4,7 +4,7 @@
 
 create table pumpfun.summary_1m
 (
-    token_pair_id               int4 primary key,
+    token_pair_id               int8 primary key,
 
     amount_base                 numeric(36, 12),
     amount_base_change          numeric(36, 12),
@@ -102,15 +102,15 @@ create table pumpfun.summary_1m
     price_avg_usd_change        numeric(36, 12),
     price_avg_percent           real,
 
-    swap                       int8,
-    swap_change                numeric(36, 12),
-    swap_percent               real,
-    swap_buy                   int8,
-    swap_buy_change            numeric(36, 12),
-    swap_buy_percent           real,
-    swap_sell                  int8,
-    swap_sell_change           numeric(36, 12),
-    swap_sell_percent          real,
+    swap                        int8,
+    swap_change                 numeric(36, 12),
+    swap_percent                real,
+    swap_buy                    int8,
+    swap_buy_change             numeric(36, 12),
+    swap_buy_percent            real,
+    swap_sell                   int8,
+    swap_sell_change            numeric(36, 12),
+    swap_sell_percent           real,
 
     volume                      numeric(36, 12),
     volume_usd                  numeric(36, 12),
@@ -128,20 +128,15 @@ create table pumpfun.summary_1m
     volume_sell_usd_change      numeric(36, 12),
     volume_sell_percent         real,
 
+    created_at                  timestamptz default (timezone('utc', now())),
     updated_at                  timestamptz default (timezone('utc', now())),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
 );
-
-
-create trigger set_updated_at
-    before update
-    on pumpfun.summary_1m
-    for each row execute function pumpfun.update_updated_at_column();
 
 create table pumpfun.summary_5m
 (
-    token_pair_id               int4 primary key,
+    token_pair_id               int8 primary key,
 
     amount_base                 numeric(36, 12),
     amount_base_change          numeric(36, 12),
@@ -238,15 +233,15 @@ create table pumpfun.summary_5m
     price_avg_usd_change        numeric(36, 12),
     price_avg_percent           real,
 
-    swap                       int8,
-    swap_change                numeric(36, 12),
-    swap_percent               real,
-    swap_buy                   int8,
-    swap_buy_change            numeric(36, 12),
-    swap_buy_percent           real,
-    swap_sell                  int8,
-    swap_sell_change           numeric(36, 12),
-    swap_sell_percent          real,
+    swap                        int8,
+    swap_change                 numeric(36, 12),
+    swap_percent                real,
+    swap_buy                    int8,
+    swap_buy_change             numeric(36, 12),
+    swap_buy_percent            real,
+    swap_sell                   int8,
+    swap_sell_change            numeric(36, 12),
+    swap_sell_percent           real,
 
     volume                      numeric(36, 12),
     volume_usd                  numeric(36, 12),
@@ -264,20 +259,15 @@ create table pumpfun.summary_5m
     volume_sell_usd_change      numeric(36, 12),
     volume_sell_percent         real,
 
+    created_at                  timestamptz default (timezone('utc', now())),
     updated_at                  timestamptz default (timezone('utc', now())),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
 );
-
-
-create trigger set_updated_at
-    before update
-    on pumpfun.summary_5m
-    for each row execute function pumpfun.update_updated_at_column();
 
 create table pumpfun.summary_15m
 (
-    token_pair_id               int4 primary key,
+    token_pair_id               int8 primary key,
 
     amount_base                 numeric(36, 12),
     amount_base_change          numeric(36, 12),
@@ -374,15 +364,15 @@ create table pumpfun.summary_15m
     price_avg_usd_change        numeric(36, 12),
     price_avg_percent           real,
 
-    swap                       int8,
-    swap_change                numeric(36, 12),
-    swap_percent               real,
-    swap_buy                   int8,
-    swap_buy_change            numeric(36, 12),
-    swap_buy_percent           real,
-    swap_sell                  int8,
-    swap_sell_change           numeric(36, 12),
-    swap_sell_percent          real,
+    swap                        int8,
+    swap_change                 numeric(36, 12),
+    swap_percent                real,
+    swap_buy                    int8,
+    swap_buy_change             numeric(36, 12),
+    swap_buy_percent            real,
+    swap_sell                   int8,
+    swap_sell_change            numeric(36, 12),
+    swap_sell_percent           real,
 
     volume                      numeric(36, 12),
     volume_usd                  numeric(36, 12),
@@ -400,20 +390,16 @@ create table pumpfun.summary_15m
     volume_sell_usd_change      numeric(36, 12),
     volume_sell_percent         real,
 
+    created_at                  timestamptz default (timezone('utc', now())),
     updated_at                  timestamptz default (timezone('utc', now())),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
 );
 
-
-create trigger set_updated_at
-    before update
-    on pumpfun.summary_15m
-    for each row execute function pumpfun.update_updated_at_column();
 
 create table pumpfun.summary_1h
 (
-    token_pair_id               int4 primary key,
+    token_pair_id               int8 primary key,
 
     amount_base                 numeric(36, 12),
     amount_base_change          numeric(36, 12),
@@ -510,15 +496,15 @@ create table pumpfun.summary_1h
     price_avg_usd_change        numeric(36, 12),
     price_avg_percent           real,
 
-    swap                       int8,
-    swap_change                numeric(36, 12),
-    swap_percent               real,
-    swap_buy                   int8,
-    swap_buy_change            numeric(36, 12),
-    swap_buy_percent           real,
-    swap_sell                  int8,
-    swap_sell_change           numeric(36, 12),
-    swap_sell_percent          real,
+    swap                        int8,
+    swap_change                 numeric(36, 12),
+    swap_percent                real,
+    swap_buy                    int8,
+    swap_buy_change             numeric(36, 12),
+    swap_buy_percent            real,
+    swap_sell                   int8,
+    swap_sell_change            numeric(36, 12),
+    swap_sell_percent           real,
 
     volume                      numeric(36, 12),
     volume_usd                  numeric(36, 12),
@@ -536,20 +522,16 @@ create table pumpfun.summary_1h
     volume_sell_usd_change      numeric(36, 12),
     volume_sell_percent         real,
 
+    created_at                  timestamptz default (timezone('utc', now())),
     updated_at                  timestamptz default (timezone('utc', now())),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
 );
 
-
-create trigger set_updated_at
-    before update
-    on pumpfun.summary_1h
-    for each row execute function pumpfun.update_updated_at_column();
 
 create table pumpfun.summary_6h
 (
-    token_pair_id               int4 primary key,
+    token_pair_id               int8 primary key,
 
     amount_base                 numeric(36, 12),
     amount_base_change          numeric(36, 12),
@@ -646,15 +628,15 @@ create table pumpfun.summary_6h
     price_avg_usd_change        numeric(36, 12),
     price_avg_percent           real,
 
-    swap                       int8,
-    swap_change                numeric(36, 12),
-    swap_percent               real,
-    swap_buy                   int8,
-    swap_buy_change            numeric(36, 12),
-    swap_buy_percent           real,
-    swap_sell                  int8,
-    swap_sell_change           numeric(36, 12),
-    swap_sell_percent          real,
+    swap                        int8,
+    swap_change                 numeric(36, 12),
+    swap_percent                real,
+    swap_buy                    int8,
+    swap_buy_change             numeric(36, 12),
+    swap_buy_percent            real,
+    swap_sell                   int8,
+    swap_sell_change            numeric(36, 12),
+    swap_sell_percent           real,
 
     volume                      numeric(36, 12),
     volume_usd                  numeric(36, 12),
@@ -672,20 +654,16 @@ create table pumpfun.summary_6h
     volume_sell_usd_change      numeric(36, 12),
     volume_sell_percent         real,
 
+    created_at                  timestamptz default (timezone('utc', now())),
     updated_at                  timestamptz default (timezone('utc', now())),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
 );
 
-
-create trigger set_updated_at
-    before update
-    on pumpfun.summary_6h
-    for each row execute function pumpfun.update_updated_at_column();
 
 create table pumpfun.summary_1d
 (
-    token_pair_id               int4 primary key,
+    token_pair_id               int8 primary key,
 
     amount_base                 numeric(36, 12),
     amount_base_change          numeric(36, 12),
@@ -782,15 +760,15 @@ create table pumpfun.summary_1d
     price_avg_usd_change        numeric(36, 12),
     price_avg_percent           real,
 
-    swap                       int8,
-    swap_change                numeric(36, 12),
-    swap_percent               real,
-    swap_buy                   int8,
-    swap_buy_change            numeric(36, 12),
-    swap_buy_percent           real,
-    swap_sell                  int8,
-    swap_sell_change           numeric(36, 12),
-    swap_sell_percent          real,
+    swap                        int8,
+    swap_change                 numeric(36, 12),
+    swap_percent                real,
+    swap_buy                    int8,
+    swap_buy_change             numeric(36, 12),
+    swap_buy_percent            real,
+    swap_sell                   int8,
+    swap_sell_change            numeric(36, 12),
+    swap_sell_percent           real,
 
     volume                      numeric(36, 12),
     volume_usd                  numeric(36, 12),
@@ -808,13 +786,8 @@ create table pumpfun.summary_1d
     volume_sell_usd_change      numeric(36, 12),
     volume_sell_percent         real,
 
+    created_at                  timestamptz default (timezone('utc', now())),
     updated_at                  timestamptz default (timezone('utc', now())),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
 );
-
-
-create trigger set_updated_at
-    before update
-    on pumpfun.summary_1d
-    for each row execute function pumpfun.update_updated_at_column();

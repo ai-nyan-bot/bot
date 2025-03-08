@@ -4,9 +4,11 @@
 use serde::{Deserialize, Serialize};
 use std::fmt::{Debug, Display, Formatter};
 
-#[derive(Eq, Hash, Copy, Clone, Debug, PartialEq, PartialOrd, Ord, Deserialize, Serialize, sqlx::Type)]
+#[derive(
+    Eq, Hash, Copy, Clone, Debug, PartialEq, PartialOrd, Ord, Deserialize, Serialize, sqlx::Type,
+)]
 #[sqlx(transparent)]
-pub struct TokenId(pub i32);
+pub struct TokenId(pub i64);
 
 impl AsRef<TokenId> for TokenId {
     fn as_ref(&self) -> &TokenId {
@@ -14,21 +16,23 @@ impl AsRef<TokenId> for TokenId {
     }
 }
 
-impl PartialEq<i32> for TokenId {
-    fn eq(&self, other: &i32) -> bool {
+impl PartialEq<i64> for TokenId {
+    fn eq(&self, other: &i64) -> bool {
         self.0 == *other
     }
 }
 
-impl From<i32> for TokenId {
-    fn from(value: i32) -> Self {
+impl From<i64> for TokenId {
+    fn from(value: i64) -> Self {
         Self(value)
     }
 }
 
-#[derive(Eq, Hash, Copy, Clone, Debug, PartialEq, PartialOrd, Ord, Deserialize, Serialize, sqlx::Type)]
+#[derive(
+    Eq, Hash, Copy, Clone, Debug, PartialEq, PartialOrd, Ord, Deserialize, Serialize, sqlx::Type,
+)]
 #[sqlx(transparent)]
-pub struct TokenPairId(pub i32);
+pub struct TokenPairId(pub i64);
 
 impl Display for TokenPairId {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -36,14 +40,14 @@ impl Display for TokenPairId {
     }
 }
 
-impl PartialEq<i32> for TokenPairId {
-    fn eq(&self, other: &i32) -> bool {
+impl PartialEq<i64> for TokenPairId {
+    fn eq(&self, other: &i64) -> bool {
         self.0 == *other
     }
 }
 
-impl From<i32> for TokenPairId {
-    fn from(value: i32) -> Self {
+impl From<i64> for TokenPairId {
+    fn from(value: i64) -> Self {
         Self(value)
     }
 }

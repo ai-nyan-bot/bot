@@ -3,9 +3,11 @@
 
 create table jupiter.twap_1m
 (
-    token_pair_id int4                     not null,
+    token_pair_id int8                     not null,
     timestamp     timestamp with time zone not null,
     twap          numeric(36, 12)          not null,
+    created_at    timestamptz default (timezone('utc', now())),
+    updated_at    timestamptz default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
 ) partition by hash (token_pair_id);
@@ -38,9 +40,11 @@ create index twap_1m_8_timestamp ON jupiter.twap_1m_8 (timestamp desc);
 
 create table jupiter.twap_5m
 (
-    token_pair_id int4                     not null,
+    token_pair_id int8                     not null,
     timestamp     timestamp with time zone not null,
     twap          numeric(36, 12)          not null,
+    created_at    timestamptz default (timezone('utc', now())),
+    updated_at    timestamptz default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
 ) partition by hash (token_pair_id);
@@ -73,9 +77,11 @@ create index twap_5m_8_timestamp ON jupiter.twap_5m_8 (timestamp desc);
 
 create table jupiter.twap_15m
 (
-    token_pair_id int4                     not null,
+    token_pair_id int8                     not null,
     timestamp     timestamp with time zone not null,
     twap          numeric(36, 12)          not null,
+    created_at    timestamptz default (timezone('utc', now())),
+    updated_at    timestamptz default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
 ) partition by hash (token_pair_id);
@@ -108,9 +114,11 @@ create index twap_15m_8_timestamp ON jupiter.twap_15m_8 (timestamp desc);
 
 create table jupiter.twap_1h
 (
-    token_pair_id int4                     not null,
+    token_pair_id int8                     not null,
     timestamp     timestamp with time zone not null,
     twap          numeric(36, 12)          not null,
+    created_at    timestamptz default (timezone('utc', now())),
+    updated_at    timestamptz default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
 ) partition by hash (token_pair_id);
@@ -144,9 +152,11 @@ create index twap_1h_8_timestamp ON jupiter.twap_1h_8 (timestamp desc);
 
 create table jupiter.twap_6h
 (
-    token_pair_id int4                     not null,
+    token_pair_id int8                     not null,
     timestamp     timestamp with time zone not null,
     twap          numeric(36, 12)          not null,
+    created_at    timestamptz default (timezone('utc', now())),
+    updated_at    timestamptz default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
 ) partition by hash (token_pair_id);
@@ -179,9 +189,11 @@ create index twap_6h_8_timestamp ON jupiter.twap_6h_8 (timestamp desc);
 
 create table jupiter.twap_1d
 (
-    token_pair_id int4                     not null,
+    token_pair_id int8                     not null,
     timestamp     timestamp with time zone not null,
     twap          numeric(36, 12)          not null,
+    created_at    timestamptz default (timezone('utc', now())),
+    updated_at    timestamptz default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
 ) partition by hash (token_pair_id);
