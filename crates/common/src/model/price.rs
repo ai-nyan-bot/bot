@@ -49,8 +49,59 @@ impl PartialOrd<BigDecimal> for PriceQuote {
 
 impl PartialEq<&str> for PriceQuote {
     fn eq(&self, other: &&str) -> bool {
-        self.eq(&BigDecimal::
-        from_str(other).unwrap())
+        self.eq(&BigDecimal::from_str(other).unwrap())
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize, Type)]
+#[sqlx(transparent)]
+pub struct PriceUsd(pub BigDecimal);
+
+impl From<i64> for PriceUsd {
+    fn from(value: i64) -> Self {
+        Self(BigDecimal::from(value))
+    }
+}
+
+impl From<u64> for PriceUsd {
+    fn from(value: u64) -> Self {
+        Self(BigDecimal::from(value))
+    }
+}
+
+impl From<&str> for PriceUsd {
+    fn from(value: &str) -> Self {
+        Self(BigDecimal::from_str(value).unwrap())
+    }
+}
+
+impl PartialEq<i32> for PriceUsd {
+    fn eq(&self, other: &i32) -> bool {
+        Self(BigDecimal::from(*other)).0.eq(&self.0)
+    }
+}
+
+impl PartialOrd<i32> for PriceUsd {
+    fn partial_cmp(&self, other: &i32) -> Option<Ordering> {
+        self.0.partial_cmp(&BigDecimal::from(*other))
+    }
+}
+
+impl PartialEq<BigDecimal> for PriceUsd {
+    fn eq(&self, other: &BigDecimal) -> bool {
+        self.0.eq(other)
+    }
+}
+
+impl PartialOrd<BigDecimal> for PriceUsd {
+    fn partial_cmp(&self, other: &BigDecimal) -> Option<Ordering> {
+        self.0.partial_cmp(&other)
+    }
+}
+
+impl PartialEq<&str> for PriceUsd {
+    fn eq(&self, other: &&str) -> bool {
+        self.eq(&BigDecimal::from_str(other).unwrap())
     }
 }
 

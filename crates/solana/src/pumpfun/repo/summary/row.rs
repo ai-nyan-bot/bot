@@ -2,11 +2,13 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::{
-    MarketCapWithChange, ProgressWithChange, SummaryCurveProgress, SummaryMarketCap, SummarySwap,
-    SummaryVolume, SwapWithChange, VolumeWithChange,
+    MarketCapWithChange, PriceWithChange, ProgressWithChange, SummaryCurveProgress,
+    SummaryMarketCap, SummaryPrice, SummarySwap, SummaryVolume, SwapWithChange, VolumeWithChange,
 };
 use bigdecimal::{BigDecimal, ToPrimitive};
-use common::model::{Count, MarketCap, MarketCapUsd, Percent, VolumeQuote, VolumeUsd};
+use common::model::{
+    Count, MarketCapQuote, MarketCapUsd, Percent, PriceQuote, PriceUsd, VolumeQuote, VolumeUsd,
+};
 use sqlx::postgres::PgRow;
 use sqlx::Row;
 
@@ -38,49 +40,99 @@ pub(crate) fn row_to_curve_progress(row: &PgRow) -> SummaryCurveProgress {
 pub(crate) fn row_to_market_cap(row: &PgRow) -> SummaryMarketCap {
     SummaryMarketCap {
         open: MarketCapWithChange {
-            quote: row.try_get::<MarketCap, _>("market_cap_open").ok(),
+            quote: row.try_get::<MarketCapQuote, _>("market_cap_open").ok(),
             usd: row.try_get::<MarketCapUsd, _>("market_cap_open_usd").ok(),
-            quote_change: row.try_get::<MarketCap, _>("market_cap_open_change").ok(),
+            quote_change: row
+                .try_get::<MarketCapQuote, _>("market_cap_open_change")
+                .ok(),
             usd_change: row
                 .try_get::<MarketCapUsd, _>("market_cap_open_usd_change")
                 .ok(),
             percent: row.try_get::<Percent, _>("market_cap_open_percent").ok(),
         },
         high: MarketCapWithChange {
-            quote: row.try_get::<MarketCap, _>("market_cap_high").ok(),
+            quote: row.try_get::<MarketCapQuote, _>("market_cap_high").ok(),
             usd: row.try_get::<MarketCapUsd, _>("market_cap_high_usd").ok(),
-            quote_change: row.try_get::<MarketCap, _>("market_cap_high_change").ok(),
+            quote_change: row
+                .try_get::<MarketCapQuote, _>("market_cap_high_change")
+                .ok(),
             usd_change: row
                 .try_get::<MarketCapUsd, _>("market_cap_high_usd_change")
                 .ok(),
             percent: row.try_get::<Percent, _>("market_cap_high_percent").ok(),
         },
         low: MarketCapWithChange {
-            quote: row.try_get::<MarketCap, _>("market_cap_low").ok(),
+            quote: row.try_get::<MarketCapQuote, _>("market_cap_low").ok(),
             usd: row.try_get::<MarketCapUsd, _>("market_cap_low_usd").ok(),
-            quote_change: row.try_get::<MarketCap, _>("market_cap_low_change").ok(),
+            quote_change: row
+                .try_get::<MarketCapQuote, _>("market_cap_low_change")
+                .ok(),
             usd_change: row
                 .try_get::<MarketCapUsd, _>("market_cap_low_usd_change")
                 .ok(),
             percent: row.try_get::<Percent, _>("market_cap_low_percent").ok(),
         },
         close: MarketCapWithChange {
-            quote: row.try_get::<MarketCap, _>("market_cap_close").ok(),
+            quote: row.try_get::<MarketCapQuote, _>("market_cap_close").ok(),
             usd: row.try_get::<MarketCapUsd, _>("market_cap_close_usd").ok(),
-            quote_change: row.try_get::<MarketCap, _>("market_cap_close_change").ok(),
+            quote_change: row
+                .try_get::<MarketCapQuote, _>("market_cap_close_change")
+                .ok(),
             usd_change: row
                 .try_get::<MarketCapUsd, _>("market_cap_close_usd_change")
                 .ok(),
             percent: row.try_get::<Percent, _>("market_cap_close_percent").ok(),
         },
         avg: MarketCapWithChange {
-            quote: row.try_get::<MarketCap, _>("market_cap_avg").ok(),
+            quote: row.try_get::<MarketCapQuote, _>("market_cap_avg").ok(),
             usd: row.try_get::<MarketCapUsd, _>("market_cap_avg_usd").ok(),
-            quote_change: row.try_get::<MarketCap, _>("market_cap_avg_change").ok(),
+            quote_change: row
+                .try_get::<MarketCapQuote, _>("market_cap_avg_change")
+                .ok(),
             usd_change: row
                 .try_get::<MarketCapUsd, _>("market_cap_avg_usd_change")
                 .ok(),
             percent: row.try_get::<Percent, _>("market_cap_avg_percent").ok(),
+        },
+    }
+}
+
+pub(crate) fn row_to_price(row: &PgRow) -> SummaryPrice {
+    SummaryPrice {
+        open: PriceWithChange {
+            quote: row.try_get::<PriceQuote, _>("price_open").ok(),
+            usd: row.try_get::<PriceUsd, _>("price_open_usd").ok(),
+            quote_change: row.try_get::<PriceQuote, _>("price_open_change").ok(),
+            usd_change: row.try_get::<PriceUsd, _>("price_open_usd_change").ok(),
+            percent: row.try_get::<Percent, _>("price_open_percent").ok(),
+        },
+        high: PriceWithChange {
+            quote: row.try_get::<PriceQuote, _>("price_high").ok(),
+            usd: row.try_get::<PriceUsd, _>("price_high_usd").ok(),
+            quote_change: row.try_get::<PriceQuote, _>("price_high_change").ok(),
+            usd_change: row.try_get::<PriceUsd, _>("price_high_usd_change").ok(),
+            percent: row.try_get::<Percent, _>("price_high_percent").ok(),
+        },
+        low: PriceWithChange {
+            quote: row.try_get::<PriceQuote, _>("price_low").ok(),
+            usd: row.try_get::<PriceUsd, _>("price_low_usd").ok(),
+            quote_change: row.try_get::<PriceQuote, _>("price_low_change").ok(),
+            usd_change: row.try_get::<PriceUsd, _>("price_low_usd_change").ok(),
+            percent: row.try_get::<Percent, _>("price_low_percent").ok(),
+        },
+        close: PriceWithChange {
+            quote: row.try_get::<PriceQuote, _>("price_close").ok(),
+            usd: row.try_get::<PriceUsd, _>("price_close_usd").ok(),
+            quote_change: row.try_get::<PriceQuote, _>("price_close_change").ok(),
+            usd_change: row.try_get::<PriceUsd, _>("price_close_usd_change").ok(),
+            percent: row.try_get::<Percent, _>("price_close_percent").ok(),
+        },
+        avg: PriceWithChange {
+            quote: row.try_get::<PriceQuote, _>("price_avg").ok(),
+            usd: row.try_get::<PriceUsd, _>("price_avg_usd").ok(),
+            quote_change: row.try_get::<PriceQuote, _>("price_avg_change").ok(),
+            usd_change: row.try_get::<PriceUsd, _>("price_avg_usd_change").ok(),
+            percent: row.try_get::<Percent, _>("price_avg_percent").ok(),
         },
     }
 }

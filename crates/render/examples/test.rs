@@ -1,7 +1,7 @@
 use common::model::Percent;
 use image::RgbaImage;
 use render::page::pumpfun::{pumpfun_summary, PumpfunSummary};
-use solana::model::{MarketCapWithChange, ProgressWithChange, SummaryCurveProgress, SummaryMarketCap, SummarySwap, SummaryVolume, SwapWithChange, TimeframeSummary, VolumeWithChange};
+use solana::model::{MarketCapWithChange, PriceWithChange, ProgressWithChange, SummaryCurveProgress, SummaryMarketCap, SummaryPrice, SummarySwap, SummaryVolume, SwapWithChange, TimeframeSummary, VolumeWithChange};
 
 fn main() {
     let img_width = 1200;
@@ -64,6 +64,43 @@ fn main() {
                         percent: None,
                     },
                     avg: MarketCapWithChange {
+                        quote: None,
+                        usd: None,
+                        quote_change: None,
+                        usd_change: None,
+                        percent: None,
+                    },
+                },
+                price: SummaryPrice {
+                    open: PriceWithChange {
+                        quote: None,
+                        usd: None,
+                        quote_change: None,
+                        usd_change: None,
+                        percent: None,
+                    },
+                    high: PriceWithChange {
+                        quote: None,
+                        usd: None,
+                        quote_change: None,
+                        usd_change: None,
+                        percent: None,
+                    },
+                    low: PriceWithChange {
+                        quote: None,
+                        usd: None,
+                        quote_change: None,
+                        usd_change: None,
+                        percent: None,
+                    },
+                    close: PriceWithChange {
+                        quote: None,
+                        usd: None,
+                        quote_change: None,
+                        usd_change: None,
+                        percent: None,
+                    },
+                    avg: PriceWithChange {
                         quote: None,
                         usd: None,
                         quote_change: None,
@@ -167,6 +204,43 @@ fn main() {
                         percent: None,
                     },
                     avg: MarketCapWithChange {
+                        quote: None,
+                        usd: None,
+                        quote_change: None,
+                        usd_change: None,
+                        percent: None,
+                    },
+                },
+                price: SummaryPrice {
+                    open: PriceWithChange {
+                        quote: None,
+                        usd: None,
+                        quote_change: None,
+                        usd_change: None,
+                        percent: None,
+                    },
+                    high: PriceWithChange {
+                        quote: None,
+                        usd: None,
+                        quote_change: None,
+                        usd_change: None,
+                        percent: None,
+                    },
+                    low: PriceWithChange {
+                        quote: None,
+                        usd: None,
+                        quote_change: None,
+                        usd_change: None,
+                        percent: None,
+                    },
+                    close: PriceWithChange {
+                        quote: None,
+                        usd: None,
+                        quote_change: None,
+                        usd_change: None,
+                        percent: None,
+                    },
+                    avg: PriceWithChange {
                         quote: None,
                         usd: None,
                         quote_change: None,

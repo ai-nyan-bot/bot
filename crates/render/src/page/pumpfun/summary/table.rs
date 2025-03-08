@@ -5,10 +5,13 @@ use crate::page::pumpfun::summary::{
     cell_x_end, cell_x_start, cell_y_end, cell_y_start, DECREASED, INCREASED, PADDING_HEIGHT,
 };
 use crate::{Font, FontSize, Line, Point, RenderLine, RenderText, Text};
-use common::format::{format_count, format_market_cap_usd, format_percent, format_volume_usd};
+use common::format::{
+    format_count, format_market_cap_usd, format_percent, format_price_usd, format_volume_usd,
+};
 use image::{Rgba, RgbaImage};
 use solana::model::{
-    MarketCapWithChange, SummaryCurveProgress, SwapWithChange, TimeframeSummary, VolumeWithChange,
+    MarketCapWithChange, PriceWithChange, SummaryCurveProgress, SwapWithChange, TimeframeSummary,
+    VolumeWithChange,
 };
 use std::ops::Div;
 
@@ -95,6 +98,7 @@ pub(crate) fn draw_cell_bottom(img: &mut RgbaImage, font: &Font, x: u32, y: u32,
 
 pub(crate) fn draw_summary(img: &mut RgbaImage, font: &Font, x: u32, summary: TimeframeSummary) {
     draw_bonding_curve(img, font, x, summary.curve);
+    draw_price(img, font, x, summary.price.avg);
     draw_market_cap(img, font, x, summary.cap.avg);
     draw_volume(img, font, x, 4, summary.volume.all);
     draw_volume(img, font, x, 5, summary.volume.buy);
@@ -181,6 +185,44 @@ fn draw_market_cap(img: &mut RgbaImage, font: &Font, x: u32, cap: MarketCapWithC
                 x,
                 3,
                 Text::new(format_market_cap_usd(usd), 32, Rgba([120, 120, 120, 255])),
+            );
+        }
+    }
+}
+
+fn draw_price(img: &mut RgbaImage, font: &Font, x: u32, cap: PriceWithChange) {
+    if let Some(usd) = cap.usd {
+        if let (Some(_change), Some(percent)) = (cap.usd_change, cap.percent) {
+            draw_cell_top(
+                img,
+                font,
+                x,
+                2,
+                Text::new(format_price_usd(usd), 32, Rgba([120, 120, 120, 255])),
+            );
+
+            let color = if percent > 0.0 {
+                INCREASED
+            } else if percent < 0.0 {
+                DECREASED
+            } else {
+                Rgba([120, 120, 120, 255])
+            };
+
+            draw_cell_bottom(
+                img,
+                font,
+                x,
+                2,
+                Text::new(format_percent(percent), 32, color),
+            );
+        } else {
+            draw_cell_center(
+                img,
+                font,
+                x,
+                2,
+                Text::new(format_price_usd(usd), 32, Rgba([120, 120, 120, 255])),
             );
         }
     }

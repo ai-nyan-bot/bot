@@ -3,7 +3,7 @@
 
 use crate::model::TimeframeSummary;
 use crate::pumpfun::repo::summary::row::{
-    row_to_curve_progress, row_to_market_cap, row_to_swaps, row_to_volume,
+    row_to_curve_progress, row_to_market_cap, row_to_price, row_to_swaps, row_to_volume,
 };
 use crate::pumpfun::repo::SummaryRepo;
 use base::model::TokenPairId;
@@ -60,6 +60,32 @@ select
     market_cap_avg_usd_change,
     market_cap_avg_percent,
     
+    price_open,
+    price_open_usd,
+    price_open_change,
+    price_open_usd_change,
+    price_open_percent,
+    price_high,
+    price_high_usd,
+    price_high_change,
+    price_high_usd_change,
+    price_high_percent,
+    price_low,
+    price_low_usd,
+    price_low_change,
+    price_low_usd_change,
+    price_low_percent,
+    price_close,
+    price_close_usd,
+    price_close_change,
+    price_close_usd_change,
+    price_close_percent,
+    price_avg,
+    price_avg_usd,
+    price_avg_change,
+    price_avg_usd_change,
+    price_avg_percent,
+    
     swap,
     swap_change,
     swap_percent,
@@ -97,6 +123,7 @@ where token_pair_id = $1
         .map(|row| TimeframeSummary {
             curve: row_to_curve_progress(&row),
             cap: row_to_market_cap(&row),
+            price: row_to_price(&row),
             swap: row_to_swaps(&row),
             volume: row_to_volume(&row),
         })?)

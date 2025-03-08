@@ -3,7 +3,9 @@
 
 use crate::pumpfun::model::Curve;
 use base::model::TokenPair;
-use common::model::{Count, MarketCap, MarketCapUsd, Percent, VolumeQuote, VolumeUsd};
+use common::model::{
+    Count, MarketCapQuote, MarketCapUsd, Percent, PriceQuote, PriceUsd, VolumeQuote, VolumeUsd,
+};
 
 #[derive(Clone, Debug)]
 pub struct PumpfunSummary {
@@ -21,6 +23,7 @@ pub struct PumpfunSummary {
 pub struct TimeframeSummary {
     pub curve: SummaryCurveProgress,
     pub cap: SummaryMarketCap,
+    pub price: SummaryPrice,
     pub swap: SummarySwap,
     pub volume: SummaryVolume,
 }
@@ -44,6 +47,15 @@ pub struct SummaryMarketCap {
 }
 
 #[derive(Clone, Debug)]
+pub struct SummaryPrice {
+    pub open: PriceWithChange,
+    pub high: PriceWithChange,
+    pub low: PriceWithChange,
+    pub close: PriceWithChange,
+    pub avg: PriceWithChange,
+}
+
+#[derive(Clone, Debug)]
 pub struct SummarySwap {
     pub all: SwapWithChange,
     pub buy: SwapWithChange,
@@ -59,10 +71,19 @@ pub struct SummaryVolume {
 
 #[derive(Clone, Debug)]
 pub struct MarketCapWithChange {
-    pub quote: Option<MarketCap>,
+    pub quote: Option<MarketCapQuote>,
     pub usd: Option<MarketCapUsd>,
-    pub quote_change: Option<MarketCap>,
+    pub quote_change: Option<MarketCapQuote>,
     pub usd_change: Option<MarketCapUsd>,
+    pub percent: Option<Percent>,
+}
+
+#[derive(Clone, Debug)]
+pub struct PriceWithChange {
+    pub quote: Option<PriceQuote>,
+    pub usd: Option<PriceUsd>,
+    pub quote_change: Option<PriceQuote>,
+    pub usd_change: Option<PriceUsd>,
     pub percent: Option<Percent>,
 }
 
