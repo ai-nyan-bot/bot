@@ -1,10 +1,10 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::VolumeUsd;
+use crate::model::MarketCapUsd;
 use bigdecimal::{BigDecimal, ToPrimitive};
 
-pub fn format_volume_usd<T: Into<VolumeUsd>>(num: T) -> String {
+pub fn format_market_cap_usd<T: Into<MarketCapUsd>>(num: T) -> String {
     let num = num.into().0;
     let mut suffix = "";
 
@@ -42,12 +42,12 @@ pub fn format_volume_usd<T: Into<VolumeUsd>>(num: T) -> String {
 #[cfg(test)]
 mod tests {
 
-    mod volume_usd {
-        use crate::format::format_volume_usd;
+    mod market_cap_usd {
+        use crate::format::format_market_cap_usd;
 
         #[test]
         fn test_9946_50() {
-            let result = format_volume_usd("9946.50");
+            let result = format_market_cap_usd("9946.50");
             assert_eq!(result, "$9.95K");
         }
     }

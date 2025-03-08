@@ -3,8 +3,7 @@
 
 use crate::pumpfun::model::Curve;
 use base::model::TokenPair;
-use common::model::volume::{Volume, VolumeUsd};
-use common::model::{Count, Percent};
+use common::model::{Count, MarketCap, MarketCapUsd, Percent, VolumeQuote, VolumeUsd};
 
 #[derive(Clone, Debug)]
 pub struct PumpfunSummary {
@@ -21,6 +20,7 @@ pub struct PumpfunSummary {
 #[derive(Clone, Debug)]
 pub struct TimeframeSummary {
     pub curve: SummaryCurveProgress,
+    pub cap: SummaryMarketCap,
     pub swap: SummarySwap,
     pub volume: SummaryVolume,
 }
@@ -32,6 +32,15 @@ pub struct SummaryCurveProgress {
     pub low: ProgressWithChange,
     pub close: ProgressWithChange,
     pub avg: ProgressWithChange,
+}
+
+#[derive(Clone, Debug)]
+pub struct SummaryMarketCap {
+    pub open: MarketCapWithChange,
+    pub high: MarketCapWithChange,
+    pub low: MarketCapWithChange,
+    pub close: MarketCapWithChange,
+    pub avg: MarketCapWithChange,
 }
 
 #[derive(Clone, Debug)]
@@ -49,6 +58,15 @@ pub struct SummaryVolume {
 }
 
 #[derive(Clone, Debug)]
+pub struct MarketCapWithChange {
+    pub quote: Option<MarketCap>,
+    pub usd: Option<MarketCapUsd>,
+    pub quote_change: Option<MarketCap>,
+    pub usd_change: Option<MarketCapUsd>,
+    pub percent: Option<Percent>,
+}
+
+#[derive(Clone, Debug)]
 pub struct ProgressWithChange {
     pub progress: Option<Percent>,
     pub change: Option<Percent>,
@@ -63,9 +81,9 @@ pub struct SwapWithChange {
 
 #[derive(Clone, Debug)]
 pub struct VolumeWithChange {
-    pub quote: Option<Volume>,
+    pub quote: Option<VolumeQuote>,
     pub usd: Option<VolumeUsd>,
-    pub quote_change: Option<Volume>,
+    pub quote_change: Option<VolumeQuote>,
     pub usd_change: Option<VolumeUsd>,
     pub percent: Option<Percent>,
 }

@@ -1,10 +1,9 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::PriceAvgQuote;
 use ::serde::{Deserialize, Serialize};
 use bigdecimal::BigDecimal;
-use common::model::{Count, TimeUnit};
+use common::model::{Count, PriceAvgQuote, TimeUnit};
 pub(crate) use compare::*;
 use std::fmt::{Display, Formatter};
 use std::str::FromStr;

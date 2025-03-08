@@ -8,12 +8,12 @@ use crate::jupiter::model::Swap;
 use crate::jupiter::repo::SwapRepo;
 use crate::model::{Signature, Slot};
 use base::model::{
-    determine_mints, AddressId, Amount, DecimalAmount, Mint, PriceAvgQuote, PriceQuote, PublicKey,
-    SwapId, Token, TokenPair, TokenPairId, TokenPairMint,
+    determine_mints, AddressId, Amount, DecimalAmount, Mint, PublicKey, SwapId, Token, TokenPair,
+    TokenPairId, TokenPairMint,
 };
 use base::LoadTokenInfo;
 use bigdecimal::{BigDecimal, Zero};
-use common::model::Timestamp;
+use common::model::{PriceQuote, Timestamp};
 use common::repo::{RepoResult, Tx};
 use log::trace;
 use sqlx::Row;
@@ -177,7 +177,7 @@ fn calculate_amount_and_side(
     swap: &SlotSwap,
     base_token: &Token,
     quote_token: &Token,
-) -> (PriceAvgQuote, DecimalAmount, DecimalAmount, bool) {
+) -> (PriceQuote, DecimalAmount, DecimalAmount, bool) {
     let input_decimals = if swap.input_mint == base_token.mint {
         &base_token.decimals
     } else {
@@ -210,7 +210,7 @@ fn calculate_amount_and_side(
             "Input amount must not be 0"
         );
         (
-            PriceAvgQuote(output_amount.0 / input_amount.0),
+            PriceQuote(output_amount.0 / input_amount.0),
             amount_base,
             amount_quote,
             false,
@@ -221,7 +221,7 @@ fn calculate_amount_and_side(
             "Output amount must not be 0"
         );
         (
-            PriceAvgQuote(input_amount.0 / output_amount.0),
+            PriceQuote(input_amount.0 / output_amount.0),
             amount_base,
             amount_quote,
             true,

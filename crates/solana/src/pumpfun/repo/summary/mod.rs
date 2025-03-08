@@ -9,6 +9,7 @@ mod calculate;
 mod count;
 mod get;
 mod list;
+mod row;
 
 pub struct SummaryQuery {
     pub limit: Limit,

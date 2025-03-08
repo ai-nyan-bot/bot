@@ -4,8 +4,8 @@
 use crate::jupiter::model::Swap;
 use crate::jupiter::repo::ReadSwapRepo;
 use crate::model::{Signature, Slot};
-use base::model::{AddressId, DecimalAmount, PriceQuote, TokenPairId, SwapId};
-use common::model::Timestamp;
+use base::model::{AddressId, DecimalAmount, SwapId, TokenPairId};
+use common::model::{PriceQuote, Timestamp};
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 

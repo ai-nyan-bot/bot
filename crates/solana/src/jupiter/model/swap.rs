@@ -2,8 +2,8 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::{Signature, Slot};
-use base::model::{AddressId, DecimalAmount, PriceQuote, TokenPairId, SwapId};
-use common::model::Timestamp;
+use base::model::{AddressId, DecimalAmount, SwapId, TokenPairId};
+use common::model::{PriceQuote, Timestamp};
 
 #[derive(Debug)]
 pub struct Swap {

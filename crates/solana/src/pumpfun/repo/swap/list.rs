@@ -4,13 +4,12 @@
 use crate::model::{Signature, Slot};
 use crate::pumpfun::model::Swap;
 use crate::pumpfun::repo::ReadSwapRepo;
-use base::model::{AddressId, Amount, DecimalAmount, PriceQuote, TokenPairId, SwapId};
-use common::model::{Percent, Timestamp};
+use base::model::{AddressId, Amount, DecimalAmount, SwapId, TokenPairId};
+use common::model::{Percent, PriceQuote, Timestamp};
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 
 impl ReadSwapRepo {
-
     pub async fn list<'a>(&self, tx: &mut Tx<'a>) -> RepoResult<Vec<Swap>> {
         Ok(sqlx::query("select * from pumpfun.swap;")
             .fetch_all(&mut **tx)
@@ -29,7 +28,7 @@ impl ReadSwapRepo {
                 virtual_base_reserves: r.get::<Amount, _>("virtual_base_reserves"),
                 virtual_quote_reserves: r.get::<Amount, _>("virtual_quote_reserves"),
                 progress: r.get::<Percent, _>("progress"),
-                signature: r.get::<Signature, _>("signature")
+                signature: r.get::<Signature, _>("signature"),
             })
             .collect::<Vec<_>>())
     }
@@ -58,7 +57,7 @@ impl ReadSwapRepo {
                     virtual_base_reserves: r.get::<Amount, _>("virtual_base_reserves"),
                     virtual_quote_reserves: r.get::<Amount, _>("virtual_quote_reserves"),
                     progress: r.get::<Percent, _>("progress"),
-                    signature: r.get::<Signature, _>("signature")
+                    signature: r.get::<Signature, _>("signature"),
                 })
                 .collect::<Vec<_>>(),
         )
