@@ -12,8 +12,8 @@ create table jupiter.candle_usd_1m
     twap          numeric(36, 12) not null,
     volume_buy    numeric(36, 12) not null,
     volume_sell   numeric(36, 12) not null,
-    created_at    timestamptz default (timezone('utc', now())),
-    updated_at    timestamptz default (timezone('utc', now())),
+    created_at    timestamptz not null default (timezone('utc', now())),
+    updated_at    timestamptz not null default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -56,8 +56,8 @@ create table jupiter.candle_usd_5m
     twap          numeric(36, 12) not null,
     volume_buy    numeric(36, 12) not null,
     volume_sell   numeric(36, 12) not null,
-    created_at    timestamptz default (timezone('utc', now())),
-    updated_at    timestamptz default (timezone('utc', now())),
+    created_at    timestamptz not null default (timezone('utc', now())),
+    updated_at    timestamptz not null default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -101,8 +101,8 @@ create table jupiter.candle_usd_15m
     twap          numeric(36, 12) not null,
     volume_buy    numeric(36, 12) not null,
     volume_sell   numeric(36, 12) not null,
-    created_at    timestamptz default (timezone('utc', now())),
-    updated_at    timestamptz default (timezone('utc', now())),
+    created_at    timestamptz not null default (timezone('utc', now())),
+    updated_at    timestamptz not null default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -145,8 +145,8 @@ create table jupiter.candle_usd_1h
     twap          numeric(36, 12) not null,
     volume_buy    numeric(36, 12) not null,
     volume_sell   numeric(36, 12) not null,
-    created_at    timestamptz default (timezone('utc', now())),
-    updated_at    timestamptz default (timezone('utc', now())),
+    created_at    timestamptz not null default (timezone('utc', now())),
+    updated_at    timestamptz not null default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -190,8 +190,8 @@ create table jupiter.candle_usd_6h
     twap          numeric(36, 12) not null,
     volume_buy    numeric(36, 12) not null,
     volume_sell   numeric(36, 12) not null,
-    created_at    timestamptz default (timezone('utc', now())),
-    updated_at    timestamptz default (timezone('utc', now())),
+    created_at    timestamptz not null default (timezone('utc', now())),
+    updated_at    timestamptz not null default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -235,8 +235,8 @@ create table jupiter.candle_usd_1d
     twap          numeric(36, 12) not null,
     volume_buy    numeric(36, 12) not null,
     volume_sell   numeric(36, 12) not null,
-    created_at    timestamptz default (timezone('utc', now())),
-    updated_at    timestamptz default (timezone('utc', now())),
+    created_at    timestamptz not null default (timezone('utc', now())),
+    updated_at    timestamptz not null default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)

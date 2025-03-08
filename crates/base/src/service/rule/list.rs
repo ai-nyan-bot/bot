@@ -12,7 +12,7 @@ impl RuleService {
         let mut tx = self.pool.begin().await?;
         let result = self
             .repo
-            .list_all(
+            .list_active(
                 &mut tx,
                 RuleQueryAll {
                     limit: Limit::unlimited(),

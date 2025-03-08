@@ -64,44 +64,44 @@ impl NotificationService {
                                 map.insert(
                                     "button_0".to_string(),
                                     serde_json::to_value(
-                                        buttons
+										buttons
                                             .first()
-                                            .unwrap_or(&TelegramActionButtonConfig::None),
+                                            .unwrap_or(&TelegramActionButtonConfig::Nothing),
                                     )
                                     .unwrap(),
                                 );
                                 map.insert(
                                     "button_1".to_string(),
                                     serde_json::to_value(
-                                        buttons.get(1).unwrap_or(&TelegramActionButtonConfig::None),
+										buttons.get(1).unwrap_or(&TelegramActionButtonConfig::Nothing),
                                     )
                                     .unwrap(),
                                 );
                                 map.insert(
                                     "button_2".to_string(),
                                     serde_json::to_value(
-                                        buttons.get(2).unwrap_or(&TelegramActionButtonConfig::None),
+										buttons.get(2).unwrap_or(&TelegramActionButtonConfig::Nothing),
                                     )
                                     .unwrap(),
                                 );
                                 map.insert(
                                     "button_3".to_string(),
                                     serde_json::to_value(
-                                        buttons.get(3).unwrap_or(&TelegramActionButtonConfig::None),
+										buttons.get(3).unwrap_or(&TelegramActionButtonConfig::Nothing),
                                     )
                                     .unwrap(),
                                 );
                                 map.insert(
                                     "button_4".to_string(),
                                     serde_json::to_value(
-                                        buttons.get(4).unwrap_or(&TelegramActionButtonConfig::None),
+										buttons.get(4).unwrap_or(&TelegramActionButtonConfig::Nothing),
                                     )
                                     .unwrap(),
                                 );
                                 map.insert(
                                     "button_5".to_string(),
                                     serde_json::to_value(
-                                        buttons.get(5).unwrap_or(&TelegramActionButtonConfig::None),
+										buttons.get(5).unwrap_or(&TelegramActionButtonConfig::Nothing),
                                     )
                                     .unwrap(),
                                 );

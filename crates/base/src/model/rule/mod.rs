@@ -3,18 +3,21 @@
 
 pub use crate::model::rule::id::RuleId;
 pub use crate::model::rule::name::RuleName;
+pub use crate::model::rule::status::RuleStatus;
 pub use crate::model::rule::version::RuleVersion;
 use crate::model::{Sequence, UserId};
 use common::model::{CreatedAt, UpdatedAt};
 
 mod id;
 mod name;
+mod status;
 mod version;
 
 #[derive(Debug)]
 pub struct Rule {
     pub id: RuleId,
     pub version: RuleVersion,
+    pub status: RuleStatus,
     pub name: RuleName,
     pub sequence: Sequence,
     pub user: UserId,

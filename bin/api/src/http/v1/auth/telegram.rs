@@ -57,7 +57,7 @@ mod tests {
 	use crate::http::testing::{extract, extract_error, Test};
 	use axum::http::StatusCode;
 
-	#[tokio::test]
+	#[test_log::test(tokio::test)]
     async fn without_body_and_content_type() {
         let test = Test::new_empty_db().await;
         let response = test.post_no_content_unauthenticated("/v1/auth/telegram").await;
@@ -69,7 +69,7 @@ mod tests {
         assert_eq!(error.message, "Request needs to be of content type application/json");
     }
 
-    #[tokio::test]
+    #[test_log::test(tokio::test)]
     async fn malformed_json() {
         let test = Test::new_empty_db().await;
         let response = test.post_unauthenticated_json("/v1/auth/telegram", "{,}").await;
@@ -84,7 +84,7 @@ mod tests {
         );
     }
 
-    #[tokio::test]
+    #[test_log::test(tokio::test)]
     async fn empty_json_object() {
         let test = Test::new_empty_db().await;
         let response = test.post_unauthenticated_json("/v1/auth/telegram", "{}").await;
@@ -99,7 +99,7 @@ mod tests {
         );
     }
 
-    #[tokio::test]
+    #[test_log::test(tokio::test)]
     async fn invalid_query() {
         let test = Test::new_empty_db().await;
         let response = test
@@ -118,7 +118,7 @@ mod tests {
         assert_eq!(error.message, "Invalid query string");
     }
 
-    #[tokio::test]
+    #[test_log::test(tokio::test)]
     async fn invalid_signature() {
         let test = Test::new_empty_db().await;
         let response = test.post_unauthenticated_json("/v1/auth/telegram", r#"{
@@ -132,7 +132,7 @@ mod tests {
         assert_eq!(error.message, "Invalid query string");
     }
 
-    #[tokio::test]
+    #[test_log::test(tokio::test)]
     async fn ok() {
         let test = Test::new_empty_db().await;
         let response = test.post_unauthenticated_json("/v1/auth/telegram", r#"{
@@ -149,7 +149,7 @@ mod tests {
         assert!(response.wallet.solana.0.len() > 32);
     }
 
-    #[tokio::test]
+    #[test_log::test(tokio::test)]
     async fn multiple_logins() {
         let test = Test::new_empty_db().await;
         let previous_response = test.post_unauthenticated_json("/v1/auth/telegram", r#"{

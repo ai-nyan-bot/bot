@@ -1,8 +1,8 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::UserId;
-use crate::model::{Sequence, Rule, RuleId, RuleName};
+use crate::model::{Rule, RuleId, RuleName, Sequence};
+use crate::model::{RuleStatus, UserId};
 use crate::repo::rule::RuleRepo;
 use common::repo::{RepoResult, Tx};
 use sqlx::types::JsonValue;
@@ -16,7 +16,8 @@ pub struct RuleCreateCmd {
 
 impl RuleRepo {
     pub async fn create<'a>(&self, tx: &mut Tx<'a>, cmd: RuleCreateCmd) -> RepoResult<Rule> {
-        let rule_id = query("insert into solana.rule (version, name, sequence, user_id) values (1, $1, $2, $3) returning id")
+        let rule_id = query("insert into solana.rule (version, status, name, sequence, user_id) values (1, $1, $2, $3, $4) returning id")
+            .bind(RuleStatus::Active)
             .bind(cmd.name)
             .bind::<JsonValue>(cmd.sequence.into())
             .bind(cmd.user)

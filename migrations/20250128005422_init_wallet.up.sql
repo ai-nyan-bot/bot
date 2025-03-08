@@ -7,8 +7,8 @@ create table nyanbot.wallet
     user_id            int8 not null,
     solana_public_key  text not null,
     solana_private_key text not null,
-    created_at         timestamptz default (timezone('utc', now())),
-    updated_at         timestamptz default (timezone('utc', now())),
+    created_at         timestamptz not null default (timezone('utc', now())),
+    updated_at         timestamptz not null default (timezone('utc', now())),
 
     constraint fk_user
         foreign key (user_id)

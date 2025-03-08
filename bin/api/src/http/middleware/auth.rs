@@ -58,7 +58,7 @@ mod tests {
     use testing::run_test_with_pool_on_empty_db;
     use testing::user::get_or_create_test_user;
 
-    #[tokio::test]
+    #[test_log::test(tokio::test)]
     async fn test_ok() {
         run_test_with_pool_on_empty_db(|pool| async move {
             let mut headers = HeaderMap::new();
@@ -77,7 +77,7 @@ mod tests {
         .await;
     }
 
-    #[tokio::test]
+    #[test_log::test(tokio::test)]
     async fn test_token_does_not_exists() {
         run_test_with_pool_on_empty_db(|pool| async move {
             let mut headers = HeaderMap::new();
@@ -98,7 +98,7 @@ mod tests {
         .await;
     }
 
-    #[tokio::test]
+    #[test_log::test(tokio::test)]
     async fn test_missing_bearer_prefix() {
         run_test_with_pool_on_empty_db(|pool| async move {
             let mut headers = HeaderMap::new();
@@ -120,7 +120,7 @@ mod tests {
         .await;
     }
 
-    #[tokio::test]
+    #[test_log::test(tokio::test)]
     async fn test_missing_header() {
         run_test_with_pool_on_empty_db(|pool| async move {
             let headers = HeaderMap::new();

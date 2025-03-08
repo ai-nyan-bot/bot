@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Editor} from "@components/editor";
 import {useRuleGet, useRuleUpdate} from "@hooks/rule.ts";
 import {useParams} from "react-router-dom";
-import {Sequence} from "@types";
+import {RuleStatus, Sequence} from "@types";
 import {injectId, uuidv4} from "@utils";
 import {RuleDetailForm} from "@components/form";
 import {Button} from "@components/ui/button.tsx";
@@ -13,6 +13,7 @@ const TelegramRuleDetailPage: React.FC = () => {
     const [getRule, rule, loading, ruleError] = useRuleGet();
     const [updateRule, _, updating] = useRuleUpdate();
     const [ruleName, setRuleName] = useState<string>();
+    const [ruleStatus, setRuleStatus] = useState<RuleStatus>();
     const [sequence, setSequence] = useState<Sequence>();
 
     useEffect(() => {
@@ -44,6 +45,7 @@ const TelegramRuleDetailPage: React.FC = () => {
     useEffect(() => {
         let injectedSequence = injectId(rule?.sequence, uuidv4) as Sequence;
         setRuleName(rule?.name)
+        setRuleStatus(rule?.status)
         setSequence(injectedSequence)
     }, [rule]);
 
@@ -60,7 +62,11 @@ const TelegramRuleDetailPage: React.FC = () => {
             <RuleDetailForm
                 id={id}
                 name={ruleName || ''}
-                onNameChanged={setRuleName}
+                status={ruleStatus || RuleStatus.INACTIVE}
+                onChange={(name, status) => {
+                    setRuleName(name);
+                    setRuleStatus(status);
+                }}
             />
 
             <Editor
@@ -71,7 +77,7 @@ const TelegramRuleDetailPage: React.FC = () => {
             />
 
             <Button onClick={() => {
-                updateRule(id, {sequence})
+                updateRule(id, {name: ruleName, status: ruleStatus, sequence})
             }} disabled={updating}>Update</Button>
         </div>
     );

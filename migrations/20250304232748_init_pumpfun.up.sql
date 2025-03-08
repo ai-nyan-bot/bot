@@ -18,8 +18,8 @@ create table pumpfun.swap
     virtual_quote_reserves int8            not null,
     progress               real            not null,
     signature              text            not null,
-    created_at             timestamptz default (timezone('utc', now())),
-    updated_at             timestamptz default (timezone('utc', now())),
+    created_at             timestamptz not null default (timezone('utc', now())),
+    updated_at             timestamptz not null default (timezone('utc', now())),
 
     constraint fk_wallet foreign key (address_id) references solana.address (id),
 

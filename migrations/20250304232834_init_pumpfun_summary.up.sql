@@ -128,8 +128,8 @@ create table pumpfun.summary_1m
     volume_sell_usd_change      numeric(36, 12),
     volume_sell_percent         real,
 
-    created_at                  timestamptz default (timezone('utc', now())),
-    updated_at                  timestamptz default (timezone('utc', now())),
+    created_at                  timestamptz not null default (timezone('utc', now())),
+    updated_at                  timestamptz not null default (timezone('utc', now())),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
 );
@@ -259,8 +259,8 @@ create table pumpfun.summary_5m
     volume_sell_usd_change      numeric(36, 12),
     volume_sell_percent         real,
 
-    created_at                  timestamptz default (timezone('utc', now())),
-    updated_at                  timestamptz default (timezone('utc', now())),
+    created_at                  timestamptz not null default (timezone('utc', now())),
+    updated_at                  timestamptz not null default (timezone('utc', now())),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
 );
@@ -390,8 +390,8 @@ create table pumpfun.summary_15m
     volume_sell_usd_change      numeric(36, 12),
     volume_sell_percent         real,
 
-    created_at                  timestamptz default (timezone('utc', now())),
-    updated_at                  timestamptz default (timezone('utc', now())),
+    created_at                  timestamptz not null default (timezone('utc', now())),
+    updated_at                  timestamptz not null default (timezone('utc', now())),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
 );
@@ -522,8 +522,8 @@ create table pumpfun.summary_1h
     volume_sell_usd_change      numeric(36, 12),
     volume_sell_percent         real,
 
-    created_at                  timestamptz default (timezone('utc', now())),
-    updated_at                  timestamptz default (timezone('utc', now())),
+    created_at                  timestamptz not null default (timezone('utc', now())),
+    updated_at                  timestamptz not null default (timezone('utc', now())),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
 );
@@ -654,8 +654,8 @@ create table pumpfun.summary_6h
     volume_sell_usd_change      numeric(36, 12),
     volume_sell_percent         real,
 
-    created_at                  timestamptz default (timezone('utc', now())),
-    updated_at                  timestamptz default (timezone('utc', now())),
+    created_at                  timestamptz not null default (timezone('utc', now())),
+    updated_at                  timestamptz not null default (timezone('utc', now())),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
 );
@@ -786,8 +786,8 @@ create table pumpfun.summary_1d
     volume_sell_usd_change      numeric(36, 12),
     volume_sell_percent         real,
 
-    created_at                  timestamptz default (timezone('utc', now())),
-    updated_at                  timestamptz default (timezone('utc', now())),
+    created_at                  timestamptz not null default (timezone('utc', now())),
+    updated_at                  timestamptz not null default (timezone('utc', now())),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
 );

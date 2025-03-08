@@ -15,8 +15,8 @@ create table jupiter.swap
     is_buy        boolean         not null,
     timestamp     timestamptz     not null,
     signature     text            not null,
-    created_at    timestamptz default (timezone('utc', now())),
-    updated_at    timestamptz default (timezone('utc', now())),
+    created_at    timestamptz not null default (timezone('utc', now())),
+    updated_at    timestamptz not null default (timezone('utc', now())),
 
     constraint fk_wallet foreign key (address_id) references solana.address (id),
 

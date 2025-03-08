@@ -23,11 +23,11 @@ async fn test_ok() {
                 rule: 456.into(),
                 venue: Venue::PumpFun,
                 buttons: vec![
-                    TelegramActionButtonConfig::None,
-                    TelegramActionButtonConfig::Buy {
+					TelegramActionButtonConfig::Nothing,
+					TelegramActionButtonConfig::Buy {
                         value: Value::sol(12),
                     },
-                    TelegramActionButtonConfig::Sell {
+					TelegramActionButtonConfig::Sell {
                         value: Value::percent(3.4),
                     },
                 ],
@@ -47,7 +47,7 @@ async fn test_ok() {
                 assert_eq!(notification.payload("venue"), Some(Venue::PumpFun));
                 assert_eq!(
                     notification.payload("button_0"),
-                    Some(TelegramActionButtonConfig::None)
+                    Some(TelegramActionButtonConfig::Nothing)
                 );
                 assert_eq!(
                     notification.payload("button_1"),
@@ -63,15 +63,15 @@ async fn test_ok() {
                 );
                 assert_eq!(
                     notification.payload("button_3"),
-                    Some(TelegramActionButtonConfig::None)
+                    Some(TelegramActionButtonConfig::Nothing)
                 );
                 assert_eq!(
                     notification.payload("button_4"),
-                    Some(TelegramActionButtonConfig::None)
+                    Some(TelegramActionButtonConfig::Nothing)
                 );
                 assert_eq!(
                     notification.payload("button_5"),
-                    Some(TelegramActionButtonConfig::None)
+                    Some(TelegramActionButtonConfig::Nothing)
                 );
                 Ok(())
             })

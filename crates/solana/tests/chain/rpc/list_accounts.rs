@@ -86,7 +86,7 @@ async fn test_base64_required() {
     let account = result.account;
     assert_eq!(account.lamports, 2039280);
     assert_eq!(account.data.len(), 165);
-    assert_eq!(hash_for_testing(&account.data), 3251868673157599629);
+    assert_eq!(hash_for_testing(&account.data), 18121884336303116520);
     assert_eq!(account.owner, "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
     assert!(!account.executable);
     assert_eq!(account.rent_epoch, 18446744073709551615);
@@ -112,7 +112,7 @@ async fn test_partially_not_found() {
 
     let first = result.pop().unwrap().unwrap();
     assert!(first.slot > 322765891);
-    
+
     let account = first.account;
     assert_eq!(account.lamports, 1461600);
     assert_eq!(account.data.len(), 82);

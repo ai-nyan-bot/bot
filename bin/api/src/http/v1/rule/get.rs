@@ -21,6 +21,7 @@ pub async fn get(
     Ok(Json(HttpRulGetResponse {
         id: r.id,
         name: r.name,
+        status: r.status,
         sequence: r.sequence,
     }))
 }
@@ -32,7 +33,7 @@ mod tests {
     use axum::http::StatusCode;
     use testing::rule::create_rule_for_test_user;
 
-    #[tokio::test]
+    #[test_log::test(tokio::test)]
     async fn ok() {
         let test = Test::new().await;
 
@@ -50,7 +51,7 @@ mod tests {
         assert_eq!(response.name, "MoneyMaker");
     }
 
-    #[tokio::test]
+    #[test_log::test(tokio::test)]
     async fn not_found() {
         let test = Test::new().await;
         let response = test.get_as_test_user("/v1/rules/1234").await;
@@ -61,7 +62,7 @@ mod tests {
         assert_eq!(error.message, "Rule not found");
     }
 
-    #[tokio::test]
+    #[test_log::test(tokio::test)]
     async fn belongs_to_another_user() {
         let test = Test::new().await;
         let response = test.get_as_another_user("/v1/rules/1").await;
@@ -75,7 +76,7 @@ mod tests {
         assert_eq!(error.message, "Rule not found");
     }
 
-    #[tokio::test]
+    #[test_log::test(tokio::test)]
     async fn requires_authentication() {
         let test = Test::new_empty_db().await;
         let response = test.get_unauthenticated("/v1/rules/4").await;

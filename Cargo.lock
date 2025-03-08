@@ -493,6 +493,7 @@ dependencies = [
  "serde_json",
  "solana",
  "sqlx",
+ "test-log",
  "testing",
  "tokio",
  "tokio-tungstenite 0.26.1",

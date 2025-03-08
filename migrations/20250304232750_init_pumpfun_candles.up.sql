@@ -19,8 +19,8 @@ create table pumpfun.candle_1s
     volume_buy        numeric(36, 12) not null,
     volume_sell       numeric(36, 12) not null,
     duration          int8,
-    created_at        timestamptz default (timezone('utc', now())),
-    updated_at        timestamptz default (timezone('utc', now())),
+    created_at        timestamptz not null default (timezone('utc', now())),
+    updated_at        timestamptz not null default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -69,8 +69,8 @@ create table pumpfun.candle_1s_most_recent
     volume_buy        numeric(36, 12) not null,
     volume_sell       numeric(36, 12) not null,
     duration          int8,
-    created_at        timestamptz default (timezone('utc', now())),
-    updated_at        timestamptz default (timezone('utc', now())),
+    created_at        timestamptz not null default (timezone('utc', now())),
+    updated_at        timestamptz not null default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -113,8 +113,8 @@ create table pumpfun.candle_1m
     swap_sell         int8            not null,
     volume_buy        numeric(36, 12) not null,
     volume_sell       numeric(36, 12) not null,
-    created_at        timestamptz default (timezone('utc', now())),
-    updated_at        timestamptz default (timezone('utc', now())),
+    created_at        timestamptz not null default (timezone('utc', now())),
+    updated_at        timestamptz not null default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -162,8 +162,8 @@ create table pumpfun.candle_5m
     swap_sell         int8            not null,
     volume_buy        numeric(36, 12) not null,
     volume_sell       numeric(36, 12) not null,
-    created_at        timestamptz default (timezone('utc', now())),
-    updated_at        timestamptz default (timezone('utc', now())),
+    created_at        timestamptz not null default (timezone('utc', now())),
+    updated_at        timestamptz not null default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -211,8 +211,8 @@ create table pumpfun.candle_15m
     swap_sell         int8            not null,
     volume_buy        numeric(36, 12) not null,
     volume_sell       numeric(36, 12) not null,
-    created_at        timestamptz default (timezone('utc', now())),
-    updated_at        timestamptz default (timezone('utc', now())),
+    created_at        timestamptz not null default (timezone('utc', now())),
+    updated_at        timestamptz not null default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -260,8 +260,8 @@ create table pumpfun.candle_1h
     swap_sell         int8            not null,
     volume_buy        numeric(36, 12) not null,
     volume_sell       numeric(36, 12) not null,
-    created_at        timestamptz default (timezone('utc', now())),
-    updated_at        timestamptz default (timezone('utc', now())),
+    created_at        timestamptz not null default (timezone('utc', now())),
+    updated_at        timestamptz not null default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -309,8 +309,8 @@ create table pumpfun.candle_6h
     swap_sell         int8            not null,
     volume_buy        numeric(36, 12) not null,
     volume_sell       numeric(36, 12) not null,
-    created_at        timestamptz default (timezone('utc', now())),
-    updated_at        timestamptz default (timezone('utc', now())),
+    created_at        timestamptz not null default (timezone('utc', now())),
+    updated_at        timestamptz not null default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)
@@ -358,8 +358,8 @@ create table pumpfun.candle_1d
     swap_sell         int8            not null,
     volume_buy        numeric(36, 12) not null,
     volume_sell       numeric(36, 12) not null,
-    created_at        timestamptz default (timezone('utc', now())),
-    updated_at        timestamptz default (timezone('utc', now())),
+    created_at        timestamptz not null default (timezone('utc', now())),
+    updated_at        timestamptz not null default (timezone('utc', now())),
     primary key (token_pair_id, timestamp),
 
     constraint fk_token_pair foreign key (token_pair_id) references solana.token_pair (id)

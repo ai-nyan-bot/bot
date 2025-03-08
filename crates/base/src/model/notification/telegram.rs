@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "action", rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum TelegramActionButtonConfig {
-    None,
+	Nothing,
     Buy { value: Value },
     Sell { value: Value },
 }
@@ -19,11 +19,11 @@ mod tests {
 
     #[test]
     fn serde_none() {
-        let serialised = serde_json::to_string(&TelegramActionButtonConfig::None).unwrap();
-        assert_eq!(serialised, r#"{"action":"NONE"}"#);
+        let serialised = serde_json::to_string(&TelegramActionButtonConfig::Nothing).unwrap();
+        assert_eq!(serialised, r#"{"action":"NOTHING"}"#);
         assert_eq!(
             serde_json::from_str::<TelegramActionButtonConfig>(serialised.as_str()).unwrap(),
-            TelegramActionButtonConfig::None
+            TelegramActionButtonConfig::Nothing
         );
     }
 

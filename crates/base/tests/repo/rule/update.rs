@@ -5,13 +5,15 @@ use base::model::Action::NotifyTelegram;
 use base::model::Condition::Compare;
 use base::model::Field::{PriceAvg, Volume};
 use base::model::Operator::{Equal, MoreThan};
-use base::model::{Action, Sequence, TelegramActionButtonConfig, Value};
+use base::model::{Action, RuleStatus, Sequence, TelegramActionButtonConfig, Value};
 use base::repo::{RuleRepo, RuleUpdateCmd};
 use common::model::Timeframe::{H1, M15};
 use common::repo::error::RepoError;
 use testing::rule::{create_rule_for_test_user, get_rule_by_id};
 use testing::run_test;
 use testing::user::{get_or_create_another_user, get_or_create_test_user};
+use RuleStatus::Inactive;
+use TelegramActionButtonConfig::{Buy, Nothing, Sell};
 
 #[test_log::test(sqlx::test)]
 async fn test_update() {
@@ -33,6 +35,7 @@ async fn test_update() {
                 &mut tx,
                 RuleUpdateCmd {
                     id: test_rule.id,
+                    status: Inactive,
                     user: user.id,
                     name: "UPDATED".into(),
                     sequence: Sequence {
@@ -42,13 +45,13 @@ async fn test_update() {
                             value: Value::quote(42),
                             timeframe: Some(H1),
                         },
-                        action: Action::NotifyTelegram {
+                        action: NotifyTelegram {
                             buttons: vec![
-                                TelegramActionButtonConfig::None,
-                                TelegramActionButtonConfig::Buy {
+                                Nothing,
+                                Buy {
                                     value: Value::sol(12),
                                 },
-                                TelegramActionButtonConfig::Sell {
+                                Sell {
                                     value: Value::percent(3.4),
                                 },
                             ],
@@ -61,6 +64,7 @@ async fn test_update() {
 
         assert_eq!(result.id, test_rule.id);
         assert_eq!(result.name, "UPDATED");
+        assert_eq!(result.status, Inactive);
         assert_eq!(result.version, 2);
         assert_eq!(result.user, 1);
         assert_eq!(
@@ -76,11 +80,11 @@ async fn test_update() {
             result.sequence.action,
             Action::NotifyTelegram {
                 buttons: vec![
-                    TelegramActionButtonConfig::None,
-                    TelegramActionButtonConfig::Buy {
+                    Nothing,
+                    Buy {
                         value: Value::sol(12)
                     },
-                    TelegramActionButtonConfig::Sell {
+                    Sell {
                         value: Value::percent(3.4)
                     }
                 ]
@@ -110,6 +114,7 @@ async fn test_nothing_changed() {
                 &mut tx,
                 RuleUpdateCmd {
                     id: test_rule.id,
+                    status: RuleStatus::Active,
                     user: user.id,
                     name: "A".into(),
                     sequence: Sequence {
@@ -164,6 +169,7 @@ async fn test_different_user() {
                 &mut tx,
                 RuleUpdateCmd {
                     id: test_rule.id,
+                    status: RuleStatus::Active,
                     user: another_user.id,
                     name: "UPDATED".into(),
                     sequence: Sequence {
@@ -215,6 +221,7 @@ async fn test_rule_not_found() {
                 &mut tx,
                 RuleUpdateCmd {
                     id: 1234.into(),
+                    status: RuleStatus::Active,
                     user: user.id,
                     name: "UPDATED".into(),
                     sequence: Sequence {

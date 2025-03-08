@@ -5,5 +5,5 @@ create table solana.indexer
 (
     id         int2 primary key,
     slot       int8 not null,
-    updated_at timestamptz default (timezone('utc', now()))
+    updated_at timestamptz not null default (timezone('utc', now()))
 );

@@ -8,8 +8,8 @@ create table nyanbot.notification
     type       int2 not null,
     channel    int2 not null,
     payload    json not null,
-    created_at timestamptz default (timezone('utc', now())),
-    updated_at timestamptz default (timezone('utc', now())),
+    created_at timestamptz not null default (timezone('utc', now())),
+    updated_at timestamptz not null default (timezone('utc', now())),
 
     constraint fk_user foreign key (user_id) references nyanbot.user (id)
 );
@@ -21,7 +21,7 @@ create table nyanbot.notification_sent
     type       int2 not null,
     channel    int2 not null,
     payload    json not null,
-    created_at timestamptz default (timezone('utc', now()))
+    created_at timestamptz not null default (timezone('utc', now()))
 );
 
 create function nyanbot.store_notification_sent() returns trigger as $$

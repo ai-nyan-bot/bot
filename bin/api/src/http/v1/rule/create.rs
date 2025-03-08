@@ -32,6 +32,7 @@ pub async fn create(
     Ok(Json(HttpRuleCreateResponse {
         id: result.id,
         name: result.name,
+        status: result.status,
         sequence: result.sequence,
     }))
 }
@@ -43,7 +44,7 @@ mod tests {
     use axum::http::StatusCode;
     use base::model::{Action, Condition, TelegramActionButtonConfig, Value};
 
-    #[tokio::test]
+    #[test_log::test(tokio::test)]
     async fn ok() {
         let test = Test::new().await;
         let response = test
@@ -52,12 +53,12 @@ mod tests {
 				r#"{"name":"test","sequence":{"condition":{"id":"root","type":"AND","conditions":[]},
 			"action":{"type":"NOTIFY_TELEGRAM",
 				"buttons":[
-					{"action":"NONE"},
+					{"action":"NOTHING"},
 					{"action":"BUY","value":{"type":"SOL","value":"1.2"}},
 					{"action":"SELL","value":{"type":"PERCENT","value":3.4}},
-					{"action":"NONE"},
-					{"action":"NONE"},
-					{"action":"NONE"}]}}}"#, )
+					{"action":"NOTHING"},
+					{"action":"NOTHING"},
+					{"action":"NOTHING"}]}}}"#, )
 			.await;
         assert_eq!(response.status(), StatusCode::OK);
 
@@ -73,7 +74,7 @@ mod tests {
             panic!()
         };
         assert_eq!(buttons.len(), 6);
-        assert_eq!(buttons.get(0).unwrap(), &TelegramActionButtonConfig::None);
+        assert_eq!(buttons.get(0).unwrap(), &TelegramActionButtonConfig::Nothing);
         assert_eq!(
             buttons.get(1).unwrap(),
             &TelegramActionButtonConfig::Buy {
@@ -88,13 +89,13 @@ mod tests {
         );
     }
 
-    #[tokio::test]
+    #[test_log::test(tokio::test)]
     async fn requires_authentication() {
         let test = Test::new_empty_db().await;
         let response = test
 			.post_unauthenticated_json(
 				"/v1/rules",
-				r#"{"name":"test","sequence":{"condition":{"id":"root","type":"AND","conditions":[]},"action":{"type":"NOTIFY_TELEGRAM","buttons":[{"action":"NONE"},{"action":"NONE"},{"action":"NONE"},{"action":"NONE"},{"action":"NONE"},{"action":"NONE"}]}}}"#,
+				r#"{"name":"test","sequence":{"condition":{"id":"root","type":"AND","conditions":[]},"action":{"type":"NOTIFY_TELEGRAM","buttons":[{"action":"NOTHING"},{"action":"NOTHING"},{"action":"NOTHING"},{"action":"NOTHING"},{"action":"NOTHING"},{"action":"NOTHING"}]}}}"#,
 			)
 			.await;
         assert_eq!(response.status(), StatusCode::FORBIDDEN);
@@ -104,7 +105,7 @@ mod tests {
         assert_eq!(error.message, "User not found");
     }
 
-    #[tokio::test]
+    #[test_log::test(tokio::test)]
     async fn without_body_and_content_type() {
         let test = Test::new().await;
         let response = test.post_no_content_as_test_user("/v1/rules").await;
@@ -118,7 +119,7 @@ mod tests {
         );
     }
 
-    #[tokio::test]
+    #[test_log::test(tokio::test)]
     async fn malformed_json() {
         let test = Test::new().await;
         let response = test.post_json_as_test_user("/v1/rules", "{,}").await;
@@ -132,7 +133,7 @@ mod tests {
         );
     }
 
-    #[tokio::test]
+    #[test_log::test(tokio::test)]
     async fn empty_json_object() {
         let test = Test::new().await;
         let response = test.post_json_as_test_user("/v1/rules", "{}").await;

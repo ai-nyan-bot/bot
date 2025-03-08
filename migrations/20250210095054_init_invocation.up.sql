@@ -8,7 +8,7 @@ create table solana.invocation
     rule_id       int8   not null,
     token_pair_id int8   not null,
     next          jsonb,
-    created_at    timestamptz default (timezone('utc', now())),
+    created_at    timestamptz not null default (timezone('utc', now())),
 
     primary key (rule_id, token_pair_id),
 

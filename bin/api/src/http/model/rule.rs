@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use base::model::{RuleId, RuleName, Sequence};
+use base::model::{RuleId, RuleName, RuleStatus, Sequence};
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Debug)]
@@ -15,6 +15,7 @@ pub struct HttpRuleCreateRequest {
 pub struct HttpRuleCreateResponse {
     pub id: RuleId,
     pub name: RuleName,
+    pub status: RuleStatus,
     pub sequence: Sequence,
 }
 
@@ -22,6 +23,7 @@ pub struct HttpRuleCreateResponse {
 pub struct HttpRuleUpdateRequest {
     pub name: Option<RuleName>,
     pub sequence: Option<Sequence>,
+    pub status: Option<RuleStatus>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -29,6 +31,7 @@ pub struct HttpRuleUpdateRequest {
 pub struct HttpRuleUpdateResponse {
     pub id: RuleId,
     pub name: RuleName,
+    pub status: RuleStatus,
     pub sequence: Sequence,
 }
 
@@ -36,6 +39,7 @@ pub struct HttpRuleUpdateResponse {
 #[serde(rename_all = "camelCase")]
 pub struct HttpRuleList {
     pub id: RuleId,
+    pub status: RuleStatus,
     pub name: RuleName,
 }
 
@@ -50,5 +54,6 @@ pub struct HttpRuleListResponse {
 pub struct HttpRulGetResponse {
     pub id: RuleId,
     pub name: RuleName,
+    pub status: RuleStatus,
     pub sequence: Sequence,
 }

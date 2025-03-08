@@ -1,7 +1,7 @@
 import {useAuth} from "@hooks/auth.ts";
 import {useGet, usePatch, usePost} from "@hooks/http.ts";
 import {useCallback} from "react";
-import {Action, Condition, Sequence} from "@types";
+import {Action, Condition, RuleStatus, Sequence} from "@types";
 
 
 export type RuleCreateRequest = {
@@ -29,6 +29,7 @@ export const useRuleCreate = (): [RuleCreateAction, RuleCreateResponse | null, b
 
 export type RuleUpdateRequest = {
     name?: string,
+    status?: RuleStatus,
     sequence?: {
         condition: Condition,
         action: Action
@@ -67,6 +68,7 @@ export const useRuleList = (): [RuleListAction, RuleListResponse | null, boolean
 export type RuleGetResponse = {
     id: number;
     name: string;
+    status: RuleStatus;
     sequence: Sequence;
 }
 

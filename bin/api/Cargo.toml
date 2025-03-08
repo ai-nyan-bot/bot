@@ -32,5 +32,6 @@ tracing-subscriber = { workspace = true }
 url = { workspace = true }
 
 [dev-dependencies]
+test-log = { workspace = true }
 tower = { workspace = true }
 hyper = { workspace = true }

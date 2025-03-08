@@ -3,6 +3,7 @@
 
 use base::model::Condition::Compare;
 use base::model::Field::PriceAvg;
+use base::model::RuleStatus::Active;
 use base::model::{Action, Operator, Sequence, Value};
 use base::repo::{RuleCreateCmd, RuleRepo};
 use common::repo::error::RepoError;
@@ -40,6 +41,7 @@ async fn test_create() {
         assert_eq!(result.id, 1);
         assert_eq!(result.name, "ChubakaStrat1337");
         assert_eq!(result.version, 1);
+        assert_eq!(result.status, Active);
         assert_eq!(
             result.sequence.condition,
             Compare {

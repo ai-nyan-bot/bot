@@ -27,7 +27,7 @@ pub(crate) async fn action_button(
     }
 
     match callback.config {
-        TelegramActionButtonConfig::None => unreachable!(),
+        TelegramActionButtonConfig::Nothing => unreachable!(),
         TelegramActionButtonConfig::Buy { value } => {
             let message = state
                 .bot
