@@ -5,7 +5,7 @@
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
 use crate::model::{
-    DecimalAmount, Decimals, Description, Mint, Name, Symbol, Token, TokenId, TokenPair,
+    AddressId, DecimalAmount, Decimals, Description, Mint, Name, Symbol, Token, TokenId, TokenPair,
     TokenPairId, TokenPairMint, Uri,
 };
 use crate::repo::TokenPairRepo;
@@ -152,6 +152,7 @@ select
     base.description as base_description,
     base.image as base_image,
     base.website as base_website,
+    base.creator_id as base_creator_id,
     quote.id as quote_id,
     quote.mint as quote_mint,
     quote.name as quote_name,
@@ -161,7 +162,8 @@ select
     quote.metadata as quote_metadata,
     quote.description as quote_description,
     quote.image as quote_image,
-    quote.website as quote_website
+    quote.website as quote_website,
+    quote.creator_id as quote_creator_id
 from solana.token_pair tp
 join base_token base on tp.base_id = base.id
 join quote_token quote on tp.quote_id = quote.id
@@ -186,6 +188,7 @@ join input_pairs ip on base.mint = ip.base_mint and quote.mint = ip.quote_mint;
                 metadata: r.try_get::<Uri, _>("base_metadata").ok(),
                 image: r.try_get::<Uri, _>("base_image").ok(),
                 website: r.try_get::<Uri, _>("base_website").ok(),
+                creator: r.try_get::<AddressId, _>("base_creator_id").ok(),
             },
             quote: Token {
                 id: r.get::<TokenId, _>("quote_id"),
@@ -198,6 +201,7 @@ join input_pairs ip on base.mint = ip.base_mint and quote.mint = ip.quote_mint;
                 metadata: r.try_get::<Uri, _>("quote_metadata").ok(),
                 image: r.try_get::<Uri, _>("quote_image").ok(),
                 website: r.try_get::<Uri, _>("quote_website").ok(),
+                creator: r.try_get::<AddressId, _>("quote_creator_id").ok(),
             },
         })
         .collect::<Vec<_>>())
@@ -226,6 +230,7 @@ select
     base.description as base_description,
     base.image as base_image,
     base.website as base_website,
+    base.creator_id as base_creator_id,
     quote.id as quote_id,
     quote.mint as quote_mint,
     quote.name as quote_name,
@@ -235,7 +240,8 @@ select
     quote.metadata as quote_metadata,
     quote.description as quote_description,
     quote.image as quote_image,
-    quote.website as quote_website
+    quote.website as quote_website,
+    quote.creator_id as quote_creator_id
 from solana.token_pair tp
 join solana.token base on tp.base_id = base.id
 join solana.token quote on tp.quote_id = quote.id
@@ -259,6 +265,7 @@ where tp.id in (select unnest($1::int8[]));
                 metadata: r.try_get::<Uri, _>("base_metadata").ok(),
                 image: r.try_get::<Uri, _>("base_image").ok(),
                 website: r.try_get::<Uri, _>("base_website").ok(),
+                creator: r.try_get::<AddressId, _>("base_creator_id").ok(),
             },
             quote: Token {
                 id: r.get::<TokenId, _>("quote_id"),
@@ -271,6 +278,7 @@ where tp.id in (select unnest($1::int8[]));
                 metadata: r.try_get::<Uri, _>("quote_metadata").ok(),
                 image: r.try_get::<Uri, _>("quote_image").ok(),
                 website: r.try_get::<Uri, _>("quote_website").ok(),
+                creator: r.try_get::<AddressId, _>("quote_creator_id").ok(),
             },
         })
         .collect::<Vec<_>>())

@@ -4,9 +4,8 @@
 use crate::solana::indexer::IndexerRepo;
 use crate::solana::state::State;
 use crate::solana::{jupiter, pumpfun};
-use base::model::{DecimalAmount, Decimals, Mint, PublicKey};
+use base::model::{DecimalAmount, Decimals, PublicKey};
 use base::repo::TokenToInsert;
-use base::LoadTokenInfo;
 use solana::jupiter::parse::JupiterParser;
 use solana::model::{Block, TransactionStatus};
 use solana::parse::Parser;
@@ -58,20 +57,31 @@ pub async fn index_block(state: State, block: Block) {
                                 symbol,
                                 uri,
                                 mint,
-                                bonding_curve,
                                 user,
-                            } => pumpfun_token_mints.push(TokenToInsert {
-                                mint,
-                                name: Some(name),
-                                symbol: Some(symbol),
-                                decimals: Decimals::from(6),
-                                supply: Some(DecimalAmount::from(1_000_000_000i64)),
-                                metadata: Some(uri),
-                                description: None,
-                                image: None,
-                                website: None,
-                                creator: None, // FIXME add address id
-                            }),
+                                ..
+                            } => {
+                                let mut tx = state.pool.begin().await.unwrap();
+                                let creator = state
+                                    .address_repo
+                                    .get_or_populate_by_key(&mut tx, user)
+                                    .await
+                                    .unwrap();
+
+                                tx.commit().await.unwrap();
+
+                                pumpfun_token_mints.push(TokenToInsert {
+                                    mint,
+                                    name: Some(name),
+                                    symbol: Some(symbol),
+                                    decimals: Decimals::from(6),
+                                    supply: Some(DecimalAmount::from(1_000_000_000i64)),
+                                    metadata: Some(uri),
+                                    description: None,
+                                    image: None,
+                                    website: None,
+                                    creator: Some(creator.id),
+                                })
+                            }
 
                             solana::pumpfun::model::Instruction::Swap {
                                 mint,
@@ -139,6 +149,7 @@ pub async fn index_block(state: State, block: Block) {
     let slot = block.slot;
 
     let indexing_start = Instant::now();
+    pumpfun::index_tokens(&mut tx, state.clone(), pumpfun_token_mints).await;
     pumpfun::index_swap(&mut tx, state.clone(), pumpfun_slot_swaps).await;
     jupiter::index_swap(&mut tx, state.clone(), jupiter_slot_swaps).await;
     let indexing_done = Instant::now();

@@ -1,6 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use base::repo::{AddressRepo, TokenRepo};
 use base::test::NeverCalledTokenInfoLoader;
 use indexer::solana::block::index_block;
 use indexer::solana::state::{State, StateInner};
@@ -74,6 +75,8 @@ insert into solana.token (id, version, mint, name, symbol, decimals, supply, met
 
 		let state = State(Arc::new(StateInner {
 			pool: pool.clone(),
+			address_repo: AddressRepo::new(),
+			token_repo: TokenRepo::testing_no_token_info(),
 			pumpfun_swap_repo,
 			pumpfun_curve_repo: Default::default(),
 			jupiter_swap_repo,

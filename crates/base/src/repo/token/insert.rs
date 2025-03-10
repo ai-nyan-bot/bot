@@ -11,6 +11,7 @@ use crate::repo::TokenRepo;
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 
+#[derive(Debug)]
 pub struct TokenToInsert {
     pub mint: Mint,
     pub name: Option<Name>,
@@ -100,7 +101,8 @@ impl TokenRepo {
                 metadata,
                 description,
                 image,
-                website
+                website,
+                creator_id
             )
             select * from new_token"#,
         )
@@ -128,6 +130,7 @@ impl TokenRepo {
             metadata: r.try_get::<Uri, _>("metadata").ok(),
             image: r.try_get::<Uri, _>("image").ok(),
             website: r.try_get::<Uri, _>("website").ok(),
+            creator: r.try_get::<AddressId, _>("creator_id").ok(),
         })
         .collect::<Vec<_>>())
     }

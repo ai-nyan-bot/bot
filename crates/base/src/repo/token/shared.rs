@@ -4,7 +4,9 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
-use crate::model::{DecimalAmount, Decimals, Description, Mint, Name, Symbol, Token, TokenId, Uri};
+use crate::model::{
+    AddressId, DecimalAmount, Decimals, Description, Mint, Name, Symbol, Token, TokenId, Uri,
+};
 use crate::repo::cache::Cache;
 use crate::repo::TokenRepo;
 use common::repo::{RepoResult, Tx};
@@ -84,7 +86,13 @@ impl TokenRepo {
                 mint,
                 name,
                 symbol,
-                decimals
+                decimals,
+                supply,
+                description
+                metadata,
+                image,
+                website,
+                creator_id
               from solana.token
               where mint in (select unnest($1::varchar[]))"#,
         )
@@ -103,6 +111,7 @@ impl TokenRepo {
             metadata: r.try_get::<Uri, _>("metadata").ok(),
             image: r.try_get::<Uri, _>("image").ok(),
             website: r.try_get::<Uri, _>("website").ok(),
+            creator: r.try_get::<AddressId, _>("creator_id").ok(),
         })
         .collect::<Vec<_>>())
     }
@@ -122,7 +131,13 @@ impl TokenRepo {
                 mint,
                 name,
                 symbol,
-                decimals
+                decimals,
+                supply,
+                description
+                metadata,
+                image,
+                website,
+                creator_id
               from solana.token
               where id in (select unnest($1::int8[]))"#,
         )
@@ -141,6 +156,7 @@ impl TokenRepo {
             metadata: r.try_get::<Uri, _>("metadata").ok(),
             image: r.try_get::<Uri, _>("image").ok(),
             website: r.try_get::<Uri, _>("website").ok(),
+            creator: r.try_get::<AddressId, _>("creator_id").ok(),
         })
         .collect::<Vec<_>>())
     }

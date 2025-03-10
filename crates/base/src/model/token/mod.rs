@@ -1,6 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use crate::model::AddressId;
 pub use amount::*;
 pub use decimals::Decimals;
 pub use description::Description;
@@ -32,6 +33,7 @@ pub struct Token {
     pub metadata: Option<Uri>,
     pub image: Option<Uri>,
     pub website: Option<Uri>,
+    pub creator: Option<AddressId>,
 }
 
 #[derive(Debug, Clone)]

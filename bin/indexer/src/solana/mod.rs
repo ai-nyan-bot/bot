@@ -48,9 +48,8 @@ pub fn index_solana(runtime: Runtime, config: Config) {
 
         let state = State(Arc::new(StateInner {
             pool: pool.clone(),
-            // token_repo: token_repo.clone(),
-            // token_pair_repo,
-            // wallet_repo,
+            token_repo: token_repo.clone(),
+            address_repo: AddressRepo::new(),
             pumpfun_swap_repo,
             pumpfun_curve_repo: solana::pumpfun::repo::CurveRepo::new(),
             jupiter_swap_repo,
