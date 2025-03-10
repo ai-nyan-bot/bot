@@ -9,7 +9,7 @@ export type ConditionEditorProps = {
 };
 
 export const ConditionEditor: FC<ConditionEditorProps> = ({condition}) => {
-    const [composition, setComposition] = useState<ComposeType>(ComposeType.PUMP_FUN_QUICK)
+    const [type, setType] = useState<ComposeType>(ComposeType.PUMP_FUN_QUICK)
 
     return (
         <Card className="w-full shadow-none border-0">
@@ -19,14 +19,13 @@ export const ConditionEditor: FC<ConditionEditorProps> = ({condition}) => {
                     defaultType={ComposeType.PUMP_FUN_QUICK}
                     supported={[
                         ComposeType.PUMP_FUN_QUICK,
-                        ComposeType.GROUP
                     ]}
-                    onChange={setComposition}
+                    onChange={setType}
                 />
             </CardHeader>
             <CardContent className="w-full p-0">
 
-                {composition === ComposeType.PUMP_FUN_QUICK && (
+                {type === ComposeType.PUMP_FUN_QUICK && (
                     <PumpFunComposeQuick
                         key={condition.id}
                         condition={condition as unknown as ComposedPumpFunQuick}
@@ -35,7 +34,7 @@ export const ConditionEditor: FC<ConditionEditorProps> = ({condition}) => {
                         }}/>
                 )}
 
-                {composition === ComposeType.GROUP && (
+                {type === ComposeType.GROUP && (
                     <h1> Custom hard core mode</h1>
                 )}
 

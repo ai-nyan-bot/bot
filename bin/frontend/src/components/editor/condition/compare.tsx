@@ -1,9 +1,7 @@
 import {Compare, Operator, ValueNumber, ValueNumberType} from "@types";
 import React, {FC, useState} from "react";
-import {SelectOperator} from "./operator.tsx";
-import {ValueNumberInput} from "../value.tsx";
-import {SelectTimeframe} from "./timeframe.tsx";
 import {config} from "@components/editor/config.ts";
+import {SelectOperator, SelectTimeframe, ValueNumberInput,} from "./component";
 
 
 type CompareWidgetProps = {

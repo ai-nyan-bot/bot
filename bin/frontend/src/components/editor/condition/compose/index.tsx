@@ -1,7 +1,7 @@
 import {Compose, ComposedCurveProgress, ComposeType, Condition} from "@types";
 import React, {FC, useState} from "react";
 import {SelectComposeType} from "@components/editor/condition/compose/type";
-import {CurveProgressWidget} from "@components/editor/condition/compose/curve-progress.tsx";
+import {CurveProgressCompose} from "@components/editor/condition/compose/curve-progress.tsx";
 
 type ComposeWidgetProps = {
     condition: Compose;
@@ -41,7 +41,7 @@ export const ComposeWidget: FC<ComposeWidgetProps> = ({
             </div>
 
             {composeType === ComposeType.CURVE_PROGRESS && (
-                <CurveProgressWidget
+                <CurveProgressCompose
                     key={condition.id}
                     condition={condition as unknown as ComposedCurveProgress}
                     onChange={(condition) => {

@@ -1,6 +1,6 @@
 import React, {FC} from "react";
 import {ComposedCurveProgress, ComposedPumpFunQuick} from "@types";
-import {CurveProgressWidget} from "@components/editor/condition/compose/curve-progress.tsx";
+import {CurveProgressCompose} from "@components/editor/condition/compose/curve-progress.tsx";
 
 export type PumpFunComposeQuickProps = {
     condition: ComposedPumpFunQuick;
@@ -13,13 +13,14 @@ export const PumpFunComposeQuick: FC<PumpFunComposeQuickProps> = ({condition, on
     const curve_progress = condition.condition.conditions[0] as unknown as ComposedCurveProgress;
 
     return (
-        <div className="w-full max-w-md mx-auto p-4 ">
-            <CurveProgressWidget
+        <div className="w-full max-w-md mx-auto">
+            <CurveProgressCompose
                 condition={curve_progress}
                 onChange={updated => {
                     console.log("Curve progress updated", updated)
                 }}
             />
+
         </div>
     );
 };

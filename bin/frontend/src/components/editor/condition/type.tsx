@@ -9,8 +9,7 @@ export const useConditionTypeOptions = (supported: Array<ComposeType>): Array<{
     return [
         {value: ComposeType.PUMP_FUN_QUICK, label: 'PumpFun quick & easy'},
         {value: ComposeType.GROUP, label: 'Custom'},
-    ]
-
+    ].filter(opt => supported.find(v => v === opt.value));
 }
 
 export type SelectTypeProps = {

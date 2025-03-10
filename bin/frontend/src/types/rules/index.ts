@@ -54,7 +54,7 @@ export const DEFAULT_CONDITION: ComposedPumpFunQuick = {
                             id: uuidv4(),
                             type: ConditionType.COMPARE,
                             field: Field.CURVE_PROGRESS,
-                            operator: Operator.MORE_THAN,
+                            operator: Operator.MORE_THAN_EQUAL,
                             value: {
                                 type: ValueType.PERCENT,
                                 value: 0
@@ -64,7 +64,7 @@ export const DEFAULT_CONDITION: ComposedPumpFunQuick = {
                             id: uuidv4(),
                             type: ConditionType.COMPARE,
                             field: Field.CURVE_PROGRESS,
-                            operator: Operator.MORE_THAN,
+                            operator: Operator.MORE_THAN_EQUAL,
                             value: {
                                 type: ValueType.PERCENT,
                                 value: 95
@@ -74,7 +74,7 @@ export const DEFAULT_CONDITION: ComposedPumpFunQuick = {
                             id: uuidv4(),
                             type: ConditionType.COMPARE,
                             field: Field.CURVE_PROGRESS_AGE,
-                            operator: Operator.LESS_THAN,
+                            operator: Operator.LESS_THAN_EQUAL,
                             value: {
                                 type: ValueType.DURATION,
                                 value: 1,

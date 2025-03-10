@@ -2,13 +2,13 @@ import React, {FC, useState} from "react";
 import {ComposedCurveProgress, ComposeType, ConditionType, Field, Operator, TimeUnit, ValueType} from "@types";
 import {DualRangeSlider} from "@components/ui/slider.tsx";
 
-export type CurveProgressWidgetProps = {
+export type CurveProgressComposeProps = {
     condition: ComposedCurveProgress;
     onChange: (condition: ComposedCurveProgress) => void;
 
 }
 
-export const CurveProgressWidget: FC<CurveProgressWidgetProps> = ({condition, onChange}) => {
+export const CurveProgressCompose: FC<CurveProgressComposeProps> = ({condition, onChange}) => {
     const curveProgress = condition.condition.conditions[0];
 
     const [range, setRange] = useState<number[]>(() => {
@@ -18,7 +18,7 @@ export const CurveProgressWidget: FC<CurveProgressWidgetProps> = ({condition, on
 
     const handleChange = (values: number[]) => {
         setRange(_ => {
-            let operator = values[0] == 0.0 ? Operator.MORE_THAN : Operator.LESS_THAN;
+            let operator = values[0] == 0.0 ? Operator.MORE_THAN_EQUAL : Operator.LESS_THAN_EQUAL;
 
             onChange({
                 id: condition.id,
@@ -31,7 +31,7 @@ export const CurveProgressWidget: FC<CurveProgressWidgetProps> = ({condition, on
                             id: curveProgress.id,
                             type: ConditionType.COMPARE,
                             field: Field.CURVE_PROGRESS,
-                            operator: Operator.MORE_THAN,
+                            operator: Operator.MORE_THAN_EQUAL,
                             value: {
                                 type: ValueType.PERCENT,
                                 value: values[0]
@@ -51,7 +51,7 @@ export const CurveProgressWidget: FC<CurveProgressWidgetProps> = ({condition, on
                             id: curveProgress.id,
                             type: ConditionType.COMPARE,
                             field: Field.CURVE_PROGRESS_AGE,
-                            operator: Operator.LESS_THAN,
+                            operator: Operator.LESS_THAN_EQUAL,
                             value: {
                                 type: ValueType.DURATION,
                                 value: 1,
