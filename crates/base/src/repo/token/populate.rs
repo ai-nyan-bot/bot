@@ -4,15 +4,16 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
+use crate::load_all;
 use crate::model::{DecimalAmount, Mint, Token};
 use crate::repo::token::insert::TokenToInsert;
 use crate::repo::TokenRepo;
-use crate::{load_all, LoadTokenInfo};
 use common::repo::error::RepoError;
 use common::repo::{RepoResult, Tx};
 use log::error;
+use std::ops::Deref;
 
-impl<L: LoadTokenInfo<Mint>> TokenRepo<L> {
+impl TokenRepo {
     pub async fn populate_token<'a>(
         &self,
         tx: &mut Tx<'a>,
@@ -24,7 +25,7 @@ impl<L: LoadTokenInfo<Mint>> TokenRepo<L> {
 
         let mut to_insert = Vec::with_capacity(token_mints.len());
 
-        for info in load_all(&self.info_loader, token_mints).await {
+        for info in load_all(self.info_loader.deref(), token_mints).await {
             if let Some(info) = info {
                 let decimals = info.decimals.expect("token decimals required");
 

@@ -11,7 +11,6 @@ use base::model::{
     determine_mints, AddressId, Amount, DecimalAmount, Mint, PublicKey, SwapId, Token, TokenPair,
     TokenPairId, TokenPairMint,
 };
-use base::LoadTokenInfo;
 use bigdecimal::{BigDecimal, Zero};
 use common::model::{PriceQuote, Timestamp};
 use common::repo::{RepoResult, Tx};
@@ -35,7 +34,7 @@ pub struct SlotSwap {
     pub signature: Signature,
 }
 
-impl<L: LoadTokenInfo<Mint>> SwapRepo<L> {
+impl SwapRepo {
     pub async fn insert_swaps<'a>(
         &self,
         tx: &mut Tx<'a>,

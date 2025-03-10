@@ -5,7 +5,6 @@ use common::model::Limit;
 use std::ops::Deref;
 use std::sync::Arc;
 
-use base::model::Mint;
 use base::repo::{AddressRepo, TokenPairRepo, TokenRepo};
 use base::LoadTokenInfo;
 pub use insert::{SlotSwap, SlotSwaps};
@@ -18,31 +17,30 @@ pub struct SwapQueryAll {
     pub limit: Limit,
 }
 
-#[derive(Debug, Clone)]
-pub struct SwapRepo<L: LoadTokenInfo<Mint>>(pub Arc<SwapRepoInner<L>>);
+#[derive(Clone)]
+pub struct SwapRepo(pub Arc<SwapRepoInner>);
 
-impl<L: LoadTokenInfo<Mint>> Deref for SwapRepo<L> {
-    type Target = SwapRepoInner<L>;
+impl Deref for SwapRepo {
+    type Target = SwapRepoInner;
     fn deref(&self) -> &Self::Target {
         self.0.deref()
     }
 }
 
-#[derive(Debug)]
-pub struct SwapRepoInner<L: LoadTokenInfo<Mint>> {
-    token_pair_repo: TokenPairRepo<L>,
+pub struct SwapRepoInner {
+    token_pair_repo: TokenPairRepo,
     address_repo: AddressRepo,
 }
 
-impl<L: LoadTokenInfo<Mint>> SwapRepo<L> {
-    pub fn new(token_pair_repo: TokenPairRepo<L>, address_repo: AddressRepo) -> Self {
+impl SwapRepo {
+    pub fn new(token_pair_repo: TokenPairRepo, address_repo: AddressRepo) -> Self {
         Self(Arc::new(SwapRepoInner {
             token_pair_repo,
             address_repo,
         }))
     }
 
-    pub fn testing(loader: L) -> Self {
+    pub fn testing(loader: Box<dyn LoadTokenInfo>) -> Self {
         Self::new(
             TokenPairRepo::testing(TokenRepo::testing(loader)),
             AddressRepo::new(),

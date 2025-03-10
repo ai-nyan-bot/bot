@@ -27,7 +27,7 @@ pub async fn count_all_swaps<'a>(tx: &mut Tx<'a>) -> Count {
 }
 
 pub async fn insert_swap<'a>(tx: &mut Tx<'a>, slot_swaps: SlotSwaps) -> Vec<Swap> {
-    SwapRepo::testing(SuccessfulTokenInfoLoader::default())
+    SwapRepo::testing(Box::new(SuccessfulTokenInfoLoader::default()))
         .insert_swaps(tx, slot_swaps)
         .await
         .unwrap()

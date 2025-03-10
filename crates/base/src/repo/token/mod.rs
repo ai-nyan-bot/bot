@@ -4,10 +4,11 @@
 use crate::model::{Mint, Token, TokenId};
 use crate::repo::cache::Cache;
 use common::model::Limit;
+pub use insert::TokenToInsert;
 use std::ops::Deref;
 use std::sync::Arc;
-pub use insert::TokenToInsert;
 
+use crate::test::NeverCalledTokenInfoLoader;
 use crate::LoadTokenInfo;
 
 mod count;
@@ -23,71 +24,45 @@ pub struct TokenQuery {
     pub limit: Limit,
 }
 
-#[derive(Debug, Clone)]
-pub struct TokenRepo<L: LoadTokenInfo<Mint>>(pub Arc<TokenRepoInner<L>>);
+#[derive(Clone)]
+pub struct TokenRepo(Arc<TokenRepoInner>);
 
-impl<L: LoadTokenInfo<Mint>> Deref for TokenRepo<L> {
-    type Target = TokenRepoInner<L>;
+impl Deref for TokenRepo {
+    type Target = TokenRepoInner;
     fn deref(&self) -> &Self::Target {
         self.0.deref()
     }
 }
 
-#[derive(Debug)]
-pub struct TokenRepoInner<L: LoadTokenInfo<Mint>> {
-    info_loader: L,
-    read: ReadTokenRepo,
-}
-
-impl<L: LoadTokenInfo<Mint>> TokenRepo<L> {
-    pub fn new(info_loader: L, read: ReadTokenRepo) -> Self {
-        Self(Arc::new(TokenRepoInner { info_loader, read }))
-    }
-
-    pub fn testing(info_loader: L) -> Self {
-        Self(Arc::new(TokenRepoInner {
-            info_loader,
-            read: ReadTokenRepo::new(),
-        }))
-    }
-}
-
-#[derive(Debug, Clone)]
-pub struct ReadTokenRepo(pub Arc<ReadTokenRepoInner>);
-
-impl Deref for ReadTokenRepo {
-    type Target = ReadTokenRepoInner;
-    fn deref(&self) -> &Self::Target {
-        self.0.deref()
-    }
-}
-
-#[derive(Debug)]
-pub struct ReadTokenRepoInner {
+pub struct TokenRepoInner {
+    info_loader: Box<dyn LoadTokenInfo>,
     cache: Cache<TokenId, Mint, Token>,
 }
 
-impl Default for ReadTokenRepo {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-impl ReadTokenRepo {
-    pub fn new() -> Self {
-        Self(Arc::new(ReadTokenRepoInner {
+impl TokenRepo {
+    pub fn new(info_loader: Box<dyn LoadTokenInfo>) -> Self {
+        Self(Arc::new(TokenRepoInner {
+            info_loader,
             cache: Cache::default(),
         }))
     }
 
-    pub fn testing() -> Self {
-        Self(Arc::new(ReadTokenRepoInner {
+    pub fn testing(info_loader: Box<dyn LoadTokenInfo>) -> Self {
+        Self(Arc::new(TokenRepoInner {
+            info_loader,
+            cache: Cache::default(),
+        }))
+    }
+
+    pub fn testing_no_token_info() -> Self {
+        Self(Arc::new(TokenRepoInner {
+            info_loader: Box::new(NeverCalledTokenInfoLoader {}),
             cache: Cache::default(),
         }))
     }
 }
 
-impl ReadTokenRepo {
+impl TokenRepo {
     pub async fn populate_cache(&self, tokens: impl Iterator<Item = &Token>) {
         self.cache
             .put_all(tokens.map(|t| (t.id, t.mint.clone(), t.clone())))

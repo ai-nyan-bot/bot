@@ -10,12 +10,12 @@ pub mod service;
 pub mod test;
 
 #[async_trait]
-pub trait LoadTokenInfo<T>: Send + Sync + Clone {
-    async fn load(&self, target: impl Into<T> + Send) -> Option<TokenInfo>;
+pub trait LoadTokenInfo: Send + Sync {
+    async fn load(&self, mint: Mint) -> Option<TokenInfo>;
 }
 
-pub async fn load_all<L: LoadTokenInfo<Mint>>(
-    loader: &L,
+pub async fn load_all(
+    loader: &dyn LoadTokenInfo,
     mints: impl IntoIterator<Item = impl Into<Mint>>,
 ) -> Vec<Option<TokenInfo>> {
     let handles = mints

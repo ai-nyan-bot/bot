@@ -69,8 +69,8 @@ insert into solana.token (id, version, mint, name, symbol, decimals, supply, met
         (1050, 0, '2sNvt9tRAW29cZgj3cVmwEGLJFfqb127GKnAiEN8iBxY', 'JobSeek AI', 'JOBSEEK', 9, 99999999983652428, 'https://ipfs.io/ipfs/', null, null, null, '2025-02-28 23:15:51.718564 +00:00');
         "#).await.unwrap();
 
-		let pumpfun_swap_repo = solana::pumpfun::repo::SwapRepo::testing(NeverCalledTokenInfoLoader{});
-		let jupiter_swap_repo = solana::jupiter::repo::SwapRepo::testing(NeverCalledTokenInfoLoader{});
+		let pumpfun_swap_repo = solana::pumpfun::repo::SwapRepo::testing(Box::new(NeverCalledTokenInfoLoader{}));
+		let jupiter_swap_repo = solana::jupiter::repo::SwapRepo::testing(Box::new(NeverCalledTokenInfoLoader{}));
 
 		let state = State(Arc::new(StateInner {
 			pool: pool.clone(),

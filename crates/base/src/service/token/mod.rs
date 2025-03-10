@@ -1,14 +1,15 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::repo::{ReadTokenPairRepo, ReadTokenRepo};
+use crate::repo::{TokenPairRepo, TokenRepo};
+use crate::test::NeverCalledTokenInfoLoader;
 use sqlx::PgPool;
 use std::ops::Deref;
 use std::sync::Arc;
 
 mod get;
 
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct TokenService(pub Arc<TokenServiceInner>);
 
 impl Deref for TokenService {
@@ -18,14 +19,13 @@ impl Deref for TokenService {
     }
 }
 
-#[derive(Debug)]
 pub struct TokenServiceInner {
     pool: PgPool,
-    token_pair_repo: ReadTokenPairRepo,
+    token_pair_repo: TokenPairRepo,
 }
 
 impl TokenService {
-    pub fn new(pool: PgPool, token_pair_repo: ReadTokenPairRepo) -> Self {
+    pub fn new(pool: PgPool, token_pair_repo: TokenPairRepo) -> Self {
         Self(Arc::new(TokenServiceInner {
             pool,
             token_pair_repo,
@@ -35,7 +35,9 @@ impl TokenService {
     pub fn testing(pool: PgPool) -> Self {
         Self(Arc::new(TokenServiceInner {
             pool,
-            token_pair_repo: ReadTokenPairRepo::new(ReadTokenRepo::new()),
+            token_pair_repo: TokenPairRepo::testing(TokenRepo::testing(Box::new(
+                NeverCalledTokenInfoLoader {},
+            ))),
         }))
     }
 }

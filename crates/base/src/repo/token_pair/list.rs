@@ -7,10 +7,10 @@
 use crate::model::{Mint, TokenPair, TokenPairId};
 use crate::repo::token_pair::shared::{find_missing_ids, find_missing_mints};
 use crate::repo::token_pair::CachedTokenPair;
-use crate::repo::ReadTokenPairRepo;
+use crate::repo::TokenPairRepo;
 use common::repo::{RepoResult, Tx};
 
-impl ReadTokenPairRepo {
+impl TokenPairRepo {
     pub async fn list_by_ids<'a>(
         &self,
         tx: &mut Tx<'a>,
@@ -42,9 +42,9 @@ impl ReadTokenPairRepo {
     }
 
     pub async fn list_by_mints<'a>(
-		&self,
-		tx: &mut Tx<'a>,
-		mints: impl IntoIterator<Item = (impl Into<Mint>, impl Into<Mint>)> + Send,
+        &self,
+        tx: &mut Tx<'a>,
+        mints: impl IntoIterator<Item = (impl Into<Mint>, impl Into<Mint>)> + Send,
     ) -> RepoResult<Vec<TokenPair>> {
         let mints = mints
             .into_iter()

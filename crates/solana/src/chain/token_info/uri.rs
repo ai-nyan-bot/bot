@@ -5,9 +5,8 @@
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
 use crate::token_info::{rewrite_ipfs, sanitize_value};
-use async_trait::async_trait;
 use base::model::Uri;
-use base::{LoadTokenInfo, TokenInfo};
+use base::TokenInfo;
 use log::error;
 use serde::Deserialize;
 use solana_client::client_error::reqwest::{Client, StatusCode};
@@ -23,9 +22,8 @@ impl TokenInfoUriLoader {
     }
 }
 
-#[async_trait]
-impl LoadTokenInfo<Uri> for TokenInfoUriLoader {
-    async fn load(&self, uri: impl Into<Uri> + Send) -> Option<TokenInfo> {
+impl TokenInfoUriLoader {
+    pub async fn load(&self, uri: Uri) -> Option<TokenInfo> {
         let downloader = JsonDownloader::new();
         let metadata: ExternalMetadata = downloader.fetch(uri.into()).await?;
 

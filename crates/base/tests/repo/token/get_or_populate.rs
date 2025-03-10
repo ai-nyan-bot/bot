@@ -15,7 +15,7 @@ use testing::token::count_all;
 async fn test_wsol() {
     // already exists
     run_test_on_empty_db(|mut tx| async move {
-        let test_instance = TokenRepo::testing(SuccessfulTokenInfoLoader::default());
+        let test_instance = TokenRepo::testing(Box::new(SuccessfulTokenInfoLoader::default()));
         let result = test_instance.get_or_populate(&mut tx, Mint::wsol()).await.unwrap();
 
         assert_eq!(result.id, 1);
@@ -34,7 +34,7 @@ async fn test_wsol() {
 async fn test_usdt() {
     // already exists
     run_test_on_empty_db(|mut tx| async move {
-        let test_instance = TokenRepo::testing(SuccessfulTokenInfoLoader::default());
+        let test_instance = TokenRepo::testing(Box::new(SuccessfulTokenInfoLoader::default()));
         let result = test_instance.get_or_populate(&mut tx, Mint::usdt()).await.unwrap();
 
         assert_eq!(result.id, 2);
@@ -53,7 +53,7 @@ async fn test_usdt() {
 async fn test_usdc() {
     // already exists
     run_test_on_empty_db(|mut tx| async move {
-        let test_instance = TokenRepo::testing(SuccessfulTokenInfoLoader::default());
+        let test_instance = TokenRepo::testing(Box::new(SuccessfulTokenInfoLoader::default()));
         let result = test_instance.get_or_populate(&mut tx, Mint::usdc()).await.unwrap();
 
         assert_eq!(result.id, 3);
@@ -71,10 +71,10 @@ async fn test_usdc() {
 #[test_log::test(sqlx::test)]
 async fn test_in_db() {
     run_test_on_empty_db(|mut tx| async move {
-        let test_instance = TokenRepo::testing(SuccessfulTokenInfoLoader::default());
+        let test_instance = TokenRepo::testing(Box::new(SuccessfulTokenInfoLoader::default()));
         let _ = test_instance.get_or_populate(&mut tx, bonk_mint()).await.unwrap();
 
-        let test_instance = TokenRepo::testing(SuccessfulTokenInfoLoader::default());
+        let test_instance = TokenRepo::testing(Box::new(SuccessfulTokenInfoLoader::default()));
         let result = test_instance.get_or_populate(&mut tx, bonk_mint()).await.unwrap();
 
         assert_eq!(result.id, 1000);
@@ -91,7 +91,7 @@ async fn test_in_db() {
 #[test_log::test(sqlx::test)]
 async fn test_in_cache() {
     run_test_on_empty_db(|mut tx| async move {
-        let test_instance = TokenRepo::testing(SuccessfulTokenInfoLoader::default());
+        let test_instance = TokenRepo::testing(Box::new(SuccessfulTokenInfoLoader::default()));
         let _ = test_instance.get_or_populate(&mut tx, bonk_mint()).await.unwrap();
 
         let result = test_instance.get_or_populate(&mut tx, bonk_mint()).await.unwrap();
@@ -109,7 +109,7 @@ async fn test_in_cache() {
 #[test_log::test(sqlx::test)]
 async fn test_insert() {
     run_test_on_empty_db(|mut tx| async move {
-        let test_instance = TokenRepo::testing(SuccessfulTokenInfoLoader::default());
+        let test_instance = TokenRepo::testing(Box::new(SuccessfulTokenInfoLoader::default()));
         let result = test_instance.get_or_populate(&mut tx, bonk_mint()).await.unwrap();
 
         assert_eq!(result.id, 1000);
@@ -126,7 +126,7 @@ async fn test_insert() {
 #[test_log::test(sqlx::test)]
 async fn unable_to_load() {
     run_test_on_empty_db(|mut tx| async move {
-        let test_instance = TokenRepo::testing(FailingTokenInfoLoader {});
+        let test_instance = TokenRepo::testing(Box::new(FailingTokenInfoLoader {}));
 
         let result = test_instance.get_or_populate(&mut tx, Mint::new("Does_Not_Exists")).await;
         assert_eq!(result.err().unwrap(), NotFound);

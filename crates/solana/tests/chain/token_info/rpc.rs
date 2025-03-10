@@ -12,7 +12,7 @@ async fn test_ok() {
     let test_instance =
         TokenInfoRpcLoader::new(env::var("SOLANA_RPC_URL").expect("SOLANA_RPC_URL must be set"));
     let result = test_instance
-        .load("CyUgNnKPQLqFcheyGV8wmypnJqojA7NzsdJjTS4nUT2j")
+        .load("CyUgNnKPQLqFcheyGV8wmypnJqojA7NzsdJjTS4nUT2j".into())
         .await;
     assert!(result.is_some());
 
@@ -37,13 +37,16 @@ async fn test_no_pda() {
     let test_instance =
         TokenInfoRpcLoader::new(env::var("SOLANA_RPC_URL").expect("SOLANA_RPC_URL must be set"));
     let result = test_instance
-        .load("SLNDpmoWTVADgEdndyvWzroNL7zSi1dF9PC3xHGtPwp")
+        .load("SLNDpmoWTVADgEdndyvWzroNL7zSi1dF9PC3xHGtPwp".into())
         .await;
     assert!(result.is_some());
 
     let result = result.unwrap();
 
-    assert_eq!(result.mint.unwrap(), "SLNDpmoWTVADgEdndyvWzroNL7zSi1dF9PC3xHGtPwp");
+    assert_eq!(
+        result.mint.unwrap(),
+        "SLNDpmoWTVADgEdndyvWzroNL7zSi1dF9PC3xHGtPwp"
+    );
     assert_eq!(result.name, None);
     assert_eq!(result.symbol, None);
     assert_eq!(result.decimals.unwrap(), 6);
@@ -58,7 +61,7 @@ async fn test_token_2022_without_extension() {
         TokenInfoRpcLoader::new(env::var("SOLANA_RPC_URL").expect("SOLANA_RPC_URL must be set"));
 
     let result = test_instance
-        .load("7atgF8KQo4wJrD5ATGX7t1V2zVvykPJbFfNeVf1icFv1")
+        .load("7atgF8KQo4wJrD5ATGX7t1V2zVvykPJbFfNeVf1icFv1".into())
         .await
         .unwrap();
 
@@ -75,7 +78,7 @@ async fn test_token_2022_with_extension() {
         TokenInfoRpcLoader::new(env::var("SOLANA_RPC_URL").expect("SOLANA_RPC_URL must be set"));
 
     let result = test_instance
-        .load("2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo")
+        .load("2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo".into())
         .await
         .unwrap();
 
@@ -100,7 +103,7 @@ async fn test_bug_decimal_mismatch() {
         TokenInfoRpcLoader::new(env::var("SOLANA_RPC_URL").expect("SOLANA_RPC_URL must be set"));
 
     let result = test_instance
-        .load("4h41QKUkQPd2pCAFXNNgZUyGUxQ6E7fMexaZZHziCvhh")
+        .load("4h41QKUkQPd2pCAFXNNgZUyGUxQ6E7fMexaZZHziCvhh".into())
         .await
         .unwrap();
 
@@ -114,7 +117,7 @@ async fn test_not_token() {
         TokenInfoRpcLoader::new(env::var("SOLANA_RPC_URL").expect("SOLANA_RPC_URL must be set"));
 
     let result = test_instance
-        .load("BFAWVmF5aoALggQ9Y2RpTijpYKRESxcdNe6JDNZEpoxC")
+        .load("BFAWVmF5aoALggQ9Y2RpTijpYKRESxcdNe6JDNZEpoxC".into())
         .await;
     assert!(result.is_none());
 }
@@ -126,7 +129,7 @@ async fn test_account_does_not_exists() {
         TokenInfoRpcLoader::new(env::var("SOLANA_RPC_URL").expect("SOLANA_RPC_URL must be set"));
 
     let result = test_instance
-        .load("Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYA")
+        .load("Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYA".into())
         .await;
     assert!(result.is_none());
 }

@@ -2,14 +2,14 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use base::model::Mint;
-use base::repo::{ReadTokenPairRepo, ReadTokenRepo};
+use base::repo::{TokenPairRepo, TokenRepo};
 use common::repo::error::RepoError;
 use testing::run_test_on_empty_db;
 
 #[test_log::test(sqlx::test)]
 async fn test_ok() {
     run_test_on_empty_db(|mut tx| async move {
-        let test_instance = ReadTokenPairRepo::new(ReadTokenRepo::new());
+        let test_instance = TokenPairRepo::new(TokenRepo::testing_no_token_info());
 
         let result = test_instance.get_by_id(&mut tx, 3).await.unwrap();
         assert_eq!(result.id, 3);
@@ -32,7 +32,7 @@ async fn test_ok() {
 #[test_log::test(sqlx::test)]
 async fn test_already_in_cache() {
     run_test_on_empty_db(|mut tx| async move {
-        let test_instance = ReadTokenPairRepo::new(ReadTokenRepo::new());
+        let test_instance = TokenPairRepo::new(TokenRepo::testing_no_token_info());
         let _ = test_instance.get_by_id(&mut tx, 3).await.unwrap();
 
         let result = test_instance.get_by_id(&mut tx, 3).await.unwrap();
@@ -54,7 +54,7 @@ async fn test_already_in_cache() {
 #[test_log::test(sqlx::test)]
 async fn test_not_found() {
     run_test_on_empty_db(|mut tx| async move {
-        let test_instance = ReadTokenPairRepo::new(ReadTokenRepo::new());
+        let test_instance = TokenPairRepo::new(TokenRepo::testing_no_token_info());
 
         let result = test_instance.get_by_id(&mut tx, 23).await;
         assert_eq!(result.err().unwrap(), RepoError::NotFound);

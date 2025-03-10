@@ -28,7 +28,7 @@ fn default_slot_swaps() -> SlotSwaps {
 #[test_log::test(sqlx::test)]
 async fn test_ok() {
     run_test_on_empty_db(|mut tx| async move {
-        let test_instance = SwapRepo::testing(SuccessfulTokenInfoLoader::default());
+        let test_instance = SwapRepo::testing(Box::new(SuccessfulTokenInfoLoader::default()));
 
         let mut result = test_instance
             .insert_swaps(&mut tx, default_slot_swaps())
@@ -57,7 +57,7 @@ async fn test_ok() {
 #[test_log::test(sqlx::test)]
 async fn test_multiple() {
     run_test_on_empty_db(|mut tx| async move {
-        let test_instance = SwapRepo::testing(SuccessfulTokenInfoLoader::default());
+        let test_instance = SwapRepo::testing(Box::new(SuccessfulTokenInfoLoader::default()));
 
         let slot_swaps = SlotSwaps {
             slot: 12345.into(),
@@ -125,7 +125,7 @@ async fn test_multiple() {
 #[test_log::test(sqlx::test)]
 async fn test_no_swaps() {
     run_test_on_empty_db(|mut tx| async move {
-        let test_instance = SwapRepo::testing(SuccessfulTokenInfoLoader::default());
+        let test_instance = SwapRepo::testing(Box::new(SuccessfulTokenInfoLoader::default()));
 
         let slot_swaps = SlotSwaps {
             slot: 12345.into(),
@@ -149,7 +149,7 @@ async fn test_no_swaps() {
 #[test_log::test(sqlx::test)]
 async fn test_duplicate_signature() {
     run_test_on_empty_db(|mut tx| async move {
-        let test_instance = SwapRepo::testing(SuccessfulTokenInfoLoader::default());
+        let test_instance = SwapRepo::testing(Box::new(SuccessfulTokenInfoLoader::default()));
 
         let result = test_instance
             .insert_swaps(&mut tx, default_slot_swaps())
@@ -174,7 +174,7 @@ async fn test_duplicate_signature() {
 #[test_log::test(sqlx::test)]
 async fn test_fails_to_load_token_info() {
     run_test_on_empty_db(|mut tx| async move {
-        let test_instance = SwapRepo::testing(FailingTokenInfoLoader::default());
+        let test_instance = SwapRepo::testing(Box::new(FailingTokenInfoLoader::default()));
 
         let result = test_instance
             .insert_swaps(&mut tx, default_slot_swaps())

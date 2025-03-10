@@ -7,10 +7,9 @@
 use crate::model::{Mint, Token};
 use crate::repo::token::shared::find_missing_mints;
 use crate::repo::TokenRepo;
-use crate::LoadTokenInfo;
 use common::repo::{RepoResult, Tx};
 
-impl<L: LoadTokenInfo<Mint>> TokenRepo<L> {
+impl TokenRepo {
     pub async fn list_or_populate<'a>(
         &self,
         tx: &mut Tx<'a>,
@@ -22,13 +21,13 @@ impl<L: LoadTokenInfo<Mint>> TokenRepo<L> {
             .collect::<Vec<_>>();
 
         let mut result = vec![];
-        result.extend(self.read.list_by_mints(tx, mints.clone()).await?);
+        result.extend(self.list_by_mints(tx, mints.clone()).await?);
 
         let to_insert = find_missing_mints(&mints, &result);
         if !to_insert.is_empty() {
             let mut inserted = self.populate_token(tx, &to_insert).await?;
 
-            self.read.populate_cache(inserted.iter()).await;
+            self.populate_cache(inserted.iter()).await;
             result.append(&mut inserted);
         }
 

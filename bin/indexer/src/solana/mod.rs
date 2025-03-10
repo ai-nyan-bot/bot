@@ -9,7 +9,7 @@ use crate::config::Config;
 use crate::solana::block::index_block;
 use crate::solana::indexer::IndexerRepo;
 use crate::solana::state::{State, StateInner};
-use base::repo::{AddressRepo, ReadTokenPairRepo, ReadTokenRepo, TokenPairRepo, TokenRepo};
+use base::repo::{AddressRepo, TokenPairRepo, TokenRepo};
 use common::repo::pool::setup_pool;
 use common::{ResolveOr, Signal};
 use solana::stream::{BlockStream, RpcBlockStream, RpcBlockStreamConfig, RpcSlotStream};
@@ -36,11 +36,8 @@ pub fn index_solana(runtime: Runtime, config: Config) {
         // tx.commit().await.unwrap();
 
         let token_info_loader = TokenInfoRpcLoader::new(config.rpc.url.resolve());
-        let read_token_repo = ReadTokenRepo::new();
-        let token_repo = TokenRepo::new(token_info_loader, read_token_repo.clone());
-
-        let read_token_pair_repo = ReadTokenPairRepo::new(read_token_repo);
-        let token_pair_repo = TokenPairRepo::new(token_repo.clone(), read_token_pair_repo);
+        let token_repo = TokenRepo::new(Box::new(token_info_loader));
+        let token_pair_repo = TokenPairRepo::new(token_repo.clone());
 
         let wallet_repo = AddressRepo::new();
 

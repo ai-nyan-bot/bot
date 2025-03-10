@@ -8,7 +8,7 @@ use crate::model::{
     DecimalAmount, Decimals, Description, Mint, Name, Symbol, Token, TokenId, TokenPair,
     TokenPairId, TokenPairMint, Uri,
 };
-use crate::repo::ReadTokenPairRepo;
+use crate::repo::TokenPairRepo;
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 use std::collections::{HashMap, HashSet};
@@ -46,7 +46,7 @@ pub(crate) fn find_missing_ids(ids: &[TokenPairId], token_pairs: &[TokenPair]) -
     result
 }
 
-impl ReadTokenPairRepo {
+impl TokenPairRepo {
     pub(crate) async fn read_token_pair_ids_from_cache<'a>(
         &self,
         tx: &mut Tx<'a>,

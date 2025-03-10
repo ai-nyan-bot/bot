@@ -2,11 +2,11 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::{TokenPair, TokenPairId};
-use crate::repo::ReadTokenPairRepo;
+use crate::repo::TokenPairRepo;
 use common::repo::error::RepoError;
 use common::repo::{RepoResult, Tx};
 
-impl ReadTokenPairRepo {
+impl TokenPairRepo {
     pub async fn get_by_id<'a>(
         &self,
         tx: &mut Tx<'a>,

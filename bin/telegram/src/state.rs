@@ -3,8 +3,9 @@
 
 use crate::callback::CallbackStore;
 use crate::config::Config;
-use base::repo::{NotificationRepo, ReadTokenPairRepo, ReadTokenRepo, RuleRepo};
+use base::repo::{NotificationRepo, RuleRepo, TokenPairRepo, TokenRepo};
 use base::service::{NotificationService, RuleService, TokenService, UserService};
+use base::test::NeverCalledTokenInfoLoader;
 use common::repo::pool::setup_pool;
 use solana::pumpfun;
 use solana::pumpfun::repo::{CurveRepo, SummaryRepo};
@@ -66,8 +67,8 @@ impl AppState {
         let pool = setup_pool(&config.postgres).await;
         let bot = Bot::new(config.telegram.token.resolve());
 
-        let token_repo = ReadTokenRepo::new();
-        let token_pair_repo = ReadTokenPairRepo::new(token_repo.clone());
+        let token_repo = TokenRepo::new(Box::new(NeverCalledTokenInfoLoader {}));
+        let token_pair_repo = TokenPairRepo::new(token_repo.clone());
 
         Self(Arc::new(AppStateInner {
             config,

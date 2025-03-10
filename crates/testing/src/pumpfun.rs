@@ -20,7 +20,10 @@ pub async fn list_all_swaps<'a>(tx: &mut Tx<'a>) -> Vec<Swap> {
     ReadSwapRepo::new().list(tx).await.unwrap()
 }
 
-pub async fn list_with_signature<'a>(tx: &mut Tx<'a>, signature: impl Into<Signature>) -> Vec<Swap> {
+pub async fn list_with_signature<'a>(
+    tx: &mut Tx<'a>,
+    signature: impl Into<Signature>,
+) -> Vec<Swap> {
     ReadSwapRepo::new()
         .list_with_signature(tx, signature)
         .await
@@ -28,7 +31,7 @@ pub async fn list_with_signature<'a>(tx: &mut Tx<'a>, signature: impl Into<Signa
 }
 
 pub async fn insert_swap<'a>(tx: &mut Tx<'a>, slot_swaps: SlotSwaps) -> Vec<Swap> {
-    SwapRepo::testing(SuccessfulTokenInfoLoader::default())
+    SwapRepo::testing(Box::new(SuccessfulTokenInfoLoader::default()))
         .insert_swaps(tx, slot_swaps)
         .await
         .unwrap()

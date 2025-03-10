@@ -8,7 +8,6 @@ use crate::model::{Signature, Slot};
 use crate::pumpfun::model::{calculate_progress, Swap};
 use crate::pumpfun::repo::SwapRepo;
 use base::model::{AddressId, Amount, DecimalAmount, Mint, PublicKey, SwapId, TokenPairId};
-use base::LoadTokenInfo;
 use common::model::{Percent, PriceQuote, Timestamp};
 use common::repo::{RepoResult, Tx};
 use log::trace;
@@ -34,7 +33,7 @@ pub struct SlotSwap {
     pub signature: Signature,
 }
 
-impl<L: LoadTokenInfo<Mint>> SwapRepo<L> {
+impl SwapRepo {
     pub async fn insert_swaps<'a>(
         &self,
         tx: &mut Tx<'a>,

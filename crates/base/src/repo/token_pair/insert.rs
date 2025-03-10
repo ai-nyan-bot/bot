@@ -9,12 +9,11 @@ use crate::model::{
     TokenPairId, TokenPairMint, Uri,
 };
 use crate::repo::TokenPairRepo;
-use crate::LoadTokenInfo;
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 use std::collections::HashMap;
 
-impl<L: LoadTokenInfo<Mint>> TokenPairRepo<L> {
+impl TokenPairRepo {
     pub async fn insert_token_pairs<'a>(
         &self,
         tx: &mut Tx<'a>,

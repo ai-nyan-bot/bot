@@ -2,13 +2,13 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use base::model::Mint;
-use base::repo::{ReadTokenPairRepo, ReadTokenRepo};
+use base::repo::{TokenPairRepo, TokenRepo};
 use testing::run_test_on_empty_db;
 
 #[test_log::test(sqlx::test)]
 async fn test_wsol_usdt() {
     run_test_on_empty_db(|mut tx| async move {
-        let test_instance = ReadTokenPairRepo::new(ReadTokenRepo::new());
+        let test_instance = TokenPairRepo::new(TokenRepo::testing_no_token_info());
 
         let mut result = test_instance.list_by_ids(&mut tx, vec![1]).await.unwrap();
         assert_eq!(result.len(), 1);
@@ -34,7 +34,7 @@ async fn test_wsol_usdt() {
 #[test_log::test(sqlx::test)]
 async fn test_wsol_usdc() {
     run_test_on_empty_db(|mut tx| async move {
-        let test_instance = ReadTokenPairRepo::new(ReadTokenRepo::new());
+        let test_instance = TokenPairRepo::new(TokenRepo::testing_no_token_info());
 
         let mut result = test_instance.list_by_ids(&mut tx, vec![2]).await.unwrap();
         assert_eq!(result.len(), 1);
@@ -60,7 +60,7 @@ async fn test_wsol_usdc() {
 #[test_log::test(sqlx::test)]
 async fn test_usdc_usdt() {
     run_test_on_empty_db(|mut tx| async move {
-        let test_instance = ReadTokenPairRepo::new(ReadTokenRepo::new());
+        let test_instance = TokenPairRepo::new(TokenRepo::testing_no_token_info());
 
         let mut result = test_instance.list_by_ids(&mut tx, vec![3]).await.unwrap();
         assert_eq!(result.len(), 1);
@@ -86,7 +86,7 @@ async fn test_usdc_usdt() {
 #[test_log::test(sqlx::test)]
 async fn test_already_in_cache() {
     run_test_on_empty_db(|mut tx| async move {
-        let test_instance = ReadTokenPairRepo::new(ReadTokenRepo::new());
+        let test_instance = TokenPairRepo::new(TokenRepo::testing_no_token_info());
         let _ = test_instance.list_by_ids(&mut tx, vec![3]).await.unwrap();
 
         let mut result = test_instance.list_by_ids(&mut tx, vec![3]).await.unwrap();
@@ -113,7 +113,7 @@ async fn test_already_in_cache() {
 #[test_log::test(sqlx::test)]
 async fn test_not_found() {
     run_test_on_empty_db(|mut tx| async move {
-        let test_instance = ReadTokenPairRepo::new(ReadTokenRepo::new());
+        let test_instance = TokenPairRepo::new(TokenRepo::testing_no_token_info());
 
         let result = test_instance.list_by_ids(&mut tx, vec![23]).await.unwrap();
 

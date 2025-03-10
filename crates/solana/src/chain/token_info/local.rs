@@ -20,8 +20,8 @@ pub struct TokenInfoLocalLoader {
 }
 
 #[async_trait]
-impl LoadTokenInfo<Mint> for TokenInfoLocalLoader {
-    async fn load(&self, mint: impl Into<Mint> + Send) -> Option<TokenInfo> {
+impl LoadTokenInfo for TokenInfoLocalLoader {
+    async fn load(&self, mint: Mint) -> Option<TokenInfo> {
         self.metadata.get(&mint.into()).map(|t| t.clone())
     }
 }

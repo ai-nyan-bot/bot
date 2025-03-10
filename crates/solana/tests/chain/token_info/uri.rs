@@ -1,7 +1,6 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use base::LoadTokenInfo;
 use solana::token_info::uri::TokenInfoUriLoader;
 
 #[test_log::test(tokio::test)]
@@ -9,7 +8,7 @@ async fn test_pumpfun_ipfs() {
     let test_instance = TokenInfoUriLoader::new();
 
     let token_info = test_instance
-        .load("https://ipfs.io/ipfs/QmW5K83aSvJakhDMsUGoBFzdBjmuD2kXZXUaTVR7QUZPDk")
+        .load("https://ipfs.io/ipfs/QmW5K83aSvJakhDMsUGoBFzdBjmuD2kXZXUaTVR7QUZPDk".into())
         .await
         .unwrap();
 

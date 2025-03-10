@@ -69,9 +69,8 @@ pub struct TokenMetadata {
 }
 
 #[async_trait]
-impl LoadTokenInfo<TokenMint> for TokenInfoRpcLoader {
-    async fn load(&self, mint: impl Into<TokenMint> + Send) -> Option<TokenInfo> {
-        let mint = mint.into();
+impl LoadTokenInfo for TokenInfoRpcLoader {
+    async fn load(&self, mint: TokenMint) -> Option<TokenInfo> {
         debug!("Load token info: {mint}");
 
         let pubkey = mint.0.to_string().parse::<Pubkey>().unwrap();

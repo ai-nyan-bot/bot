@@ -8,7 +8,6 @@ use crate::model::{
     AddressId, DecimalAmount, Decimals, Description, Mint, Name, Symbol, Token, TokenId, Uri,
 };
 use crate::repo::TokenRepo;
-use crate::LoadTokenInfo;
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 
@@ -25,7 +24,7 @@ pub struct TokenToInsert {
     pub creator: Option<AddressId>,
 }
 
-impl<L: LoadTokenInfo<Mint>> TokenRepo<L> {
+impl TokenRepo {
     pub async fn insert_token<'a>(
         &self,
         tx: &mut Tx<'a>,
@@ -79,7 +78,7 @@ impl<L: LoadTokenInfo<Mint>> TokenRepo<L> {
                 unnest(array_replace($7::text[], 'null_value', null)) as description,
                 unnest(array_replace($8::text[], 'null_value', null)) as image,
                 unnest(array_replace($9::text[], 'null_value', null)) as website,
-                unnest(array_replace($10::int8[], -1, null)) as creator_id,
+                unnest(array_replace($10::int8[], -1, null)) as creator_id
             on conflict (mint) do update set
                 mint = excluded.mint,
                 name = excluded.name,
@@ -90,7 +89,7 @@ impl<L: LoadTokenInfo<Mint>> TokenRepo<L> {
                 description = excluded.description,
                 image = excluded.image,
                 website = excluded.website,
-                creator_id = excluded.creator_id,
+                creator_id = excluded.creator_id
             returning
                 id,
                 mint,
@@ -114,6 +113,7 @@ impl<L: LoadTokenInfo<Mint>> TokenRepo<L> {
         .bind(descriptions)
         .bind(images)
         .bind(websites)
+        .bind(creators)
         .fetch_all(&mut **tx)
         .await?
         .into_iter()

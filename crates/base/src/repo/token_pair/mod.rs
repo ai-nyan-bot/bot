@@ -12,10 +12,9 @@ mod list;
 mod list_or_populate;
 mod shared;
 
-use crate::model::{Mint, TokenId, TokenPair, TokenPairId, TokenPairMint};
+use crate::model::{TokenId, TokenPair, TokenPairId, TokenPairMint};
 use crate::repo::cache::Cache;
-use crate::repo::{ReadTokenRepo, TokenRepo};
-use crate::LoadTokenInfo;
+use crate::repo::TokenRepo;
 use common::model::Limit;
 
 pub struct TokenPairQuery {
@@ -29,68 +28,38 @@ pub struct CachedTokenPair {
     pub quote_id: TokenId,
 }
 
-#[derive(Debug, Clone)]
-pub struct TokenPairRepo<L: LoadTokenInfo<Mint>>(pub Arc<TokenPairRepoInner<L>>);
+#[derive(Clone)]
+pub struct TokenPairRepo(pub Arc<TokenPairRepoInner>);
 
-impl<L: LoadTokenInfo<Mint>> Deref for TokenPairRepo<L> {
-    type Target = TokenPairRepoInner<L>;
+impl Deref for TokenPairRepo {
+    type Target = TokenPairRepoInner;
     fn deref(&self) -> &Self::Target {
         self.0.deref()
     }
 }
 
-#[derive(Debug)]
-pub struct TokenPairRepoInner<L: LoadTokenInfo<Mint>> {
-    token_repo: TokenRepo<L>,
-    read: ReadTokenPairRepo,
-}
-
-impl<L: LoadTokenInfo<Mint>> TokenPairRepo<L> {
-    pub fn new(token_repo: TokenRepo<L>, read: ReadTokenPairRepo) -> Self {
-        Self(Arc::new(TokenPairRepoInner { token_repo, read }))
-    }
-
-    pub fn testing(token_repo: TokenRepo<L>) -> Self {
-        Self(Arc::new(TokenPairRepoInner {
-            token_repo,
-            read: ReadTokenPairRepo::new(ReadTokenRepo::new()),
-        }))
-    }
-}
-
-#[derive(Debug, Clone)]
-pub struct ReadTokenPairRepo(pub Arc<ReadTokenPairRepoInner>);
-
-impl Deref for ReadTokenPairRepo {
-    type Target = ReadTokenPairRepoInner;
-    fn deref(&self) -> &Self::Target {
-        self.0.deref()
-    }
-}
-
-#[derive(Debug)]
-pub struct ReadTokenPairRepoInner {
-    token_repo: ReadTokenRepo,
+pub struct TokenPairRepoInner {
+    token_repo: TokenRepo,
     cache: Cache<TokenPairId, TokenPairMint, CachedTokenPair>,
 }
 
-impl ReadTokenPairRepo {
-    pub fn new(read_token_repo: ReadTokenRepo) -> Self {
-        Self(Arc::new(ReadTokenPairRepoInner {
-            token_repo: read_token_repo,
+impl TokenPairRepo {
+    pub fn new(token_repo: TokenRepo) -> Self {
+        Self(Arc::new(TokenPairRepoInner {
+            token_repo,
             cache: Cache::default(),
         }))
     }
-    
-    pub fn testing() -> Self {
-        Self(Arc::new(ReadTokenPairRepoInner {
-            token_repo: ReadTokenRepo::testing(),
+
+    pub fn testing(token_repo: TokenRepo) -> Self {
+        Self(Arc::new(TokenPairRepoInner {
+            token_repo,
             cache: Cache::default(),
         }))
     }
 }
 
-impl ReadTokenPairRepo {
+impl TokenPairRepo {
     pub async fn populate_cache(&self, pairs: impl Iterator<Item = &TokenPair>) {
         self.cache
             .put_all(pairs.map(|pair| {
