@@ -9,6 +9,7 @@ use crate::model::{
     TokenPairId, TokenPairMint, Uri,
 };
 use crate::repo::TokenPairRepo;
+use common::model::BlockId;
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 use std::collections::HashMap;
@@ -79,6 +80,7 @@ impl TokenPairRepo {
                 base.image as base_image,
                 base.website as base_website,
                 base.creator_id as base_creator_id,
+                base.block_id as base_block_id,
                 quote.id as quote_id,
                 quote.mint as quote_mint,
                 quote.name as quote_name,
@@ -89,7 +91,8 @@ impl TokenPairRepo {
                 quote.description as quote_description,
                 quote.image as quote_image,
                 quote.website as quote_website,
-                quote.creator_id as quote_creator_id
+                quote.creator_id as quote_creator_id,
+                quote.block_id as quote_block_id
             from new_token_pairs tp
             left join solana.token base on tp.base_id = base.id
             left join solana.token quote on tp.quote_id = quote.id
@@ -115,6 +118,7 @@ impl TokenPairRepo {
                 image: r.try_get::<Uri, _>("base_image").ok(),
                 website: r.try_get::<Uri, _>("base_website").ok(),
                 creator: r.try_get::<AddressId, _>("base_creator_id").ok(),
+                block: r.try_get::<BlockId, _>("base_block_id").ok(),
             },
             quote: Token {
                 id: r.get::<TokenId, _>("quote_id"),
@@ -128,6 +132,7 @@ impl TokenPairRepo {
                 image: r.try_get::<Uri, _>("quote_image").ok(),
                 website: r.try_get::<Uri, _>("quote_website").ok(),
                 creator: r.try_get::<AddressId, _>("quote_creator_id").ok(),
+                block: r.try_get::<BlockId, _>("quote_block_id").ok(),
             },
         })
         .collect::<Vec<_>>())

@@ -8,11 +8,13 @@ use crate::model::{
     AddressId, DecimalAmount, Decimals, Description, Mint, Name, Symbol, Token, TokenId, Uri,
 };
 use crate::repo::TokenRepo;
+use common::model::BlockId;
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 
 #[derive(Debug)]
 pub struct TokenToInsert {
+    pub block: Option<BlockId>,
     pub mint: Mint,
     pub name: Option<Name>,
     pub symbol: Option<Symbol>,
@@ -46,6 +48,7 @@ impl TokenRepo {
         let mut images = Vec::with_capacity(token_list.len());
         let mut websites = Vec::with_capacity(token_list.len());
         let mut creators = Vec::with_capacity(token_list.len());
+        let mut blocks = Vec::with_capacity(token_list.len());
 
         for to_insert in token_list {
             mints.push(to_insert.mint);
@@ -64,11 +67,12 @@ impl TokenRepo {
             images.push(to_insert.image.unwrap_or("null_value".into()));
             websites.push(to_insert.website.unwrap_or("null_value".into()));
             creators.push(to_insert.creator.unwrap_or(AddressId::from(-1)));
+            blocks.push(to_insert.block.unwrap_or(BlockId::from(-1)));
         }
 
         Ok(sqlx::query(
             r#"with new_token as (
-            insert into solana.token (mint,name,symbol,decimals,supply,metadata,description,image,website,creator_id)
+            insert into solana.token (mint, name, symbol, decimals, supply, metadata, description, image, website, creator_id, block_id)
             select
                 unnest($1::text[]) as mint,
                 unnest(array_replace($2::text[], 'null_value', null)) as name,
@@ -79,7 +83,8 @@ impl TokenRepo {
                 unnest(array_replace($7::text[], 'null_value', null)) as description,
                 unnest(array_replace($8::text[], 'null_value', null)) as image,
                 unnest(array_replace($9::text[], 'null_value', null)) as website,
-                unnest(array_replace($10::int8[], -1, null)) as creator_id
+                unnest(array_replace($10::int8[], -1, null)) as creator_id,
+                unnest(array_replace($11::int8[], -1, null)) as block_id
             on conflict (mint) do update set
                 mint = excluded.mint,
                 name = excluded.name,
@@ -90,7 +95,8 @@ impl TokenRepo {
                 description = excluded.description,
                 image = excluded.image,
                 website = excluded.website,
-                creator_id = excluded.creator_id
+                creator_id = excluded.creator_id,
+                block_id = excluded.block_id
             returning
                 id,
                 mint,
@@ -102,7 +108,8 @@ impl TokenRepo {
                 description,
                 image,
                 website,
-                creator_id
+                creator_id,
+                block_id
             )
             select * from new_token"#,
         )
@@ -116,6 +123,7 @@ impl TokenRepo {
         .bind(images)
         .bind(websites)
         .bind(creators)
+        .bind(blocks)
         .fetch_all(&mut **tx)
         .await?
         .into_iter()
@@ -131,6 +139,7 @@ impl TokenRepo {
             image: r.try_get::<Uri, _>("image").ok(),
             website: r.try_get::<Uri, _>("website").ok(),
             creator: r.try_get::<AddressId, _>("creator_id").ok(),
+            block: r.try_get::<BlockId, _>("block_id").ok(),
         })
         .collect::<Vec<_>>())
     }

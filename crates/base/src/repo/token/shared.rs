@@ -9,6 +9,7 @@ use crate::model::{
 };
 use crate::repo::cache::Cache;
 use crate::repo::TokenRepo;
+use common::model::BlockId;
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 use std::collections::HashSet;
@@ -92,7 +93,8 @@ impl TokenRepo {
                 metadata,
                 image,
                 website,
-                creator_id
+                creator_id,
+                block_id
               from solana.token
               where mint in (select unnest($1::varchar[]))"#,
         )
@@ -112,6 +114,7 @@ impl TokenRepo {
             image: r.try_get::<Uri, _>("image").ok(),
             website: r.try_get::<Uri, _>("website").ok(),
             creator: r.try_get::<AddressId, _>("creator_id").ok(),
+            block: r.try_get::<BlockId, _>("block_id").ok(),
         })
         .collect::<Vec<_>>())
     }
@@ -137,7 +140,8 @@ impl TokenRepo {
                 metadata,
                 image,
                 website,
-                creator_id
+                creator_id,
+                block_id
               from solana.token
               where id in (select unnest($1::int8[]))"#,
         )
@@ -157,6 +161,7 @@ impl TokenRepo {
             image: r.try_get::<Uri, _>("image").ok(),
             website: r.try_get::<Uri, _>("website").ok(),
             creator: r.try_get::<AddressId, _>("creator_id").ok(),
+            block: r.try_get::<BlockId, _>("block_id").ok(),
         })
         .collect::<Vec<_>>())
     }

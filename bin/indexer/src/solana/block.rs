@@ -80,6 +80,7 @@ pub async fn index_block(state: State, block: Block) {
                                     image: None,
                                     website: None,
                                     creator: Some(creator.id),
+                                    block: Some(block.slot.into()),
                                 })
                             }
 

@@ -15,6 +15,7 @@ create table solana.token
     image       text,
     website     text,
     creator_id  int8,
+    block_id    int8,
     updated_at  timestamptz   default (timezone('utc', now())),
 
     constraint fk_address foreign key (creator_id) references solana.address (id)

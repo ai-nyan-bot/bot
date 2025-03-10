@@ -42,6 +42,7 @@ impl TokenRepo {
                     image: info.image,
                     website: info.website,
                     creator: None,
+                    block: None,
                 });
             } else {
                 error!("unable to load token info");

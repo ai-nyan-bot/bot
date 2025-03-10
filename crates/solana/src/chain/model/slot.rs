@@ -1,6 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use common::model::BlockId;
 use fmt::Display;
 use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
@@ -16,6 +17,12 @@ impl Slot {
     pub fn increment(&mut self) -> Self {
         self.0 += 1;
         Self(self.0)
+    }
+}
+
+impl Into<BlockId> for Slot {
+    fn into(self) -> BlockId {
+        BlockId(self.0)
     }
 }
 

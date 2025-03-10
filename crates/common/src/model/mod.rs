@@ -2,6 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 pub use age::*;
+pub use block::*;
 pub use count::*;
 pub use limit::*;
 pub use market_cap::*;
@@ -16,6 +17,7 @@ pub use url::*;
 pub use volume::*;
 
 mod age;
+mod block;
 mod count;
 mod limit;
 mod market_cap;

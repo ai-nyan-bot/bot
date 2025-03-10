@@ -3,6 +3,7 @@
 
 use crate::model::AddressId;
 pub use amount::*;
+use common::model::BlockId;
 pub use decimals::Decimals;
 pub use description::Description;
 pub use id::{TokenId, TokenPairId};
@@ -34,6 +35,7 @@ pub struct Token {
     pub image: Option<Uri>,
     pub website: Option<Uri>,
     pub creator: Option<AddressId>,
+    pub block: Option<BlockId>,
 }
 
 #[derive(Debug, Clone)]
