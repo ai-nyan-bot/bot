@@ -21,6 +21,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,
     "paths": {
       "@app/*": [
         "./src/*"

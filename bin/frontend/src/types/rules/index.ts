@@ -6,15 +6,22 @@ import {
     ComposedCurveProgress,
     ComposedPumpFunQuick,
     ComposedSimpleSwapTotal,
-    ComposeType,
+    // ComposeType,
     Condition,
-    ConditionType,
-    Field,
-    Operator,
-    Timeframe,
-    TimeUnit,
-    ValueType
+    // Field,
+    // Operator,
+    // Timeframe,
+    // TimeUnit,
+    // ValueType
 } from "@app/types";
+
+import {ConditionType} from "./condition";
+import {ComposeType} from "./compose";
+import {Field} from "./field";
+import {Operator} from "./operator";
+import {Timeframe, TimeUnit} from "./time";
+import {ValueType} from "./value";
+
 import {uuidv4} from "@utils";
 
 export * from './action';
@@ -100,7 +107,7 @@ export const DEFAULT_CONDITION: ComposedPumpFunQuick = {
                             type: ConditionType.COMPARE,
                             field: Field.SWAP_TOTAL,
                             operator: Operator.MORE_THAN_EQUAL,
-                            value: null,
+                            value: undefined,
                             timeframe: Timeframe.H1
                         } satisfies CompareSimpleSwapsTotal,
                         {
@@ -108,7 +115,7 @@ export const DEFAULT_CONDITION: ComposedPumpFunQuick = {
                             type: ConditionType.COMPARE,
                             field: Field.SWAP_TOTAL,
                             operator: Operator.MORE_THAN_EQUAL,
-                            value: null,
+                            value: undefined,
                             timeframe: Timeframe.H1
                         } satisfies CompareSimpleSwapsTotal
                     ]

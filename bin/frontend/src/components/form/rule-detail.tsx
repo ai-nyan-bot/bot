@@ -4,7 +4,7 @@ import {Label} from "@components/ui/label";
 import {Card, CardContent, CardHeader, CardTitle} from "@components/ui/card";
 import {RuleStatus} from "@types";
 import {Button} from "@components/ui/button.tsx";
-import {cn} from "@app/lib/utils.ts";
+import {cn} from "@utils";
 
 export type RuleDetailFormProps = {
     id: string;

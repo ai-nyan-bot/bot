@@ -5,7 +5,7 @@ import {Button} from "@components/ui/button.tsx";
 import {Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle} from "@components/ui/dialog";
 import {Input} from "@components/ui/input";
 import {Plus} from "lucide-react";
-import {ActionType, DEFAULT_CONDITION} from "@types";
+import {ActionType, Condition, DEFAULT_CONDITION} from "@types";
 
 export type RuleCreateButtonProps = {}
 
@@ -34,7 +34,7 @@ export const RuleCreateButton: FC<RuleCreateButtonProps> = ({}) => {
         createRule({
             name: ruleName,
             sequence: {
-                condition: {...DEFAULT_CONDITION},
+                condition: {...DEFAULT_CONDITION} as unknown as Condition,
                 action: {
                     type: ActionType.NOTIFY_TELEGRAM,
                     buttons: Array(6).fill({

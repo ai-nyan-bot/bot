@@ -2,6 +2,9 @@ export * from './id.ts';
 export * from './theme.ts';
 
 
-export const imageUrl = (name: string) => {
-    return `/images/${name}`;
+import {type ClassValue, clsx} from "clsx"
+import {twMerge} from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+    return twMerge(clsx(inputs))
 }
