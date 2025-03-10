@@ -5,7 +5,7 @@ export type ValueNumberInputProps = {
     id?: string;
     supported: Array<ValueNumberType>;
     defaultValue?: ValueNumber;
-    value: ValueNumber | null;
+    value?: ValueNumber;
     onChange?: (value: ValueNumber) => void;
     hideValueSelect?: boolean;
     placeholder?: string;
@@ -20,15 +20,23 @@ export const ValueNumberInput: FC<ValueNumberInputProps> = ({
                                                                 hideValueSelect,
                                                                 placeholder,
                                                             }) => {
+
     const [selectedType, setSelectedType] = useState<ValueNumberType>(
         value?.type || defaultValue?.type || supported[0]
     );
-    const [inputValue, setInputValue] = useState<number | undefined>(
-        value?.value ?? defaultValue?.value
+
+    const [inputValue, setInputValue] = useState<number | undefined>(() => {
+            if (value?.value) {
+                if (isNaN(value.value)) {
+                    return undefined;
+                }
+            }
+            return value?.value ?? defaultValue?.value
+        }
     );
 
     useEffect(() => {
-        if (value) {
+        if (value && !isNaN(value.value)) {
             setSelectedType(value.type);
             setInputValue(value.value);
         }

@@ -21,7 +21,7 @@ export type CompareSimpleSwapsTotal = {
     type: ConditionType.COMPARE,
     field: Field.SWAP_TOTAL,
     operator: Operator.MORE_THAN_EQUAL | Operator.LESS_THAN_EQUAL,
-    value: ValueCount | null,
+    value?: ValueCount,
     timeframe: Timeframe
 }
 
@@ -31,7 +31,7 @@ export type CompareSimpleSwapsBuy = {
     type: ConditionType.COMPARE,
     field: Field.SWAP_BUY,
     operator: Operator.MORE_THAN_EQUAL | Operator.LESS_THAN_EQUAL,
-    value: ValueCount | null ,
+    value?: ValueCount ,
     timeframe: Timeframe
 }
 
@@ -40,6 +40,6 @@ export type CompareSimpleSwapsSell = {
     type: ConditionType.COMPARE,
     field: Field.SWAP_TOTAL,
     operator: Operator.MORE_THAN_EQUAL | Operator.LESS_THAN_EQUAL,
-    value: ValueCount | null,
+    value?: ValueCount,
     timeframe: Timeframe
 }

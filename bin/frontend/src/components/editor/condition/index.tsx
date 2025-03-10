@@ -6,9 +6,10 @@ import {PumpFunComposeQuick} from "./main";
 
 export type ConditionEditorProps = {
     condition: Condition;
+    onChange: (condition: Condition) => void;
 };
 
-export const ConditionEditor: FC<ConditionEditorProps> = ({condition}) => {
+export const ConditionEditor: FC<ConditionEditorProps> = ({condition, onChange}) => {
     const [type, setType] = useState<ComposeType>(ComposeType.PUMP_FUN_QUICK)
 
     return (
@@ -29,8 +30,8 @@ export const ConditionEditor: FC<ConditionEditorProps> = ({condition}) => {
                     <PumpFunComposeQuick
                         key={condition.id}
                         condition={condition as unknown as ComposedPumpFunQuick}
-                        onChange={function (condition: ComposedPumpFunQuick): void {
-                            throw new Error("Function not implemented.");
+                        onChange={(updated) => {
+                            onChange(updated as unknown as Condition);
                         }}/>
                 )}
 

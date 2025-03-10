@@ -13,6 +13,7 @@ export const PumpFunComposeQuick: FC<PumpFunComposeQuickProps> = ({condition, on
     const curve_progress = condition.condition.conditions[0] as unknown as ComposedCurveProgress;
     const swap_total = condition.condition.conditions[1] as unknown as ComposedSimpleSwapTotal;
 
+
     return (
         <div className="w-full max-w-md mx-auto">
             <div className="w-full border-2">
@@ -20,6 +21,9 @@ export const PumpFunComposeQuick: FC<PumpFunComposeQuickProps> = ({condition, on
                 <CurveProgressCompose
                     condition={curve_progress}
                     onChange={updated => {
+                        const changed = {...condition};
+                        changed.condition.conditions[0] = updated;
+                        onChange(changed);
                     }}
                 />
             </div>
@@ -30,7 +34,9 @@ export const PumpFunComposeQuick: FC<PumpFunComposeQuickProps> = ({condition, on
                 <SimpleSwapCompose
                     condition={swap_total}
                     onChange={updated => {
-                        console.log("swap total", updated);
+                        const changed = {...condition};
+                        changed.condition.conditions[1] = updated as ComposedSimpleSwapTotal;
+                        onChange(changed);
                     }}
                 />
             </div>

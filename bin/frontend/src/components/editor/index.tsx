@@ -19,7 +19,7 @@ const createCondition = (type: ConditionType): Condition => {
         //         conditions: []
         //     }
         case 'COMPOSE':
-            return {...DEFAULT_CONDITION};
+            return {...DEFAULT_CONDITION} as unknown as Condition;
         default:
             throw new Error(`type ${type} not supported`)
     }
@@ -76,13 +76,20 @@ export const Editor: React.FC<EditorProps> = ({sequence, onChange}) => {
 
     const updateCondition = (condition: Condition) => {
         setCondition((prev) => {
-            if (prev.type === ConditionType.AND) {
-                return {
-                    ...prev,
-                    conditions: findAndUpdateCondition(condition.id, condition, prev.conditions),
+            let conditions: Condition[] = [];
+            if (prev.type === ConditionType.COMPOSE) {
+                if (prev.condition.type === ConditionType.AND) {
+                    conditions = prev.condition.conditions;
                 }
+            } else if (prev.type === ConditionType.AND) {
+                conditions = prev.conditions;
             } else {
-                throw new Error("Not a group");
+                throw new Error("Neither compose nor group");
+            }
+
+            return {
+                ...prev,
+                conditions: findAndUpdateCondition(condition.id, condition, conditions),
             }
         });
     };
@@ -144,7 +151,9 @@ export const Editor: React.FC<EditorProps> = ({sequence, onChange}) => {
 
     return (
         <div className={"flex flex-col space-y-2"}>
-            <ConditionEditor condition={sequence.condition}/>
+            <ConditionEditor condition={sequence.condition} onChange={(condition) => {
+                updateCondition(condition);
+            }}/>
             <ActionEditor action={sequence.action} onChange={(_) => {
             }}/>
         </div>

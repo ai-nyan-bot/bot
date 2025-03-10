@@ -7,6 +7,7 @@ import {
     ComposedSimpleSwapSell,
     ComposedSimpleSwapTotal,
     Timeframe,
+    ValueCount,
     ValueNumber,
     ValueType
 } from "@types";
@@ -17,23 +18,14 @@ export type SimpleSwapComposeProps = {
     onChange: (condition: ComposedSimpleSwapTotal | ComposedSimpleSwapBuy | ComposedSimpleSwapSell) => void;
 };
 
-export const SimpleSwapCompose: FC<SimpleSwapComposeProps> = ({condition}) => {
-    // console.log(JSON.stringify(condition, null, 2));
-    // min value
-    // min time frame
-    // max value
-    // max time frame
+export const SimpleSwapCompose: FC<SimpleSwapComposeProps> = ({condition, onChange}) => {
     const min = condition.condition.conditions[0];
     const max = condition.condition.conditions[1];
-    // console.log(JSON.stringify(min, null, 2));
-    // console.log(JSON.stringify(max, null, 2));
 
-    const [minValue, setMinValue] = useState<ValueNumber | null>(min.value);
+    const [minValue, setMinValue] = useState<ValueCount | undefined>(min.value);
     const [minTimeframe, setMinTimeframe] = useState<Timeframe>(min.timeframe);
-    const [maxValue, setMaxValue] = useState<ValueNumber | null>(max.value);
+    const [maxValue, setMaxValue] = useState<ValueCount | undefined>(max.value);
     const [maxTimeframe, setMaxTimeframe] = useState<Timeframe>(max.timeframe);
-
-    // console.log(maxValue)
 
     useEffect(() => {
         if (
@@ -42,7 +34,16 @@ export const SimpleSwapCompose: FC<SimpleSwapComposeProps> = ({condition}) => {
             max.value !== maxValue ||
             max.timeframe !== maxTimeframe
         ) {
-            console.log("changed");
+            onChange({
+                ...condition,
+                condition: {
+                    ...condition.condition,
+                    conditions: [
+                        { ...condition.condition.conditions[0], value: minValue, timeframe: minTimeframe },
+                        { ...condition.condition.conditions[1], value: maxValue, timeframe: maxTimeframe }
+                    ]
+                }
+            });
         }
     }, [minValue, maxValue]);
 
@@ -54,14 +55,12 @@ export const SimpleSwapCompose: FC<SimpleSwapComposeProps> = ({condition}) => {
                     <ValueNumberInput
                         id="swap-total-min"
                         value={minValue}
-                        onChange={(value) => {
-                            setMinValue((_) => {
-                                if (value.value === 0 || value.value == null) {
-                                    return null;
-                                }
-                                return value;
-                            });
-                        }}
+                        onChange={(value) => setMinValue(_ => {
+                            if (!value || isNaN(value.value)) {
+                                return undefined;
+                            }
+                            return value as ValueCount
+                        })}
                         supported={[ValueType.COUNT]}
                         placeholder={"min total txs"}
                         hideValueSelect
@@ -78,7 +77,12 @@ export const SimpleSwapCompose: FC<SimpleSwapComposeProps> = ({condition}) => {
                     <ValueNumberInput
                         id="swap-total-max"
                         value={maxValue}
-                        onChange={setMaxValue}
+                        onChange={(value) => setMaxValue(_ => {
+                            if (!value || isNaN(value.value)) {
+                                return undefined;
+                            }
+                            return value as ValueCount
+                        })}
                         supported={[ValueType.COUNT]}
                         placeholder={"max total txs"}
                         hideValueSelect
@@ -102,13 +106,14 @@ export const SimpleSwapCompose: FC<SimpleSwapComposeProps> = ({condition}) => {
 }
 
 type RenderTextProps = {
-    minValue: ValueNumber | null;
+    minValue?: ValueNumber;
     minTimeframe: Timeframe;
-    maxValue: ValueNumber | null;
+    maxValue?: ValueNumber;
     maxTimeframe: Timeframe;
 }
 
 const RenderText: FC<RenderTextProps> = ({minValue, minTimeframe, maxValue, maxTimeframe}) => {
+    // FIXME indicate error if minValue > maxValue for the same timeframe
     return (
         <div className="mt-4 text-sm text-center text-gray-500">
             {/*<p>At least 10 txn in the last 1 hour</p>*/}
