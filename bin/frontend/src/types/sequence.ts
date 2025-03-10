@@ -14,7 +14,7 @@ export enum NotificationChannel {
     TELEGRAM = 'TELEGRAM'
 }
 
-export type TelegramButtonAction = 'NONE' | 'BUY' | 'SELL'
+export type TelegramButtonAction = 'NOTHING' | 'BUY' | 'SELL'
 
 export type TelegramButtonConfig = {
     action: TelegramButtonAction;

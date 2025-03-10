@@ -64,7 +64,7 @@ export const TelegramButton: FC<TelegramButtonProps> = ({index, config, onChange
 
     return (
         <div className="w-full">
-            {config.action === 'NONE' && (
+            {config.action === 'NOTHING' && (
                 <Button
                     key={index}
                     className={'w-full'}
@@ -172,7 +172,7 @@ export const TelegramButton: FC<TelegramButtonProps> = ({index, config, onChange
                     <DialogFooter>
                         <Button
                             onClick={() => {
-                                if (action !== 'NONE' && value || action === 'NONE' && !value) {
+                                if (action !== 'NOTHING' && value || action === 'NOTHING' && !value) {
                                     onChange({action, value});
                                     setOpen(false);
                                 }

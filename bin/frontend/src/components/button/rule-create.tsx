@@ -43,7 +43,7 @@ export const RuleCreateButton: FC<RuleCreateButtonProps> = ({}) => {
                 action: {
                     type: ActionType.NOTIFY_TELEGRAM,
                     buttons: Array(6).fill({
-                        action: 'NONE',
+                        action: 'NOTHING',
                         value: undefined
                     })
                 }
