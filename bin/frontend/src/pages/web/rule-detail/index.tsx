@@ -60,9 +60,13 @@ const WebRuleDetailPage: React.FC = () => {
                 }}
             />
 
-            <Button onClick={() => {
-                updateRule(id, {name: ruleName, status: ruleStatus, sequence})
-            }} disabled={updating}>Update</Button>
+            <div className={"w-full sticky bottom-4 flex justify-center"}>
+                <Button
+                    className={"w-full"}
+                    onClick={() => {
+                        updateRule(id, {name: ruleName, status: ruleStatus, sequence})
+                    }} disabled={updating}>Update</Button>
+            </div>
         </div>
     );
 };
