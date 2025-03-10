@@ -57,7 +57,25 @@
     "tailwindcss": "^3.4.17",
     "tailwindcss-animate": "^1.0.7",
     "ts-jest": "^29.2.6",
+    "ts-node": "^10.9.2",
     "typescript": "^5.8.2",
     "vite": "6.0.9"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "transform": {
+      "^.+.tsx?$": [
+        "ts-jest",
+        {}
+      ]
+    },
+    "moduleNameMapper": {
+      "^@app/types$": "<rootDir>/src/types",
+      "^@app/(.*)$": "<rootDir>/src/app/$1",
+      "^@components/(.*)$": "<rootDir>/src/components/$1",
+      "^@types$": "<rootDir>/src/types/index.ts",
+      "^@utils$": "<rootDir>/src/utils/index.ts",
+      "^@utils/(.*)$": "<rootDir>/src/utils/$1"
+    }
   }
 }

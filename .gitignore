@@ -2,3 +2,4 @@
 .idea
 .run
 .env
+bin/frontend/coverage

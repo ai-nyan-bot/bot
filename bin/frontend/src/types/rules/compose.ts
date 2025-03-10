@@ -1,5 +1,5 @@
 import {ConditionType} from "@app/types/rules/condition";
-import {CompareSimpleSwapsTotal, Condition} from "@types";
+import {CompareSimpleSwapTotal, Condition} from "@types";
 import {CompareCurveProgressAge, CompareCurveProgressPercent} from "./compare";
 
 export enum ComposeType {
@@ -53,10 +53,14 @@ export type ComposedSimpleSwapTotal = {
     condition: {
         type: ConditionType.AND,
         conditions: [
-            CompareSimpleSwapsTotal,
-            CompareSimpleSwapsTotal
+            CompareSimpleSwapTotal,
+            CompareSimpleSwapTotal
         ]
     }
+}
+
+export const isComposedSimpleSwapTotal = (condition: any): condition is ComposedSimpleSwapTotal => {
+    return condition && condition.composition === ComposeType.SIMPLE_SWAP_TOTAL;
 }
 
 
@@ -67,10 +71,14 @@ export type ComposedSimpleSwapBuy = {
     condition: {
         type: ConditionType.AND,
         conditions: [
-            CompareSimpleSwapsTotal,
-            CompareSimpleSwapsTotal
+            CompareSimpleSwapTotal,
+            CompareSimpleSwapTotal
         ]
     }
+}
+
+export const isComposedSimpleSwapBuy = (condition: any): condition is ComposedSimpleSwapBuy => {
+    return condition && condition.composition === ComposeType.SIMPLE_SWAP_BUY;
 }
 
 
@@ -81,8 +89,12 @@ export type ComposedSimpleSwapSell = {
     condition: {
         type: ConditionType.AND,
         conditions: [
-            CompareSimpleSwapsTotal,
-            CompareSimpleSwapsTotal
+            CompareSimpleSwapTotal,
+            CompareSimpleSwapTotal
         ]
     }
+}
+
+export const isComposedSimpleSwapSell = (condition: any): condition is ComposedSimpleSwapSell => {
+    return condition && condition.composition === ComposeType.SIMPLE_SWAP_SELL;
 }

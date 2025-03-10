@@ -16,7 +16,7 @@ export type CompareCurveProgressAge = {
     value: ValueDuration
 }
 
-export type CompareSimpleSwapsTotal = {
+export type CompareSimpleSwapTotal = {
     id: string;
     type: ConditionType.COMPARE,
     field: Field.SWAP_TOTAL,
@@ -26,7 +26,7 @@ export type CompareSimpleSwapsTotal = {
 }
 
 
-export type CompareSimpleSwapsBuy = {
+export type CompareSimpleSwapBuy = {
     id: string;
     type: ConditionType.COMPARE,
     field: Field.SWAP_BUY,
@@ -35,10 +35,10 @@ export type CompareSimpleSwapsBuy = {
     timeframe: Timeframe
 }
 
-export type CompareSimpleSwapsSell = {
+export type CompareSimpleSwapSell = {
     id: string;
     type: ConditionType.COMPARE,
-    field: Field.SWAP_TOTAL,
+    field: Field.SWAP_SELL,
     operator: Operator.MORE_THAN_EQUAL | Operator.LESS_THAN_EQUAL,
     value?: ValueCount,
     timeframe: Timeframe

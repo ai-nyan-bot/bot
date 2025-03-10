@@ -49,3 +49,38 @@ export const SelectTimeframe: FC<SelectTimeframeProps> = ({defaultTimeframe, sup
         </select>
     );
 }
+
+export type TimeframeTextProps = {
+    value: Timeframe
+}
+
+export const TimeframeText: FC<TimeframeTextProps> = ({value}) => {
+    switch (value){
+        case Timeframe.M1:
+            return (
+                <span>1 minute</span>
+            )
+        case Timeframe.M5:
+            return (
+                <span>5 minutes</span>
+            )
+        case Timeframe.M15:
+            return (
+                <span>15 minutes</span>
+            )
+        case Timeframe.H1:
+            return (
+                <span>1 hour</span>
+            )
+        case Timeframe.H6:
+            return (
+                <span>6 hours</span>
+            )
+        case Timeframe.D1:
+            return (
+                <span>24 hours</span>
+            )
+        default:
+            throw Error(`Unsupported timeframe: ${value}`);
+    }
+}

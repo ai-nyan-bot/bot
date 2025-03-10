@@ -2,7 +2,7 @@ import {
     Action,
     CompareCurveProgressAge,
     CompareCurveProgressPercent,
-    CompareSimpleSwapsTotal,
+    CompareSimpleSwapTotal,
     ComposedCurveProgress,
     ComposedPumpFunQuick,
     ComposedSimpleSwapTotal,
@@ -109,7 +109,7 @@ export const DEFAULT_CONDITION: ComposedPumpFunQuick = {
                             operator: Operator.MORE_THAN_EQUAL,
                             value: undefined,
                             timeframe: Timeframe.H1
-                        } satisfies CompareSimpleSwapsTotal,
+                        } satisfies CompareSimpleSwapTotal,
                         {
                             id: uuidv4(),
                             type: ConditionType.COMPARE,
@@ -117,7 +117,7 @@ export const DEFAULT_CONDITION: ComposedPumpFunQuick = {
                             operator: Operator.MORE_THAN_EQUAL,
                             value: undefined,
                             timeframe: Timeframe.H1
-                        } satisfies CompareSimpleSwapsTotal
+                        } satisfies CompareSimpleSwapTotal
                     ]
                 }
             } satisfies ComposedSimpleSwapTotal

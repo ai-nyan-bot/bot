@@ -1,14 +1,16 @@
 import React, {FC, useEffect, useState} from "react";
 import {Label} from "@components/ui/label.tsx";
-import {SelectTimeframe} from "@components/editor/condition/component";
+import {SelectTimeframe, TimeframeText} from "@components/editor/condition/component";
 import {
     ALL_TIMEFRAMES,
     ComposedSimpleSwapBuy,
     ComposedSimpleSwapSell,
     ComposedSimpleSwapTotal,
+    isComposedSimpleSwapBuy,
+    isComposedSimpleSwapSell,
+    isComposedSimpleSwapTotal,
     Timeframe,
     ValueCount,
-    ValueNumber,
     ValueType
 } from "@types";
 import {ValueNumberInput} from "@components/editor/value.tsx";
@@ -22,6 +24,14 @@ export type SimpleSwapComposeProps = {
 export const SimpleSwapCompose: FC<SimpleSwapComposeProps> = ({condition, onChange}) => {
     const min = condition.condition.conditions[0];
     const max = condition.condition.conditions[1];
+
+    const type: SwapType =
+        isComposedSimpleSwapTotal(condition) ? SwapType.Total :
+            isComposedSimpleSwapBuy(condition) ? SwapType.Buy :
+                isComposedSimpleSwapSell(condition) ? SwapType.Sell :
+                    (() => {
+                        throw new Error("Unsupported condition");
+                    })();
 
     const [minValue, setMinValue] = useState<ValueCount | undefined>(min.value);
     const [minTimeframe, setMinTimeframe] = useState<Timeframe>(min.timeframe);
@@ -100,32 +110,106 @@ export const SimpleSwapCompose: FC<SimpleSwapComposeProps> = ({condition, onChan
                     minTimeframe={minTimeframe}
                     maxValue={maxValue}
                     maxTimeframe={maxTimeframe}
+                    type={type}
                 />
             </div>
         </div>
     )
 }
 
-export type RenderTextProps = {
-    minValue?: ValueNumber;
-    minTimeframe: Timeframe;
-    maxValue?: ValueNumber;
-    maxTimeframe: Timeframe;
+export enum SwapType {
+    Total,
+    Buy,
+    Sell
 }
 
-export const RenderText: FC<RenderTextProps> = ({minValue, minTimeframe, maxValue, maxTimeframe}) => {
+export type RenderTextProps = {
+    minValue?: ValueCount;
+    minTimeframe: Timeframe;
+    maxValue?: ValueCount;
+    maxTimeframe: Timeframe;
+    type: SwapType;
+}
+
+export const RenderText: FC<RenderTextProps> = ({minValue, minTimeframe, maxValue, maxTimeframe, type}) => {
     if (!minValue && !maxValue) {
         return null;
     }
-    // FIXME indicate error if minValue > maxValue for the same timeframe
+
+    if (minValue && maxValue) {
+        if (minTimeframe === maxTimeframe && minValue.value > maxValue.value) {
+            return (
+                <div className="mt-4 text-sm text-center text-yellow-700 font-bold">
+                    <p>⚠️ The rule will never match ⚠️</p>
+                    <p>Minimum tx count is greater than the maximum tx count for the same timeframe.</p>
+                </div>
+            );
+        }
+    }
+
+    const text = (value: number) => {
+        switch (type) {
+            case SwapType.Total:
+                if (value === 1) {
+                    return "1 tx"
+                } else {
+                    return `${value} txs`
+                }
+            case SwapType.Buy:
+                if (value === 1) {
+                    return "1 buy tx"
+                } else {
+                    return `${value} buy txs`
+                }
+            case SwapType.Sell:
+                if (value === 1) {
+                    return "1 sell tx"
+                } else {
+                    return `${value} sell txs`
+                }
+        }
+    }
+
+    const className = "mt-4 text-sm text-center text-gray-500"
+
+    if (minTimeframe === maxTimeframe) {
+        if (minValue && maxValue) {
+            if(minValue.value === maxValue.value) {
+                return (
+                    <div className={className}>
+                        <p>Exactly {text(minValue.value)} occurred in the last <TimeframeText value={minTimeframe}/>.</p>
+                    </div>
+                );
+            }
+
+            return (
+                <div className={className}>
+                    <p>At least {text(minValue.value)} occurred in the last <TimeframeText value={minTimeframe}/>.</p>
+                    <p>However, the count should not exceed {maxValue.value} in the same timeframe.</p>
+                </div>
+            );
+        }
+    }
+
+    if (minValue && maxValue) {
+        return (
+            <div className={className}>
+                <p>At least {text(minValue.value)} occurred in the last <TimeframeText value={minTimeframe}/>.</p>
+                <p>However, no more than {text(maxValue.value)} should occur in the last <TimeframeText
+                    value={maxTimeframe}/>.</p>
+            </div>
+        );
+    } else if (minValue) {
+        return (
+            <div className={className}>
+                <p>At least {text(minValue.value)} occurred in the last <TimeframeText value={minTimeframe}/>.</p>
+            </div>
+        );
+    }
+
     return (
-        <div className="mt-4 text-sm text-center text-gray-500">
-            <p>At least 10 txn in the last 1 hour</p>
-            <p>but not more than 20 in the last hour</p>
-            {/*<p> {JSON.stringify(minValue?.value)}</p>*/}
-            {/*<p> {JSON.stringify(minTimeframe)}</p>*/}
-            {/*<p> {JSON.stringify(maxValue?.value)}</p>*/}
-            {/*<p> {JSON.stringify(maxTimeframe)}</p>*/}
+        <div className={className}>
+            <p>No more than {text(maxValue!!.value)} should occur in the last <TimeframeText value={maxTimeframe}/>.</p>
         </div>
-    )
-}
+    );
+};

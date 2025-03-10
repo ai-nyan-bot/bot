@@ -1,45 +1,218 @@
-import {render, screen} from "@testing-library/react";
-import "@testing-library/jest-dom";
-import {RenderText} from ".";
-import {Timeframe} from "@types";
+import {render} from "@testing-library/react";
+import {RenderText, SwapType} from ".";
+import {Timeframe, ValueType} from "@types";
 
 describe("RenderText", () => {
-    test("returns null when minValue and maxValue are missing", () => {
-        const { container } = render(<RenderText minTimeframe={Timeframe.H1} maxTimeframe={Timeframe.H1} />);
+
+    test("null when minValue and maxValue are missing", () => {
+        const {container} = render(<RenderText minTimeframe={Timeframe.H1} maxTimeframe={Timeframe.H1}
+                                               type={SwapType.Total}/>);
         expect(container.firstChild).toBeNull();
     });
 
-    // test("renders correctly with default props", () => {
-    //     // render(<h1>Test</h1>);
-    //     render(<RenderText
-    //         minTimeframe={Timeframe.H1}
-    //         maxTimeframe={Timeframe.H1}
-    //     />);
-    //
-    //     expect(screen.getByText(/at least 10 txn in the last 1 hour/i)).toBeInTheDocument();
-    //     // expect(screen.getByText(/but not more than 20 in the last hour/i)).toBeInTheDocument();
-    // });
+    test("warning if minValue is greater than maxValue at the same timeframe", () => {
+        const {container} = render(<RenderText
+            minValue={{
+                type: ValueType.COUNT,
+                value: 2
+            }}
+            minTimeframe={Timeframe.H1}
+            maxValue={{
+                type: ValueType.COUNT,
+                value: 1
+            }}
+            maxTimeframe={Timeframe.H1}
+            type={SwapType.Total}
+        />);
 
-    // test("indicates an error if minValue > maxValue for the same timeframe", () => {
-    //     const minValue: ValueNumber = 30;
-    //     const maxValue: ValueNumber = 20;
-    //
-    //     render(<RenderText minValue={minValue} minTimeframe="1h" maxValue={maxValue} maxTimeframe="1h" />);
-    //
-    //     expect(screen.getByText(/error: minValue should not exceed maxValue/i)).toBeInTheDocument();
-    // });
-    //
-    // test("renders different timeframes correctly", () => {
-    //     render(<RenderText minValue={5} minTimeframe="15m" maxValue={50} maxTimeframe="1h" />);
-    //
-    //     expect(screen.getByText(/at least 5 txn in the last 15 minutes/i)).toBeInTheDocument();
-    //     expect(screen.getByText(/but not more than 50 in the last hour/i)).toBeInTheDocument();
-    // });
-    //
-    // test("renders correctly when no minValue or maxValue is provided", () => {
-    //     render(<RenderText minTimeframe="30m" maxTimeframe="1d" />);
-    //
-    //     expect(screen.getByText(/at least 10 txn in the last 30 minutes/i)).toBeInTheDocument();
-    //     expect(screen.getByText(/but not more than 20 in the last day/i)).toBeInTheDocument();
-    // });
+        const warningDiv = container.querySelector("div");
+        expect(warningDiv).not.toBeNull();
+        expect(warningDiv!!.className).toContain("text-yellow-700");
+        expect(warningDiv!!.className).toContain("font-bold");
+
+        expect(warningDiv?.querySelector("p:nth-child(1)")?.textContent).toBe("⚠️ The rule will never match ⚠️");
+        expect(warningDiv?.querySelector("p:nth-child(2)")?.textContent).toBe("Minimum tx count is greater than the maximum tx count for the same timeframe.");
+    });
+
+    test("min value === max value - same timeframe", () => {
+        const {container} = render(<RenderText
+            minValue={{
+                type: ValueType.COUNT,
+                value: 2
+            }}
+            minTimeframe={Timeframe.H1}
+            maxValue={{
+                type: ValueType.COUNT,
+                value: 2
+            }}
+            maxTimeframe={Timeframe.H1}
+            type={SwapType.Total}
+        />);
+
+        const div = container.querySelector("div")!!;
+        expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("Exactly 2 txs occurred in the last 1 hour.");
+    });
+
+    test("min value === max value - different timeframe", () => {
+        const {container} = render(<RenderText
+            minValue={{
+                type: ValueType.COUNT,
+                value: 2
+            }}
+            minTimeframe={Timeframe.H1}
+            maxValue={{
+                type: ValueType.COUNT,
+                value: 2
+            }}
+            maxTimeframe={Timeframe.H6}
+            type={SwapType.Total}
+        />);
+
+        const div = container.querySelector("div")!!;
+        expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 2 txs occurred in the last 1 hour.");
+        expect(div.querySelector("p:nth-child(2)")?.textContent).toBe("However, no more than 2 txs should occur in the last 6 hours.");
+    });
+
+    test("min value < max value - same timeframe", () => {
+        const {container} = render(<RenderText
+            minValue={{
+                type: ValueType.COUNT,
+                value: 1
+            }}
+            minTimeframe={Timeframe.H1}
+            maxValue={{
+                type: ValueType.COUNT,
+                value: 2
+            }}
+            maxTimeframe={Timeframe.H1}
+            type={SwapType.Total}
+        />);
+
+        const div = container.querySelector("div")!!;
+        expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 1 tx occurred in the last 1 hour.");
+        expect(div.querySelector("p:nth-child(2)")?.textContent).toBe("However, the count should not exceed 2 in the same timeframe.");
+    });
+
+    test("min value", () => {
+        const {container} = render(<RenderText
+            minValue={{
+                type: ValueType.COUNT,
+                value: 1
+            }}
+            minTimeframe={Timeframe.M1}
+            maxTimeframe={Timeframe.H1}
+            type={SwapType.Total}
+        />);
+
+        const div = container.querySelector("div")!!;
+        expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 1 tx occurred in the last 1 minute.");
+    });
+
+    test("max value", () => {
+        const {container} = render(<RenderText
+            minTimeframe={Timeframe.M1}
+            maxValue={{
+                type: ValueType.COUNT,
+                value: 99
+            }}
+            maxTimeframe={Timeframe.H1}
+            type={SwapType.Total}
+        />);
+
+        const div = container.querySelector("div")!!;
+        expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("No more than 99 txs should occur in the last 1 hour.");
+    });
+
+    describe("text", () => {
+
+        test("total: 1", () => {
+            const {container} = render(<RenderText
+                minValue={{
+                    type: ValueType.COUNT,
+                    value: 1
+                }}
+                minTimeframe={Timeframe.M1}
+                maxTimeframe={Timeframe.H1}
+                type={SwapType.Total}
+            />);
+
+            const div = container.querySelector("div")!!;
+            expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 1 tx occurred in the last 1 minute.");
+        });
+
+        test("total: 21", () => {
+            const {container} = render(<RenderText
+                minValue={{
+                    type: ValueType.COUNT,
+                    value: 21
+                }}
+                minTimeframe={Timeframe.M1}
+                maxTimeframe={Timeframe.H1}
+                type={SwapType.Total}
+            />);
+
+            const div = container.querySelector("div")!!;
+            expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 21 txs occurred in the last 1 minute.");
+        });
+
+        test("buy: 1", () => {
+            const {container} = render(<RenderText
+                minValue={{
+                    type: ValueType.COUNT,
+                    value: 1
+                }}
+                minTimeframe={Timeframe.M1}
+                maxTimeframe={Timeframe.H1}
+                type={SwapType.Buy}
+            />);
+
+            const div = container.querySelector("div")!!;
+            expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 1 buy tx occurred in the last 1 minute.");
+        });
+
+        test("buy: 21", () => {
+            const {container} = render(<RenderText
+                minValue={{
+                    type: ValueType.COUNT,
+                    value: 21
+                }}
+                minTimeframe={Timeframe.M1}
+                maxTimeframe={Timeframe.H1}
+                type={SwapType.Buy}
+            />);
+
+            const div = container.querySelector("div")!!;
+            expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 21 buy txs occurred in the last 1 minute.");
+        });
+
+        test("sell: 1", () => {
+            const {container} = render(<RenderText
+                minValue={{
+                    type: ValueType.COUNT,
+                    value: 1
+                }}
+                minTimeframe={Timeframe.M1}
+                maxTimeframe={Timeframe.H1}
+                type={SwapType.Sell}
+            />);
+
+            const div = container.querySelector("div")!!;
+            expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 1 sell tx occurred in the last 1 minute.");
+        });
+
+        test("sell: 21", () => {
+            const {container} = render(<RenderText
+                minValue={{
+                    type: ValueType.COUNT,
+                    value: 21
+                }}
+                minTimeframe={Timeframe.M1}
+                maxTimeframe={Timeframe.H1}
+                type={SwapType.Sell}
+            />);
+
+            const div = container.querySelector("div")!!;
+            expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 21 sell txs occurred in the last 1 minute.");
+        });
+    })
 });
