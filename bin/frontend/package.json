@@ -70,8 +70,6 @@
       ]
     },
     "moduleNameMapper": {
-      "^@app/types$": "<rootDir>/src/types",
-      "^@app/(.*)$": "<rootDir>/src/app/$1",
       "^@components/(.*)$": "<rootDir>/src/components/$1",
       "^@types$": "<rootDir>/src/types/index.ts",
       "^@utils$": "<rootDir>/src/utils/index.ts",

@@ -17,7 +17,7 @@ test:
 
 .PHONY: test-frontend
 test-frontend:
-	cd bin/frontend &&	pnpm run build
+	cd bin/frontend &&	pnpm build && pnpm test
 
 
 .PHONY: build

@@ -1,2 +1,4 @@
 node_modules/
 build/
+vite.config.js
+vite.config.d.ts

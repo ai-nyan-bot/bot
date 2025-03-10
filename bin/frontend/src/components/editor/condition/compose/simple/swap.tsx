@@ -49,22 +49,35 @@ export const SimpleSwapCompose: FC<SimpleSwapComposeProps> = ({condition, onChan
                 ...condition,
                 condition: {
                     ...condition.condition,
+                    // @ts-ignore
                     conditions: [
-                        {...condition.condition.conditions[0], value: minValue, timeframe: minTimeframe},
-                        {...condition.condition.conditions[1], value: maxValue, timeframe: maxTimeframe}
+                        {...min, value: minValue, timeframe: minTimeframe},
+                        {...max, value: maxValue, timeframe: maxTimeframe}
                     ]
                 }
             });
         }
     }, [minValue, maxValue]);
 
+    let placeholderText = null;
+    switch (type) {
+        case SwapType.Total:
+            placeholderText = "total tx"
+            break;
+        case SwapType.Buy:
+            placeholderText = "buy tx"
+            break;
+        case SwapType.Sell:
+            placeholderText = "sell tx"
+            break;
+    }
+
     return (
         <div className={"flex flex-row"}>
             <div id="condition" className={"flex flex-col"}>
                 <div className={"flex flex-row"}>
-                    <Label htmlFor="swap-total-min">Min</Label>
+                    <Label>Min</Label>
                     <ValueNumberInput
-                        id="swap-total-min"
                         value={minValue}
                         onChange={(value) => setMinValue(_ => {
                             if (!value || isNaN(value.value)) {
@@ -73,7 +86,7 @@ export const SimpleSwapCompose: FC<SimpleSwapComposeProps> = ({condition, onChan
                             return value as ValueCount
                         })}
                         supported={[ValueType.COUNT]}
-                        placeholder={"min total txs"}
+                        placeholder={`min ${placeholderText}`}
                         hideValueSelect
                     />
                     <SelectTimeframe
@@ -84,9 +97,8 @@ export const SimpleSwapCompose: FC<SimpleSwapComposeProps> = ({condition, onChan
                 </div>
 
                 <div className={"flex flex-row space"}>
-                    <Label htmlFor="swap-total-max">Max</Label>
+                    <Label>Max</Label>
                     <ValueNumberInput
-                        id="swap-total-max"
                         value={maxValue}
                         onChange={(value) => setMaxValue(_ => {
                             if (!value || isNaN(value.value)) {
@@ -95,7 +107,7 @@ export const SimpleSwapCompose: FC<SimpleSwapComposeProps> = ({condition, onChan
                             return value as ValueCount
                         })}
                         supported={[ValueType.COUNT]}
-                        placeholder={"max total txs"}
+                        placeholder={`max ${placeholderText}`}
                         hideValueSelect
                     />
                     <SelectTimeframe
@@ -174,10 +186,11 @@ export const RenderText: FC<RenderTextProps> = ({minValue, minTimeframe, maxValu
 
     if (minTimeframe === maxTimeframe) {
         if (minValue && maxValue) {
-            if(minValue.value === maxValue.value) {
+            if (minValue.value === maxValue.value) {
                 return (
                     <div className={className}>
-                        <p>Exactly {text(minValue.value)} occurred in the last <TimeframeText value={minTimeframe}/>.</p>
+                        <p>Exactly {text(minValue.value)} occurred in the last <TimeframeText value={minTimeframe}/>.
+                        </p>
                     </div>
                 );
             }
