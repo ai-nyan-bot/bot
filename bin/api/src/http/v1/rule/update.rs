@@ -47,8 +47,8 @@ mod tests {
     use axum::http::StatusCode;
     use base::model::Field::PriceAvg;
     use base::model::Operator::MoreThan;
-    use base::model::{Action, Condition, TelegramActionButtonConfig, Value};
     use base::model::RuleStatus::Archived;
+    use base::model::{Action, Condition, TelegramActionButtonConfig, Value};
     use common::model::Timeframe::M15;
     use testing::rule::create_rule_for_test_user;
     use Condition::Compare;
@@ -90,7 +90,10 @@ mod tests {
             panic!()
         };
         assert_eq!(buttons.len(), 6);
-        assert_eq!(buttons.get(0).unwrap(), &TelegramActionButtonConfig::Nothing);
+        assert_eq!(
+            buttons.get(0).unwrap(),
+            &TelegramActionButtonConfig::Nothing
+        );
         assert_eq!(
             buttons.get(1).unwrap(),
             &TelegramActionButtonConfig::Buy {
@@ -126,7 +129,7 @@ mod tests {
             Compare {
                 field: PriceAvg,
                 operator: MoreThan,
-                value: Value::percent(2.0),
+                value: Value::percent(2.0).into(),
                 timeframe: Some(M15)
             }
         );
@@ -155,7 +158,7 @@ mod tests {
             Compare {
                 field: PriceAvg,
                 operator: MoreThan,
-                value: Value::percent(2.0),
+                value: Value::percent(2.0).into(),
                 timeframe: Some(M15)
             }
         );

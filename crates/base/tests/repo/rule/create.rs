@@ -28,7 +28,7 @@ async fn test_create() {
                         condition: Compare {
                             field: PriceAvg,
                             operator: MoreThan,
-                            value: Value::percent(23.0),
+                            value: Value::percent(23.0).into(),
                             timeframe: None,
                         },
                         action: Action::Buy,
@@ -47,7 +47,7 @@ async fn test_create() {
             Compare {
                 field: PriceAvg,
                 operator: MoreThan,
-                value: Value::percent(23.0),
+                value: Value::percent(23.0).into(),
                 timeframe: None,
             }
         );
@@ -73,7 +73,7 @@ async fn test_rule_requires_existing_user() {
                         condition: Compare {
                             field: PriceAvg,
                             operator: MoreThan,
-                            value: Value::percent(23.0),
+                            value: Value::percent(23.0).into(),
                             timeframe: None,
                         },
                         action: Action::Buy,

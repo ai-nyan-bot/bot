@@ -4,7 +4,7 @@
 use base::model::Condition::Compare;
 use base::model::Field::PriceAvg;
 use base::model::Operator::MoreThan;
-use base::model::{Action, Sequence, Mint, Value};
+use base::model::{Action, Mint, Sequence, Value};
 use base::repo::{InvocationCreateCmd, InvocationRepo};
 use common::repo::error::RepoError;
 use sqlx::Acquire;
@@ -33,7 +33,7 @@ async fn test_create() {
                         condition: Compare {
                             field: PriceAvg,
                             operator: MoreThan,
-                            value: Value::percent(23.0),
+                            value: Value::percent(23.0).into(),
                             timeframe: None,
                         },
                         action: Action::Buy,
@@ -54,7 +54,7 @@ async fn test_create() {
             Compare {
                 field: PriceAvg,
                 operator: MoreThan,
-                value: Value::percent(23.0),
+                value: Value::percent(23.0).into(),
                 timeframe: None,
             }
         );
@@ -118,7 +118,7 @@ async fn test_invocation_requires_existing_user() {
                         condition: Compare {
                             field: PriceAvg,
                             operator: MoreThan,
-                            value: Value::percent(23.0),
+                            value: Value::percent(23.0).into(),
                             timeframe: None,
                         },
                         action: Action::Buy,
@@ -153,7 +153,7 @@ async fn test_invocation_requires_existing_rule() {
                         condition: Compare {
                             field: PriceAvg,
                             operator: MoreThan,
-                            value: Value::percent(23.0),
+                            value: Value::percent(23.0).into(),
                             timeframe: None,
                         },
                         action: Action::Buy,
@@ -188,7 +188,7 @@ async fn test_invocation_requires_existing_token_pair() {
                         condition: Compare {
                             field: PriceAvg,
                             operator: MoreThan,
-                            value: Value::percent(23.0),
+                            value: Value::percent(23.0).into(),
                             timeframe: None,
                         },
                         action: Action::Buy,

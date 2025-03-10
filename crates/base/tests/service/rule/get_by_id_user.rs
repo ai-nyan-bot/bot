@@ -30,7 +30,7 @@ async fn test_ok() {
             Compare {
                 field: Field::PriceAvg,
                 operator: MoreThan,
-                value: Value::percent(2.0),
+                value: Value::percent(2.0).into(),
                 timeframe: Some(Timeframe::M15),
             },
         );

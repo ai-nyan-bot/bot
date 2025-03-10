@@ -42,7 +42,7 @@ async fn test_update() {
                         condition: Compare {
                             field: Volume,
                             operator: Equal,
-                            value: Value::quote(42),
+                            value: Value::quote(42).into(),
                             timeframe: Some(H1),
                         },
                         action: NotifyTelegram {
@@ -72,7 +72,7 @@ async fn test_update() {
             Compare {
                 field: Volume,
                 operator: Equal,
-                value: Value::quote(42),
+                value: Value::quote(42).into(),
                 timeframe: Some(H1),
             }
         );
@@ -121,7 +121,7 @@ async fn test_nothing_changed() {
                         condition: Compare {
                             field: PriceAvg,
                             operator: MoreThan,
-                            value: Value::percent(2.0),
+                            value: Value::percent(2.0).into(),
                             timeframe: Some(M15),
                         },
                         action: NotifyTelegram { buttons: vec![] },
@@ -140,7 +140,7 @@ async fn test_nothing_changed() {
             Compare {
                 field: PriceAvg,
                 operator: MoreThan,
-                value: Value::percent(2.0),
+                value: Value::percent(2.0).into(),
                 timeframe: Some(M15),
             }
         );
@@ -176,7 +176,7 @@ async fn test_different_user() {
                         condition: Compare {
                             field: Volume,
                             operator: Equal,
-                            value: Value::quote(42),
+                            value: Value::quote(42).into(),
                             timeframe: Some(H1),
                         },
                         action: Action::Sell,
@@ -195,7 +195,7 @@ async fn test_different_user() {
             Compare {
                 field: PriceAvg,
                 operator: MoreThan,
-                value: Value::percent(2.0),
+                value: Value::percent(2.0).into(),
                 timeframe: Some(M15),
             }
         );
@@ -228,7 +228,7 @@ async fn test_rule_not_found() {
                         condition: Compare {
                             field: Volume,
                             operator: Equal,
-                            value: Value::quote(42),
+                            value: Value::quote(42).into(),
                             timeframe: Some(H1),
                         },
                         action: NotifyTelegram { buttons: vec![] },

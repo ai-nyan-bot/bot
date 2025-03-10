@@ -8,7 +8,13 @@ impl Condition {
     /// E.g. the user provides an empty AND condition, which would match everything
     pub fn applicable(&self) -> bool {
         match self {
-            Condition::Compare { .. } => Fact::try_from(self).is_ok(),
+            Condition::Compare { value, .. } => {
+                if let Some(_) = value {
+                    Fact::try_from(self).is_ok()
+                } else {
+                    false
+                }
+            }
             Condition::Compose { condition, .. } => condition.applicable(),
             Condition::And { conditions } => {
                 !conditions.is_empty() && !conditions.iter().any(|c| !c.applicable())
@@ -33,13 +39,13 @@ mod tests {
         use crate::model::{Condition, Value};
 
         #[test]
-        fn applicable() {
+        fn test_applicable() {
             let test_instance = Condition::Compose {
                 composition: "SomeComposition".into(),
                 condition: Box::new(Compare {
                     field: TwitterAccountHandle,
                     operator: Equal,
-                    value: Value::string("AI_nyanbot"),
+                    value: Value::string("AI_nyanbot").into(),
                     timeframe: None,
                 }),
             };
@@ -47,13 +53,27 @@ mod tests {
         }
 
         #[test]
-        fn not_applicable() {
+        fn test_not_applicable() {
             let test_instance = Condition::Compose {
                 composition: "SomeComposition".into(),
                 condition: Box::new(Compare {
                     field: TwitterAccountHandle,
                     operator: NotEqual,
-                    value: Value::string("AI_nyanbot"),
+                    value: Value::string("AI_nyanbot").into(),
+                    timeframe: None,
+                }),
+            };
+            assert!(!test_instance.applicable())
+        }
+
+        #[test]
+        fn test_no_value() {
+            let test_instance = Condition::Compose {
+                composition: "SomeComposition".into(),
+                condition: Box::new(Compare {
+                    field: TwitterAccountHandle,
+                    operator: Equal,
+                    value: None,
                     timeframe: None,
                 }),
             };
@@ -69,18 +89,18 @@ mod tests {
         use common::model::Timeframe::M15;
 
         #[test]
-        fn empty() {
+        fn test_empty() {
             let test_instance = Condition::And { conditions: vec![] };
             assert!(!test_instance.applicable())
         }
 
         #[test]
-        fn single_child_applicable() {
+        fn test_single_child_applicable() {
             let test_instance = Condition::And {
                 conditions: vec![Compare {
                     field: TwitterAccountHandle,
                     operator: Equal,
-                    value: Value::string("AI_nyanbot"),
+                    value: Value::string("AI_nyanbot").into(),
                     timeframe: None,
                 }],
             };
@@ -88,12 +108,12 @@ mod tests {
         }
 
         #[test]
-        fn single_child_not_applicable() {
+        fn test_no_value() {
             let test_instance = Condition::And {
                 conditions: vec![Compare {
                     field: TwitterAccountHandle,
-                    operator: NotEqual,
-                    value: Value::string("AI_nyanbot"),
+                    operator: Equal,
+                    value: None,
                     timeframe: None,
                 }],
             };
@@ -101,19 +121,32 @@ mod tests {
         }
 
         #[test]
-        fn children_applicable() {
+        fn test_single_child_not_applicable() {
+            let test_instance = Condition::And {
+                conditions: vec![Compare {
+                    field: TwitterAccountHandle,
+                    operator: NotEqual,
+                    value: Value::string("AI_nyanbot").into(),
+                    timeframe: None,
+                }],
+            };
+            assert!(!test_instance.applicable())
+        }
+
+        #[test]
+        fn test_children_applicable() {
             let test_instance = Condition::And {
                 conditions: vec![
                     Compare {
                         field: SwapBuy,
                         operator: MoreThan,
-                        value: Value::count(1),
+                        value: Value::count(1).into(),
                         timeframe: Some(M15),
                     },
                     Compare {
                         field: TwitterAccountHandle,
                         operator: Equal,
-                        value: Value::string("AI_nyanbot"),
+                        value: Value::string("AI_nyanbot").into(),
                         timeframe: None,
                     },
                 ],
@@ -122,21 +155,21 @@ mod tests {
         }
 
         #[test]
-        fn children_partial_applicable() {
+        fn test_children_partial_applicable() {
             let test_instance = Condition::And {
                 conditions: vec![
                     // applicable
                     Compare {
                         field: SwapBuy,
                         operator: MoreThan,
-                        value: Value::percent(1.0),
+                        value: Value::percent(1.0).into(),
                         timeframe: Some(M15),
                     },
                     // Not applicable
                     Compare {
                         field: TwitterAccountHandle,
                         operator: NotEqual,
-                        value: Value::string("AI_nyanbot"),
+                        value: Value::string("AI_nyanbot").into(),
                         timeframe: None,
                     },
                 ],
@@ -145,7 +178,7 @@ mod tests {
         }
 
         #[test]
-        fn children_not_applicable() {
+        fn test_children_not_applicable() {
             let test_instance = Condition::And {
                 conditions: vec![
                     Condition::And { conditions: vec![] },
@@ -166,18 +199,18 @@ mod tests {
         use Condition::Or;
 
         #[test]
-        fn empty() {
+        fn test_empty() {
             let test_instance = Or { conditions: vec![] };
             assert!(!test_instance.applicable())
         }
 
         #[test]
-        fn single_child_applicable() {
+        fn test_single_child_applicable() {
             let test_instance = Or {
                 conditions: vec![Compare {
                     field: TwitterAccountHandle,
                     operator: Equal,
-                    value: Value::string("AI_nyanbot"),
+                    value: Value::string("AI_nyanbot").into(),
                     timeframe: None,
                 }],
             };
@@ -185,12 +218,12 @@ mod tests {
         }
 
         #[test]
-        fn single_child_not_applicable() {
-            let test_instance = Or {
+        fn test_no_value() {
+            let test_instance = Condition::Or {
                 conditions: vec![Compare {
                     field: TwitterAccountHandle,
-                    operator: NotEqual,
-                    value: Value::string("AI_nyanbot"),
+                    operator: Equal,
+                    value: None,
                     timeframe: None,
                 }],
             };
@@ -198,19 +231,32 @@ mod tests {
         }
 
         #[test]
-        fn children_applicable() {
+        fn test_single_child_not_applicable() {
+            let test_instance = Or {
+                conditions: vec![Compare {
+                    field: TwitterAccountHandle,
+                    operator: NotEqual,
+                    value: Value::string("AI_nyanbot").into(),
+                    timeframe: None,
+                }],
+            };
+            assert!(!test_instance.applicable())
+        }
+
+        #[test]
+        fn test_children_applicable() {
             let test_instance = Or {
                 conditions: vec![
                     Compare {
                         field: SwapBuy,
                         operator: IncreasedByMoreThan,
-                        value: Value::percent(1.0),
+                        value: Value::percent(1.0).into(),
                         timeframe: Some(M15),
                     },
                     Compare {
                         field: TwitterAccountHandle,
                         operator: Equal,
-                        value: Value::string("AI_nyanbot"),
+                        value: Value::string("AI_nyanbot").into(),
                         timeframe: None,
                     },
                 ],
@@ -219,21 +265,21 @@ mod tests {
         }
 
         #[test]
-        fn children_partial_applicable() {
+        fn test_children_partial_applicable() {
             let test_instance = Or {
                 conditions: vec![
                     // applicable
                     Compare {
                         field: SwapBuy,
                         operator: MoreThan,
-                        value: Value::percent(1.0),
+                        value: Value::percent(1.0).into(),
                         timeframe: Some(M15),
                     },
                     // Not applicable
                     Compare {
                         field: TwitterAccountHandle,
                         operator: NotEqual,
-                        value: Value::string("AI_nyanbot"),
+                        value: Value::string("AI_nyanbot").into(),
                         timeframe: None,
                     },
                 ],
@@ -242,7 +288,7 @@ mod tests {
         }
 
         #[test]
-        fn children_not_applicable() {
+        fn test_children_not_applicable() {
             let test_instance = Or {
                 conditions: vec![
                     Condition::And { conditions: vec![] },
@@ -263,18 +309,18 @@ mod tests {
         use Condition::AndNot;
 
         #[test]
-        fn empty() {
+        fn test_empty() {
             let test_instance = AndNot { conditions: vec![] };
             assert!(!test_instance.applicable())
         }
 
         #[test]
-        fn single_child_applicable() {
+        fn test_single_child_applicable() {
             let test_instance = AndNot {
                 conditions: vec![Compare {
                     field: TwitterAccountHandle,
                     operator: Equal,
-                    value: Value::string("AI_nyanbot"),
+                    value: Value::string("AI_nyanbot").into(),
                     timeframe: None,
                 }],
             };
@@ -282,12 +328,12 @@ mod tests {
         }
 
         #[test]
-        fn single_child_not_applicable() {
-            let test_instance = AndNot {
+        fn test_no_value() {
+            let test_instance = Condition::AndNot {
                 conditions: vec![Compare {
                     field: TwitterAccountHandle,
-                    operator: NotEqual,
-                    value: Value::string("AI_nyanbot"),
+                    operator: Equal,
+                    value: None,
                     timeframe: None,
                 }],
             };
@@ -295,19 +341,32 @@ mod tests {
         }
 
         #[test]
-        fn children_applicable() {
+        fn test_single_child_not_applicable() {
+            let test_instance = AndNot {
+                conditions: vec![Compare {
+                    field: TwitterAccountHandle,
+                    operator: NotEqual,
+                    value: Value::string("AI_nyanbot").into(),
+                    timeframe: None,
+                }],
+            };
+            assert!(!test_instance.applicable())
+        }
+
+        #[test]
+        fn test_children_applicable() {
             let test_instance = AndNot {
                 conditions: vec![
                     Compare {
                         field: SwapBuy,
                         operator: IncreasedByMoreThan,
-                        value: Value::percent(1.0),
+                        value: Value::percent(1.0).into(),
                         timeframe: Some(M15),
                     },
                     Compare {
                         field: TwitterAccountHandle,
                         operator: Equal,
-                        value: Value::string("AI_nyanbot"),
+                        value: Value::string("AI_nyanbot").into(),
                         timeframe: None,
                     },
                 ],
@@ -316,21 +375,21 @@ mod tests {
         }
 
         #[test]
-        fn children_partial_applicable() {
+        fn test_children_partial_applicable() {
             let test_instance = AndNot {
                 conditions: vec![
                     // applicable
                     Compare {
                         field: SwapBuy,
                         operator: MoreThan,
-                        value: Value::percent(1.0),
+                        value: Value::percent(1.0).into(),
                         timeframe: Some(M15),
                     },
                     // Not applicable
                     Compare {
                         field: TwitterAccountHandle,
                         operator: NotEqual,
-                        value: Value::string("AI_nyanbot"),
+                        value: Value::string("AI_nyanbot").into(),
                         timeframe: None,
                     },
                 ],
@@ -339,7 +398,7 @@ mod tests {
         }
 
         #[test]
-        fn children_not_applicable() {
+        fn test_children_not_applicable() {
             let test_instance = AndNot {
                 conditions: vec![
                     And { conditions: vec![] },

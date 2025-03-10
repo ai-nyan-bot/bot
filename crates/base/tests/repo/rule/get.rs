@@ -29,7 +29,7 @@ mod get_by_id {
                 Condition::Compare {
                     field: PriceAvg,
                     operator: MoreThan,
-                    value: Value::percent(2.0),
+                    value: Value::percent(2.0).into(),
                     timeframe: Some(M15),
                 }
             );

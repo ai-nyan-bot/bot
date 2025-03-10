@@ -53,7 +53,7 @@ pub enum Condition {
     Compare {
         field: Field,
         operator: Operator,
-        value: Value,
+        value: Option<Value>,
         timeframe: Option<Timeframe>,
     },
     And {
