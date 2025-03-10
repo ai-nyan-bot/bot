@@ -36,7 +36,7 @@ export const config: Record<
             }
         }
     },
-    [Field.TRADES]: {
+    [Field.SWAPS_TOTAL]: {
         operators: {
             [Operator.INCREASED_BY_MORE_THAN]: {
                 valueTypes: COUNT_AND_PERCENT,
@@ -56,7 +56,7 @@ export const config: Record<
             },
         },
     },
-    [Field.TRADES_BUY]: {
+    [Field.SWAPS_BUY]: {
         operators: {
             [Operator.MORE_THAN]: {
                 valueTypes: COUNT_AND_PERCENT,
@@ -68,7 +68,7 @@ export const config: Record<
             },
         },
     },
-    [Field.TRADES_SELL]: {
+    [Field.SWAPS_SELL]: {
         operators: {
             [Operator.MORE_THAN]: {
                 valueTypes: COUNT_AND_PERCENT,

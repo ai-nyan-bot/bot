@@ -2,13 +2,22 @@ import React, {FC, useEffect, useState} from "react";
 import {ValueNumber, ValueNumberType} from "@types";
 
 export type ValueNumberInputProps = {
+    id?: string;
     supported: Array<ValueNumberType>;
     defaultValue?: ValueNumber;
     value?: ValueNumber;
     onChange?: (value: ValueNumber) => void;
+    hideValueSelect?: boolean;
 };
 
-export const ValueNumberInput: FC<ValueNumberInputProps> = ({supported, value, defaultValue, onChange}) => {
+export const ValueNumberInput: FC<ValueNumberInputProps> = ({
+                                                                id,
+                                                                supported,
+                                                                value,
+                                                                defaultValue,
+                                                                onChange,
+                                                                hideValueSelect
+                                                            }) => {
     const [selectedType, setSelectedType] = useState<ValueNumberType>(
         value?.type || defaultValue?.type || supported[0]
     );
@@ -69,7 +78,9 @@ export const ValueNumberInput: FC<ValueNumberInputProps> = ({supported, value, d
     if (options.length === 0) return null;
 
     return (
-        <div className="flex items-center space-x-2">
+        <div
+            id={id}
+            className="flex items-center space-x-2">
             <input
                 type="number"
                 value={inputValue ?? ''}
@@ -77,14 +88,16 @@ export const ValueNumberInput: FC<ValueNumberInputProps> = ({supported, value, d
                 className="border p-2 w-full rounded"
                 placeholder="Enter value"
             />
-            <select
-                value={selectedType}
-                onChange={handleTypeChange}
-                className="border p-2 rounded bg-white"
-                disabled={options.length < 2}
-            >
-                {options}
-            </select>
+            {!hideValueSelect && (
+                <select
+                    value={selectedType}
+                    onChange={handleTypeChange}
+                    className="border p-2 rounded bg-white"
+                    disabled={options.length < 2}
+                >
+                    {options}
+                </select>
+            )}
         </div>
     );
 };

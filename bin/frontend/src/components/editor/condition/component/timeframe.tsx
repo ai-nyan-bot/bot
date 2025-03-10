@@ -8,6 +8,9 @@ export const useTimeframeOptions = (supported: Array<Timeframe>): Array<{ value:
         {value: Timeframe.M1, label: "1 minute"},
         {value: Timeframe.M5, label: "5 minutes"},
         {value: Timeframe.M15, label: "15 minutes"},
+        {value: Timeframe.H1, label: "1 hour"},
+        {value: Timeframe.H6, label: "6 hours"},
+        {value: Timeframe.D1, label: "1 day"},
     ].filter(opt => supported.find(v => v === opt.value));
 }
 
@@ -39,7 +42,7 @@ export const SelectTimeframe: FC<SelectTimeframeProps> = ({defaultTimeframe, sup
         <select
             value={selected}
             onChange={handleChange}
-            className="w-full border p-2 rounded bg-white"
+            className="border p-1 rounded bg-white"
             disabled={options.length < 2}
         >
             {options}
