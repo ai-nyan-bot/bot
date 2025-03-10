@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from "react";
-import {Action, ComposeType, Condition, ConditionType, Field, Operator, Sequence, TimeUnit, ValueType} from "@types";
-import {ConditionList} from "./condition";
+import {Action, Condition, ConditionType, DEFAULT_CONDITION, Sequence} from "@types";
 import {uuidv4} from "@app/utils/id.ts";
-import {Card, CardContent, CardHeader, CardTitle} from "@components/ui/card.tsx";
 import {ActionEditor} from "./action";
+import {ConditionEditor} from "./condition";
 
 const createCondition = (type: ConditionType): Condition => {
     switch (type) {
@@ -20,50 +19,7 @@ const createCondition = (type: ConditionType): Condition => {
         //         conditions: []
         //     }
         case 'COMPOSE':
-            return {
-                id: uuidv4(),
-                type: ConditionType.COMPOSE,
-                ty: ComposeType.CURVE_PROGRESS,
-                condition: {
-                    id: uuidv4(),
-                    type: ConditionType.AND,
-                    conditions: [
-                        {
-                            id: uuidv4(),
-                            type: ConditionType.COMPARE,
-                            field: Field.CURVE_PROGRESS,
-                            operator: Operator.MORE_THAN,
-                            value: {
-                                type: ValueType.PERCENT,
-                                value: 0
-                            },
-                            timeframe: undefined
-                        },
-                        {
-                            id: uuidv4(),
-                            type: ConditionType.COMPARE,
-                            field: Field.CURVE_PROGRESS,
-                            operator: Operator.MORE_THAN,
-                            value: {
-                                type: ValueType.PERCENT,
-                                value: 95
-                            },
-                            timeframe: undefined
-                        },
-                        {
-                            id: uuidv4(),
-                            type: ConditionType.COMPARE,
-                            field: Field.CURVE_PROGRESS_AGE,
-                            operator: Operator.LESS_THAN,
-                            value: {
-                                type: ValueType.DURATION,
-                                value: 1,
-                                unit: TimeUnit.MINUTE
-                            }
-                        }
-                    ]
-                }
-            }
+            return {...DEFAULT_CONDITION};
         default:
             throw new Error(`type ${type} not supported`)
     }
@@ -185,42 +141,12 @@ export const Editor: React.FC<EditorProps> = ({sequence, onChange}) => {
         return () => clearTimeout(handler);
     }, [action, condition]);
 
+
     return (
         <div className={"flex flex-col space-y-2"}>
-            <Card className="w-full shadow-none border-0">
-                <CardHeader>
-                    <CardTitle className="font-semibold text-yellow-600 flex items-center">IF</CardTitle>
-                </CardHeader>
-                <CardContent className="w-full p-0">
-                    <div className="w-full">
-                        <ConditionList
-                            condition={condition}
-                            isRoot={true}
-                            onAdd={addCondition}
-                            onRemove={removeCondition}
-                            onConditionChange={(condition: Condition) => {
-                                updateCondition(condition);
-                            }}
-                        />
-                    </div>
-                </CardContent>
-            </Card>
-
-            <Card className="w-full shadow-none border-0">
-                <CardHeader>
-                    <CardTitle className="font-semibold text-blue-600 flex items-center">THEN</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="max-w-4xl mx-auto space-y-6">
-                        <div className="border-l-4 border-blue-500 pl-4">
-                            <ActionEditor
-                                action={action}
-                                onChange={setAction}
-                            />
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
+            <ConditionEditor condition={sequence.condition}/>
+            <ActionEditor action={sequence.action} onChange={(_) => {
+            }}/>
         </div>
     );
 }

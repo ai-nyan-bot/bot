@@ -47,7 +47,7 @@ impl Display for ComposeType {
 #[serde(tag = "type", rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum Condition {
     Compose {
-        ty: ComposeType,
+        composition: ComposeType,
         condition: Box<Condition>,
     },
     Compare {

@@ -1,10 +1,10 @@
 import React, {FC, useState} from "react";
-import {ComposeBondingCurve, ComposeType, ConditionType, Field, Operator, TimeUnit, ValueType} from "@types";
+import {ComposedCurveProgress, ComposeType, ConditionType, Field, Operator, TimeUnit, ValueType} from "@types";
 import {DualRangeSlider} from "@components/ui/slider.tsx";
 
 export type CurveProgressWidgetProps = {
-    condition: ComposeBondingCurve;
-    onChange: (condition: ComposeBondingCurve) => void;
+    condition: ComposedCurveProgress;
+    onChange: (condition: ComposedCurveProgress) => void;
 
 }
 
@@ -23,7 +23,7 @@ export const CurveProgressWidget: FC<CurveProgressWidgetProps> = ({condition, on
             onChange({
                 id: condition.id,
                 type: ConditionType.COMPOSE,
-                ty: ComposeType.CURVE_PROGRESS,
+                composition: ComposeType.CURVE_PROGRESS,
                 condition: {
                     type: ConditionType.AND,
                     conditions: [

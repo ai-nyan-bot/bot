@@ -5,7 +5,6 @@ export enum ConditionType {
     COMPARE = 'COMPARE',
     COMPOSE = 'COMPOSE',
     AND = 'AND',
-    OR = 'OR'
 }
 
 export type Condition = And | Compare | Compose;

@@ -35,7 +35,7 @@ mod tests {
         #[test]
         fn applicable() {
             let test_instance = Condition::Compose {
-                ty: "SomeType".into(),
+                composition: "SomeComposition".into(),
                 condition: Box::new(Compare {
                     field: TwitterAccountHandle,
                     operator: Equal,
@@ -49,7 +49,7 @@ mod tests {
         #[test]
         fn not_applicable() {
             let test_instance = Condition::Compose {
-                ty: "SomeType".into(),
+                composition: "SomeComposition".into(),
                 condition: Box::new(Compare {
                     field: TwitterAccountHandle,
                     operator: NotEqual,
