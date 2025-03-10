@@ -5,9 +5,10 @@ export type ValueNumberInputProps = {
     id?: string;
     supported: Array<ValueNumberType>;
     defaultValue?: ValueNumber;
-    value?: ValueNumber;
+    value: ValueNumber | null;
     onChange?: (value: ValueNumber) => void;
     hideValueSelect?: boolean;
+    placeholder?: string;
 };
 
 export const ValueNumberInput: FC<ValueNumberInputProps> = ({
@@ -16,7 +17,8 @@ export const ValueNumberInput: FC<ValueNumberInputProps> = ({
                                                                 value,
                                                                 defaultValue,
                                                                 onChange,
-                                                                hideValueSelect
+                                                                hideValueSelect,
+                                                                placeholder,
                                                             }) => {
     const [selectedType, setSelectedType] = useState<ValueNumberType>(
         value?.type || defaultValue?.type || supported[0]
@@ -86,7 +88,7 @@ export const ValueNumberInput: FC<ValueNumberInputProps> = ({
                 value={inputValue ?? ''}
                 onChange={handleInputChange}
                 className="border p-2 w-full rounded"
-                placeholder="Enter value"
+                placeholder={placeholder || "Enter value"}
             />
             {!hideValueSelect && (
                 <select

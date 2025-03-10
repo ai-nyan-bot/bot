@@ -2,9 +2,9 @@ import {Field, Operator, Timeframe, Value} from "@types";
 import {Compose} from "@app/types/rules/compose.ts";
 
 export enum ConditionType {
-    COMPARE = 'COMPARE',
-    COMPOSE = 'COMPOSE',
     AND = 'AND',
+    COMPARE = 'COMPARE',
+    COMPOSE = 'COMPOSE'
 }
 
 export type Condition = And | Compare | Compose;

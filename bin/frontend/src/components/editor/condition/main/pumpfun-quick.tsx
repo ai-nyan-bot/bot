@@ -1,7 +1,7 @@
 import React, {FC} from "react";
-import {ComposedCurveProgress, ComposedPumpFunQuick} from "@types";
+import {ComposedCurveProgress, ComposedPumpFunQuick, ComposedSimpleSwapTotal} from "@types";
 import {CurveProgressCompose} from "@components/editor/condition/compose/curve-progress.tsx";
-import {SimpleSwapCompose, SimpleSwapType} from "@components/editor/condition/compose/simple";
+import {SimpleSwapCompose} from "@components/editor/condition/compose/simple";
 
 export type PumpFunComposeQuickProps = {
     condition: ComposedPumpFunQuick;
@@ -10,8 +10,8 @@ export type PumpFunComposeQuickProps = {
 }
 
 export const PumpFunComposeQuick: FC<PumpFunComposeQuickProps> = ({condition, onChange}) => {
-    console.log(JSON.stringify(condition, null, 2));
     const curve_progress = condition.condition.conditions[0] as unknown as ComposedCurveProgress;
+    const swap_total = condition.condition.conditions[1] as unknown as ComposedSimpleSwapTotal;
 
     return (
         <div className="w-full max-w-md mx-auto">
@@ -20,7 +20,6 @@ export const PumpFunComposeQuick: FC<PumpFunComposeQuickProps> = ({condition, on
                 <CurveProgressCompose
                     condition={curve_progress}
                     onChange={updated => {
-                        console.log("Curve progress updated", updated)
                     }}
                 />
             </div>
@@ -29,23 +28,26 @@ export const PumpFunComposeQuick: FC<PumpFunComposeQuickProps> = ({condition, on
             <div className={"flex flex-col border-2"}>
                 <span> Total Txn </span>
                 <SimpleSwapCompose
-                    type={SimpleSwapType.TOTAL}
+                    condition={swap_total}
+                    onChange={updated => {
+                        console.log("swap total", updated);
+                    }}
                 />
             </div>
 
-            <div className={"flex flex-col border-2"}>
-                <span> Buy Txn </span>
-                <SimpleSwapCompose
-                    type={SimpleSwapType.BUY}
-                />
-            </div>
+            {/*<div className={"flex flex-col border-2"}>*/}
+            {/*    <span> Buy Txn </span>*/}
+            {/*    <SimpleSwapCompose*/}
+            {/*        type={SimpleSwapType.BUY}*/}
+            {/*    />*/}
+            {/*</div>*/}
 
-            <div className={"flex flex-col border-2"}>
-                <span> Sell Txn </span>
-                <SimpleSwapCompose
-                    type={SimpleSwapType.SELL}
-                />
-            </div>
+            {/*<div className={"flex flex-col border-2"}>*/}
+            {/*    <span> Sell Txn </span>*/}
+            {/*    <SimpleSwapCompose*/}
+            {/*        type={SimpleSwapType.SELL}*/}
+            {/*    />*/}
+            {/*</div>*/}
         </div>
     )
 

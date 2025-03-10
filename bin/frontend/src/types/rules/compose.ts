@@ -40,7 +40,8 @@ export type ComposedPumpFunQuick = {
     condition: {
         type: ConditionType.AND,
         conditions: [
-            ComposedCurveProgress
+            ComposedCurveProgress,
+            ComposedSimpleSwapTotal,
         ]
     }
 }

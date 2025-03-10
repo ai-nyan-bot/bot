@@ -25,15 +25,15 @@ pub(crate) fn add_summary_to_facts(
 
     if let Some(change) = summary.swap.all.change {
         facts.set_timeframe_value(
-            Fact::SwapsChangeCount,
-            Value::count(change.0.to_i64().unwrap()),
-            timeframe,
+			Fact::SwapChangeCount,
+			Value::count(change.0.to_i64().unwrap()),
+			timeframe,
         );
     }
 
     if let Some(percent) = summary.swap.all.percent {
         facts.set_timeframe_value(
-            Fact::SwapsChangePercent,
+            Fact::SwapChangePercent,
             Value::percent(percent.0),
             timeframe,
         );
@@ -49,7 +49,7 @@ pub(crate) fn add_summary_to_facts(
 
     if let Some(percent) = summary.swap.buy.percent {
         facts.set_timeframe_value(
-            Fact::SwapsBuyChangePercent,
+            Fact::SwapBuyChangePercent,
             Value::percent(percent.0),
             timeframe,
         );
@@ -65,7 +65,7 @@ pub(crate) fn add_summary_to_facts(
 
     if let Some(percent) = summary.swap.sell.percent {
         facts.set_timeframe_value(
-            Fact::SwapsSellChangePercent,
+            Fact::SwapSellChangePercent,
             Value::percent(percent.0),
             timeframe,
         );

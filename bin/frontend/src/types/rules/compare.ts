@@ -1,4 +1,4 @@
-import {ConditionType, Field, Operator, ValueCount, ValueDuration, ValuePercent} from "@types";
+import {ConditionType, Field, Operator, Timeframe, ValueCount, ValueDuration, ValuePercent} from "@types";
 
 export type CompareCurveProgressPercent = {
     id: string;
@@ -19,24 +19,27 @@ export type CompareCurveProgressAge = {
 export type CompareSimpleSwapsTotal = {
     id: string;
     type: ConditionType.COMPARE,
-    field: Field.SWAPS_TOTAL,
+    field: Field.SWAP_TOTAL,
     operator: Operator.MORE_THAN_EQUAL | Operator.LESS_THAN_EQUAL,
-    value: ValueCount
+    value: ValueCount | null,
+    timeframe: Timeframe
 }
 
 
 export type CompareSimpleSwapsBuy = {
     id: string;
     type: ConditionType.COMPARE,
-    field: Field.SWAPS_BUY,
+    field: Field.SWAP_BUY,
     operator: Operator.MORE_THAN_EQUAL | Operator.LESS_THAN_EQUAL,
-    value: ValueCount
+    value: ValueCount | null ,
+    timeframe: Timeframe
 }
 
 export type CompareSimpleSwapsSell = {
     id: string;
     type: ConditionType.COMPARE,
-    field: Field.SWAPS_TOTAL,
+    field: Field.SWAP_TOTAL,
     operator: Operator.MORE_THAN_EQUAL | Operator.LESS_THAN_EQUAL,
-    value: ValueCount
+    value: ValueCount | null,
+    timeframe: Timeframe
 }

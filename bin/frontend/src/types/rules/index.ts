@@ -2,13 +2,17 @@ import {
     Action,
     CompareCurveProgressAge,
     CompareCurveProgressPercent,
+    CompareSimpleSwapsTotal,
     ComposedCurveProgress,
     ComposedPumpFunQuick,
+    ComposedSimpleSwapTotal,
     ComposeType,
     Condition,
     ConditionType,
     Field,
-    Operator, TimeUnit,
+    Operator,
+    Timeframe,
+    TimeUnit,
     ValueType
 } from "@app/types";
 import {uuidv4} from "@utils";
@@ -84,6 +88,32 @@ export const DEFAULT_CONDITION: ComposedPumpFunQuick = {
                     ]
                 }
             } satisfies ComposedCurveProgress,
+            {
+                id: uuidv4(),
+                type: ConditionType.COMPOSE,
+                composition: ComposeType.SIMPLE_SWAP_TOTAL,
+                condition: {
+                    type: ConditionType.AND,
+                    conditions: [
+                        {
+                            id: uuidv4(),
+                            type: ConditionType.COMPARE,
+                            field: Field.SWAP_TOTAL,
+                            operator: Operator.MORE_THAN_EQUAL,
+                            value: null,
+                            timeframe: Timeframe.H1
+                        } satisfies CompareSimpleSwapsTotal,
+                        {
+                            id: uuidv4(),
+                            type: ConditionType.COMPARE,
+                            field: Field.SWAP_TOTAL,
+                            operator: Operator.MORE_THAN_EQUAL,
+                            value: null,
+                            timeframe: Timeframe.H1
+                        } satisfies CompareSimpleSwapsTotal
+                    ]
+                }
+            } satisfies ComposedSimpleSwapTotal
         ]
     }
 };
