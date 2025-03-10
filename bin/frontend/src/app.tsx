@@ -1,5 +1,5 @@
 import React, {FC, ReactNode, useContext, useEffect, useReducer} from "react";
-import {BrowserRouter, Route, Routes, useLocation, useNavigate} from "react-router-dom";
+import {BrowserRouter, Route, Routes, useLocation} from "react-router-dom";
 
 import {modalInitialState, modalReducer} from "@states/modal";
 import {ContextAppDispatch, ContextAppState, ContextModalDispatch, ContextModalState} from "./context.ts";
@@ -43,30 +43,40 @@ const TelegramAuthenticated: FC<{ children: ReactNode }> = ({children}) => {
     const location = useLocation();
     const [telegramLogin, , , telegramErr] = useTelegram();
     const {telegramData, auth} = useContext(ContextAppState);
-    const navigate = useNavigate();
 
     useEffect(() => {
         const abortController = new AbortController();
-        if (auth.type === "Unauthorized" && telegramData?.initData) {
-            telegramLogin(telegramData.initData, location.pathname, abortController);
-        }
+
+        const retryLogin = () => {
+            if (auth.type === "Unauthorized" && telegramData?.initData) {
+                telegramLogin(telegramData.initData, location.pathname, abortController);
+
+                setTimeout(() => {
+                    if (auth.type === "Unauthorized") {
+                        retryLogin();
+                    }
+                }, 1500);
+            }
+        };
+
+        retryLogin();
+
         return () => {
             abortController.abort();
         };
-    }, [auth, navigate, telegramData, location, telegramLogin]);
+    }, [auth, telegramData, location.pathname, telegramLogin]);
 
     if (auth.type === "Unauthorized") {
-        return (
-            <h1 className={"text-center text-blue-800 text-xl"}>Starting your telegram terminal </h1>
-        )
+        return <h1 className="text-center text-blue-800 text-xl">Starting your telegram terminal</h1>;
     }
 
     if (telegramErr) {
-        return (<h1>Telegram terminal says no </h1>);
+        return <h1>Telegram terminal says no</h1>;
     }
 
     return children;
 };
+
 
 const AppRouter = () => {
     const appState = useContext(ContextAppState);
