@@ -1,5 +1,5 @@
 import React, {FC, useState} from "react";
-import {Compare, ComposeBondingCurve, ComposeType, ConditionType, Field, Operator, TimeUnit, ValueType} from "@types";
+import {ComposeBondingCurve, ComposeType, ConditionType, Field, Operator, TimeUnit, ValueType} from "@types";
 import {DualRangeSlider} from "@components/ui/slider.tsx";
 
 export type CurveProgressWidgetProps = {
@@ -9,7 +9,7 @@ export type CurveProgressWidgetProps = {
 }
 
 export const CurveProgressWidget: FC<CurveProgressWidgetProps> = ({condition, onChange}) => {
-    const [curveProgress, setCurveProgress] = useState<Compare>(condition.condition.conditions[0]);
+    const curveProgress = condition.condition.conditions[0];
 
     const [range, setRange] = useState<number[]>(() => {
         let conditions = condition.condition.conditions;
