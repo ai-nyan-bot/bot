@@ -6,6 +6,7 @@ use base::LoadTokenInfo;
 use sqlx::PgPool;
 use std::ops::Deref;
 use std::sync::Arc;
+use base::repo::TokenRepo;
 
 #[derive(Debug, Clone)]
 pub struct State<L: LoadTokenInfo<Mint>>(pub Arc<StateInner<L>>);

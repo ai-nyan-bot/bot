@@ -14,7 +14,10 @@ create table solana.token
     description text,
     image       text,
     website     text,
-    updated_at  timestamptz   default (timezone('utc', now()))
+    creator_id  int8,
+    updated_at  timestamptz   default (timezone('utc', now())),
+
+    constraint fk_address foreign key (creator_id) references solana.address (id)
 );
 
 insert into solana.token (id, mint, name, symbol, decimals)

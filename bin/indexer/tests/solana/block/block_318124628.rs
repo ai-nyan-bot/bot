@@ -8,6 +8,7 @@ use indexer::solana::block::index_block;
 use indexer::solana::state::{State, StateInner};
 use sqlx::Executor;
 use std::sync::Arc;
+use base::repo::TokenRepo;
 use testing::{jupiter, pumpfun, run_test_with_pool_on_empty_db};
 
 #[test_log::test(sqlx::test)]
@@ -24,11 +25,13 @@ async fn test_index_block_318124628() {
             (1004, 0, 'EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm', 'dogwifhat', '$WIF', 6),
             (1005, 0, 'CzLSujWBLFsSjncfkh59rUFqvafWcY5tzedWJSuypump', 'Goatseus Maximus', 'GOAT', 6);
         "#).await.unwrap();
-
+		
+		let token_repo = TokenRepo::testing(NeverCalledTokenInfoLoader{});
 		let pumpfun_swap_repo = solana::pumpfun::repo::SwapRepo::testing(NeverCalledTokenInfoLoader{});
 		let jupiter_swap_repo = solana::jupiter::repo::SwapRepo::testing(NeverCalledTokenInfoLoader{});
 
 		let state = State(Arc::new(StateInner {
+			// token_repo,
 			pool: pool.clone(),
 			pumpfun_swap_repo,
 			pumpfun_curve_repo: Default::default(),

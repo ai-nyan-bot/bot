@@ -15,7 +15,7 @@ use common::{ResolveOr, Signal};
 use solana::stream::{BlockStream, RpcBlockStream, RpcBlockStreamConfig, RpcSlotStream};
 use solana::token_info::rpc::TokenInfoRpcLoader;
 use tokio::signal::unix::SignalKind;
-use tracing::{info};
+use tracing::info;
 
 pub mod block;
 pub mod indexer;

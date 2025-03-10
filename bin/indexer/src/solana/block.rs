@@ -4,7 +4,8 @@
 use crate::solana::indexer::IndexerRepo;
 use crate::solana::state::State;
 use crate::solana::{jupiter, pumpfun};
-use base::model::{Mint, PublicKey};
+use base::model::{DecimalAmount, Decimals, Mint, PublicKey};
+use base::repo::TokenToInsert;
 use base::LoadTokenInfo;
 use solana::jupiter::parse::JupiterParser;
 use solana::model::{Block, TransactionStatus};
@@ -42,6 +43,8 @@ pub async fn index_block<L: LoadTokenInfo<Mint> + Clone>(state: State<L>, block:
         swaps: vec![],
     };
 
+    let mut pumpfun_token_mints = vec![];
+
     let tx_parsing_start = Instant::now();
 
     for transaction in block.transactions {
@@ -50,7 +53,26 @@ pub async fn index_block<L: LoadTokenInfo<Mint> + Clone>(state: State<L>, block:
                 if let Ok(instructions) = pumpfun_parser.parse(&transaction) {
                     for instruction in instructions {
                         match instruction {
-                            solana::pumpfun::model::Instruction::Create { .. } => {}
+                            solana::pumpfun::model::Instruction::Create {
+                                name,
+                                symbol,
+                                uri,
+                                mint,
+                                bonding_curve,
+                                user,
+                            } => pumpfun_token_mints.push(TokenToInsert {
+                                mint,
+                                name: Some(name),
+                                symbol: Some(symbol),
+                                decimals: Decimals::from(6),
+                                supply: Some(DecimalAmount::from(1_000_000_000i64)),
+                                metadata: Some(uri),
+                                description: None,
+                                image: None,
+                                website: None,
+                                creator: None, // FIXME add address id
+                            }),
+
                             solana::pumpfun::model::Instruction::Swap {
                                 mint,
                                 sol_amount,

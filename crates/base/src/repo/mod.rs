@@ -4,9 +4,11 @@
 pub use crate::repo::address::{AddressQuery, AddressRepo};
 pub use crate::repo::auth::{AuthCreateCmd, AuthQueryAll, AuthRepo};
 pub use crate::repo::invocation::{InvocationCreateCmd, InvocationQueryAll, InvocationRepo};
-pub use crate::repo::notification::{NotificationCreateCmd, NotificationQueryAll, NotificationQueryUser, NotificationRepo};
+pub use crate::repo::notification::{
+    NotificationCreateCmd, NotificationQueryAll, NotificationQueryUser, NotificationRepo,
+};
 pub use crate::repo::rule::{RuleCreateCmd, RuleQueryAll, RuleQueryUser, RuleRepo, RuleUpdateCmd};
-pub use crate::repo::token::{ReadTokenRepo, TokenQuery, TokenRepo};
+pub use crate::repo::token::{ReadTokenRepo, TokenQuery, TokenRepo, TokenToInsert};
 pub use crate::repo::token_pair::{ReadTokenPairRepo, TokenPairQuery, TokenPairRepo};
 pub use crate::repo::user::{UserCreateTelegramCmd, UserQueryAll, UserRepo};
 pub use crate::repo::wallet::{WalletCreateCmd, WalletQueryAll, WalletRepo};

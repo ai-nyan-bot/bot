@@ -4,3 +4,4 @@
 pub(crate) use swap::index_swap;
 
 mod swap;
+mod mint;

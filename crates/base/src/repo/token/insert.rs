@@ -4,61 +4,71 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
-use crate::model::{DecimalAmount, Decimals, Description, Mint, Name, Symbol, Token, TokenId, Uri};
+use crate::model::{
+    AddressId, DecimalAmount, Decimals, Description, Mint, Name, Symbol, Token, TokenId, Uri,
+};
 use crate::repo::TokenRepo;
-use crate::{load_all, LoadTokenInfo};
-use common::repo::error::RepoError;
+use crate::LoadTokenInfo;
 use common::repo::{RepoResult, Tx};
-use log::error;
 use sqlx::Row;
+
+pub struct TokenToInsert {
+    pub mint: Mint,
+    pub name: Option<Name>,
+    pub symbol: Option<Symbol>,
+    pub decimals: Decimals,
+    pub supply: Option<DecimalAmount>,
+    pub metadata: Option<Uri>,
+    pub description: Option<Description>,
+    pub image: Option<Uri>,
+    pub website: Option<Uri>,
+    pub creator: Option<AddressId>,
+}
 
 impl<L: LoadTokenInfo<Mint>> TokenRepo<L> {
     pub async fn insert_token<'a>(
         &self,
         tx: &mut Tx<'a>,
-        token_mints: &[Mint],
+        to_insert: impl IntoIterator<Item = TokenToInsert> + Send,
     ) -> RepoResult<Vec<Token>> {
-        if token_mints.is_empty() {
+        let token_list = to_insert.into_iter().collect::<Vec<_>>();
+        if token_list.is_empty() {
             return Ok(vec![]);
         }
 
-        let mut mints = Vec::with_capacity(token_mints.len());
-        let mut names = Vec::with_capacity(token_mints.len());
-        let mut symbols = Vec::with_capacity(token_mints.len());
-        let mut decimals = Vec::with_capacity(token_mints.len());
-        let mut supplies: Vec<DecimalAmount> = Vec::with_capacity(token_mints.len());
-        let mut metadata = Vec::with_capacity(token_mints.len());
-        let mut descriptions = Vec::with_capacity(token_mints.len());
-        let mut images = Vec::with_capacity(token_mints.len());
-        let mut websites = Vec::with_capacity(token_mints.len());
+        let mut mints = Vec::with_capacity(token_list.len());
+        let mut names = Vec::with_capacity(token_list.len());
+        let mut symbols = Vec::with_capacity(token_list.len());
+        let mut decimals = Vec::with_capacity(token_list.len());
+        let mut supplies: Vec<DecimalAmount> = Vec::with_capacity(token_list.len());
+        let mut metadata = Vec::with_capacity(token_list.len());
+        let mut descriptions = Vec::with_capacity(token_list.len());
+        let mut images = Vec::with_capacity(token_list.len());
+        let mut websites = Vec::with_capacity(token_list.len());
+        let mut creators = Vec::with_capacity(token_list.len());
 
-        for info in load_all(&self.info_loader, token_mints).await {
-            if let Some(info) = info {
-                mints.push(info.mint.expect("token mint required"));
-                names.push(info.name.unwrap_or("null_value".into()));
-                symbols.push(info.symbol.unwrap_or("null_value".into()));
-                decimals.push(info.decimals.expect("token decimals required"));
+        for to_insert in token_list {
+            mints.push(to_insert.mint);
+            names.push(to_insert.name.unwrap_or("null_value".into()));
+            symbols.push(to_insert.symbol.unwrap_or("null_value".into()));
+            decimals.push(to_insert.decimals);
 
-                if let Some(amount) = info.supply {
-                    supplies.push(DecimalAmount::new(amount, info.decimals.unwrap()))
-                } else {
-                    supplies.push(DecimalAmount::from(-1i64))
-                }
-
-                metadata.push(info.metadata.unwrap_or("null_value".into()));
-                descriptions.push(info.description.unwrap_or("null_value".into()));
-                images.push(info.image.unwrap_or("null_value".into()));
-                websites.push(info.website.unwrap_or("null_value".into()));
+            if let Some(supply) = to_insert.supply {
+                supplies.push(supply)
             } else {
-                error!("unable to load token info");
-                return Err(RepoError::NotFound);
+                supplies.push(DecimalAmount::from(-1i64))
             }
-        }
 
+            metadata.push(to_insert.metadata.unwrap_or("null_value".into()));
+            descriptions.push(to_insert.description.unwrap_or("null_value".into()));
+            images.push(to_insert.image.unwrap_or("null_value".into()));
+            websites.push(to_insert.website.unwrap_or("null_value".into()));
+            creators.push(to_insert.creator.unwrap_or(AddressId::from(-1)));
+        }
 
         Ok(sqlx::query(
             r#"with new_token as (
-            insert into solana.token (mint,name,symbol,decimals,supply,metadata,description,image,website)
+            insert into solana.token (mint,name,symbol,decimals,supply,metadata,description,image,website,creator_id)
             select
                 unnest($1::text[]) as mint,
                 unnest(array_replace($2::text[], 'null_value', null)) as name,
@@ -68,7 +78,8 @@ impl<L: LoadTokenInfo<Mint>> TokenRepo<L> {
                 unnest(array_replace($6::text[], 'null_value', null)) as metadata,
                 unnest(array_replace($7::text[], 'null_value', null)) as description,
                 unnest(array_replace($8::text[], 'null_value', null)) as image,
-                unnest(array_replace($9::text[], 'null_value', null)) as website
+                unnest(array_replace($9::text[], 'null_value', null)) as website,
+                unnest(array_replace($10::int8[], -1, null)) as creator_id,
             on conflict (mint) do update set
                 mint = excluded.mint,
                 name = excluded.name,
@@ -78,7 +89,8 @@ impl<L: LoadTokenInfo<Mint>> TokenRepo<L> {
                 metadata = excluded.metadata,
                 description = excluded.description,
                 image = excluded.image,
-                website = excluded.website
+                website = excluded.website,
+                creator_id = excluded.creator_id,
             returning
                 id,
                 mint,

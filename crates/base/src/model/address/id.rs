@@ -9,6 +9,12 @@ use serde::{Deserialize, Serialize};
 #[sqlx(transparent)]
 pub struct AddressId(pub i64);
 
+impl From<i64> for AddressId {
+    fn from(value: i64) -> Self {
+        Self(value)
+    }
+}
+
 impl AsRef<AddressId> for AddressId {
     fn as_ref(&self) -> &AddressId {
         self
@@ -18,11 +24,5 @@ impl AsRef<AddressId> for AddressId {
 impl PartialEq<i64> for AddressId {
     fn eq(&self, other: &i64) -> bool {
         self.0 == *other
-    }
-}
-
-impl From<i64> for AddressId {
-    fn from(value: i64) -> Self {
-        Self(value)
     }
 }

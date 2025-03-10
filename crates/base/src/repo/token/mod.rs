@@ -6,6 +6,7 @@ use crate::repo::cache::Cache;
 use common::model::Limit;
 use std::ops::Deref;
 use std::sync::Arc;
+pub use insert::TokenToInsert;
 
 use crate::LoadTokenInfo;
 
@@ -15,6 +16,7 @@ mod get_or_populate;
 mod insert;
 mod list;
 mod list_or_populate;
+mod populate;
 mod shared;
 
 pub struct TokenQuery {
