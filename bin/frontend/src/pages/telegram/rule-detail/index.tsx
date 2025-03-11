@@ -7,6 +7,7 @@ import {injectId, uuidv4} from "@utils";
 import {RuleDetailForm} from "@components/form";
 import {LoadingButton} from "@components/ui/button-loading.tsx";
 import {ContextAppDispatch} from "@app/context.ts";
+import {RuleDetailSkeleton} from "@components/skeleton";
 
 
 const TelegramRuleDetailPage: React.FC = () => {
@@ -56,7 +57,9 @@ const TelegramRuleDetailPage: React.FC = () => {
     }
 
     if (loading || rule == null || sequence == null) {
-        return <h1>Loading rule...</h1>;
+        return (
+            <RuleDetailSkeleton/>
+        )
     }
 
     return (
