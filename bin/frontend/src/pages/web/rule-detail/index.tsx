@@ -5,7 +5,7 @@ import {useParams} from "react-router-dom";
 import {RuleStatus, Sequence} from "@types";
 import {injectId, uuidv4} from "@utils";
 import {RuleDetailForm} from "@components/form";
-import {Button} from "@components/ui/button.tsx";
+import {LoadingButton} from "@components/ui/button-loading.tsx";
 
 
 const WebRuleDetailPage: React.FC = () => {
@@ -44,6 +44,7 @@ const WebRuleDetailPage: React.FC = () => {
     return (
         <div className="w-full flex flex-col space-y-2 bg-zinc-50 p-2">
             <RuleDetailForm
+
                 id={id}
                 name={ruleName || ''}
                 status={ruleStatus || RuleStatus.INACTIVE}
@@ -61,11 +62,15 @@ const WebRuleDetailPage: React.FC = () => {
             />
 
             <div className={"w-full sticky bottom-4 flex justify-center"}>
-                <Button
+                <LoadingButton
                     className={"w-full"}
                     onClick={() => {
                         updateRule(id, {name: ruleName, status: ruleStatus, sequence})
-                    }} disabled={updating}>Update</Button>
+                    }}
+                    text={"Update"}
+                    loadingText={"Updating..."}
+                    loading={updating}
+                />
             </div>
         </div>
     );

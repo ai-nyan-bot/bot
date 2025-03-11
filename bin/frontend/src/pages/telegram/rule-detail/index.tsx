@@ -5,7 +5,7 @@ import {useParams} from "react-router-dom";
 import {RuleStatus, Sequence} from "@types";
 import {injectId, uuidv4} from "@utils";
 import {RuleDetailForm} from "@components/form";
-import {Button} from "@components/ui/button.tsx";
+import {LoadingButton} from "@components/ui/button-loading.tsx";
 
 
 const TelegramRuleDetailPage: React.FC = () => {
@@ -77,11 +77,15 @@ const TelegramRuleDetailPage: React.FC = () => {
             />
 
             <div className={"w-full sticky bottom-4 flex justify-center"}>
-                <Button
+                <LoadingButton
                     className={"w-full"}
                     onClick={() => {
                         updateRule(id, {name: ruleName, status: ruleStatus, sequence})
-                    }} disabled={updating}>Update</Button>
+                    }}
+                    text={"Update"}
+                    loadingText={"Updating..."}
+                    loading={updating}
+                />
             </div>
         </div>
     );
