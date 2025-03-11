@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {Editor} from "@components/editor";
 import {useRuleGet, useRuleUpdate} from "@hooks/rule.ts";
 import {useParams} from "react-router-dom";
@@ -6,6 +6,7 @@ import {RuleStatus, Sequence} from "@types";
 import {injectId, uuidv4} from "@utils";
 import {RuleDetailForm} from "@components/form";
 import {LoadingButton} from "@components/ui/button-loading.tsx";
+import {ContextAppDispatch} from "@app/context.ts";
 
 
 const TelegramRuleDetailPage: React.FC = () => {
@@ -15,6 +16,7 @@ const TelegramRuleDetailPage: React.FC = () => {
     const [ruleName, setRuleName] = useState<string>();
     const [ruleStatus, setRuleStatus] = useState<RuleStatus>();
     const [sequence, setSequence] = useState<Sequence>();
+    const dispatch = useContext(ContextAppDispatch);
 
     useEffect(() => {
         // @ts-ignore
@@ -81,6 +83,7 @@ const TelegramRuleDetailPage: React.FC = () => {
                     className={"w-full"}
                     onClick={() => {
                         updateRule(id, {name: ruleName, status: ruleStatus, sequence})
+                        dispatch({type: "APP_CONFETTI_SHOW"});
                     }}
                     text={"Update"}
                     loadingText={"Updating..."}

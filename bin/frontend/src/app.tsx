@@ -24,6 +24,7 @@ import WebRuleListPage from "@pages/web/rule-list";
 import WebRuleDetailPage from "@pages/web/rule-detail";
 import {useTelegram} from "@hooks";
 import {MetaMaskButton} from "@components/metamask.tsx";
+import {Confetti} from "@components/ui/confetti.tsx";
 
 
 const WebAuthenticated: FC<{ children: ReactNode }> = ({children}) => {
@@ -225,6 +226,7 @@ const App = () => {
                     <ContextModalState.Provider value={modalState}>
                         <ContextModalDispatch.Provider value={modalDispatch}>
                             <Client>
+                                <Confetti/>
                                 <Modal/>
                                 <Layout>
                                     {app}

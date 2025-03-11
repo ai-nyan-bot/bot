@@ -33,7 +33,10 @@ export type AppState = {
         solana: string;
     },
     viewport: ViewportState;
+    confetti: ConfettiState
 };
+
+export type ConfettiState = "ON" | "OFF";
 
 export type AppAction =
     | { type: 'APP_LOGIN_METAMASK', user: { id: string }, token: string, wallet: { solana: string } }
@@ -47,6 +50,8 @@ export type AppAction =
     | { type: 'APP_CONNECTED' }
     | { type: 'APP_DISCONNECTED' }
     | { type: 'APP_LOGOUT' }
+    | { type: 'APP_CONFETTI_SHOW' }
+    | { type: 'APP_CONFETTI_HIDE' }
 
 export const appReducer = (state: AppState, action: AppAction): AppState => {
     switch (action.type) {
@@ -58,6 +63,16 @@ export const appReducer = (state: AppState, action: AppAction): AppState => {
                 }
             } satisfies AppState
         }
+        case "APP_CONFETTI_SHOW":
+            return {
+                ...state,
+                confetti: "ON"
+            }
+        case "APP_CONFETTI_HIDE":
+            return {
+                ...state,
+                confetti: "OFF"
+            }
         case "APP_DISCONNECTED": {
             return {
                 ...state,
@@ -160,7 +175,8 @@ export const appInitialState = (localStorage: LocalStorage): AppState => {
         viewport: {
             width: window.innerWidth,
             height: window.innerHeight,
-        }
+        },
+        confetti: "OFF"
     })
 }
 
