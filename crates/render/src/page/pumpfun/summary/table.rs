@@ -6,7 +6,7 @@ use crate::page::pumpfun::summary::{
 };
 use crate::{Font, FontSize, Line, Point, RenderLine, RenderText, Text};
 use common::format::{
-    format_count, format_market_cap_usd, format_percent, format_price_usd, format_volume_usd,
+    format_market_cap_usd, format_percent, format_price_usd, format_volume_usd, FormatPretty,
 };
 use image::{Rgba, RgbaImage};
 use solana::model::{
@@ -103,9 +103,9 @@ pub(crate) fn draw_summary(img: &mut RgbaImage, font: &Font, x: u32, summary: Ti
     draw_volume(img, font, x, 4, summary.volume.all);
     draw_volume(img, font, x, 5, summary.volume.buy);
     draw_volume(img, font, x, 6, summary.volume.sell);
-    draw_txs(img, font, x, 7, summary.swap.all);
-    draw_txs(img, font, x, 8, summary.swap.buy);
-    draw_txs(img, font, x, 9, summary.swap.sell);
+    draw_txn(img, font, x, 7, summary.swap.all);
+    draw_txn(img, font, x, 8, summary.swap.buy);
+    draw_txn(img, font, x, 9, summary.swap.sell);
 }
 
 fn draw_bonding_curve(
@@ -228,7 +228,7 @@ fn draw_price(img: &mut RgbaImage, font: &Font, x: u32, cap: PriceWithChange) {
     }
 }
 
-fn draw_txs(img: &mut RgbaImage, font: &Font, x: u32, y: u32, swap: SwapWithChange) {
+fn draw_txn(img: &mut RgbaImage, font: &Font, x: u32, y: u32, swap: SwapWithChange) {
     if let Some(count) = swap.count {
         if let (Some(_change), Some(percent)) = (swap.change, swap.percent) {
             draw_cell_top(
@@ -236,7 +236,7 @@ fn draw_txs(img: &mut RgbaImage, font: &Font, x: u32, y: u32, swap: SwapWithChan
                 font,
                 x,
                 y,
-                Text::new(format_count(count), 32, Rgba([120, 120, 120, 255])),
+                Text::new(count.pretty(), 32, Rgba([120, 120, 120, 255])),
             );
 
             let color = if percent > 0.0 {
@@ -260,7 +260,7 @@ fn draw_txs(img: &mut RgbaImage, font: &Font, x: u32, y: u32, swap: SwapWithChan
                 font,
                 x,
                 y,
-                Text::new(format_count(count), 32, Rgba([120, 120, 120, 255])),
+                Text::new(count.pretty(), 32, Rgba([120, 120, 120, 255])),
             );
         }
     }
