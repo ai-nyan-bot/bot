@@ -6,6 +6,8 @@ export type ValueNumberInputProps = {
     supported: Array<ValueNumberType>;
     defaultValue?: ValueNumber;
     value?: ValueNumber;
+    minValue?: number;
+    maxValue?: number;
     onChange?: (value: ValueNumber) => void;
     hideValueSelect?: boolean;
     placeholder?: string;
@@ -15,6 +17,8 @@ export const ValueNumberInput: FC<ValueNumberInputProps> = ({
                                                                 id,
                                                                 supported,
                                                                 value,
+                                                                minValue,
+                                                                maxValue,
                                                                 defaultValue,
                                                                 onChange,
                                                                 hideValueSelect,
@@ -44,12 +48,15 @@ export const ValueNumberInput: FC<ValueNumberInputProps> = ({
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const input = e.target.value.trim();
-        const parsedValue = selectedType === 'COUNT' ? parseInt(input, 10) : parseFloat(input);
+        let parsedValue = selectedType === 'COUNT' ? parseInt(input, 10) : parseFloat(input);
 
         if (input === '' || isNaN(parsedValue)) {
             setInputValue(undefined);
             onChange?.({type: selectedType, value: NaN});
         } else {
+            if (minValue !== undefined) parsedValue = Math.max(parsedValue, minValue);
+            if (maxValue !== undefined) parsedValue = Math.min(parsedValue, maxValue);
+
             setInputValue(parsedValue);
             onChange?.({type: selectedType, value: parsedValue});
         }

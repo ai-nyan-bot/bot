@@ -85,6 +85,7 @@ export const SimpleSwapCompose: FC<SimpleSwapComposeProps> = ({condition, onChan
                             return value as ValueCount
                         })}
                         supported={[ValueType.COUNT]}
+                        minValue={1}
                         placeholder={`min ${placeholderText}`}
                         hideValueSelect
                     />
@@ -106,6 +107,7 @@ export const SimpleSwapCompose: FC<SimpleSwapComposeProps> = ({condition, onChan
                             return value as ValueCount
                         })}
                         supported={[ValueType.COUNT]}
+                        minValue={1}
                         placeholder={`max ${placeholderText}`}
                         hideValueSelect
                     />
