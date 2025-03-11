@@ -5,6 +5,7 @@ use crate::model::Timestamp;
 use serde::{Deserialize, Serialize};
 use sqlx::Type;
 use std::fmt::{Display, Formatter};
+use std::ops::Deref;
 
 #[derive(Copy, Clone, Debug, PartialEq, Serialize, Deserialize, Type)]
 #[sqlx(transparent)]
@@ -31,6 +32,13 @@ impl Display for BlockId {
 #[derive(Clone, Copy, Debug, PartialEq, Ord, PartialOrd, Eq, Serialize, Deserialize, Type)]
 #[sqlx(transparent)]
 pub struct BlockTime(pub Timestamp);
+
+impl Deref for BlockTime {
+    type Target = Timestamp;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 
 impl BlockTime {
     pub fn now() -> Self {

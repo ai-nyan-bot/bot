@@ -7,7 +7,7 @@ pub mod local;
 pub mod rpc;
 pub mod uri;
 
-pub(crate) fn sanitize_value(value: impl Into<String>) -> String {
+pub fn sanitize_value(value: impl Into<String>) -> String {
     value.into().replace("\0", "").trim().to_string()
 }
 

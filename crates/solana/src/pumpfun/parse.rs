@@ -4,6 +4,7 @@
 use crate::model::Transaction;
 use crate::parse::{log_and_return_parse_error, ParseError, ParseResult, Parser};
 use crate::pumpfun::model::Instruction;
+use crate::token_info::sanitize_value;
 use base::model::{Mint, PublicKey};
 use common::model::Timestamp;
 use common::ByteReader;
@@ -66,15 +67,18 @@ const SWAP_DISCRIMINANT: [u8; 8] = [189, 219, 127, 211, 78, 230, 97, 238];
 
 fn parse_create(reader: &ByteReader) -> ParseResult<Instruction> {
     Ok(Instruction::Create {
-        name: String::from_utf8_lossy(reader.read_variable_length::<u32>()?)
-            .to_string()
-            .into(),
-        symbol: String::from_utf8_lossy(reader.read_variable_length::<u32>()?)
-            .to_string()
-            .into(),
-        uri: String::from_utf8_lossy(reader.read_variable_length::<u32>()?)
-            .to_string()
-            .into(),
+        name: sanitize_value(
+            String::from_utf8_lossy(reader.read_variable_length::<u32>()?).to_string(),
+        )
+        .into(),
+        symbol: sanitize_value(
+            String::from_utf8_lossy(reader.read_variable_length::<u32>()?).to_string(),
+        )
+        .into(),
+        uri: sanitize_value(
+            String::from_utf8_lossy(reader.read_variable_length::<u32>()?).to_string(),
+        )
+        .into(),
         mint: Pubkey::try_from(reader.read_range(32)?).unwrap().into(),
         bonding_curve: Pubkey::try_from(reader.read_range(32)?).unwrap().into(),
         user: Pubkey::try_from(reader.read_range(32)?).unwrap().into(),

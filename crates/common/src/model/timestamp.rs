@@ -1,7 +1,11 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+// This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
+// Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
+
 use std::fmt::{Display, Formatter};
+use std::ops::Deref;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
@@ -144,6 +148,12 @@ pub fn unix_micros_now() -> u128 {
         .as_micros()
 }
 
+impl PartialEq<str> for Timestamp {
+    fn eq(&self, other: &str) -> bool {
+        self.0.to_string().as_str().eq(other)
+    }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Ord, PartialOrd, Eq, sqlx::Type)]
 #[sqlx(transparent, no_pg_array)]
 pub struct CreatedAt(pub Timestamp);
@@ -154,9 +164,23 @@ impl CreatedAt {
     }
 }
 
+impl Deref for CreatedAt {
+    type Target = Timestamp;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Ord, PartialOrd, Eq, sqlx::Type)]
 #[sqlx(transparent, no_pg_array)]
 pub struct UpdatedAt(pub Timestamp);
+
+impl Deref for UpdatedAt {
+    type Target = Timestamp;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 
 impl UpdatedAt {
     pub fn now() -> Self {
