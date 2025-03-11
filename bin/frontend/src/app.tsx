@@ -226,8 +226,8 @@ const App = () => {
                     <ContextModalState.Provider value={modalState}>
                         <ContextModalDispatch.Provider value={modalDispatch}>
                             <Client>
-                                <Confetti/>
                                 <Modal/>
+                                <Confetti/>
                                 <Layout>
                                     {app}
                                 </Layout>
