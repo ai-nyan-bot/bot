@@ -1,5 +1,4 @@
 import React, {FC, useEffect, useState} from "react";
-import {Label} from "@components/ui/label.tsx";
 import {SelectTimeframe, TimeframeText} from "@components/editor/condition/component";
 import {
     ALL_TIMEFRAMES,
@@ -74,9 +73,9 @@ export const SimpleSwapCompose: FC<SimpleSwapComposeProps> = ({condition, onChan
 
     return (
         <div className={"flex flex-row"}>
-            <div id="condition" className={"flex flex-col"}>
-                <div className={"flex flex-row"}>
-                    <Label>Min</Label>
+            <div className={"flex flex-col"}>
+                <div className={"flex flex-row space-x-4"}>
+                    <span className={"flex items-center text-zinc-500"}>Min</span>
                     <ValueNumberInput
                         value={minValue}
                         onChange={(value) => setMinValue(_ => {
@@ -96,8 +95,8 @@ export const SimpleSwapCompose: FC<SimpleSwapComposeProps> = ({condition, onChan
                     />
                 </div>
 
-                <div className={"flex flex-row space"}>
-                    <Label>Max</Label>
+                <div className={"pt-4 flex flex-row space-x-4"}>
+                    <span className={"flex items-center text-zinc-500"}>Max</span>
                     <ValueNumberInput
                         value={maxValue}
                         onChange={(value) => setMaxValue(_ => {

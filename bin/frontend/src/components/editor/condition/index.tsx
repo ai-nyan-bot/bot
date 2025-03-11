@@ -1,4 +1,3 @@
-import {Card, CardContent, CardHeader, CardTitle} from "@components/ui/card.tsx";
 import {ComposedPumpFunQuick, ComposeType, Condition} from "@types";
 import React, {FC, useState} from "react";
 import {SelectConditionType} from "./type.tsx";
@@ -11,11 +10,10 @@ export type ConditionEditorProps = {
 
 export const ConditionEditor: FC<ConditionEditorProps> = ({condition, onChange}) => {
     const [type, setType] = useState<ComposeType>(ComposeType.PUMP_FUN_QUICK)
-
     return (
-        <Card className="w-full shadow-none border-0">
-            <CardHeader className={"flex flex-row"}>
-                <CardTitle className="pr-10 font-semibold text-yellow-600 flex items-center">IF</CardTitle>
+        <div className={"flex flex-col border-l-4 border-yellow-600"}>
+            <div className={"px-4 flex flex-row"}>
+                <span className="pr-10 font-semibold text-yellow-600 flex items-center">IF</span>
                 <SelectConditionType
                     defaultType={ComposeType.PUMP_FUN_QUICK}
                     supported={[
@@ -23,9 +21,9 @@ export const ConditionEditor: FC<ConditionEditorProps> = ({condition, onChange})
                     ]}
                     onChange={setType}
                 />
-            </CardHeader>
-            <CardContent className="w-full p-0">
+            </div>
 
+            <div className={"pt-4"}>
                 {type === ComposeType.PUMP_FUN_QUICK && (
                     <PumpFunComposeQuick
                         key={condition.id}
@@ -34,26 +32,7 @@ export const ConditionEditor: FC<ConditionEditorProps> = ({condition, onChange})
                             onChange(updated as unknown as Condition);
                         }}/>
                 )}
-
-                {type === ComposeType.GROUP && (
-                    <h1> Custom hard core mode</h1>
-                )}
-
-
-                {/*<div className="w-full">*/}
-                {/*    <ConditionList*/}
-                {/*        condition={condition}*/}
-                {/*        isRoot={true}*/}
-                {/*        onAdd={addCondition}*/}
-                {/*        onRemove={removeCondition}*/}
-                {/*        onConditionChange={(condition: Condition) => {*/}
-                {/*            updateCondition(condition);*/}
-                {/*        }}*/}
-                {/*    />*/}
-                {/*</div>*/}
-            </CardContent>
-        </Card>
-
+            </div>
+        </div>
     )
-
 }

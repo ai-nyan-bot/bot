@@ -150,7 +150,7 @@ export const Editor: React.FC<EditorProps> = ({sequence, onChange}) => {
 
 
     return (
-        <div className={"flex flex-col space-y-2"}>
+        <div className={"flex flex-col space-y-6"}>
             <ConditionEditor condition={sequence.condition} onChange={(condition) => {
                 updateCondition(condition);
             }}/>

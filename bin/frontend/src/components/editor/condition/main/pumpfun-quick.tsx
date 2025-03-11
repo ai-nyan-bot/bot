@@ -19,17 +19,17 @@ export type PumpFunComposeQuickProps = {
 
 }
 
+
 export const PumpFunComposeQuick: FC<PumpFunComposeQuickProps> = ({condition, onChange}) => {
     const curve_progress = condition.condition.conditions[0] || DEFAULT_COMPOSED_CURVE_PROGRESS as unknown as ComposedCurveProgress;
     const swap_total = condition.condition.conditions[1] || DEFAULT_COMPOSED_SIMPLE_SWAP_TOTAL as unknown as ComposedSimpleSwapTotal;
     const swap_buy = condition.condition.conditions[2] || DEFAULT_COMPOSED_SIMPLE_SWAP_BUY as unknown as ComposedSimpleSwapBuy;
     const swap_sell = condition.condition.conditions[3] || DEFAULT_COMPOSED_SIMPLE_SWAP_SELL as unknown as ComposedSimpleSwapSell;
 
-
     return (
-        <div className="w-full max-w-md mx-auto">
-            <div className="w-full border-2">
-                <h1>Bonding Curve Progress</h1>
+        <div className="px-4 w-full max-w-md mx-auto space-y-4">
+
+            <Container title={"Curve Progress"}>
                 <CurveProgressCompose
                     condition={curve_progress}
                     onChange={updated => {
@@ -38,11 +38,9 @@ export const PumpFunComposeQuick: FC<PumpFunComposeQuickProps> = ({condition, on
                         onChange(changed);
                     }}
                 />
-            </div>
+            </Container>
 
-
-            <div className={"flex flex-col border-2"}>
-                <span> Total Txn </span>
+            <Container title={"Total Txn"}>
                 <SimpleSwapCompose
                     condition={swap_total}
                     onChange={updated => {
@@ -51,10 +49,9 @@ export const PumpFunComposeQuick: FC<PumpFunComposeQuickProps> = ({condition, on
                         onChange(changed);
                     }}
                 />
-            </div>
+            </Container>
 
-            <div className={"flex flex-col border-2"}>
-                <span> Buy Txn </span>
+            <Container title={"Buy Txn"}>
                 <SimpleSwapCompose
                     condition={swap_buy}
                     onChange={updated => {
@@ -63,11 +60,9 @@ export const PumpFunComposeQuick: FC<PumpFunComposeQuickProps> = ({condition, on
                         onChange(changed);
                     }}
                 />
-            </div>
+            </Container>
 
-
-            <div className={"flex flex-col border-2"}>
-                <span> Sell Txn </span>
+            <Container title={"Sell Txn"}>
                 <SimpleSwapCompose
                     condition={swap_sell}
                     onChange={updated => {
@@ -76,10 +71,25 @@ export const PumpFunComposeQuick: FC<PumpFunComposeQuickProps> = ({condition, on
                         onChange(changed);
                     }}
                 />
-            </div>
+            </Container>
 
         </div>
     )
 
 };
+
+type ContainerProps = {
+    title: string;
+    children: React.ReactNode;
+};
+
+const Container: FC<ContainerProps> = ({title, children}) => {
+    return (
+        <div className={"flex flex-col border-2 border-zinc-300 p-2"}>
+            <span className={"pb-2 w-full text-center font-light"}>{title}</span>
+            {children}
+        </div>
+
+    )
+}
 
