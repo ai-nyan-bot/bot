@@ -19,7 +19,6 @@ pub(crate) async fn rule_matched(
         // let token_pair_id: TokenPairId = notification.payload("token_pair").unwrap();
         let venue: Venue = notification.payload("venue").unwrap();
         // let token_pair = state.token_service().get_pair(token_pair_id).await?;
-        // dbg!(&token_pair);
 
         println!("{venue}");
 

@@ -11,7 +11,7 @@ pub enum Field {
 
     Price,
     PriceAvg,
-    SwapTotal,
+    SwapAll,
     SwapBuy,
     SwapSell,
     Volume,

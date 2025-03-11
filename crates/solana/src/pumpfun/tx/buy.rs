@@ -65,7 +65,6 @@ impl Pumpfun {
         // let mint: Pubkey = mint.into();
         //
         // let ata = create_ata_if_not_exists(&client, &kp, &kp.pubkey(), &mint).await;
-        // dbg!(&ata);
         //
         // instructions.push(ComputeBudgetInstruction::set_compute_unit_price(100_000));
         // instructions.push(ComputeBudgetInstruction::set_compute_unit_limit(300_000));
@@ -101,7 +100,6 @@ impl Pumpfun {
         // transaction.message.set_recent_blockhash(blockhash);
         //
         // let tx = VersionedTransaction::try_new(transaction.message, &[&kp]).unwrap();
-        // // dbg!(&swap_tx);
         //
         // let result = client
         //     .send_transaction_with_config(

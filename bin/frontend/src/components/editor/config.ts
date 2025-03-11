@@ -36,7 +36,7 @@ export const config: Record<
             }
         }
     },
-    [Field.SWAP_TOTAL]: {
+    [Field.SWAP_ALLL]: {
         operators: {
             [Operator.INCREASED_BY_MORE_THAN]: {
                 valueTypes: COUNT_AND_PERCENT,

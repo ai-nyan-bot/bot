@@ -15,13 +15,14 @@ export const useTimeframeOptions = (supported: Array<Timeframe>): Array<{ value:
 }
 
 export type SelectTimeframeProps = {
-    defaultTimeframe?: Timeframe;
+    defaultValue?: Timeframe;
+    value?: Timeframe;
     supported: Array<Timeframe>
     onChange?: (value: Timeframe) => void
 }
 
-export const SelectTimeframe: FC<SelectTimeframeProps> = ({defaultTimeframe, supported, onChange}) => {
-    const [selected, setSelected] = useState<Timeframe>(defaultTimeframe || supported[0]);
+export const SelectTimeframe: FC<SelectTimeframeProps> = ({defaultValue, value, supported, onChange}) => {
+    const [selected, setSelected] = useState<Timeframe>(value || defaultValue || supported[0]);
 
     const options = useTimeframeOptions(supported)
         .map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>);

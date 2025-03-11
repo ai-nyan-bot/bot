@@ -70,7 +70,6 @@ pub async fn main() {
         for instruction in &inner.instructions {
             match instruction {
                 UiInstruction::Compiled(instruction) => {
-                    dbg!(&instruction);
                     let decoded = bs58::decode(instruction.data.as_bytes()).into_vec().unwrap();
 
                     if decoded.len() > 16 {
@@ -82,7 +81,6 @@ pub async fn main() {
                             assert_eq!(disc, SWAP_EVENT_DISCRIMINANT);
 
                             let evt = SwapEvent::decode(&reader);
-                            dbg!(&evt);
                         }
                     }
                 }

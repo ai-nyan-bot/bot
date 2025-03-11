@@ -79,7 +79,7 @@ mod tests {
 
     mod and {
         use crate::model::Condition::{And, Compare};
-        use crate::model::Field::{SwapBuy, SwapTotal, TwitterAccountHandle};
+        use crate::model::Field::{SwapBuy, SwapAll, TwitterAccountHandle};
         use crate::model::Operator::{Equal, LessThanEqual, MoreThan, MoreThanEqual, NotEqual};
         use crate::model::{Condition, Value};
         use common::model::Timeframe::{H1, M15};
@@ -125,13 +125,13 @@ mod tests {
                 condition: Box::new(And {
                     conditions: vec![
                         Compare {
-                            field: SwapTotal,
+                            field: SwapAll,
                             operator: MoreThanEqual,
                             value: None,
                             timeframe: H1.into(),
                         },
                         Compare {
-                            field: SwapTotal,
+                            field: SwapAll,
                             operator: LessThanEqual,
                             value: None,
                             timeframe: H1.into(),
@@ -150,13 +150,13 @@ mod tests {
                 condition: Box::new(And {
                     conditions: vec![
                         Compare {
-                            field: SwapTotal,
+                            field: SwapAll,
                             operator: MoreThanEqual,
                             value: None,
                             timeframe: H1.into(),
                         },
                         Compare {
-                            field: SwapTotal,
+                            field: SwapAll,
                             operator: LessThanEqual,
                             value: Value::count(23).into(),
                             timeframe: H1.into(),
@@ -175,19 +175,19 @@ mod tests {
                 condition: Box::new(And {
                     conditions: vec![
                         Compare {
-                            field: SwapTotal,
+                            field: SwapAll,
                             operator: MoreThanEqual,
                             value: None,
                             timeframe: H1.into(),
                         },
                         Compare {
-                            field: SwapTotal,
+                            field: SwapAll,
                             operator: LessThanEqual,
                             value: Value::count(23).into(),
                             timeframe: H1.into(),
                         },
                         Compare {
-                            field: SwapTotal,
+                            field: SwapAll,
                             operator: MoreThanEqual,
                             value: Value::count(42).into(),
                             timeframe: H1.into(),
@@ -270,7 +270,7 @@ mod tests {
 
     mod or {
         use crate::model::Condition::Compare;
-        use crate::model::Field::{SwapBuy, SwapTotal, TwitterAccountHandle};
+        use crate::model::Field::{SwapBuy, SwapAll, TwitterAccountHandle};
         use crate::model::Operator::{
             Equal, IncreasedByMoreThan, LessThanEqual, MoreThan, MoreThanEqual, NotEqual,
         };
@@ -319,13 +319,13 @@ mod tests {
                 condition: Box::new(Or {
                     conditions: vec![
                         Compare {
-                            field: SwapTotal,
+                            field: SwapAll,
                             operator: MoreThanEqual,
                             value: None,
                             timeframe: H1.into(),
                         },
                         Compare {
-                            field: SwapTotal,
+                            field: SwapAll,
                             operator: LessThanEqual,
                             value: None,
                             timeframe: H1.into(),
@@ -344,13 +344,13 @@ mod tests {
                 condition: Box::new(Or {
                     conditions: vec![
                         Compare {
-                            field: SwapTotal,
+                            field: SwapAll,
                             operator: MoreThanEqual,
                             value: None,
                             timeframe: H1.into(),
                         },
                         Compare {
-                            field: SwapTotal,
+                            field: SwapAll,
                             operator: LessThanEqual,
                             value: Value::count(23).into(),
                             timeframe: H1.into(),
@@ -369,19 +369,19 @@ mod tests {
                 condition: Box::new(Or {
                     conditions: vec![
                         Compare {
-                            field: SwapTotal,
+                            field: SwapAll,
                             operator: MoreThanEqual,
                             value: None,
                             timeframe: H1.into(),
                         },
                         Compare {
-                            field: SwapTotal,
+                            field: SwapAll,
                             operator: LessThanEqual,
                             value: Value::count(23).into(),
                             timeframe: H1.into(),
                         },
                         Compare {
-                            field: SwapTotal,
+                            field: SwapAll,
                             operator: MoreThanEqual,
                             value: Value::count(42).into(),
                             timeframe: H1.into(),
@@ -464,7 +464,7 @@ mod tests {
 
     mod and_not {
         use crate::model::Condition::{And, Compare, Or};
-        use crate::model::Field::{SwapBuy, SwapTotal, TwitterAccountHandle};
+        use crate::model::Field::{SwapBuy, SwapAll, TwitterAccountHandle};
         use crate::model::Operator::{
             Equal, IncreasedByMoreThan, LessThanEqual, MoreThan, MoreThanEqual, NotEqual,
         };
@@ -513,13 +513,13 @@ mod tests {
                 condition: Box::new(AndNot {
                     conditions: vec![
                         Compare {
-                            field: SwapTotal,
+                            field: SwapAll,
                             operator: MoreThanEqual,
                             value: None,
                             timeframe: H1.into(),
                         },
                         Compare {
-                            field: SwapTotal,
+                            field: SwapAll,
                             operator: LessThanEqual,
                             value: None,
                             timeframe: H1.into(),
@@ -538,13 +538,13 @@ mod tests {
                 condition: Box::new(AndNot {
                     conditions: vec![
                         Compare {
-                            field: SwapTotal,
+                            field: SwapAll,
                             operator: MoreThanEqual,
                             value: None,
                             timeframe: H1.into(),
                         },
                         Compare {
-                            field: SwapTotal,
+                            field: SwapAll,
                             operator: LessThanEqual,
                             value: Value::count(23).into(),
                             timeframe: H1.into(),
@@ -563,19 +563,19 @@ mod tests {
                 condition: Box::new(AndNot {
                     conditions: vec![
                         Compare {
-                            field: SwapTotal,
+                            field: SwapAll,
                             operator: MoreThanEqual,
                             value: None,
                             timeframe: H1.into(),
                         },
                         Compare {
-                            field: SwapTotal,
+                            field: SwapAll,
                             operator: LessThanEqual,
                             value: Value::count(23).into(),
                             timeframe: H1.into(),
                         },
                         Compare {
-                            field: SwapTotal,
+                            field: SwapAll,
                             operator: MoreThanEqual,
                             value: Value::count(42).into(),
                             timeframe: H1.into(),

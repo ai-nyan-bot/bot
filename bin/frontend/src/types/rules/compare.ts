@@ -19,7 +19,7 @@ export type CompareCurveProgressAge = {
 export type CompareSimpleSwapTotal = {
     id: string;
     type: ConditionType.COMPARE,
-    field: Field.SWAP_TOTAL,
+    field: Field.SWAP_ALLL,
     operator: Operator.MORE_THAN_EQUAL | Operator.LESS_THAN_EQUAL,
     value?: ValueCount,
     timeframe: Timeframe

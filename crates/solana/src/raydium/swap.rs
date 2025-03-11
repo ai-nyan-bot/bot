@@ -45,7 +45,6 @@ impl Raydium {
         transaction.message.set_recent_blockhash(blockhash);
 
         let swap_tx = VersionedTransaction::try_new(transaction.message, &[&keypair]).unwrap();
-        // dbg!(&swap_tx);
 
         let result = client
             .send_transaction_with_config(

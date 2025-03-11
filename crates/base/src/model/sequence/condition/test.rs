@@ -60,8 +60,7 @@ impl Condition {
                     }
                 }
 
-                // If there were no applicable conditions at all, return false
-                has_applicable_condition && false
+                has_applicable_condition
             }
             Condition::AndNot { conditions } => {
                 let mut has_applicable_condition = false;
@@ -75,7 +74,6 @@ impl Condition {
                     }
                 }
 
-                // If there were no applicable conditions at all, return false
                 has_applicable_condition
             }
         }

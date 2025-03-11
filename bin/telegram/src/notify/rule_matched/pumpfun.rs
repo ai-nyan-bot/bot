@@ -28,7 +28,6 @@ pub(crate) async fn send(
         .unwrap();
 
     let symbol = token_summary.pair.symbol().to_string();
-    // dbg!(&token_summary);
 
     // todo!();
 

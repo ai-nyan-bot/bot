@@ -9,7 +9,6 @@ async fn main() {
     // let rpc = Rpc::new();
     // 
     // let bc = rpc.get_bonding_curve_account(pubkey!("HrTnr6KQiHp96SHzbZdBDsaMQPnH2FZutr79RHQnpump")).await;
-    // dbg!(&bc);
     // 
     // let pf = Pumpfun {};
 
@@ -25,7 +24,6 @@ async fn main() {
     //     .await
     //     .unwrap();
     //
-    // dbg!(&r);
 
     // let amount = 10_000_000; // 0.01 SOL
     // let r = pf
@@ -33,5 +31,4 @@ async fn main() {
     //     .await
     //     .unwrap();
     //
-    // dbg!(&r);
 }

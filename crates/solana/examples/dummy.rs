@@ -36,7 +36,6 @@ async fn main() {
     // let c = venue::raydium::HttpClient::default();
     //
     // let tokens = c.list_token().await.unwrap();
-    // dbg!(&tokens);
 }
 
 async fn create_ata_if_not_exists(

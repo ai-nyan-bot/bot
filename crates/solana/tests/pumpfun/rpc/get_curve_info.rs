@@ -18,8 +18,6 @@ async fn test_ok() {
         .await
         .unwrap();
 
-    dbg!(&result);
-
     assert_eq!(result.virtual_base_reserves, 1071763283229721);
     assert_eq!(result.virtual_quote_reserves, 30034617964);
     assert_eq!(result.real_base_reserves, 791863283229721);

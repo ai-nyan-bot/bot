@@ -120,7 +120,6 @@ impl Pumpfun {
         // transaction.message.set_recent_blockhash(blockhash);
         //
         // let tx = VersionedTransaction::try_new(transaction.message, &[&kp]).unwrap();
-        // // dbg!(&swap_tx);
         //
         // let result = client
         //     .send_transaction_with_config(

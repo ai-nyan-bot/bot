@@ -92,8 +92,6 @@ impl Raydium {
         //     (amm_keys, market_keys)
         // };
 
-        // dbg!(&amm_keys);
-        // dbg!(&market_keys);
 
         // reload accounts data to calculate amm pool vault amount
         // get multiple accounts at the same time to ensure data consistency
@@ -123,7 +121,6 @@ impl Raydium {
         ] = accounts.as_slice() else { panic!() };
 
         let amm = Amm::decode(&amm_account.account.data).unwrap();
-        // dbg!(&amm);
 
         // let _amm_target: raydium_amm::state::TargetOrders =
         //     transmute_one_pedantic::<raydium_amm::state::TargetOrders>(transmute_to_bytes(
@@ -191,8 +188,6 @@ impl Raydium {
         //     (amm_pool_pc_vault_amount, amm_pool_coin_vault_amount)
         // };
 
-        // dbg!(&amm_pool_pc_vault_amount);
-        // dbg!(&amm_pool_coin_vault_amount);
 
         let direction = if input_mint == amm_keys.coin_mint && output_mint == amm_keys.pc_mint {
             SwapDirection::Coin2PC

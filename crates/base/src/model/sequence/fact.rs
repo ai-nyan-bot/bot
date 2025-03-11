@@ -8,12 +8,12 @@ use crate::model::ValueType::{Count, Duration, Percent, Quote, Usd};
 use crate::model::{Condition, FactError, Field, Operator, Value, ValueType};
 use serde::{Deserialize, Serialize};
 use Fact::{
-    CurveProgressAgeDuration, PriceAvgQuote, PriceAvgUsd, PriceQuote, PriceUsd, SwapBuyChangeCount,
-    SwapBuyChangePercent, SwapBuyCount, SwapChangeCount, SwapChangePercent, SwapCount,
+    CurveProgressAgeDuration, PriceAvgQuote, PriceAvgUsd, PriceQuote, PriceUsd, SwapAllChangeCount,
+    SwapAllCount, SwapBuyChangeCount, SwapBuyChangePercent, SwapBuyCount, SwapChangePercent,
     SwapSellChangeCount, SwapSellChangePercent, SwapSellCount, TelegramGroup, TelegramGroupHandle,
     TwitterAccount, TwitterAccountHandle, VolumeChangeQuote,
 };
-use Field::{CurveProgress, CurveProgressAge, Price, SwapBuy, SwapSell, SwapTotal, Volume};
+use Field::{CurveProgress, CurveProgressAge, Price, SwapAll, SwapBuy, SwapSell, Volume};
 use Operator::{
     DecreasedByLessThan, DecreasedByLessThanEqual, DecreasedByMoreThan, DecreasedByMoreThanEqual,
     Equal, IncreasedByLessThan, IncreasedByLessThanEqual, IncreasedByMoreThan,
@@ -34,11 +34,11 @@ pub enum Fact {
     // PriceChangePercent,
     // PriceChangeQuote,
     // PriceChangeUsd,
-    SwapCount,
+    SwapAllCount,
     SwapBuyCount,
     SwapSellCount,
 
-    SwapChangeCount,
+    SwapAllChangeCount,
     SwapBuyChangeCount,
     SwapSellChangeCount,
 
@@ -73,11 +73,11 @@ impl Fact {
             // PriceChangeQuote => true,
             // PriceChangePercent => true,
             // PriceChangeUsd => true,
-            SwapCount => true,
+            SwapAllCount => true,
             SwapBuyCount => true,
             SwapSellCount => true,
 
-            SwapChangeCount => true,
+            SwapAllChangeCount => true,
             SwapBuyChangeCount => true,
             SwapSellChangeCount => true,
 
@@ -112,11 +112,11 @@ impl Fact {
             // PriceChangeQuote => Quote,
             // PriceChangeUsd => Usd,
             // PriceChangePercent => Percent,
-            SwapCount => Count,
+            SwapAllCount => Count,
             SwapBuyCount => Count,
             SwapSellCount => Count,
 
-            SwapChangeCount => Count,
+            SwapAllChangeCount => Count,
             SwapBuyChangeCount => Count,
             SwapSellChangeCount => Count,
 
@@ -208,11 +208,11 @@ impl Fact {
             (PriceAvg, LessThan, Usd, true) => PriceAvgUsd,
             (PriceAvg, LessThanEqual, Usd, true) => PriceAvgUsd,
 
-            // SwapCount
-            (SwapTotal, MoreThan, Count, true) => SwapCount,
-            (SwapTotal, MoreThanEqual, Count, true) => SwapCount,
-            (SwapTotal, LessThan, Count, true) => SwapCount,
-            (SwapTotal, LessThanEqual, Count, true) => SwapCount,
+            // SwapAllCount
+            (SwapAll, MoreThan, Count, true) => SwapAllCount,
+            (SwapAll, MoreThanEqual, Count, true) => SwapAllCount,
+            (SwapAll, LessThan, Count, true) => SwapAllCount,
+            (SwapAll, LessThanEqual, Count, true) => SwapAllCount,
 
             // SwapBuyCount
             (SwapBuy, MoreThan, Count, true) => SwapBuyCount,
@@ -226,15 +226,15 @@ impl Fact {
             (SwapSell, LessThan, Count, true) => SwapSellCount,
             (SwapSell, LessThanEqual, Count, true) => SwapSellCount,
 
-            // SwapChangeCount
-            (SwapTotal, IncreasedByMoreThan, Count, true) => SwapChangeCount,
-            (SwapTotal, IncreasedByMoreThanEqual, Count, true) => SwapChangeCount,
-            (SwapTotal, IncreasedByLessThan, Count, true) => SwapChangeCount,
-            (SwapTotal, IncreasedByLessThanEqual, Count, true) => SwapChangeCount,
-            (SwapTotal, DecreasedByMoreThan, Count, true) => SwapChangeCount,
-            (SwapTotal, DecreasedByMoreThanEqual, Count, true) => SwapChangeCount,
-            (SwapTotal, DecreasedByLessThan, Count, true) => SwapChangeCount,
-            (SwapTotal, DecreasedByLessThanEqual, Count, true) => SwapChangeCount,
+            // SwapAllChangeCount
+            (SwapAll, IncreasedByMoreThan, Count, true) => SwapAllChangeCount,
+            (SwapAll, IncreasedByMoreThanEqual, Count, true) => SwapAllChangeCount,
+            (SwapAll, IncreasedByLessThan, Count, true) => SwapAllChangeCount,
+            (SwapAll, IncreasedByLessThanEqual, Count, true) => SwapAllChangeCount,
+            (SwapAll, DecreasedByMoreThan, Count, true) => SwapAllChangeCount,
+            (SwapAll, DecreasedByMoreThanEqual, Count, true) => SwapAllChangeCount,
+            (SwapAll, DecreasedByLessThan, Count, true) => SwapAllChangeCount,
+            (SwapAll, DecreasedByLessThanEqual, Count, true) => SwapAllChangeCount,
 
             // SwapBuyChangeCount
             (SwapBuy, IncreasedByMoreThan, Count, true) => SwapBuyChangeCount,
@@ -257,14 +257,14 @@ impl Fact {
             (SwapSell, DecreasedByLessThanEqual, Count, true) => SwapSellChangeCount,
 
             // SwapChangePercent
-            (SwapTotal, IncreasedByMoreThan, Percent, true) => SwapChangePercent,
-            (SwapTotal, IncreasedByMoreThanEqual, Percent, true) => SwapChangePercent,
-            (SwapTotal, IncreasedByLessThan, Percent, true) => SwapChangePercent,
-            (SwapTotal, IncreasedByLessThanEqual, Percent, true) => SwapChangePercent,
-            (SwapTotal, DecreasedByMoreThan, Percent, true) => SwapChangePercent,
-            (SwapTotal, DecreasedByMoreThanEqual, Percent, true) => SwapChangePercent,
-            (SwapTotal, DecreasedByLessThan, Percent, true) => SwapChangePercent,
-            (SwapTotal, DecreasedByLessThanEqual, Percent, true) => SwapChangePercent,
+            (SwapAll, IncreasedByMoreThan, Percent, true) => SwapChangePercent,
+            (SwapAll, IncreasedByMoreThanEqual, Percent, true) => SwapChangePercent,
+            (SwapAll, IncreasedByLessThan, Percent, true) => SwapChangePercent,
+            (SwapAll, IncreasedByLessThanEqual, Percent, true) => SwapChangePercent,
+            (SwapAll, DecreasedByMoreThan, Percent, true) => SwapChangePercent,
+            (SwapAll, DecreasedByMoreThanEqual, Percent, true) => SwapChangePercent,
+            (SwapAll, DecreasedByLessThan, Percent, true) => SwapChangePercent,
+            (SwapAll, DecreasedByLessThanEqual, Percent, true) => SwapChangePercent,
 
             // SwapBuyChangePercent
             (SwapBuy, IncreasedByMoreThan, Percent, true) => SwapBuyChangePercent,
@@ -471,20 +471,20 @@ mod tests {
     #[test]
     fn test_swaps_count() {
         assert_eq!(
-            Fact::from_comparison(&SwapTotal, &MoreThan, &Value::count(9924), true),
-            Some(SwapCount)
+            Fact::from_comparison(&SwapAll, &MoreThan, &Value::count(9924), true),
+            Some(SwapAllCount)
         );
         assert_eq!(
-            Fact::from_comparison(&SwapTotal, &MoreThanEqual, &Value::count(9924), true),
-            Some(SwapCount)
+            Fact::from_comparison(&SwapAll, &MoreThanEqual, &Value::count(9924), true),
+            Some(SwapAllCount)
         );
         assert_eq!(
-            Fact::from_comparison(&SwapTotal, &LessThan, &Value::count(9924), true),
-            Some(SwapCount)
+            Fact::from_comparison(&SwapAll, &LessThan, &Value::count(9924), true),
+            Some(SwapAllCount)
         );
         assert_eq!(
-            Fact::from_comparison(&SwapTotal, &LessThanEqual, &Value::count(9924), true),
-            Some(SwapCount)
+            Fact::from_comparison(&SwapAll, &LessThanEqual, &Value::count(9924), true),
+            Some(SwapAllCount)
         );
     }
 
@@ -531,56 +531,56 @@ mod tests {
     #[test]
     fn test_swaps_change_count() {
         assert_eq!(
-            Fact::from_comparison(&SwapTotal, &IncreasedByMoreThan, &Value::count(9924), true),
-            Some(SwapChangeCount)
+            Fact::from_comparison(&SwapAll, &IncreasedByMoreThan, &Value::count(9924), true),
+            Some(SwapAllChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
-                &SwapTotal,
+                &SwapAll,
                 &IncreasedByMoreThanEqual,
                 &Value::count(9924),
                 true
             ),
-            Some(SwapChangeCount)
+            Some(SwapAllChangeCount)
         );
         assert_eq!(
-            Fact::from_comparison(&SwapTotal, &IncreasedByLessThan, &Value::count(9924), true),
-            Some(SwapChangeCount)
+            Fact::from_comparison(&SwapAll, &IncreasedByLessThan, &Value::count(9924), true),
+            Some(SwapAllChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
-                &SwapTotal,
+                &SwapAll,
                 &IncreasedByLessThanEqual,
                 &Value::count(9924),
                 true
             ),
-            Some(SwapChangeCount)
+            Some(SwapAllChangeCount)
         );
         assert_eq!(
-            Fact::from_comparison(&SwapTotal, &DecreasedByMoreThan, &Value::count(9924), true),
-            Some(SwapChangeCount)
+            Fact::from_comparison(&SwapAll, &DecreasedByMoreThan, &Value::count(9924), true),
+            Some(SwapAllChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
-                &SwapTotal,
+                &SwapAll,
                 &DecreasedByMoreThanEqual,
                 &Value::count(9924),
                 true
             ),
-            Some(SwapChangeCount)
+            Some(SwapAllChangeCount)
         );
         assert_eq!(
-            Fact::from_comparison(&SwapTotal, &DecreasedByLessThan, &Value::count(9924), true),
-            Some(SwapChangeCount)
+            Fact::from_comparison(&SwapAll, &DecreasedByLessThan, &Value::count(9924), true),
+            Some(SwapAllChangeCount)
         );
         assert_eq!(
             Fact::from_comparison(
-                &SwapTotal,
+                &SwapAll,
                 &DecreasedByLessThanEqual,
                 &Value::count(9924),
                 true
             ),
-            Some(SwapChangeCount)
+            Some(SwapAllChangeCount)
         );
     }
 
@@ -699,17 +699,12 @@ mod tests {
     #[test]
     fn test_swaps_percent() {
         assert_eq!(
-            Fact::from_comparison(
-                &SwapTotal,
-                &IncreasedByMoreThan,
-                &Value::percent(99.24),
-                true
-            ),
+            Fact::from_comparison(&SwapAll, &IncreasedByMoreThan, &Value::percent(99.24), true),
             Some(SwapChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
-                &SwapTotal,
+                &SwapAll,
                 &IncreasedByMoreThanEqual,
                 &Value::percent(99.24),
                 true
@@ -717,17 +712,12 @@ mod tests {
             Some(SwapChangePercent)
         );
         assert_eq!(
-            Fact::from_comparison(
-                &SwapTotal,
-                &IncreasedByLessThan,
-                &Value::percent(99.24),
-                true
-            ),
+            Fact::from_comparison(&SwapAll, &IncreasedByLessThan, &Value::percent(99.24), true),
             Some(SwapChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
-                &SwapTotal,
+                &SwapAll,
                 &IncreasedByLessThanEqual,
                 &Value::percent(99.24),
                 true
@@ -735,17 +725,12 @@ mod tests {
             Some(SwapChangePercent)
         );
         assert_eq!(
-            Fact::from_comparison(
-                &SwapTotal,
-                &DecreasedByMoreThan,
-                &Value::percent(99.24),
-                true
-            ),
+            Fact::from_comparison(&SwapAll, &DecreasedByMoreThan, &Value::percent(99.24), true),
             Some(SwapChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
-                &SwapTotal,
+                &SwapAll,
                 &DecreasedByMoreThanEqual,
                 &Value::percent(99.24),
                 true
@@ -753,17 +738,12 @@ mod tests {
             Some(SwapChangePercent)
         );
         assert_eq!(
-            Fact::from_comparison(
-                &SwapTotal,
-                &DecreasedByLessThan,
-                &Value::percent(99.24),
-                true
-            ),
+            Fact::from_comparison(&SwapAll, &DecreasedByLessThan, &Value::percent(99.24), true),
             Some(SwapChangePercent)
         );
         assert_eq!(
             Fact::from_comparison(
-                &SwapTotal,
+                &SwapAll,
                 &DecreasedByLessThanEqual,
                 &Value::percent(99.24),
                 true

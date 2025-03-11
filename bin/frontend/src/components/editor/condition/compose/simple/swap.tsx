@@ -44,6 +44,7 @@ export const SimpleSwapCompose: FC<SimpleSwapComposeProps> = ({condition, onChan
             max.value !== maxValue ||
             max.timeframe !== maxTimeframe
         ) {
+            console.log(minTimeframe)
             onChange({
                 ...condition,
                 condition: {
@@ -56,7 +57,7 @@ export const SimpleSwapCompose: FC<SimpleSwapComposeProps> = ({condition, onChan
                 }
             });
         }
-    }, [minValue, maxValue]);
+    }, [minValue, minTimeframe, maxValue, maxTimeframe]);
 
     let placeholderText = null;
     switch (type) {
@@ -90,7 +91,8 @@ export const SimpleSwapCompose: FC<SimpleSwapComposeProps> = ({condition, onChan
                         hideValueSelect
                     />
                     <SelectTimeframe
-                        defaultTimeframe={Timeframe.H1}
+                        value={minTimeframe}
+                        defaultValue={Timeframe.H1}
                         supported={ALL_TIMEFRAMES}
                         onChange={setMinTimeframe}
                     />
@@ -112,7 +114,8 @@ export const SimpleSwapCompose: FC<SimpleSwapComposeProps> = ({condition, onChan
                         hideValueSelect
                     />
                     <SelectTimeframe
-                        defaultTimeframe={Timeframe.H1}
+                        value={maxTimeframe}
+                        defaultValue={Timeframe.H1}
                         supported={ALL_TIMEFRAMES}
                         onChange={setMaxTimeframe}
                     />
