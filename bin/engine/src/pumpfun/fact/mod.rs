@@ -6,8 +6,7 @@ mod summary;
 use crate::pumpfun::fact::summary::add_summary_to_facts;
 use base::model::Fact::CurveProgressAgeDuration;
 use base::model::{Fact, Facts, TokenPairId, Value};
-use common::model::Timeframe::M1;
-use common::model::{Limit, TimeUnit};
+use common::model::{Limit, TimeUnit, Timeframe};
 use solana::pumpfun::repo::{CurveQuery, CurveRepo, SummaryQuery, SummaryRepo};
 use sqlx::PgPool;
 use std::collections::HashMap;
@@ -56,25 +55,32 @@ impl FactService {
             })
             .collect();
 
-        let summary_1m = self
-            .summary_repo
-            .list(
-                &mut tx,
-                SummaryQuery {
-                    limit: Limit::unlimited(),
-                    timeframe: M1,
-                },
-            )
-            .await
-            .unwrap();
+        for timeframe in [
+            Timeframe::M1,
+            Timeframe::M5,
+            Timeframe::M15,
+            Timeframe::H1,
+            Timeframe::H6,
+            Timeframe::D1,
+        ] {
+            let summary = self
+                .summary_repo
+                .list(
+                    &mut tx,
+                    SummaryQuery {
+                        limit: Limit::unlimited(),
+                        timeframe,
+                    },
+                )
+                .await
+                .unwrap();
 
-        for (token_pair_id, summary) in summary_1m {
-            let facts = result.entry(token_pair_id).or_insert(Facts::default());
-            add_summary_to_facts(facts, summary, M1);
+            for (token_pair_id, summary) in summary {
+                let facts = result.entry(token_pair_id).or_insert(Facts::default());
+                add_summary_to_facts(facts, summary, timeframe);
+            }
         }
-
         tx.commit().await.unwrap();
-
         result
     }
 }

@@ -241,7 +241,7 @@ mod tests {
         let test_instance = Facts::new();
         assert!(test_instance.get(&Fact::SwapBuyChangePercent).is_none());
         assert!(test_instance
-            .get_with_timeframe(&Fact::SwapBuyChangePercent, &Timeframe::W1)
+            .get_with_timeframe(&Fact::SwapBuyChangePercent, &Timeframe::S1)
             .is_none());
     }
 
@@ -256,7 +256,7 @@ mod tests {
 
         let timeframe1 = Timeframe::H1;
         let timeframe2 = Timeframe::D1;
-        let timeframe3 = Timeframe::W1;
+        let timeframe3 = Timeframe::S1;
 
         assert!(test_instance
             .set(fact, value1.clone(), Some(timeframe1))
@@ -302,7 +302,7 @@ mod tests {
 
         assert!(test_instance.exists(&fact, Some(&timeframe1)));
         assert!(test_instance.exists(&fact, Some(&timeframe2)));
-        assert!(!test_instance.exists(&fact, Some(&Timeframe::W1)));
+        assert!(!test_instance.exists(&fact, Some(&Timeframe::S1)));
     }
 
     #[test]
@@ -312,7 +312,7 @@ mod tests {
 
         let timeframe1 = Timeframe::H1;
         let timeframe2 = Timeframe::D1;
-        let timeframe3 = Timeframe::W1;
+        let timeframe3 = Timeframe::S1;
 
         let value1 = Value::percent(1.5);
         let value2 = Value::percent(3.0);

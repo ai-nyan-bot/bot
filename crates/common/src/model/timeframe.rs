@@ -15,7 +15,20 @@ pub enum Timeframe {
     H1,
     H6,
     D1,
-    W1,
+}
+
+impl Timeframe {
+    pub fn all() -> [Timeframe; 7] {
+        [
+            Timeframe::S1,
+            Timeframe::M1,
+            Timeframe::M5,
+            Timeframe::M15,
+            Timeframe::H1,
+            Timeframe::H6,
+            Timeframe::D1,
+        ]
+    }
 }
 
 impl Timeframe {
@@ -28,15 +41,13 @@ impl Timeframe {
             Timeframe::H1 => "1h",
             Timeframe::H6 => "6h",
             Timeframe::D1 => "1d",
-            Timeframe::W1 => "1w",
         }
     }
 }
 
 impl Distribution<Timeframe> for Standard {
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Timeframe {
-        use Timeframe::*;
-        let variants = [S1, M1, M5, M15, H1, H6, D1, W1];
+        let variants = Timeframe::all();
         variants[rng.gen_range(0..variants.len())]
     }
 }

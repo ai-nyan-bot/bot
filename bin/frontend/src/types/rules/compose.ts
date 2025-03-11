@@ -109,7 +109,7 @@ export const DEFAULT_COMPOSED_SIMPLE_SWAP_TOTAL: ComposedSimpleSwapTotal = {
             {
                 id: uuidv4(),
                 type: ConditionType.COMPARE,
-                field: Field.SWAP_ALLL,
+                field: Field.SWAP_ALL,
                 operator: Operator.MORE_THAN_EQUAL,
                 value: undefined,
                 timeframe: Timeframe.H1
@@ -117,7 +117,7 @@ export const DEFAULT_COMPOSED_SIMPLE_SWAP_TOTAL: ComposedSimpleSwapTotal = {
             {
                 id: uuidv4(),
                 type: ConditionType.COMPARE,
-                field: Field.SWAP_ALLL,
+                field: Field.SWAP_ALL,
                 operator: Operator.MORE_THAN_EQUAL,
                 value: undefined,
                 timeframe: Timeframe.H1
