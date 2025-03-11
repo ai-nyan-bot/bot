@@ -61,13 +61,13 @@ export const SimpleSwapCompose: FC<SimpleSwapComposeProps> = ({condition, onChan
     let placeholderText = null;
     switch (type) {
         case SwapType.Total:
-            placeholderText = "total tx"
+            placeholderText = "total txn"
             break;
         case SwapType.Buy:
-            placeholderText = "buy tx"
+            placeholderText = "buy txn"
             break;
         case SwapType.Sell:
-            placeholderText = "sell tx"
+            placeholderText = "sell txn"
             break;
     }
 
@@ -152,7 +152,7 @@ export const RenderText: FC<RenderTextProps> = ({minValue, minTimeframe, maxValu
             return (
                 <div className="mt-4 text-sm text-center text-yellow-700 font-bold">
                     <p>⚠️ The rule will never match ⚠️</p>
-                    <p>Minimum tx count is greater than the maximum tx count for the same timeframe.</p>
+                    <p>Minimum txn count is greater than the maximum txn count for the same timeframe.</p>
                 </div>
             );
         }
@@ -161,23 +161,11 @@ export const RenderText: FC<RenderTextProps> = ({minValue, minTimeframe, maxValu
     const text = (value: number) => {
         switch (type) {
             case SwapType.Total:
-                if (value === 1) {
-                    return "1 tx"
-                } else {
-                    return `${value} txs`
-                }
+                return `${value} txn`
             case SwapType.Buy:
-                if (value === 1) {
-                    return "1 buy tx"
-                } else {
-                    return `${value} buy txs`
-                }
+                return `${value} buy txn`
             case SwapType.Sell:
-                if (value === 1) {
-                    return "1 sell tx"
-                } else {
-                    return `${value} sell txs`
-                }
+                return `${value} sell txn`
         }
     }
 

@@ -31,7 +31,7 @@ describe("RenderText", () => {
         expect(warningDiv!!.className).toContain("font-bold");
 
         expect(warningDiv?.querySelector("p:nth-child(1)")?.textContent).toBe("⚠️ The rule will never match ⚠️");
-        expect(warningDiv?.querySelector("p:nth-child(2)")?.textContent).toBe("Minimum tx count is greater than the maximum tx count for the same timeframe.");
+        expect(warningDiv?.querySelector("p:nth-child(2)")?.textContent).toBe("Minimum txn count is greater than the maximum txn count for the same timeframe.");
     });
 
     test("min value === max value - same timeframe", () => {
@@ -50,7 +50,7 @@ describe("RenderText", () => {
         />);
 
         const div = container.querySelector("div")!!;
-        expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("Exactly 2 txs occurred in the last 1 hour.");
+        expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("Exactly 2 txn occurred in the last 1 hour.");
     });
 
     test("min value === max value - different timeframe", () => {
@@ -69,8 +69,8 @@ describe("RenderText", () => {
         />);
 
         const div = container.querySelector("div")!!;
-        expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 2 txs occurred in the last 1 hour.");
-        expect(div.querySelector("p:nth-child(2)")?.textContent).toBe("However, no more than 2 txs should occur in the last 6 hours.");
+        expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 2 txn occurred in the last 1 hour.");
+        expect(div.querySelector("p:nth-child(2)")?.textContent).toBe("However, no more than 2 txn should occur in the last 6 hours.");
     });
 
     test("min value < max value - same timeframe", () => {
@@ -89,7 +89,7 @@ describe("RenderText", () => {
         />);
 
         const div = container.querySelector("div")!!;
-        expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 1 tx occurred in the last 1 hour.");
+        expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 1 txn occurred in the last 1 hour.");
         expect(div.querySelector("p:nth-child(2)")?.textContent).toBe("However, the count should not exceed 2 in the same timeframe.");
     });
 
@@ -105,7 +105,7 @@ describe("RenderText", () => {
         />);
 
         const div = container.querySelector("div")!!;
-        expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 1 tx occurred in the last 1 minute.");
+        expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 1 txn occurred in the last 1 minute.");
     });
 
     test("max value", () => {
@@ -120,7 +120,7 @@ describe("RenderText", () => {
         />);
 
         const div = container.querySelector("div")!!;
-        expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("No more than 99 txs should occur in the last 1 hour.");
+        expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("No more than 99 txn should occur in the last 1 hour.");
     });
 
     describe("text", () => {
@@ -137,7 +137,7 @@ describe("RenderText", () => {
             />);
 
             const div = container.querySelector("div")!!;
-            expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 1 tx occurred in the last 1 minute.");
+            expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 1 txn occurred in the last 1 minute.");
         });
 
         test("total: 21", () => {
@@ -152,7 +152,7 @@ describe("RenderText", () => {
             />);
 
             const div = container.querySelector("div")!!;
-            expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 21 txs occurred in the last 1 minute.");
+            expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 21 txn occurred in the last 1 minute.");
         });
 
         test("buy: 1", () => {
@@ -167,7 +167,7 @@ describe("RenderText", () => {
             />);
 
             const div = container.querySelector("div")!!;
-            expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 1 buy tx occurred in the last 1 minute.");
+            expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 1 buy txn occurred in the last 1 minute.");
         });
 
         test("buy: 21", () => {
@@ -182,7 +182,7 @@ describe("RenderText", () => {
             />);
 
             const div = container.querySelector("div")!!;
-            expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 21 buy txs occurred in the last 1 minute.");
+            expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 21 buy txn occurred in the last 1 minute.");
         });
 
         test("sell: 1", () => {
@@ -197,7 +197,7 @@ describe("RenderText", () => {
             />);
 
             const div = container.querySelector("div")!!;
-            expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 1 sell tx occurred in the last 1 minute.");
+            expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 1 sell txn occurred in the last 1 minute.");
         });
 
         test("sell: 21", () => {
@@ -212,7 +212,7 @@ describe("RenderText", () => {
             />);
 
             const div = container.querySelector("div")!!;
-            expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 21 sell txs occurred in the last 1 minute.");
+            expect(div.querySelector("p:nth-child(1)")?.textContent).toBe("At least 21 sell txn occurred in the last 1 minute.");
         });
     })
 });
