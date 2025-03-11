@@ -9,9 +9,9 @@ use crate::model::{Condition, FactError, Field, Operator, Value, ValueType};
 use serde::{Deserialize, Serialize};
 use Fact::{
     CurveProgressAgeDuration, PriceAvgQuote, PriceAvgUsd, PriceQuote, PriceUsd, SwapBuyChangeCount,
-    SwapBuyChangePercent, SwapChangeCount, SwapChangePercent, SwapSellChangeCount,
-    SwapSellChangePercent, SwapsBuyCount, SwapsCount, SwapsSellCount, TelegramGroup,
-    TelegramGroupHandle, TwitterAccount, TwitterAccountHandle, VolumeChangeQuote,
+    SwapBuyChangePercent, SwapBuyCount, SwapChangeCount, SwapChangePercent, SwapCount,
+    SwapSellChangeCount, SwapSellChangePercent, SwapSellCount, TelegramGroup, TelegramGroupHandle,
+    TwitterAccount, TwitterAccountHandle, VolumeChangeQuote,
 };
 use Field::{CurveProgress, CurveProgressAge, Price, SwapBuy, SwapSell, SwapTotal, Volume};
 use Operator::{
@@ -34,9 +34,9 @@ pub enum Fact {
     // PriceChangePercent,
     // PriceChangeQuote,
     // PriceChangeUsd,
-    SwapsCount,
-    SwapsBuyCount,
-    SwapsSellCount,
+    SwapCount,
+    SwapBuyCount,
+    SwapSellCount,
 
     SwapChangeCount,
     SwapBuyChangeCount,
@@ -73,9 +73,9 @@ impl Fact {
             // PriceChangeQuote => true,
             // PriceChangePercent => true,
             // PriceChangeUsd => true,
-            SwapsCount => true,
-            SwapsBuyCount => true,
-            SwapsSellCount => true,
+            SwapCount => true,
+            SwapBuyCount => true,
+            SwapSellCount => true,
 
             SwapChangeCount => true,
             SwapBuyChangeCount => true,
@@ -112,9 +112,9 @@ impl Fact {
             // PriceChangeQuote => Quote,
             // PriceChangeUsd => Usd,
             // PriceChangePercent => Percent,
-            SwapsCount => Count,
-            SwapsBuyCount => Count,
-            SwapsSellCount => Count,
+            SwapCount => Count,
+            SwapBuyCount => Count,
+            SwapSellCount => Count,
 
             SwapChangeCount => Count,
             SwapBuyChangeCount => Count,
@@ -209,22 +209,22 @@ impl Fact {
             (PriceAvg, LessThanEqual, Usd, true) => PriceAvgUsd,
 
             // SwapCount
-            (SwapTotal, MoreThan, Count, true) => SwapsCount,
-            (SwapTotal, MoreThanEqual, Count, true) => SwapsCount,
-            (SwapTotal, LessThan, Count, true) => SwapsCount,
-            (SwapTotal, LessThanEqual, Count, true) => SwapsCount,
+            (SwapTotal, MoreThan, Count, true) => SwapCount,
+            (SwapTotal, MoreThanEqual, Count, true) => SwapCount,
+            (SwapTotal, LessThan, Count, true) => SwapCount,
+            (SwapTotal, LessThanEqual, Count, true) => SwapCount,
 
             // SwapBuyCount
-            (SwapBuy, MoreThan, Count, true) => SwapsBuyCount,
-            (SwapBuy, MoreThanEqual, Count, true) => SwapsBuyCount,
-            (SwapBuy, LessThan, Count, true) => SwapsBuyCount,
-            (SwapBuy, LessThanEqual, Count, true) => SwapsBuyCount,
+            (SwapBuy, MoreThan, Count, true) => SwapBuyCount,
+            (SwapBuy, MoreThanEqual, Count, true) => SwapBuyCount,
+            (SwapBuy, LessThan, Count, true) => SwapBuyCount,
+            (SwapBuy, LessThanEqual, Count, true) => SwapBuyCount,
 
             // SwapSellCount
-            (SwapSell, MoreThan, Count, true) => SwapsSellCount,
-            (SwapSell, MoreThanEqual, Count, true) => SwapsSellCount,
-            (SwapSell, LessThan, Count, true) => SwapsSellCount,
-            (SwapSell, LessThanEqual, Count, true) => SwapsSellCount,
+            (SwapSell, MoreThan, Count, true) => SwapSellCount,
+            (SwapSell, MoreThanEqual, Count, true) => SwapSellCount,
+            (SwapSell, LessThan, Count, true) => SwapSellCount,
+            (SwapSell, LessThanEqual, Count, true) => SwapSellCount,
 
             // SwapChangeCount
             (SwapTotal, IncreasedByMoreThan, Count, true) => SwapChangeCount,
@@ -472,19 +472,19 @@ mod tests {
     fn test_swaps_count() {
         assert_eq!(
             Fact::from_comparison(&SwapTotal, &MoreThan, &Value::count(9924), true),
-            Some(SwapsCount)
+            Some(SwapCount)
         );
         assert_eq!(
             Fact::from_comparison(&SwapTotal, &MoreThanEqual, &Value::count(9924), true),
-            Some(SwapsCount)
+            Some(SwapCount)
         );
         assert_eq!(
             Fact::from_comparison(&SwapTotal, &LessThan, &Value::count(9924), true),
-            Some(SwapsCount)
+            Some(SwapCount)
         );
         assert_eq!(
             Fact::from_comparison(&SwapTotal, &LessThanEqual, &Value::count(9924), true),
-            Some(SwapsCount)
+            Some(SwapCount)
         );
     }
 
@@ -492,19 +492,19 @@ mod tests {
     fn test_swaps_buy_count() {
         assert_eq!(
             Fact::from_comparison(&SwapBuy, &MoreThan, &Value::count(9924), true),
-            Some(SwapsBuyCount)
+            Some(SwapBuyCount)
         );
         assert_eq!(
             Fact::from_comparison(&SwapBuy, &MoreThanEqual, &Value::count(9924), true),
-            Some(SwapsBuyCount)
+            Some(SwapBuyCount)
         );
         assert_eq!(
             Fact::from_comparison(&SwapBuy, &LessThan, &Value::count(9924), true),
-            Some(SwapsBuyCount)
+            Some(SwapBuyCount)
         );
         assert_eq!(
             Fact::from_comparison(&SwapBuy, &LessThanEqual, &Value::count(9924), true),
-            Some(SwapsBuyCount)
+            Some(SwapBuyCount)
         );
     }
 
@@ -512,19 +512,19 @@ mod tests {
     fn test_swaps_sell_count() {
         assert_eq!(
             Fact::from_comparison(&SwapSell, &MoreThan, &Value::count(9924), true),
-            Some(SwapsSellCount)
+            Some(SwapSellCount)
         );
         assert_eq!(
             Fact::from_comparison(&SwapSell, &MoreThanEqual, &Value::count(9924), true),
-            Some(SwapsSellCount)
+            Some(SwapSellCount)
         );
         assert_eq!(
             Fact::from_comparison(&SwapSell, &LessThan, &Value::count(9924), true),
-            Some(SwapsSellCount)
+            Some(SwapSellCount)
         );
         assert_eq!(
             Fact::from_comparison(&SwapSell, &LessThanEqual, &Value::count(9924), true),
-            Some(SwapsSellCount)
+            Some(SwapSellCount)
         );
     }
 

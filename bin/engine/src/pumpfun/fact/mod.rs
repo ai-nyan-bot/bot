@@ -48,10 +48,10 @@ impl FactService {
                     c.id.clone(),
                     Facts::new()
                         .with_value(CurveProgressPercent, Value::percent(c.progress.0))
-                        .with_value(
-                            CurveProgressAgeDuration,
-                            Value::duration(c.age.0, TimeUnit::Second),
-                        ),
+                        // .with_value(
+                        //     CurveProgressAgeDuration,
+                        //     Value::duration(c.age.0, TimeUnit::Second),
+                        // ),
                 )
             })
             .collect();
