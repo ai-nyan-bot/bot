@@ -16,6 +16,7 @@ create table solana.token
     website     text,
     creator_id  int8,
     block_id    int8,
+    block_time  timestamptz,
     created_at  timestamptz   default (timezone('utc', now())),
     updated_at  timestamptz   default (timezone('utc', now())),
 

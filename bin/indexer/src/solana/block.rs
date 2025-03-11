@@ -81,6 +81,7 @@ pub async fn index_block(state: State, block: Block) {
                                     website: None,
                                     creator: Some(creator.id),
                                     block: Some(block.slot.into()),
+                                    block_time: Some(block.timestamp),
                                 })
                             }
 

@@ -8,13 +8,14 @@ use crate::model::{
     AddressId, DecimalAmount, Decimals, Description, Mint, Name, Symbol, Token, TokenId, Uri,
 };
 use crate::repo::TokenRepo;
-use common::model::BlockId;
+use common::model::{BlockId, BlockTime, Timestamp};
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 
 #[derive(Debug)]
 pub struct TokenToInsert {
     pub block: Option<BlockId>,
+    pub block_time: Option<BlockTime>,
     pub mint: Mint,
     pub name: Option<Name>,
     pub symbol: Option<Symbol>,
@@ -49,6 +50,7 @@ impl TokenRepo {
         let mut websites = Vec::with_capacity(token_list.len());
         let mut creators = Vec::with_capacity(token_list.len());
         let mut blocks = Vec::with_capacity(token_list.len());
+        let mut block_times = Vec::with_capacity(token_list.len());
 
         for to_insert in token_list {
             mints.push(to_insert.mint);
@@ -68,11 +70,16 @@ impl TokenRepo {
             websites.push(to_insert.website.unwrap_or("null_value".into()));
             creators.push(to_insert.creator.unwrap_or(AddressId::from(-1)));
             blocks.push(to_insert.block.unwrap_or(BlockId::from(-1)));
+            block_times.push(
+                to_insert
+                    .block_time
+                    .unwrap_or(BlockTime(Timestamp::from_epoch_second(0).unwrap())),
+            );
         }
 
         Ok(sqlx::query(
             r#"with new_token as (
-            insert into solana.token (mint, name, symbol, decimals, supply, metadata, description, image, website, creator_id, block_id)
+            insert into solana.token (mint, name, symbol, decimals, supply, metadata, description, image, website, creator_id, block_id, block_time)
             select
                 unnest($1::text[]) as mint,
                 unnest(array_replace($2::text[], 'null_value', null)) as name,
@@ -84,7 +91,8 @@ impl TokenRepo {
                 unnest(array_replace($8::text[], 'null_value', null)) as image,
                 unnest(array_replace($9::text[], 'null_value', null)) as website,
                 unnest(array_replace($10::int8[], -1, null)) as creator_id,
-                unnest(array_replace($11::int8[], -1, null)) as block_id
+                unnest(array_replace($11::int8[], -1, null)) as block_id,
+                unnest(array_replace($12::timestamptz[], '1970-01-01 00:00:00+00'::timestamptz, null)) as block_time
             on conflict (mint) do update set
                 mint = excluded.mint,
                 name = excluded.name,
@@ -96,7 +104,8 @@ impl TokenRepo {
                 image = excluded.image,
                 website = excluded.website,
                 creator_id = excluded.creator_id,
-                block_id = excluded.block_id
+                block_id = excluded.block_id,
+                block_time = excluded.block_time
             returning
                 id,
                 mint,
@@ -109,7 +118,8 @@ impl TokenRepo {
                 image,
                 website,
                 creator_id,
-                block_id
+                block_id,
+                block_time
             )
             select * from new_token"#,
         )
@@ -124,6 +134,7 @@ impl TokenRepo {
         .bind(websites)
         .bind(creators)
         .bind(blocks)
+        .bind(block_times)
         .fetch_all(&mut **tx)
         .await?
         .into_iter()
@@ -140,6 +151,7 @@ impl TokenRepo {
             website: r.try_get::<Uri, _>("website").ok(),
             creator: r.try_get::<AddressId, _>("creator_id").ok(),
             block: r.try_get::<BlockId, _>("block_id").ok(),
+            block_time: r.try_get::<BlockTime, _>("block_time").ok()
         })
         .collect::<Vec<_>>())
     }

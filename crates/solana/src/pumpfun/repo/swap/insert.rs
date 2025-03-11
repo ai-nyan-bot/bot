@@ -8,7 +8,7 @@ use crate::model::{Signature, Slot};
 use crate::pumpfun::model::{calculate_progress, Swap};
 use crate::pumpfun::repo::SwapRepo;
 use base::model::{AddressId, Amount, DecimalAmount, Mint, PublicKey, SwapId, TokenPairId};
-use common::model::{Percent, PriceQuote, Timestamp};
+use common::model::{BlockTime, Percent, PriceQuote, Timestamp};
 use common::repo::{RepoResult, Tx};
 use log::trace;
 use sqlx::Row;
@@ -17,7 +17,7 @@ use std::collections::HashMap;
 #[derive(Debug, Clone)]
 pub struct SlotSwaps {
     pub slot: Slot,
-    pub timestamp: Timestamp,
+    pub timestamp: BlockTime,
     pub swaps: Vec<SlotSwap>,
 }
 

@@ -10,7 +10,6 @@ use base::model::{Action, Venue};
 use base::repo::{InvocationCreateCmd, InvocationRepo, NotificationRepo, RuleRepo};
 use base::service::{NotificationRuleMatched, NotificationService, RuleService};
 use common::repo::pool::setup_pool;
-use log::trace;
 use solana::pumpfun::repo::{CurveRepo, SummaryRepo};
 use std::sync::Arc;
 use std::time::Duration;

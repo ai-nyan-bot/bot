@@ -12,7 +12,7 @@ use base::model::{
     TokenPairId, TokenPairMint,
 };
 use bigdecimal::{BigDecimal, Zero};
-use common::model::{PriceQuote, Timestamp};
+use common::model::{BlockTime, PriceQuote, Timestamp};
 use common::repo::{RepoResult, Tx};
 use log::trace;
 use sqlx::Row;
@@ -20,7 +20,7 @@ use std::collections::HashMap;
 
 pub struct SlotSwaps {
     pub slot: Slot,
-    pub timestamp: Timestamp,
+    pub timestamp: BlockTime,
     pub swaps: Vec<SlotSwap>,
 }
 

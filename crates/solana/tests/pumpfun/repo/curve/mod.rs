@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use common::model::Timestamp;
+use common::model::BlockTime;
 use solana::pumpfun::repo::{SlotSwap, SlotSwaps};
 
 mod upsert;
@@ -9,7 +9,7 @@ mod upsert;
 pub(crate) fn inserting_slot_swaps() -> SlotSwaps {
     SlotSwaps {
         slot: 12345.into(),
-        timestamp: Timestamp::now(),
+        timestamp: BlockTime::now(),
         swaps: vec![SlotSwap {
             mint: "mint1".into(),
             amount_base: 1_000_000.into(),
@@ -26,7 +26,7 @@ pub(crate) fn inserting_slot_swaps() -> SlotSwaps {
 pub(crate) fn updating_slot_swaps() -> SlotSwaps {
     SlotSwaps {
         slot: 23456.into(),
-        timestamp: Timestamp::now(),
+        timestamp: BlockTime::now(),
         swaps: vec![SlotSwap {
             mint: "mint1".into(),
             amount_base: 1_000_000.into(),

@@ -1,6 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use crate::model::Timestamp;
 use serde::{Deserialize, Serialize};
 use sqlx::Type;
 use std::fmt::{Display, Formatter};
@@ -24,5 +25,15 @@ impl PartialEq<i64> for BlockId {
 impl Display for BlockId {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(&self.0, f)
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Ord, PartialOrd, Eq, Serialize, Deserialize, Type)]
+#[sqlx(transparent)]
+pub struct BlockTime(pub Timestamp);
+
+impl BlockTime {
+    pub fn now() -> Self {
+        BlockTime(Timestamp::now())
     }
 }

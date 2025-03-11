@@ -4,6 +4,7 @@
 use base::model::DecimalAmount;
 use base::repo::{AddressRepo, TokenRepo};
 use base::test::NeverCalledTokenInfoLoader;
+use common::model::{BlockTime, Timestamp};
 use indexer::solana::block::index_block;
 use indexer::solana::state::{State, StateInner};
 use sqlx::Executor;
@@ -85,6 +86,7 @@ insert into solana.token (id, version, mint, name, symbol, decimals, supply, met
 		assert_eq!(minted_token.supply.unwrap(), DecimalAmount::from(1_000_000_000i64));
 		assert_eq!(minted_token.creator.unwrap(), 1);
 		assert_eq!(minted_token.block.unwrap(), 317897944);
+		assert_eq!(minted_token.block_time.unwrap(), BlockTime(Timestamp::from_epoch_second(1738463019).unwrap()));
 	})
 		.await
 }

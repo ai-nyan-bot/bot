@@ -9,7 +9,7 @@ use crate::model::{
     TokenPairId, TokenPairMint, Uri,
 };
 use crate::repo::TokenPairRepo;
-use common::model::BlockId;
+use common::model::{BlockId, BlockTime};
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 use std::collections::{HashMap, HashSet};
@@ -155,6 +155,7 @@ select
     base.website as base_website,
     base.creator_id as base_creator_id,
     base.block_id as base_block_id,
+    base.block_time as base_block_time,
     quote.id as quote_id,
     quote.mint as quote_mint,
     quote.name as quote_name,
@@ -166,7 +167,8 @@ select
     quote.image as quote_image,
     quote.website as quote_website,
     quote.creator_id as quote_creator_id,
-    quote.block_id as quote_block_id
+    quote.block_id as quote_block_id,
+    quote.block_time as quote_block_time
 from solana.token_pair tp
 join base_token base on tp.base_id = base.id
 join quote_token quote on tp.quote_id = quote.id
@@ -193,6 +195,7 @@ join input_pairs ip on base.mint = ip.base_mint and quote.mint = ip.quote_mint;
                 website: r.try_get::<Uri, _>("base_website").ok(),
                 creator: r.try_get::<AddressId, _>("base_creator_id").ok(),
                 block: r.try_get::<BlockId, _>("base_block_id").ok(),
+                block_time: r.try_get::<BlockTime, _>("base_block_time").ok(),
             },
             quote: Token {
                 id: r.get::<TokenId, _>("quote_id"),
@@ -207,6 +210,7 @@ join input_pairs ip on base.mint = ip.base_mint and quote.mint = ip.quote_mint;
                 website: r.try_get::<Uri, _>("quote_website").ok(),
                 creator: r.try_get::<AddressId, _>("quote_creator_id").ok(),
                 block: r.try_get::<BlockId, _>("quote_block_id").ok(),
+                block_time: r.try_get::<BlockTime, _>("quote_block_time").ok(),
             },
         })
         .collect::<Vec<_>>())
@@ -237,6 +241,7 @@ select
     base.website as base_website,
     base.creator_id as base_creator_id,
     base.block_id as base_block_id,
+    base.block_time as base_block_time,
     quote.id as quote_id,
     quote.mint as quote_mint,
     quote.name as quote_name,
@@ -248,7 +253,8 @@ select
     quote.image as quote_image,
     quote.website as quote_website,
     quote.creator_id as quote_creator_id,
-    quote.block_id as quopte_block_id
+    quote.block_id as quopte_block_id,
+    quote.block_time as quote_block_time
 from solana.token_pair tp
 join solana.token base on tp.base_id = base.id
 join solana.token quote on tp.quote_id = quote.id
@@ -274,6 +280,7 @@ where tp.id in (select unnest($1::int8[]));
                 website: r.try_get::<Uri, _>("base_website").ok(),
                 creator: r.try_get::<AddressId, _>("base_creator_id").ok(),
                 block: r.try_get::<BlockId, _>("base_block_id").ok(),
+                block_time: r.try_get::<BlockTime, _>("base_block_time").ok(),
             },
             quote: Token {
                 id: r.get::<TokenId, _>("quote_id"),
@@ -288,6 +295,7 @@ where tp.id in (select unnest($1::int8[]));
                 website: r.try_get::<Uri, _>("quote_website").ok(),
                 creator: r.try_get::<AddressId, _>("quote_creator_id").ok(),
                 block: r.try_get::<BlockId, _>("quote_block_id").ok(),
+                block_time: r.try_get::<BlockTime, _>("quote_block_time").ok(),
             },
         })
         .collect::<Vec<_>>())

@@ -43,6 +43,7 @@ impl TokenRepo {
                     website: info.website,
                     creator: None,
                     block: None,
+                    block_time: None,
                 });
             } else {
                 error!("unable to load token info");

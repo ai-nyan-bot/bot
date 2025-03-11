@@ -49,18 +49,15 @@ impl Condition {
                 has_applicable_condition
             }
             Condition::Or { conditions } => {
-                let mut has_applicable_condition = false;
-
                 for condition in conditions {
                     if condition.applicable() {
-                        has_applicable_condition = true;
                         if condition.test(facts) {
                             return true;
                         }
                     }
                 }
 
-                has_applicable_condition
+                false
             }
             Condition::AndNot { conditions } => {
                 let mut has_applicable_condition = false;

@@ -4,7 +4,7 @@
 use crate::convert::convert_transaction;
 use crate::model::{Block, Slot};
 use crate::rpc::{RpcClient, RpcResult};
-use common::model::Timestamp;
+use common::model::{BlockTime, Timestamp};
 use log::{error, trace, warn};
 use solana_client::client_error::ClientError;
 use solana_client::rpc_config::RpcBlockConfig;
@@ -49,7 +49,9 @@ impl RpcClient {
                 Ok(block) => {
                     return Ok(Some(Block {
                         slot,
-                        timestamp: Timestamp::from_epoch_second(block.block_time.unwrap()).unwrap(),
+                        timestamp: BlockTime(
+                            Timestamp::from_epoch_second(block.block_time.unwrap()).unwrap(),
+                        ),
                         transactions: block
                             .transactions
                             .map(|t| t.into_iter().map(convert_transaction).collect())
@@ -122,7 +124,7 @@ impl RpcClient {
 mod tests {
     use crate::model::Slot;
     use crate::rpc::{RpcClient, RpcClientInner};
-    use common::model::Timestamp;
+    use common::model::{BlockTime, Timestamp};
     use solana_client::client_error::ClientError;
     use solana_client::rpc_config::RpcBlockConfig;
     use solana_client::rpc_request::{RpcError, RpcResponseErrorData};
@@ -159,7 +161,7 @@ mod tests {
         let result = result.unwrap();
         assert_eq!(
             result.timestamp,
-            Timestamp::from_epoch_second(1737344750).unwrap()
+            BlockTime(Timestamp::from_epoch_second(1737344750).unwrap())
         )
     }
 
