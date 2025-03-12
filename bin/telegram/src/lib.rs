@@ -3,11 +3,12 @@
 
 pub use crate::config::*;
 use crate::dispatch::dispatch;
+pub use crate::format::*;
 pub use crate::notify::{notify, send_notification};
 pub use crate::schema::schema;
 pub use crate::state::*;
-pub use crate::format::*;
 use common::Signal;
+use log::info;
 use teloxide::dispatching::dialogue::InMemStorage;
 use teloxide::prelude::Dialogue;
 use tokio::try_join;
@@ -37,5 +38,5 @@ pub async fn run(state: AppState, signal: Signal) {
         async { notify(state.clone(), signal.clone()).await },
         async { dispatch(state.clone(), signal.clone()).await }
     );
-    println!("done");
+    info!("exit now");
 }
