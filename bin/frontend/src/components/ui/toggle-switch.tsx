@@ -19,7 +19,7 @@ export const ToggleSwitch: FC<ToggleSwitchProps> = ({activeLabel, inactiveLabel,
             <Switch
                 checked={value}
                 onCheckedChange={onChange}
-                className="data-[state=checked]:bg-primary"
+                className="data-[state=checked]:bg-green-500"
             />
             {<Label className={value ? selectedStyle : unselectedStyle}>{activeLabel}</Label>}
         </div>
