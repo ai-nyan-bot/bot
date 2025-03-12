@@ -52,7 +52,7 @@ pub(crate) fn draw_legend(img: &mut RgbaImage, font: &Font, y: u32, text: impl I
         Text {
             content: text,
             size: text_size,
-            color: Rgba([120, 120, 120, 255]),
+            color: Rgba([255, 255, 255, 255]),
         },
     );
 }
@@ -120,7 +120,7 @@ fn draw_bonding_curve(
                 font,
                 x,
                 1,
-                Text::new(percent.pretty(), 28, Rgba([120, 120, 120, 255])),
+                Text::new(percent.pretty(), 28, Rgba([255, 255, 255, 255])),
             );
 
             let color = if change > 0.0 {
@@ -128,7 +128,7 @@ fn draw_bonding_curve(
             } else if change < 0.0 {
                 DECREASED
             } else {
-                Rgba([120, 120, 120, 255])
+                Rgba([255, 255, 255, 255])
             };
 
             draw_cell_bottom(img, font, x, 1, Text::new(change.pretty(), 28, color));
@@ -138,7 +138,7 @@ fn draw_bonding_curve(
                 font,
                 x,
                 1,
-                Text::new(percent.pretty(), 28, Rgba([120, 120, 120, 255])),
+                Text::new(percent.pretty(), 28, Rgba([255, 255, 255, 255])),
             );
         }
     }
@@ -152,7 +152,7 @@ fn draw_market_cap(img: &mut RgbaImage, font: &Font, x: u32, cap: MarketCapWithC
                 font,
                 x,
                 3,
-                Text::new(usd.pretty(), 28, Rgba([120, 120, 120, 255])),
+                Text::new(usd.pretty(), 28, Rgba([255, 255, 255, 255])),
             );
 
             let color = if percent > 0.0 {
@@ -160,7 +160,7 @@ fn draw_market_cap(img: &mut RgbaImage, font: &Font, x: u32, cap: MarketCapWithC
             } else if percent < 0.0 {
                 DECREASED
             } else {
-                Rgba([120, 120, 120, 255])
+                Rgba([255, 255, 255, 255])
             };
 
             draw_cell_bottom(img, font, x, 3, Text::new(percent.pretty(), 28, color));
@@ -170,7 +170,7 @@ fn draw_market_cap(img: &mut RgbaImage, font: &Font, x: u32, cap: MarketCapWithC
                 font,
                 x,
                 3,
-                Text::new(usd.pretty(), 28, Rgba([120, 120, 120, 255])),
+                Text::new(usd.pretty(), 28, Rgba([255, 255, 255, 255])),
             );
         }
     }
@@ -184,7 +184,7 @@ fn draw_price(img: &mut RgbaImage, font: &Font, x: u32, cap: PriceWithChange) {
                 font,
                 x,
                 2,
-                Text::new(usd.pretty(), 28, Rgba([120, 120, 120, 255])),
+                Text::new(usd.pretty(), 28, Rgba([255, 255, 255, 255])),
             );
 
             let color = if percent > 0.0 {
@@ -192,7 +192,7 @@ fn draw_price(img: &mut RgbaImage, font: &Font, x: u32, cap: PriceWithChange) {
             } else if percent < 0.0 {
                 DECREASED
             } else {
-                Rgba([120, 120, 120, 255])
+                Rgba([255, 255, 255, 255])
             };
 
             draw_cell_bottom(img, font, x, 2, Text::new(percent.pretty(), 28, color));
@@ -202,7 +202,7 @@ fn draw_price(img: &mut RgbaImage, font: &Font, x: u32, cap: PriceWithChange) {
                 font,
                 x,
                 2,
-                Text::new(usd.pretty(), 28, Rgba([120, 120, 120, 255])),
+                Text::new(usd.pretty(), 28, Rgba([255, 255, 255, 255])),
             );
         }
     }
@@ -216,7 +216,7 @@ fn draw_txn(img: &mut RgbaImage, font: &Font, x: u32, y: u32, swap: SwapWithChan
                 font,
                 x,
                 y,
-                Text::new(count.pretty(), 28, Rgba([120, 120, 120, 255])),
+                Text::new(count.pretty(), 28, Rgba([255, 255, 255, 255])),
             );
 
             let color = if percent > 0.0 {
@@ -224,7 +224,7 @@ fn draw_txn(img: &mut RgbaImage, font: &Font, x: u32, y: u32, swap: SwapWithChan
             } else if percent < 0.0 {
                 DECREASED
             } else {
-                Rgba([120, 120, 120, 255])
+                Rgba([255, 255, 255, 255])
             };
 
             draw_cell_bottom(img, font, x, y, Text::new(percent.pretty(), 28, color));
@@ -234,7 +234,7 @@ fn draw_txn(img: &mut RgbaImage, font: &Font, x: u32, y: u32, swap: SwapWithChan
                 font,
                 x,
                 y,
-                Text::new(count.pretty(), 28, Rgba([120, 120, 120, 255])),
+                Text::new(count.pretty(), 28, Rgba([255, 255, 255, 255])),
             );
         }
     }
@@ -248,7 +248,7 @@ fn draw_volume(img: &mut RgbaImage, font: &Font, x: u32, y: u32, volume: VolumeW
                 font,
                 x,
                 y,
-                Text::new(usd.pretty(), 28, Rgba([120, 120, 120, 255])),
+                Text::new(usd.pretty(), 28, Rgba([255, 255, 255, 255])),
             );
 
             let color = if percent > 0.0 {
@@ -256,7 +256,7 @@ fn draw_volume(img: &mut RgbaImage, font: &Font, x: u32, y: u32, volume: VolumeW
             } else if percent < 0.0 {
                 DECREASED
             } else {
-                Rgba([120, 120, 120, 255])
+                Rgba([255, 255, 255, 255])
             };
 
             draw_cell_bottom(img, font, x, y, Text::new(percent.pretty(), 28, color));
@@ -266,7 +266,7 @@ fn draw_volume(img: &mut RgbaImage, font: &Font, x: u32, y: u32, volume: VolumeW
                 font,
                 x,
                 y,
-                Text::new(usd.pretty(), 28, Rgba([120, 120, 120, 255])),
+                Text::new(usd.pretty(), 28, Rgba([255, 255, 255, 255])),
             );
         }
     }
