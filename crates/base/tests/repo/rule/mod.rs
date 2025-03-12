@@ -3,5 +3,6 @@
 
 mod create;
 mod get;
-mod list;
+mod list_active;
+mod list_user;
 mod update;
