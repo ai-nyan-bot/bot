@@ -73,10 +73,9 @@ pub(crate) async fn send(
     // let buy_swaps = token_summary.summary.swaps.buy.swaps.0;
     // let sell_swaps = token_summary.summary.swaps.sell.swaps.0;
 
-    let caption = markdown!(
-        r#"
-        ;* {symbol} ;*
-        is ;* {progress} % ;* along the bonding curve and on its way to graduate to Raydium 🔥🚀
+    let caption = markdown!(r#"
+        ;*{symbol};*
+        is ;*{progress}%;* along the bonding curve and on its way to graduate to Raydium 🔥🚀
     "#
     );
 

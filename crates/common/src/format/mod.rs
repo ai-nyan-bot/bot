@@ -4,9 +4,6 @@
 use bigdecimal::BigDecimal;
 use lazy_static::lazy_static;
 
-pub use percent::format_percent;
-pub use price::format_price_usd;
-
 mod count;
 mod market_cap;
 mod percent;
@@ -23,33 +20,41 @@ lazy_static! {
     pub(crate) static ref THOUSAND: BigDecimal = BigDecimal::from(1_000);
     pub(crate) static ref HOUNDRED: BigDecimal = BigDecimal::from(100);
     pub(crate) static ref TEN: BigDecimal = BigDecimal::from(10);
+    pub(crate) static ref ONE: BigDecimal = BigDecimal::from(1);
+    pub(crate) static ref ZERO: BigDecimal = BigDecimal::from(0);
 }
 
 pub(crate) fn format_big_decimal(value: BigDecimal) -> String {
     let abs_value = value.abs();
 
     let (value, suffix): (BigDecimal, &str) = if abs_value >= *BILLION {
-        (value / 1_000_000_000.0, "B")
+        (value / BILLION.clone(), "B")
     } else if abs_value >= *MILLION {
-        (value / 1_000_000.0, "M")
+        (value / MILLION.clone(), "M")
     } else if abs_value >= *THOUSAND {
-        (value / 1_000.0, "k")
+        (value / THOUSAND.clone(), "k")
     } else {
-        return format!("{value}");
+        (value, "")
     };
 
-    let mut formatted = value.to_string();
+    let mut formatted = if suffix != "" {
+        value.to_string()
+    } else {
+        format!("{:.2}", value)
+    };
 
-    if let Some(dot_index) = formatted.find('.') {
-        let truncate_len = if value >= *HOUNDRED {
-            dot_index
-        } else if value >= *TEN {
-            dot_index + 2
-        } else {
-            dot_index + 3
-        };
+    if suffix != "" {
+        if let Some(dot_index) = formatted.find('.') {
+            let truncate_len = if value >= *HOUNDRED {
+                dot_index
+            } else if value >= *TEN {
+                dot_index + 2
+            } else {
+                dot_index + 3
+            };
 
-        formatted.truncate(truncate_len);
+            formatted.truncate(truncate_len);
+        }
     }
 
     let trimmed = formatted

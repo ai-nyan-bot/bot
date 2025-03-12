@@ -1,4 +1,4 @@
-use common::model::Percent;
+use common::model::{Percent, PriceUsd};
 use image::RgbaImage;
 use render::page::pumpfun::{pumpfun_summary, PumpfunSummary};
 use solana::model::{MarketCapWithChange, PriceWithChange, ProgressWithChange, SummaryCurveProgress, SummaryMarketCap, SummaryPrice, SummarySwap, SummaryVolume, SwapWithChange, TimeframeSummary, VolumeWithChange};
@@ -242,7 +242,7 @@ fn main() {
                     },
                     avg: PriceWithChange {
                         quote: None,
-                        usd: None,
+                        usd: Some(PriceUsd::from("0.000000102944")),
                         quote_change: None,
                         usd_change: None,
                         percent: None,

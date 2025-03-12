@@ -1,64 +1,30 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::format::FormatPretty;
+use crate::format::{format_big_decimal, FormatPretty};
 use crate::model::Percent;
-
-pub fn format_percent<T: Into<Percent>>(num: T) -> String {
-    let num = num.into().0;
-    let mut suffix = "";
-    let formatted = if num >= 1_000_000_000.0 {
-        suffix = "B";
-        format!("{:.1}", num / 1_000_000_000.0)
-    } else if num >= 1_000_000.0 {
-        suffix = "M";
-        format!("{:.1}", num / 1_000_000.0)
-    } else if num >= 10_000.0 {
-        suffix = "K";
-        format!("{:.1}", num / 1_000.0)
-    } else {
-        format!("{:.1}", num)
-    };
-
-    // Remove trailing ".0" if it exists
-    // let cleaned = if formatted.ends_with(".0") {
-    //     formatted[..formatted.len() - 2].to_string()
-    // } else {
-    //     formatted
-    // };
-
-    // Ensure the result is at most 4 characters
-    let mut result = formatted.chars().take(5).collect::<String>();
-
-    if result.ends_with(".") {
-        result.pop().unwrap();
-    }
-
-    if result.ends_with(".0") {
-        result.pop().unwrap();
-        result.pop().unwrap();
-    }
-
-    // while result.len() < 4 {
-    //     result.insert_str(0, space::<1>());
-    // }
-
-    result.push_str(suffix);
-    result.push_str("%");
-    result
-}
+use bigdecimal::{BigDecimal, FromPrimitive};
 
 impl FormatPretty for Percent {
     fn pretty(self) -> String {
-        todo!()
+        format!(
+            "{}%",
+            format_big_decimal(BigDecimal::from_f32(self.0).unwrap())
+        )
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use bigdecimal::{BigDecimal, FromPrimitive};
     use crate::format::FormatPretty;
-    use crate::model::{Percent, VolumeUsd};
+    use crate::model::Percent;
+
+    #[test]
+    fn test_limit_length() {
+        assert_eq!(Percent::from(23.24).pretty(), "23.24%");
+        assert_eq!(Percent::from(23.245).pretty(), "23.25%");
+        assert_eq!(Percent::from(10.2345).pretty(), "10.23%");
+    }
 
     #[test]
     fn test_zero() {
@@ -72,12 +38,12 @@ mod tests {
 
     #[test]
     fn test_small() {
-        assert_eq!(VolumeUsd(BigDecimal::from_f32(0.01).unwrap()).pretty(), "0.01%");
+        assert_eq!(Percent::from(0.011).pretty(), "0.01%");
     }
 
     #[test]
     fn test_tiny() {
-        assert_eq!(VolumeUsd(BigDecimal::from_f32(0.001).unwrap()).pretty(), "0%");
+        assert_eq!(Percent::from(0.0011).pretty(), "0%");
     }
 
     #[test]
@@ -117,7 +83,10 @@ mod tests {
 
     #[test]
     fn test_999_999_999() {
-        assert_eq!(Percent::from(999_999_999).pretty(), "999M%");
+        // you might expect 999M%, but 999_999_999f32 = 1_000_000_000
+        // should not matter much for percentage, because there is a reason why
+        // it is f32 in the first place
+        assert_eq!(Percent::from(999_999_999).pretty(), "1B%");
     }
 
     #[test]

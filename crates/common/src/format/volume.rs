@@ -1,16 +1,15 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::format::{format_big_decimal, FormatPretty};
+use crate::format::{format_big_decimal, FormatPretty, ONE, ZERO};
 use crate::model::VolumeUsd;
-use bigdecimal::BigDecimal;
 
 impl FormatPretty for VolumeUsd {
     fn pretty(self) -> String {
-        if self.0 < BigDecimal::from(1) {
+        if self.0 > *ZERO && self.0 < *ONE {
             return "$0".to_string();
         }
-        format!("${}", format_big_decimal(self.0))
+        format!("${}", format_big_decimal(self.0)).replace("$-", "-$")
     }
 }
 
@@ -44,6 +43,11 @@ mod tests {
     }
 
     #[test]
+    fn test_negative_999() {
+        assert_eq!(VolumeUsd::from(-999).pretty(), "-$999");
+    }
+
+    #[test]
     fn test_1050() {
         assert_eq!(VolumeUsd::from(1050).pretty(), "$1.05k");
     }
@@ -69,6 +73,11 @@ mod tests {
     }
 
     #[test]
+    fn test_negative_1_234_567() {
+        assert_eq!(VolumeUsd::from(-1_234_567).pretty(), "-$1.23M");
+    }
+
+    #[test]
     fn test_10_000_000() {
         assert_eq!(VolumeUsd::from(10_000_000).pretty(), "$10M");
     }
@@ -86,5 +95,10 @@ mod tests {
     #[test]
     fn test_2_345_678_901() {
         assert_eq!(VolumeUsd::from(2_345_678_901).pretty(), "$2.34B");
+    }
+
+    #[test]
+    fn test_negative_2_345_678_901() {
+        assert_eq!(VolumeUsd::from(-2_345_678_901).pretty(), "-$2.34B");
     }
 }

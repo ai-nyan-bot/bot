@@ -63,12 +63,6 @@ impl From<i64> for PriceUsd {
     }
 }
 
-impl From<u64> for PriceUsd {
-    fn from(value: u64) -> Self {
-        Self(BigDecimal::from(value))
-    }
-}
-
 impl From<&str> for PriceUsd {
     fn from(value: &str) -> Self {
         Self(BigDecimal::from_str(value).unwrap())
