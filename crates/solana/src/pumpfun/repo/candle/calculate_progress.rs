@@ -279,7 +279,7 @@ aggregated_candles as (
         coalesce(avg(avg),0) as avg
     from {source_table}
         where
-            timestamp > (select start_ts from timestamp) and
+            timestamp >= (select start_ts from timestamp) and
             timestamp < (select end_ts from timestamp)
     group by token_pair_id, date_trunc('{time_unit}', timestamp) - (extract({time_unit} from timestamp)::int % {window}) * interval '1 {time_unit}'
 )

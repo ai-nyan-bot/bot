@@ -458,7 +458,7 @@ aggregated_candles as (
         sum(volume_sell) as volume_sell
     from {source_table}
         where
-            timestamp > (select start_ts from timestamp) and
+            timestamp >= (select start_ts from timestamp) and
             timestamp < (select end_ts from timestamp) and
             (swap_buy + swap_sell) > 0
     group by token_pair_id, date_trunc('{time_unit}', timestamp) - (extract({time_unit} from timestamp)::int % {window}) * interval '1 {time_unit}'
