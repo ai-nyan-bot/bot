@@ -104,7 +104,7 @@ volume_buy as (
     select
         token_pair_id,
         second,
-        sum(amount_quote * price) as volume
+        sum(amount_base * price) as volume
     from
         swaps
     where is_buy = true

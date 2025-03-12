@@ -31,6 +31,16 @@ from pumpfun.curve c,
 where c.updated_at > latest.updated_at - interval '90 seconds';
 ```
 
+# Lag between most recent swap and 1s candle
+```sql
+with latest as (select timestamp from pumpfun.swap order by timestamp desc limit 1)
+select
+    age((select timestamp from latest), timestamp)
+from pumpfun.candle_1s
+order by timestamp desc
+    limit 1;
+```
+
 # Reset analytics
 
 ```sql
