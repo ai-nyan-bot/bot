@@ -1,45 +1,16 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::format::{FormatPretty, BILLION, HOUNDRED, MILLION, TEN, THOUSAND};
+use crate::format::{format_big_decimal, FormatPretty};
 use crate::model::MarketCapUsd;
 use bigdecimal::BigDecimal;
 
 impl FormatPretty for MarketCapUsd {
     fn pretty(self) -> String {
-        let value = self.0;
-        let abs_value = value.abs();
-
-        let (value, suffix): (BigDecimal, &str) = if abs_value >= *BILLION {
-            (value / 1_000_000_000.0, "B")
-        } else if abs_value >= *MILLION {
-            (value / 1_000_000.0, "M")
-        } else if abs_value >= *THOUSAND {
-            (value / 1_000.0, "k")
-        } else {
-            return format!("${value}");
-        };
-
-        let mut formatted = value.to_string();
-
-        if let Some(dot_index) = formatted.find('.') {
-            let truncate_len = if value >= *HOUNDRED {
-                dot_index
-            } else if value >= *TEN {
-                dot_index + 2
-            } else {
-                dot_index + 3
-            };
-
-            formatted.truncate(truncate_len);
+        if self.0 < BigDecimal::from(1) {
+            return "$0".to_string();
         }
-
-        let trimmed = formatted
-            .trim_end_matches(".00")
-            .trim_end_matches(".0")
-            .trim_end_matches('.');
-
-        format!("${}{}", trimmed, suffix)
+        format!("${}", format_big_decimal(self.0))
     }
 }
 
@@ -47,10 +18,19 @@ impl FormatPretty for MarketCapUsd {
 mod tests {
     use crate::format::FormatPretty;
     use crate::model::MarketCapUsd;
+    use bigdecimal::{BigDecimal, FromPrimitive};
 
     #[test]
     fn test_zero() {
         assert_eq!(MarketCapUsd::from(0).pretty(), "$0");
+    }
+
+    #[test]
+    fn test_tiny() {
+        assert_eq!(
+            MarketCapUsd(BigDecimal::from_f32(0.001).unwrap()).pretty(),
+            "$0"
+        );
     }
 
     #[test]

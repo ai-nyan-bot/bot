@@ -63,20 +63,8 @@ impl PartialEq<&str> for VolumeQuote {
 #[sqlx(transparent)]
 pub struct VolumeUsd(pub BigDecimal);
 
-impl From<i32> for VolumeUsd {
-    fn from(value: i32) -> Self {
-        Self(BigDecimal::from(value))
-    }
-}
-
 impl From<i64> for VolumeUsd {
     fn from(value: i64) -> Self {
-        Self(BigDecimal::from(value))
-    }
-}
-
-impl From<u64> for VolumeUsd {
-    fn from(value: u64) -> Self {
         Self(BigDecimal::from(value))
     }
 }

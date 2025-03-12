@@ -1,54 +1,90 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use crate::format::{format_big_decimal, FormatPretty};
 use crate::model::VolumeUsd;
-use bigdecimal::{BigDecimal, ToPrimitive};
+use bigdecimal::BigDecimal;
 
-pub fn format_volume_usd<T: Into<VolumeUsd>>(num: T) -> String {
-    let num = num.into().0;
-    let mut suffix = "";
-
-    let billion = BigDecimal::from(1_000_000_000u64);
-    let million = BigDecimal::from(1_000_000u64);
-    let thousand = BigDecimal::from(1_000u64);
-
-    let formatted = if num >= billion {
-        suffix = "B";
-        (num / &billion).to_f64().map(|x| format!("{:.2}", x))
-    } else if num >= million {
-        suffix = "M";
-        (num / &million).to_f64().map(|x| format!("{:.2}", x))
-    } else if num >= thousand.clone() {
-        suffix = "K";
-        (num / &thousand).to_f64().map(|x| format!("{:.2}", x))
-    } else {
-        num.to_f64().map(|x| format!("{:.1}", x))
-    };
-
-    let formatted = formatted.unwrap_or_else(|| "0".to_string());
-
-    let cleaned = if formatted.ends_with(".0") {
-        formatted[..formatted.len() - 2].to_string()
-    } else {
-        formatted
-    };
-
-    let mut result = cleaned.chars().take(5).collect::<String>();
-    result.push_str(suffix);
-
-    format!("${result}")
+impl FormatPretty for VolumeUsd {
+    fn pretty(self) -> String {
+        if self.0 < BigDecimal::from(1) {
+            return "$0".to_string();
+        }
+        format!("${}", format_big_decimal(self.0))
+    }
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::format::FormatPretty;
+    use crate::model::VolumeUsd;
+    use bigdecimal::{BigDecimal, FromPrimitive};
 
-    mod volume_usd {
-        use crate::format::format_volume_usd;
+    #[test]
+    fn test_zero() {
+        assert_eq!(VolumeUsd::from(0).pretty(), "$0");
+    }
 
-        #[test]
-        fn test_9946_50() {
-            let result = format_volume_usd("9946.50");
-            assert_eq!(result, "$9.95K");
-        }
+    #[test]
+    fn test_tiny() {
+        assert_eq!(
+            VolumeUsd(BigDecimal::from_f32(0.001).unwrap()).pretty(),
+            "$0"
+        );
+    }
+
+    #[test]
+    fn test_one() {
+        assert_eq!(VolumeUsd::from(1).pretty(), "$1");
+    }
+
+    #[test]
+    fn test_999() {
+        assert_eq!(VolumeUsd::from(999).pretty(), "$999");
+    }
+
+    #[test]
+    fn test_1050() {
+        assert_eq!(VolumeUsd::from(1050).pretty(), "$1.05k");
+    }
+
+    #[test]
+    fn test_10_500() {
+        assert_eq!(VolumeUsd::from(10_500).pretty(), "$10.5k");
+    }
+
+    #[test]
+    fn test_999_999() {
+        assert_eq!(VolumeUsd::from(999_999).pretty(), "$999k");
+    }
+
+    #[test]
+    fn test_1_000_000() {
+        assert_eq!(VolumeUsd::from(1_000_000).pretty(), "$1M");
+    }
+
+    #[test]
+    fn test_1_234_567() {
+        assert_eq!(VolumeUsd::from(1_234_567).pretty(), "$1.23M");
+    }
+
+    #[test]
+    fn test_10_000_000() {
+        assert_eq!(VolumeUsd::from(10_000_000).pretty(), "$10M");
+    }
+
+    #[test]
+    fn test_999_999_999() {
+        assert_eq!(VolumeUsd::from(999_999_999).pretty(), "$999M");
+    }
+
+    #[test]
+    fn test_1_000_000_000() {
+        assert_eq!(VolumeUsd::from(1_000_000_000).pretty(), "$1B");
+    }
+
+    #[test]
+    fn test_2_345_678_901() {
+        assert_eq!(VolumeUsd::from(2_345_678_901).pretty(), "$2.34B");
     }
 }

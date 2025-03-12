@@ -1,42 +1,13 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::format::FormatPretty;
+use crate::format::{format_big_decimal, FormatPretty};
 use crate::model::Count;
+use bigdecimal::BigDecimal;
 
 impl FormatPretty for Count {
     fn pretty(self) -> String {
-        let abs_value = self.0.abs();
-        let (value, suffix) = if abs_value >= 1_000_000_000 {
-            (self.0 as f64 / 1_000_000_000.0, "B")
-        } else if abs_value >= 1_000_000 {
-            (self.0 as f64 / 1_000_000.0, "M")
-        } else if abs_value >= 1_000 {
-            (self.0 as f64 / 1_000.0, "k")
-        } else {
-            return self.0.to_string();
-        };
-
-        let mut formatted = value.to_string();
-
-        if let Some(dot_index) = formatted.find('.') {
-            let truncate_len = if value >= 100.0 {
-                dot_index
-            } else if value >= 10.0 {
-                dot_index + 2
-            } else {
-                dot_index + 3
-            };
-
-            formatted.truncate(truncate_len);
-        }
-
-        let trimmed = formatted
-            .trim_end_matches(".00")
-            .trim_end_matches(".0")
-            .trim_end_matches('.');
-
-        format!("{}{}", trimmed, suffix)
+        format_big_decimal(BigDecimal::from(self.0))
     }
 }
 
