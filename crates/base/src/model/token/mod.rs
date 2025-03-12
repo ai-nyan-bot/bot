@@ -3,7 +3,7 @@
 
 use crate::model::AddressId;
 pub use amount::*;
-use common::model::{BlockId, BlockTime};
+use common::model::{AgeInSeconds, BlockId, BlockTime, Timestamp};
 pub use decimals::Decimals;
 pub use description::Description;
 pub use id::{TokenId, TokenPairId};
@@ -37,6 +37,13 @@ pub struct Token {
     pub creator: Option<AddressId>,
     pub block: Option<BlockId>,
     pub block_time: Option<BlockTime>,
+}
+
+impl Token {
+    pub fn age(&self) -> Option<AgeInSeconds> {
+        self.block_time
+            .map(|time| AgeInSeconds(Timestamp::now().to_epoch_seconds() - time.to_epoch_seconds()))
+    }
 }
 
 #[derive(Debug, Clone)]

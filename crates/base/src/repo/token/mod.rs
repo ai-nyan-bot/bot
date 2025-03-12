@@ -47,6 +47,10 @@ impl TokenRepo {
         }))
     }
 
+    pub fn new_read_only() -> Self {
+        Self::new(Box::new(NeverCalledTokenInfoLoader {}))
+    }
+
     pub fn testing(info_loader: Box<dyn LoadTokenInfo>) -> Self {
         Self(Arc::new(TokenRepoInner {
             info_loader,

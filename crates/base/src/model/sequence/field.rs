@@ -6,6 +6,9 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum Field {
+    AgeBase,
+    AgeQuote,
+
     CurveProgress,
     CurveProgressAge,
 

@@ -6,6 +6,7 @@ mod summary;
 use crate::pumpfun::fact::summary::add_summary_to_facts;
 use base::model::Fact::CurveProgressAgeDuration;
 use base::model::{Fact, Facts, TokenPairId, Value};
+use base::repo::TokenPairRepo;
 use common::model::{Limit, TimeUnit, Timeframe};
 use solana::pumpfun::repo::{CurveQuery, CurveRepo, SummaryQuery, SummaryRepo};
 use sqlx::PgPool;
@@ -15,14 +16,21 @@ use Fact::CurveProgressPercent;
 #[derive(Clone)]
 pub struct FactService {
     pool: PgPool,
+    token_pair_repo: TokenPairRepo,
     summary_repo: SummaryRepo,
     curve_repo: CurveRepo,
 }
 
 impl FactService {
-    pub fn new(pool: PgPool, summary_repo: SummaryRepo, curve_repo: CurveRepo) -> Self {
+    pub fn new(
+        pool: PgPool,
+        token_pair_repo: TokenPairRepo,
+        summary_repo: SummaryRepo,
+        curve_repo: CurveRepo,
+    ) -> Self {
         Self {
             pool,
+            token_pair_repo,
             summary_repo,
             curve_repo,
         }
@@ -32,6 +40,33 @@ impl FactService {
         let mut tx = self.pool.begin().await.unwrap();
 
         let mut result: HashMap<TokenPairId, Facts> = self
+            .token_pair_repo
+            .list_all(&mut tx)
+            .await
+            .unwrap()
+            .into_iter()
+            .map(|tp| {
+                let mut facts = Facts::new();
+
+                if let Some(age) = tp.base.age() {
+                    facts.set_value(
+                        Fact::AgeBaseDuration,
+                        Value::duration(age.0, TimeUnit::Second),
+                    )
+                }
+
+                if let Some(age) = tp.quote.age() {
+                    facts.set_value(
+                        Fact::AgeQuoteDuration,
+                        Value::duration(age.0, TimeUnit::Second),
+                    )
+                }
+
+                (tp.id, facts)
+            })
+            .collect();
+
+        for curve in self
             .curve_repo
             .list(
                 &mut tx,
@@ -41,19 +76,15 @@ impl FactService {
             )
             .await
             .unwrap()
-            .into_iter()
-            .map(|c| {
-                (
-                    c.id.clone(),
-                    Facts::new()
-                        .with_value(CurveProgressPercent, Value::percent(c.progress.0))
-                        .with_value(
-                            CurveProgressAgeDuration,
-                            Value::duration(c.age.0, TimeUnit::Second),
-                        ),
-                )
-            })
-            .collect();
+        {
+            let facts = result.get_mut(&curve.id).unwrap();
+
+            facts.set_value(CurveProgressPercent, Value::percent(curve.progress.0));
+            facts.set_value(
+                CurveProgressAgeDuration,
+                Value::duration(curve.age.0, TimeUnit::Second),
+            );
+        }
 
         for timeframe in [
             Timeframe::M1,
@@ -81,6 +112,9 @@ impl FactService {
             }
         }
         tx.commit().await.unwrap();
+        
+        dbg!(&result);
+        
         result
     }
 }

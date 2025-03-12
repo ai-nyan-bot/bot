@@ -7,7 +7,9 @@ use crate::config::Config;
 use crate::pumpfun::FactService;
 use crate::state::{AppState, AppStateInner, Service};
 use base::model::{Action, Venue};
-use base::repo::{InvocationCreateCmd, InvocationRepo, NotificationRepo, RuleRepo};
+use base::repo::{
+    InvocationCreateCmd, InvocationRepo, NotificationRepo, RuleRepo, TokenPairRepo, TokenRepo,
+};
 use base::service::{NotificationRuleMatched, NotificationService, RuleService};
 use common::repo::pool::setup_pool;
 use solana::pumpfun::repo::{CurveRepo, SummaryRepo};
@@ -44,9 +46,16 @@ fn main() {
     runtime.block_on(async {
         let pool = setup_pool(&config.postgres).await;
 
+        let token_repo = TokenRepo::new_read_only();
+
         let state = AppState(Arc::new(AppStateInner {
             service: Service {
-                fact: FactService::new(pool.clone(), SummaryRepo::new(), CurveRepo::new()),
+                fact: FactService::new(
+                    pool.clone(),
+                    TokenPairRepo::new(token_repo.clone()),
+                    SummaryRepo::new(),
+                    CurveRepo::new(),
+                ),
                 notification: NotificationService::new(pool.clone(), NotificationRepo::new()),
                 rule: RuleService::new(pool.clone(), RuleRepo::new()),
             },

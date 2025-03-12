@@ -3,17 +3,12 @@
 
 use crate::model::Fact::CurveProgressPercent;
 use crate::model::FactError::UnableToDeriveFact;
-use crate::model::Field::PriceAvg;
+use crate::model::Field::{AgeQuote, PriceAvg};
 use crate::model::ValueType::{Count, Duration, Percent, Quote, Usd};
 use crate::model::{Condition, FactError, Field, Operator, Value, ValueType};
 use serde::{Deserialize, Serialize};
-use Fact::{
-    CurveProgressAgeDuration, PriceAvgQuote, PriceAvgUsd, PriceQuote, PriceUsd, SwapAllChangeCount,
-    SwapAllCount, SwapBuyChangeCount, SwapBuyChangePercent, SwapBuyCount, SwapChangePercent,
-    SwapSellChangeCount, SwapSellChangePercent, SwapSellCount, TelegramGroup, TelegramGroupHandle,
-    TwitterAccount, TwitterAccountHandle, VolumeChangeQuote,
-};
-use Field::{CurveProgress, CurveProgressAge, Price, SwapAll, SwapBuy, SwapSell, Volume};
+use Fact::{AgeBaseDuration, AgeQuoteDuration, CurveProgressAgeDuration, PriceAvgQuote, PriceAvgUsd, PriceQuote, PriceUsd, SwapAllChangeCount, SwapAllCount, SwapBuyChangeCount, SwapBuyChangePercent, SwapBuyCount, SwapChangePercent, SwapSellChangeCount, SwapSellChangePercent, SwapSellCount, TelegramGroup, TelegramGroupHandle, TwitterAccount, TwitterAccountHandle, VolumeChangeQuote};
+use Field::{AgeBase, CurveProgress, CurveProgressAge, Price, SwapAll, SwapBuy, SwapSell, Volume};
 use Operator::{
     DecreasedByLessThan, DecreasedByLessThanEqual, DecreasedByMoreThan, DecreasedByMoreThanEqual,
     Equal, IncreasedByLessThan, IncreasedByLessThanEqual, IncreasedByMoreThan,
@@ -23,7 +18,13 @@ use ValueType::Boolean;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Fact {
+    /// Age of the base token
+    AgeBaseDuration,
+    AgeQuoteDuration,
+
     CurveProgressPercent,
+
+    /// Duration since last update of curve progress
     CurveProgressAgeDuration,
 
     PriceQuote,
@@ -61,6 +62,9 @@ pub enum Fact {
 impl Fact {
     pub fn has_timeframe(&self) -> bool {
         match self {
+            AgeBaseDuration => false,
+            AgeQuoteDuration => false,
+
             CurveProgressPercent => false,
             CurveProgressAgeDuration => false,
 
@@ -100,6 +104,9 @@ impl Fact {
 
     pub fn value_type(&self) -> ValueType {
         match self {
+            AgeBaseDuration => Duration,
+            AgeQuoteDuration => Duration,
+
             CurveProgressPercent => Percent,
             CurveProgressAgeDuration => Duration,
 
@@ -172,6 +179,18 @@ impl Fact {
         has_timeframe: bool,
     ) -> Option<Self> {
         let fact = match (field, operator, value.value_type(), has_timeframe) {
+            // AgeBaseDuration
+            (AgeBase, MoreThan, Duration, false) => AgeBaseDuration,
+            (AgeBase, MoreThanEqual, Duration, false) => AgeBaseDuration,
+            (AgeBase, LessThan, Duration, false) => AgeBaseDuration,
+            (AgeBase, LessThanEqual, Duration, false) => AgeBaseDuration,
+
+            // AgeQuoteDuration
+            (AgeQuote, MoreThan, Duration, false) => AgeQuoteDuration,
+            (AgeQuote, MoreThanEqual, Duration, false) => AgeQuoteDuration,
+            (AgeQuote, LessThan, Duration, false) => AgeQuoteDuration,
+            (AgeQuote, LessThanEqual, Duration, false) => AgeQuoteDuration,
+
             // CurveProgressPercent
             (CurveProgress, MoreThan, Percent, false) => CurveProgressPercent,
             (CurveProgress, MoreThanEqual, Percent, false) => CurveProgressPercent,
@@ -313,6 +332,50 @@ impl Fact {
 mod tests {
     use super::*;
     use common::model::TimeUnit::Minute;
+
+    #[test]
+    fn test_age_base() {
+        assert_eq!(
+            Fact::from_comparison(&AgeBase, &MoreThan, &Value::duration(1, Minute), false),
+            Some(AgeBaseDuration)
+        );
+        assert_eq!(
+            Fact::from_comparison(&AgeBase, &MoreThanEqual, &Value::duration(1, Minute), false),
+            Some(AgeBaseDuration)
+        );
+
+        assert_eq!(
+            Fact::from_comparison(&AgeBase, &LessThan, &Value::duration(1, Minute), false),
+            Some(AgeBaseDuration)
+        );
+
+        assert_eq!(
+            Fact::from_comparison(&AgeBase, &LessThanEqual, &Value::duration(1, Minute), false),
+            Some(AgeBaseDuration)
+        );
+    }
+
+    #[test]
+    fn test_age_quote() {
+        assert_eq!(
+            Fact::from_comparison(&AgeQuote, &MoreThan, &Value::duration(1, Minute), false),
+            Some(AgeQuoteDuration)
+        );
+        assert_eq!(
+            Fact::from_comparison(&AgeQuote, &MoreThanEqual, &Value::duration(1, Minute), false),
+            Some(AgeQuoteDuration)
+        );
+
+        assert_eq!(
+            Fact::from_comparison(&AgeQuote, &LessThan, &Value::duration(1, Minute), false),
+            Some(AgeQuoteDuration)
+        );
+
+        assert_eq!(
+            Fact::from_comparison(&AgeQuote, &LessThanEqual, &Value::duration(1, Minute), false),
+            Some(AgeQuoteDuration)
+        );
+    }
 
     #[test]
     fn test_curve_progress() {
