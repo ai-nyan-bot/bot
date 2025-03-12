@@ -5,12 +5,15 @@ use crate::user::{get_or_create_another_user, get_or_create_test_user};
 use base::model::Action::NotifyTelegram;
 use base::model::Condition::Compare;
 use base::model::Operator::MoreThan;
-use base::model::{Field, Rule, RuleId, RuleName, Sequence, Value};
-use base::repo::{RuleCreateCmd, RuleRepo};
+use base::model::{Field, Rule, RuleId, RuleName, RuleStatus, Sequence, Value};
+use base::repo::{RuleCreateCmd, RuleRepo, RuleUpdateCmd};
 use common::model::{Count, Timeframe};
 use common::repo::Tx;
 
-pub async fn create_rule_for_test_user<'a>(tx: &mut Tx<'a>, name: impl Into<RuleName>) -> Rule {
+pub async fn create_inactive_rule_for_test_user<'a>(
+    tx: &mut Tx<'a>,
+    name: impl Into<RuleName>,
+) -> Rule {
     let test_user = get_or_create_test_user(tx).await;
     RuleRepo::new()
         .create(
@@ -33,7 +36,27 @@ pub async fn create_rule_for_test_user<'a>(tx: &mut Tx<'a>, name: impl Into<Rule
         .unwrap()
 }
 
-pub async fn create_rule_for_another_user<'a>(tx: &mut Tx<'a>, name: impl Into<RuleName>) -> Rule {
+pub async fn create_active_rule_for_test_user<'a>(
+    tx: &mut Tx<'a>,
+    name: impl Into<RuleName>,
+) -> Rule {
+    let created = create_inactive_rule_for_test_user(tx, name).await;
+    RuleRepo::new()
+        .update(
+            tx,
+            RuleUpdateCmd {
+                id: created.id,
+                user: created.user,
+                name: created.name,
+                sequence: created.sequence,
+                status: RuleStatus::Active,
+            },
+        )
+        .await
+        .unwrap()
+}
+
+pub async fn create_inactive_rule_for_another_user<'a>(tx: &mut Tx<'a>, name: impl Into<RuleName>) -> Rule {
     let another_user = get_or_create_another_user(tx).await;
     RuleRepo::new()
         .create(

@@ -5,6 +5,7 @@ import {Card, CardContent, CardHeader, CardTitle} from "@components/ui/card";
 import {RuleStatus} from "@types";
 import {Button} from "@components/ui/button.tsx";
 import {cn} from "@utils";
+import {ToggleSwitch} from "@components/ui/toggle-switch.tsx";
 
 export type RuleDetailFormProps = {
     id: string;
@@ -61,32 +62,57 @@ const StatusButton: FC<StatusButtonProps> = ({id, status, onChange}) => {
     return (
         <div className={"pt-4 flex items-center space-x-2"}>
             <Label htmlFor="rule-status">Status</Label>
-            <Button
-                key={`rule-status-${id}`}
-                id={"rule-status"}
-                onClick={() => {
-                    switch (status) {
-                        case RuleStatus.ACTIVE:
-                            onChange(RuleStatus.INACTIVE);
-                            break;
-                        case RuleStatus.ACTIVE_EXHAUSTED:
-                            onChange(RuleStatus.INACTIVE_EXHAUSTED);
-                            break;
-                        case RuleStatus.INACTIVE:
-                            onChange(RuleStatus.ACTIVE);
-                            break;
-                        case RuleStatus.INACTIVE_EXHAUSTED:
-                            onChange(RuleStatus.ACTIVE_EXHAUSTED);
-                            break
+            {/*<Button*/}
+            {/*    key={`rule-status-${id}`}*/}
+            {/*    id={"rule-status"}*/}
+            {/*    onClick={() => {*/}
+            {/*        switch (status) {*/}
+            {/*            case RuleStatus.ACTIVE:*/}
+            {/*                onChange(RuleStatus.INACTIVE);*/}
+            {/*                break;*/}
+            {/*            case RuleStatus.ACTIVE_EXHAUSTED:*/}
+            {/*                onChange(RuleStatus.INACTIVE_EXHAUSTED);*/}
+            {/*                break;*/}
+            {/*            case RuleStatus.INACTIVE:*/}
+            {/*                onChange(RuleStatus.ACTIVE);*/}
+            {/*                break;*/}
+            {/*            case RuleStatus.INACTIVE_EXHAUSTED:*/}
+            {/*                onChange(RuleStatus.ACTIVE_EXHAUSTED);*/}
+            {/*                break*/}
 
-                    }
-                }}
-                className={cn(
-                    "transition-colors", toggled ? "bg-green-500 hover:bg-green-600" : "bg-gray-500 hover:bg-gray-600"
-                )}
-            >
-                {toggled ? "Active" : "Inactive"}
-            </Button>
+            {/*        }*/}
+            {/*    }}*/}
+            {/*    className={cn(*/}
+            {/*        "transition-colors", toggled ? "bg-green-500 hover:bg-green-600" : "bg-gray-500 hover:bg-gray-600"*/}
+            {/*    )}*/}
+            {/*>*/}
+            {/*    {toggled ? "Active" : "Inactive"}*/}
+            {/*</Button>*/}
+            <div className={"w-full"}>
+                <ToggleSwitch
+                    activeLabel={'Active'}
+                    inactiveLabel={'Inactive'}
+                    value={toggled}
+                    onChange={() => {
+                        switch (status) {
+                            case RuleStatus.ACTIVE:
+                                onChange(RuleStatus.INACTIVE);
+                                break;
+                            case RuleStatus.ACTIVE_EXHAUSTED:
+                                onChange(RuleStatus.INACTIVE_EXHAUSTED);
+                                break;
+                            case RuleStatus.INACTIVE:
+                                onChange(RuleStatus.ACTIVE);
+                                break;
+                            case RuleStatus.INACTIVE_EXHAUSTED:
+                                onChange(RuleStatus.ACTIVE_EXHAUSTED);
+                                break
+
+                        }
+                    }}
+                />
+            </div>
+
         </div>
 
     );

@@ -9,7 +9,7 @@ use base::repo::{InvocationCreateCmd, InvocationRepo};
 use common::repo::error::RepoError;
 use sqlx::Acquire;
 use testing::invocation::count_all;
-use testing::rule::create_rule_for_test_user;
+use testing::rule::create_inactive_rule_for_test_user;
 use testing::run_test;
 use testing::token_pair::get_or_create_token_pair;
 use testing::user::get_or_create_test_user;
@@ -18,7 +18,7 @@ use testing::user::get_or_create_test_user;
 async fn test_create() {
     run_test(|mut tx| async move {
         let user = get_or_create_test_user(&mut tx).await;
-        let rule = create_rule_for_test_user(&mut tx, "MoneyMaker").await;
+        let rule = create_inactive_rule_for_test_user(&mut tx, "MoneyMaker").await;
         let token_pair = get_or_create_token_pair(&mut tx, Mint::usdc(), Mint::usdt()).await;
 
         let test_instance = InvocationRepo::new();
@@ -70,7 +70,7 @@ async fn test_create() {
 async fn test_next_is_none() {
     run_test(|mut tx| async move {
         let user = get_or_create_test_user(&mut tx).await;
-        let rule = create_rule_for_test_user(&mut tx, "MoneyMaker").await;
+        let rule = create_inactive_rule_for_test_user(&mut tx, "MoneyMaker").await;
         let token_pair = get_or_create_token_pair(&mut tx, Mint::usdc(), Mint::usdt()).await;
 
         let test_instance = InvocationRepo::new();
@@ -104,7 +104,7 @@ async fn test_invocation_requires_existing_user() {
     run_test(|mut tx| async move {
         let test_instance = InvocationRepo::new();
 
-        let rule = create_rule_for_test_user(&mut tx, "MoneyMaker").await;
+        let rule = create_inactive_rule_for_test_user(&mut tx, "MoneyMaker").await;
         let token_pair = get_or_create_token_pair(&mut tx, Mint::usdc(), Mint::usdt()).await;
 
         let result = test_instance
@@ -175,7 +175,7 @@ async fn test_invocation_requires_existing_token_pair() {
         let test_instance = InvocationRepo::new();
 
         let user = get_or_create_test_user(&mut tx).await;
-        let rule = create_rule_for_test_user(&mut tx, "MoneyMaker").await;
+        let rule = create_inactive_rule_for_test_user(&mut tx, "MoneyMaker").await;
 
         let result = test_instance
             .create(

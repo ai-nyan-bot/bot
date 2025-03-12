@@ -17,7 +17,7 @@ pub struct RuleCreateCmd {
 impl RuleRepo {
     pub async fn create<'a>(&self, tx: &mut Tx<'a>, cmd: RuleCreateCmd) -> RepoResult<Rule> {
         let rule_id = query("insert into solana.rule (version, status, name, sequence, user_id) values (1, $1, $2, $3, $4) returning id")
-            .bind(RuleStatus::Active)
+            .bind(RuleStatus::Inactive)
             .bind(cmd.name)
             .bind::<JsonValue>(cmd.sequence.into())
             .bind(cmd.user)

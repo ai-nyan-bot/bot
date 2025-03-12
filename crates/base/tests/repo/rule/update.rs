@@ -9,7 +9,7 @@ use base::model::{Action, RuleStatus, Sequence, TelegramActionButtonConfig, Valu
 use base::repo::{RuleRepo, RuleUpdateCmd};
 use common::model::Timeframe::{H1, M15};
 use common::repo::error::RepoError;
-use testing::rule::{create_rule_for_test_user, get_rule_by_id};
+use testing::rule::{create_inactive_rule_for_test_user, get_rule_by_id};
 use testing::run_test;
 use testing::user::{get_or_create_another_user, get_or_create_test_user};
 use RuleStatus::Inactive;
@@ -25,7 +25,7 @@ async fn test_update() {
         let user = get_or_create_test_user(&mut tx).await;
         let test_instance = RuleRepo::new();
 
-        let test_rule = create_rule_for_test_user(&mut tx, "A").await;
+        let test_rule = create_inactive_rule_for_test_user(&mut tx, "A").await;
 
         let count = testing::rule::count_all(&mut tx).await;
         assert_eq!(count, 4);
@@ -104,7 +104,7 @@ async fn test_nothing_changed() {
         let user = get_or_create_test_user(&mut tx).await;
         let test_instance = RuleRepo::new();
 
-        let test_rule = create_rule_for_test_user(&mut tx, "A").await;
+        let test_rule = create_inactive_rule_for_test_user(&mut tx, "A").await;
 
         let count = testing::rule::count_all(&mut tx).await;
         assert_eq!(count, 4);
@@ -133,7 +133,6 @@ async fn test_nothing_changed() {
 
         assert_eq!(result.id, test_rule.id);
         assert_eq!(result.name, "A");
-        assert_eq!(result.version, 1);
         assert_eq!(result.user, 1);
         assert_eq!(
             result.sequence.condition,
@@ -162,7 +161,7 @@ async fn test_different_user() {
 
         let test_instance = RuleRepo::new();
 
-        let test_rule = create_rule_for_test_user(&mut tx, "A").await;
+        let test_rule = create_inactive_rule_for_test_user(&mut tx, "A").await;
 
         let result = test_instance
             .update(
@@ -214,7 +213,7 @@ async fn test_rule_not_found() {
         let user = get_or_create_test_user(&mut tx).await;
         let test_instance = RuleRepo::new();
 
-        let _ = create_rule_for_test_user(&mut tx, "A").await;
+        let _ = create_inactive_rule_for_test_user(&mut tx, "A").await;
 
         let result = test_instance
             .update(

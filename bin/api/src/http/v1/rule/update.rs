@@ -50,7 +50,7 @@ mod tests {
     use base::model::RuleStatus::Archived;
     use base::model::{Action, Condition, TelegramActionButtonConfig, Value};
     use common::model::Timeframe::M15;
-    use testing::rule::create_rule_for_test_user;
+    use testing::rule::create_inactive_rule_for_test_user;
     use Condition::Compare;
 
     #[test_log::test(tokio::test)]
@@ -58,7 +58,7 @@ mod tests {
         let test = Test::new().await;
 
         test.tx(|mut tx| async move {
-            create_rule_for_test_user(&mut tx, "MoneyMaker").await;
+            create_inactive_rule_for_test_user(&mut tx, "MoneyMaker").await;
             tx.commit().await.unwrap()
         })
         .await;
@@ -113,7 +113,7 @@ mod tests {
         let test = Test::new().await;
 
         test.tx(|mut tx| async move {
-            create_rule_for_test_user(&mut tx, "MoneyMaker").await;
+            create_inactive_rule_for_test_user(&mut tx, "MoneyMaker").await;
             tx.commit().await.unwrap()
         })
         .await;
@@ -140,7 +140,7 @@ mod tests {
         let test = Test::new().await;
 
         test.tx(|mut tx| async move {
-            create_rule_for_test_user(&mut tx, "MoneyMaker").await;
+            create_inactive_rule_for_test_user(&mut tx, "MoneyMaker").await;
             tx.commit().await.unwrap()
         })
         .await;
@@ -211,7 +211,7 @@ mod tests {
         let test = Test::new().await;
 
         test.tx(|mut tx| async move {
-            create_rule_for_test_user(&mut tx, "MoneyMaker").await;
+            create_inactive_rule_for_test_user(&mut tx, "MoneyMaker").await;
             tx.commit().await.unwrap()
         })
         .await;
@@ -232,7 +232,7 @@ mod tests {
         let test = Test::new().await;
 
         test.tx(|mut tx| async move {
-            create_rule_for_test_user(&mut tx, "MoneyMaker").await;
+            create_inactive_rule_for_test_user(&mut tx, "MoneyMaker").await;
             tx.commit().await.unwrap()
         })
         .await;

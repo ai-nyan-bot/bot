@@ -9,7 +9,7 @@ mod get_by_id {
     use base::repo::RuleRepo;
     use common::model::Timeframe::M15;
     use common::repo::error::RepoError;
-    use testing::rule::create_rule_for_test_user;
+    use testing::rule::create_inactive_rule_for_test_user;
     use testing::run_test;
 
     #[test_log::test(sqlx::test)]
@@ -17,7 +17,7 @@ mod get_by_id {
         run_test(|mut tx| async move {
             let test_instance = RuleRepo::new();
 
-            let rule = create_rule_for_test_user(&mut tx, "TheMoneyMaker").await;
+            let rule = create_inactive_rule_for_test_user(&mut tx, "TheMoneyMaker").await;
 
             let result = test_instance.get_by_id(&mut tx, rule.id).await.unwrap();
             assert_eq!(result.id, 4);

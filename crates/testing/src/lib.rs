@@ -10,7 +10,7 @@ use futures_util::FutureExt;
 pub use hash::hash_for_testing;
 use log::info;
 use rand::{thread_rng, Rng};
-use rule::create_rule_for_another_user;
+use rule::create_inactive_rule_for_another_user;
 use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
 use sqlx::{Executor, PgPool};
 use std::future::Future;
@@ -162,9 +162,9 @@ pub async fn initialise_database<'a>(tx: &mut Tx<'a>) {
     get_or_create_test_user(tx).await;
     get_or_create_another_user(tx).await;
 
-    create_rule_for_another_user(tx, "Rule A").await;
-    create_rule_for_another_user(tx, "Rule B").await;
-    create_rule_for_another_user(tx, "Rule C").await;
+    create_inactive_rule_for_another_user(tx, "Rule A").await;
+    create_inactive_rule_for_another_user(tx, "Rule B").await;
+    create_inactive_rule_for_another_user(tx, "Rule C").await;
 
     get_or_create_token_pair(tx, Mint::usdc(), Mint::usdt()).await;
 }

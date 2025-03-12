@@ -31,14 +31,14 @@ mod tests {
     use crate::http::model::rule::HttpRulGetResponse;
     use crate::http::testing::{extract, extract_error, Test};
     use axum::http::StatusCode;
-    use testing::rule::create_rule_for_test_user;
+    use testing::rule::create_inactive_rule_for_test_user;
 
     #[test_log::test(tokio::test)]
     async fn ok() {
         let test = Test::new().await;
 
         test.tx(|mut tx| async move {
-            create_rule_for_test_user(&mut tx, "MoneyMaker").await;
+            create_inactive_rule_for_test_user(&mut tx, "MoneyMaker").await;
             tx.commit().await.unwrap()
         })
         .await;

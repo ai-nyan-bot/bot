@@ -3,12 +3,12 @@
 
 use base::model::Condition::Compare;
 use base::model::Field::PriceAvg;
-use base::model::RuleStatus::Active;
+use base::model::RuleStatus::Inactive;
 use base::model::{Action, Operator, Sequence, Value};
 use base::repo::{RuleCreateCmd, RuleRepo};
 use common::repo::error::RepoError;
 use sqlx::Acquire;
-use testing::rule::create_rule_for_test_user;
+use testing::rule::create_inactive_rule_for_test_user;
 use testing::run_test_on_empty_db;
 use testing::user::get_or_create_test_user;
 use Operator::MoreThan;
@@ -41,7 +41,7 @@ async fn test_create() {
         assert_eq!(result.id, 1);
         assert_eq!(result.name, "ChubakaStrat1337");
         assert_eq!(result.version, 1);
-        assert_eq!(result.status, Active);
+        assert_eq!(result.status, Inactive);
         assert_eq!(
             result.sequence.condition,
             Compare {
@@ -93,8 +93,8 @@ async fn test_rule_requires_existing_user() {
 async fn test_rule_name_is_not_unique() {
     // Rational why wasting resources on a unique index for an edge case - if user does not want same name for the rule it can be easily updated
     run_test_on_empty_db(|mut tx| async move {
-        let first = create_rule_for_test_user(&mut tx, "A").await;
-        let second = create_rule_for_test_user(&mut tx, "A").await;
+        let first = create_inactive_rule_for_test_user(&mut tx, "A").await;
+        let second = create_inactive_rule_for_test_user(&mut tx, "A").await;
 
         assert_eq!(first.user, 1);
         assert_eq!(second.user, 1);

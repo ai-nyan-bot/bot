@@ -4,7 +4,7 @@
 use base::model::UserId;
 use base::repo::{RuleQueryUser, RuleRepo};
 use common::model::Limit;
-use testing::rule::create_rule_for_test_user;
+use testing::rule::create_inactive_rule_for_test_user;
 use testing::{run_test, run_test_on_empty_db};
 
 #[test_log::test(sqlx::test)]
@@ -12,8 +12,8 @@ async fn test_ok() {
     run_test(|mut tx| async move {
         let test_instance = RuleRepo::new();
 
-        let _ = create_rule_for_test_user(&mut tx, "TheMoneyMaker").await;
-        let _ = create_rule_for_test_user(&mut tx, "WinningBig").await;
+        let _ = create_inactive_rule_for_test_user(&mut tx, "TheMoneyMaker").await;
+        let _ = create_inactive_rule_for_test_user(&mut tx, "WinningBig").await;
 
         let result = test_instance
             .list_user(
@@ -86,9 +86,9 @@ async fn test_limit() {
     run_test(|mut tx| async move {
         let test_instance = RuleRepo::new();
 
-        let _ = create_rule_for_test_user(&mut tx, "A").await;
-        let _ = create_rule_for_test_user(&mut tx, "B").await;
-        let _ = create_rule_for_test_user(&mut tx, "C").await;
+        let _ = create_inactive_rule_for_test_user(&mut tx, "A").await;
+        let _ = create_inactive_rule_for_test_user(&mut tx, "B").await;
+        let _ = create_inactive_rule_for_test_user(&mut tx, "C").await;
 
         let result = test_instance
             .list_user(

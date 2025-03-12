@@ -8,14 +8,14 @@ use base::model::{Field, Value};
 use base::service::RuleService;
 use common::model::Timeframe;
 use common::service::ServiceError;
-use testing::rule::create_rule_for_test_user;
+use testing::rule::create_inactive_rule_for_test_user;
 use testing::run_test_with_pool;
 
 #[test_log::test(sqlx::test)]
 async fn test_ok() {
     run_test_with_pool(|pool| async move {
         let mut tx = pool.begin().await.unwrap();
-        create_rule_for_test_user(&mut tx, "TheRuleToRuleThemAll").await;
+        create_inactive_rule_for_test_user(&mut tx, "TheRuleToRuleThemAll").await;
         tx.commit().await.unwrap();
 
         let test_instance = RuleService::testing(pool.clone());
@@ -56,7 +56,7 @@ async fn test_not_found() {
 async fn test_different_user() {
     run_test_with_pool(|pool| async move {
         let mut tx = pool.begin().await.unwrap();
-        create_rule_for_test_user(&mut tx, "TheRuleToRuleThemAll").await;
+        create_inactive_rule_for_test_user(&mut tx, "TheRuleToRuleThemAll").await;
         tx.commit().await.unwrap();
 
         let test_instance = RuleService::testing(pool.clone());
