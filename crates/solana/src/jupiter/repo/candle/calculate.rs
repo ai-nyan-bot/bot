@@ -9,11 +9,7 @@ use common::model::Partition;
 use common::repo::{RepoResult, Tx};
 
 impl CandleRepo {
-    pub async fn calculate_1s<'a>(
-        &self,
-        tx: &mut Tx<'a>,
-        partition: Partition,
-    ) -> RepoResult<()> {
+    pub async fn calculate_1s<'a>(&self, tx: &mut Tx<'a>, partition: Partition) -> RepoResult<()> {
         let candle_price_table = format!("jupiter.candle_1s_{partition}");
         let swap_table = format!("jupiter.swap_{partition}");
 
@@ -148,7 +144,7 @@ volume_sell as (
     select
         token_pair_id,
         second,
-        sum(amount_base * price) as volume
+        sum(amount_quote * price) as volume
     from
         swaps
     where is_buy = false
@@ -320,11 +316,7 @@ select * from insert_current_candle
 }
 
 impl CandleRepo {
-    pub async fn calculate_1m<'a>(
-        &self,
-        tx: &mut Tx<'a>,
-        partition: Partition,
-    ) -> RepoResult<()> {
+    pub async fn calculate_1m<'a>(&self, tx: &mut Tx<'a>, partition: Partition) -> RepoResult<()> {
         aggregate_candle(
             tx,
             1,
@@ -335,11 +327,7 @@ impl CandleRepo {
         .await
     }
 
-    pub async fn calculate_5m<'a>(
-        &self,
-        tx: &mut Tx<'a>,
-        partition: Partition,
-    ) -> RepoResult<()> {
+    pub async fn calculate_5m<'a>(&self, tx: &mut Tx<'a>, partition: Partition) -> RepoResult<()> {
         aggregate_candle(
             tx,
             5,
@@ -350,11 +338,7 @@ impl CandleRepo {
         .await
     }
 
-    pub async fn calculate_15m<'a>(
-        &self,
-        tx: &mut Tx<'a>,
-        partition: Partition,
-    ) -> RepoResult<()> {
+    pub async fn calculate_15m<'a>(&self, tx: &mut Tx<'a>, partition: Partition) -> RepoResult<()> {
         aggregate_candle(
             tx,
             15,
@@ -365,11 +349,7 @@ impl CandleRepo {
         .await
     }
 
-    pub async fn calculate_1h<'a>(
-        &self,
-        tx: &mut Tx<'a>,
-        partition: Partition,
-    ) -> RepoResult<()> {
+    pub async fn calculate_1h<'a>(&self, tx: &mut Tx<'a>, partition: Partition) -> RepoResult<()> {
         aggregate_candle(
             tx,
             1,
@@ -380,11 +360,7 @@ impl CandleRepo {
         .await
     }
 
-    pub async fn calculate_6h<'a>(
-        &self,
-        tx: &mut Tx<'a>,
-        partition: Partition,
-    ) -> RepoResult<()> {
+    pub async fn calculate_6h<'a>(&self, tx: &mut Tx<'a>, partition: Partition) -> RepoResult<()> {
         aggregate_candle(
             tx,
             6,
@@ -394,11 +370,7 @@ impl CandleRepo {
         )
         .await
     }
-    pub async fn calculate_1d<'a>(
-        &self,
-        tx: &mut Tx<'a>,
-        partition: Partition,
-    ) -> RepoResult<()> {
+    pub async fn calculate_1d<'a>(&self, tx: &mut Tx<'a>, partition: Partition) -> RepoResult<()> {
         aggregate_candle(
             tx,
             1,
