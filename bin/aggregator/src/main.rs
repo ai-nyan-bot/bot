@@ -5,9 +5,10 @@
 
 use crate::config::Config;
 use common::repo::pool::setup_pool;
+use futures::future::join_all;
+use log::{error, info};
 use tokio::runtime::Builder;
-use tokio::try_join;
-use tracing::error;
+use tokio::task::JoinHandle;
 use tracing_subscriber::fmt::format::FmtSpan;
 use tracing_subscriber::EnvFilter;
 
@@ -42,53 +43,24 @@ fn main() {
 
         let solana_refresh_sol = solana::RefreshSol::new(pg_pool.clone());
 
-        let _ = try_join!(
-            // jupiter candle
-            async { jupiter_refresh_candles.s1().await },
-            async { jupiter_refresh_candles.m1().await },
-            async { jupiter_refresh_candles.m5().await },
-            async { jupiter_refresh_candles.m15().await },
-            async { jupiter_refresh_candles.h1().await },
-            async { jupiter_refresh_candles.h6().await },
-            async { jupiter_refresh_candles.d1().await },
-            // jupiter twap
-            async { jupiter_refresh_twaps.m1().await },
-            async { jupiter_refresh_twaps.m5().await },
-            async { jupiter_refresh_twaps.m15().await },
-            async { jupiter_refresh_twaps.h1().await },
-            async { jupiter_refresh_twaps.h6().await },
-            async { jupiter_refresh_twaps.d1().await },
-            // pumpfun candle
-            async { pumpfun_refresh_candles.s1().await },
-            async { pumpfun_refresh_candles.m1().await },
-            async { pumpfun_refresh_candles.m5().await },
-            async { pumpfun_refresh_candles.m15().await },
-            async { pumpfun_refresh_candles.h1().await },
-            async { pumpfun_refresh_candles.h6().await },
-            async { pumpfun_refresh_candles.d1().await },
-            // pumpfun twap
-            async { pumpfun_refresh_twaps.m1().await },
-            async { pumpfun_refresh_twaps.m5().await },
-            async { pumpfun_refresh_twaps.m15().await },
-            async { pumpfun_refresh_twaps.h1().await },
-            async { pumpfun_refresh_twaps.h6().await },
-            async { pumpfun_refresh_twaps.d1().await },
-            // pumpfun summary
-            async { pumpfun_refresh_summaries.m1().await },
-            async { pumpfun_refresh_summaries.m5().await },
-            async { pumpfun_refresh_summaries.m15().await },
-            async { pumpfun_refresh_summaries.h1().await },
-            async { pumpfun_refresh_summaries.h6().await },
-            async { pumpfun_refresh_summaries.d1().await },
-            // solana sol
-            async { solana_refresh_sol.m1().await },
-            async { solana_refresh_sol.m5().await },
-            async { solana_refresh_sol.m15().await },
-            async { solana_refresh_sol.h1().await },
-            async { solana_refresh_sol.h6().await },
-            async { solana_refresh_sol.d1().await },
-        );
+        let handles: Vec<JoinHandle<()>> = vec![
+            jupiter_refresh_candles.refresh().await,
+            jupiter_refresh_twaps.refresh().await,
+            pumpfun_refresh_candles.refresh().await,
+            pumpfun_refresh_twaps.refresh().await,
+            pumpfun_refresh_summaries.refresh().await,
+            solana_refresh_sol.refresh().await,
+        ]
+        .into_iter()
+        .flatten()
+        .collect();
 
-        error!("All tasks have stopped, exiting...");
+        for result in join_all(handles).await {
+            if let Err(e) = result {
+                error!("Task failed: {:?}", e);
+            }
+        }
+
+        info!("all tasks have been stopped, exiting...");
     });
 }

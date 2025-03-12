@@ -38,5 +38,5 @@ pub async fn run(state: AppState, signal: Signal) {
         async { notify(state.clone(), signal.clone()).await },
         async { dispatch(state.clone(), signal.clone()).await }
     );
-    info!("exit now");
+    info!("all tasks have been stopped, exiting...");
 }

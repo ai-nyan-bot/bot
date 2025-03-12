@@ -19,129 +19,25 @@ impl RefreshSol {
         }
     }
 
-    pub fn m1(&self) -> JoinHandle<()> {
+    pub async fn refresh(&self) -> Vec<JoinHandle<()>> {
+        let mut result = Vec::new();
         let repo = self.repo.clone();
         let pool = self.pool.clone();
-        tokio::spawn(async move {
+        result.push(tokio::spawn(async move {
             loop {
-                let repo = repo.clone();
-                let pool = pool.clone();
-                tokio::spawn(async move {
-                    let mut tx = pool.begin().await.unwrap();
+                let mut tx = pool.begin().await.unwrap();
 
-                    repo.calculate_1m(&mut tx).await.unwrap();
+                repo.calculate_1m(&mut tx).await.unwrap();
+                repo.calculate_5m(&mut tx).await.unwrap();
+                repo.calculate_15m(&mut tx).await.unwrap();
+                repo.calculate_1h(&mut tx).await.unwrap();
+                repo.calculate_6h(&mut tx).await.unwrap();
+                repo.calculate_1d(&mut tx).await.unwrap();
 
-                    let _ = tx.commit().await;
-                    tokio::time::sleep(Duration::from_secs(1)).await;
-                })
-                .await
-                .unwrap();
+                let _ = tx.commit().await;
+                tokio::time::sleep(Duration::from_secs(1)).await;
             }
-        })
-    }
-
-    pub fn m5(&self) -> JoinHandle<()> {
-        let repo = self.repo.clone();
-        let pool = self.pool.clone();
-        tokio::spawn(async move {
-            loop {
-                let repo = repo.clone();
-                let pool = pool.clone();
-                tokio::spawn(async move {
-                    let mut tx = pool.begin().await.unwrap();
-
-                    repo.calculate_5m(&mut tx).await.unwrap();
-
-                    let _ = tx.commit().await;
-                    tokio::time::sleep(Duration::from_secs(1)).await;
-                })
-                .await
-                .unwrap();
-            }
-        })
-    }
-
-    pub fn m15(&self) -> JoinHandle<()> {
-        let repo = self.repo.clone();
-        let pool = self.pool.clone();
-        tokio::spawn(async move {
-            loop {
-                let repo = repo.clone();
-                let pool = pool.clone();
-                tokio::spawn(async move {
-                    let mut tx = pool.begin().await.unwrap();
-
-                    repo.calculate_15m(&mut tx).await.unwrap();
-
-                    let _ = tx.commit().await;
-                    tokio::time::sleep(Duration::from_secs(1)).await;
-                })
-                .await
-                .unwrap();
-            }
-        })
-    }
-
-    pub fn h1(&self) -> JoinHandle<()> {
-        let repo = self.repo.clone();
-        let pool = self.pool.clone();
-        tokio::spawn(async move {
-            loop {
-                let repo = repo.clone();
-                let pool = pool.clone();
-                tokio::spawn(async move {
-                    let mut tx = pool.begin().await.unwrap();
-
-                    repo.calculate_1h(&mut tx).await.unwrap();
-
-                    let _ = tx.commit().await;
-                    tokio::time::sleep(Duration::from_secs(1)).await;
-                })
-                .await
-                .unwrap();
-            }
-        })
-    }
-
-    pub fn h6(&self) -> JoinHandle<()> {
-        let repo = self.repo.clone();
-        let pool = self.pool.clone();
-        tokio::spawn(async move {
-            loop {
-                let repo = repo.clone();
-                let pool = pool.clone();
-                tokio::spawn(async move {
-                    let mut tx = pool.begin().await.unwrap();
-
-                    repo.calculate_6h(&mut tx).await.unwrap();
-
-                    let _ = tx.commit().await;
-                    tokio::time::sleep(Duration::from_secs(1)).await;
-                })
-                .await
-                .unwrap();
-            }
-        })
-    }
-
-    pub fn d1(&self) -> JoinHandle<()> {
-        let repo = self.repo.clone();
-        let pool = self.pool.clone();
-        tokio::spawn(async move {
-            loop {
-                let repo = repo.clone();
-                let pool = pool.clone();
-                tokio::spawn(async move {
-                    let mut tx = pool.begin().await.unwrap();
-
-                    repo.calculate_1d(&mut tx).await.unwrap();
-
-                    let _ = tx.commit().await;
-                    tokio::time::sleep(Duration::from_secs(1)).await;
-                })
-                .await
-                .unwrap();
-            }
-        })
+        }));
+        result
     }
 }
