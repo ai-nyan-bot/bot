@@ -5,9 +5,7 @@ use crate::page::pumpfun::summary::{
     cell_x_end, cell_x_start, cell_y_end, cell_y_start, DECREASED, INCREASED, PADDING_HEIGHT,
 };
 use crate::{Font, FontSize, Line, Point, RenderLine, RenderText, Text};
-use common::format::{
-    format_market_cap_usd, format_percent, format_price_usd, format_volume_usd, FormatPretty,
-};
+use common::format::{format_percent, format_price_usd, format_volume_usd, FormatPretty};
 use image::{Rgba, RgbaImage};
 use solana::model::{
     MarketCapWithChange, PriceWithChange, SummaryCurveProgress, SwapWithChange, TimeframeSummary,
@@ -160,7 +158,7 @@ fn draw_market_cap(img: &mut RgbaImage, font: &Font, x: u32, cap: MarketCapWithC
                 font,
                 x,
                 3,
-                Text::new(format_market_cap_usd(usd), 32, Rgba([120, 120, 120, 255])),
+                Text::new(usd.pretty(), 32, Rgba([120, 120, 120, 255])),
             );
 
             let color = if percent > 0.0 {
@@ -184,7 +182,7 @@ fn draw_market_cap(img: &mut RgbaImage, font: &Font, x: u32, cap: MarketCapWithC
                 font,
                 x,
                 3,
-                Text::new(format_market_cap_usd(usd), 32, Rgba([120, 120, 120, 255])),
+                Text::new(usd.pretty(), 32, Rgba([120, 120, 120, 255])),
             );
         }
     }

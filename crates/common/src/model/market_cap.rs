@@ -63,20 +63,8 @@ impl PartialEq<&str> for MarketCapQuote {
 #[sqlx(transparent)]
 pub struct MarketCapUsd(pub BigDecimal);
 
-impl From<i32> for MarketCapUsd {
-    fn from(value: i32) -> Self {
-        Self(BigDecimal::from(value))
-    }
-}
-
 impl From<i64> for MarketCapUsd {
     fn from(value: i64) -> Self {
-        Self(BigDecimal::from(value))
-    }
-}
-
-impl From<u64> for MarketCapUsd {
-    fn from(value: u64) -> Self {
         Self(BigDecimal::from(value))
     }
 }

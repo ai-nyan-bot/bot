@@ -8,9 +8,9 @@ use std::fmt::{Display, Formatter};
 #[sqlx(transparent, no_pg_array)]
 pub struct Count(pub i64);
 
-impl From<i32> for Count {
-    fn from(value: i32) -> Self {
-        Self(value as i64)
+impl From<i64> for Count {
+    fn from(value: i64) -> Self {
+        Self(value)
     }
 }
 

@@ -36,8 +36,6 @@ impl FormatPretty for Count {
             .trim_end_matches(".0")
             .trim_end_matches('.');
 
-        println!("{} {} {} {}", value, suffix, formatted, trimmed);
-
         format!("{}{}", trimmed, suffix)
     }
 }
@@ -59,71 +57,71 @@ mod tests {
 
     #[test]
     fn test_999() {
-        assert_eq!(Count(999).pretty(), "999");
+        assert_eq!(Count::from(999).pretty(), "999");
     }
 
     #[test]
     fn test_negative_999() {
-        assert_eq!(Count(-999).pretty(), "-999");
+        assert_eq!(Count::from(-999).pretty(), "-999");
     }
 
     #[test]
     fn test_1050() {
-        assert_eq!(Count(1050).pretty(), "1.05k");
+        assert_eq!(Count::from(1050).pretty(), "1.05k");
     }
 
     #[test]
     fn test_negative_1050() {
-        assert_eq!(Count(-1050).pretty(), "-1.05k");
+        assert_eq!(Count::from(-1050).pretty(), "-1.05k");
     }
 
     #[test]
     fn test_10_500() {
-        assert_eq!(Count(10_500).pretty(), "10.5k");
+        assert_eq!(Count::from(10_500).pretty(), "10.5k");
     }
 
     #[test]
     fn test_999_999() {
-        assert_eq!(Count(999_999).pretty(), "999k");
+        assert_eq!(Count::from(999_999).pretty(), "999k");
     }
 
     #[test]
     fn test_1_000_000() {
-        assert_eq!(Count(1_000_000).pretty(), "1M");
+        assert_eq!(Count::from(1_000_000).pretty(), "1M");
     }
 
     #[test]
     fn test_1_234_567() {
-        assert_eq!(Count(1_234_567).pretty(), "1.23M");
+        assert_eq!(Count::from(1_234_567).pretty(), "1.23M");
     }
 
     #[test]
     fn test_negative_1_234_567() {
-        assert_eq!(Count(-1_234_567).pretty(), "-1.23M");
+        assert_eq!(Count::from(-1_234_567).pretty(), "-1.23M");
     }
 
     #[test]
     fn test_10_000_000() {
-        assert_eq!(Count(10_000_000).pretty(), "10M");
+        assert_eq!(Count::from(10_000_000).pretty(), "10M");
     }
 
     #[test]
     fn test_999_999_999() {
-        assert_eq!(Count(999_999_999).pretty(), "999M");
+        assert_eq!(Count::from(999_999_999).pretty(), "999M");
     }
 
     #[test]
     fn test_1_000_000_000() {
-        assert_eq!(Count(1_000_000_000).pretty(), "1B");
+        assert_eq!(Count::from(1_000_000_000).pretty(), "1B");
     }
 
     #[test]
     fn test_2_345_678_901() {
-        assert_eq!(Count(2_345_678_901).pretty(), "2.34B");
+        assert_eq!(Count::from(2_345_678_901).pretty(), "2.34B");
     }
 
     #[test]
     fn test_negative_2_345_678_901() {
-        assert_eq!(Count(-2_345_678_901).pretty(), "-2.34B");
+        assert_eq!(Count::from(-2_345_678_901).pretty(), "-2.34B");
     }
 }
