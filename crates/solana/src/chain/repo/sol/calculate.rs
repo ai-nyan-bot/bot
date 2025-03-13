@@ -71,7 +71,7 @@ group by timestamp
 on conflict (timestamp)
 do update set
     usd = excluded.usd
-where (solana.{destination_table}.usd != excluded.usd );
+where (solana.{destination_table}.usd is distinct from excluded.usd );
 "#
     );
     let _ = sqlx::query(&query_str).execute(&mut **tx).await?;

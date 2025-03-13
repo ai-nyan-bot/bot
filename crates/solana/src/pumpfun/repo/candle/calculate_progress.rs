@@ -135,11 +135,11 @@ insert into {candle_progress_table} (
         avg = excluded.avg,
         updated_at = now()
     where (
-           {candle_progress_table}.open != excluded.open or
-           {candle_progress_table}.high != excluded.high or
-           {candle_progress_table}.low != excluded.low or
-           {candle_progress_table}.close != excluded.close or
-           {candle_progress_table}.avg != excluded.avg
+           {candle_progress_table}.open is distinct from excluded.open or
+           {candle_progress_table}.high is distinct from excluded.high or
+           {candle_progress_table}.low is distinct from excluded.low or
+           {candle_progress_table}.close is distinct from excluded.close or
+           {candle_progress_table}.avg is distinct from excluded.avg
         )
         "#).as_str())
             .execute(&mut **tx)
@@ -310,11 +310,11 @@ do update set
     avg = excluded.avg,
     updated_at = now()
 where (
-       {destination_table}.open != excluded.open or
-       {destination_table}.high != excluded.high or
-       {destination_table}.low != excluded.low or
-       {destination_table}.close != excluded.close or
-       {destination_table}.avg != excluded.avg
+       {destination_table}.open is distinct from excluded.open or
+       {destination_table}.high is distinct from excluded.high or
+       {destination_table}.low is distinct from excluded.low or
+       {destination_table}.close is distinct from excluded.close or
+       {destination_table}.avg is distinct from excluded.avg
     )
         "#
     );

@@ -277,19 +277,19 @@ insert_current_candle as (
         swap_sell = excluded.swap_sell,
         updated_at = now()
     where (
-           {candle_table}.open != excluded.open or
-           {candle_table}.high != excluded.high or
-           {candle_table}.low != excluded.low or
-           {candle_table}.close != excluded.close or
-           {candle_table}.avg != excluded.avg or
-           {candle_table}.amount_base_buy != excluded.amount_base_buy or
-           {candle_table}.amount_quote_buy != excluded.amount_quote_buy or
-           {candle_table}.volume_buy != excluded.volume_buy or
-           {candle_table}.swap_buy != excluded.swap_buy or
-           {candle_table}.amount_base_sell != excluded.amount_base_sell or
-           {candle_table}.amount_quote_sell != excluded.amount_quote_sell or
-           {candle_table}.volume_sell != excluded.volume_sell or
-           {candle_table}.swap_sell != excluded.swap_sell
+           {candle_table}.open is distinct from excluded.open or
+           {candle_table}.high is distinct from excluded.high or
+           {candle_table}.low is distinct from excluded.low or
+           {candle_table}.close is distinct from excluded.close or
+           {candle_table}.avg is distinct from excluded.avg or
+           {candle_table}.amount_base_buy is distinct from excluded.amount_base_buy or
+           {candle_table}.amount_quote_buy is distinct from excluded.amount_quote_buy or
+           {candle_table}.volume_buy is distinct from excluded.volume_buy or
+           {candle_table}.swap_buy is distinct from excluded.swap_buy or
+           {candle_table}.amount_base_sell is distinct from excluded.amount_base_sell or
+           {candle_table}.amount_quote_sell is distinct from excluded.amount_quote_sell or
+           {candle_table}.volume_sell is distinct from excluded.volume_sell or
+           {candle_table}.swap_sell is distinct from excluded.swap_sell
         )
     returning 1
 ),
@@ -514,19 +514,19 @@ do update set
     volume_sell = excluded.volume_sell,
     updated_at = now()
 where (
-       {destination_table}.open != excluded.open or
-       {destination_table}.high != excluded.high or
-       {destination_table}.low != excluded.low or
-       {destination_table}.close != excluded.close or
-       {destination_table}.avg != excluded.avg or
-       {destination_table}.amount_base_buy != excluded.amount_base_buy or
-       {destination_table}.amount_quote_buy != excluded.amount_quote_buy or
-       {destination_table}.swap_buy != excluded.swap_buy or
-       {destination_table}.volume_buy != excluded.volume_buy or
-       {destination_table}.amount_base_sell != excluded.amount_base_sell or
-       {destination_table}.amount_quote_sell != excluded.amount_quote_sell or
-       {destination_table}.swap_sell != excluded.swap_sell or
-       {destination_table}.volume_sell != excluded.volume_sell
+       {destination_table}.open is distinct from excluded.open or
+       {destination_table}.high is distinct from excluded.high or
+       {destination_table}.low is distinct from excluded.low or
+       {destination_table}.close is distinct from excluded.close or
+       {destination_table}.avg is distinct from excluded.avg or
+       {destination_table}.amount_base_buy is distinct from excluded.amount_base_buy or
+       {destination_table}.amount_quote_buy is distinct from excluded.amount_quote_buy or
+       {destination_table}.swap_buy is distinct from excluded.swap_buy or
+       {destination_table}.volume_buy is distinct from excluded.volume_buy or
+       {destination_table}.amount_base_sell is distinct from excluded.amount_base_sell or
+       {destination_table}.amount_quote_sell is distinct from excluded.amount_quote_sell or
+       {destination_table}.swap_sell is distinct from excluded.swap_sell or
+       {destination_table}.volume_sell is distinct from excluded.volume_sell
     )
         "#
     );

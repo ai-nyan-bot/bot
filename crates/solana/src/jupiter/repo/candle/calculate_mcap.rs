@@ -194,16 +194,16 @@ do update set
     avg_usd = excluded.avg_usd,
     updated_at = now()
 where
-    {destination_table}.open != excluded.open or
-    {destination_table}.open_usd != excluded.open_usd or
-    {destination_table}.high != excluded.high or
-    {destination_table}.high_usd != excluded.high_usd or
-    {destination_table}.low != excluded.low or
-    {destination_table}.low_usd != excluded.low_usd or
-    {destination_table}.close != excluded.close or
-    {destination_table}.close_usd != excluded.close_usd or
-    {destination_table}.avg != excluded.avg or
-    {destination_table}.avg_usd != excluded.avg_usd
+    {destination_table}.open is distinct from excluded.open or
+    {destination_table}.open_usd is distinct from excluded.open_usd or
+    {destination_table}.high is distinct from excluded.high or
+    {destination_table}.high_usd is distinct from excluded.high_usd or
+    {destination_table}.low is distinct from excluded.low or
+    {destination_table}.low_usd is distinct from excluded.low_usd or
+    {destination_table}.close is distinct from excluded.close or
+    {destination_table}.close_usd is distinct from excluded.close_usd or
+    {destination_table}.avg is distinct from excluded.avg or
+    {destination_table}.avg_usd is distinct from excluded.avg_usd
 "#
     );
 

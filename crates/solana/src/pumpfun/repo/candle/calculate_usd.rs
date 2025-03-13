@@ -209,14 +209,14 @@ do update set
     volume_sell = excluded.volume_sell,
     updated_at = now()
 where
-    {destination_table}.open != excluded.open or
-    {destination_table}.high != excluded.high or
-    {destination_table}.low != excluded.low or
-    {destination_table}.close != excluded.close or
-    {destination_table}.avg != excluded.avg or
-    {destination_table}.twap != excluded.twap or
-    {destination_table}.volume_buy != excluded.volume_buy or
-    {destination_table}.volume_sell != excluded.volume_sell;
+    {destination_table}.open is distinct from excluded.open or
+    {destination_table}.high is distinct from excluded.high or
+    {destination_table}.low is distinct from excluded.low or
+    {destination_table}.close is distinct from excluded.close or
+    {destination_table}.avg is distinct from excluded.avg or
+    {destination_table}.twap is distinct from excluded.twap or
+    {destination_table}.volume_buy is distinct from excluded.volume_buy or
+    {destination_table}.volume_sell is distinct from excluded.volume_sell;
 "#
     );
 
