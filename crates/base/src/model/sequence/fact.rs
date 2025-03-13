@@ -16,7 +16,7 @@ use Fact::{
     SwapSellPercentAggregate, TelegramGroup, TelegramGroupHandle, TwitterAccount,
     TwitterAccountHandle, VenueJupiter, VenuePumpfun, VolumeChangeQuoteAggregate,
 };
-use Field::{AgeBase, CurveProgress, CurveProgressAge, Price, SwapAll, SwapBuy, SwapSell, Volume};
+use Field::{AgeBase, CurveProgress, CurveProgressAge, MarketCap, Price, SwapAll, SwapBuy, SwapSell, Volume};
 use Operator::{
     DecreasedByLessThan, DecreasedByLessThanEqual, DecreasedByMoreThan, DecreasedByMoreThanEqual,
     Equal, IncreasedByLessThan, IncreasedByLessThanEqual, IncreasedByMoreThan,
@@ -241,40 +241,40 @@ impl Fact {
             (CurveProgressAge, LessThanEqual, Duration, false) => CurveProgressAgeDuration,
 
             // MarketCapQuote
-            (Field::MarketCapQuote, MoreThan, Quote, false) => MarketCapQuote,
-            (Field::MarketCapQuote, MoreThanEqual, Quote, false) => MarketCapQuote,
-            (Field::MarketCapQuote, LessThan, Quote, false) => MarketCapQuote,
-            (Field::MarketCapQuote, LessThanEqual, Quote, false) => MarketCapQuote,
+            (MarketCap, MoreThan, Quote, false) => MarketCapQuote,
+            (MarketCap, MoreThanEqual, Quote, false) => MarketCapQuote,
+            (MarketCap, LessThan, Quote, false) => MarketCapQuote,
+            (MarketCap, LessThanEqual, Quote, false) => MarketCapQuote,
 
             // MarketCapSol
-            (Field::MarketCapSol, MoreThan, Sol, false) => MarketCapSol,
-            (Field::MarketCapSol, MoreThanEqual, Sol, false) => MarketCapSol,
-            (Field::MarketCapSol, LessThan, Sol, false) => MarketCapSol,
-            (Field::MarketCapSol, LessThanEqual, Sol, false) => MarketCapSol,
+            (MarketCap, MoreThan, Sol, false) => MarketCapSol,
+            (MarketCap, MoreThanEqual, Sol, false) => MarketCapSol,
+            (MarketCap, LessThan, Sol, false) => MarketCapSol,
+            (MarketCap, LessThanEqual, Sol, false) => MarketCapSol,
 
             // MarketCapUsd
-            (Field::MarketCapUsd, MoreThan, Usd, false) => MarketCapUsd,
-            (Field::MarketCapUsd, MoreThanEqual, Usd, false) => MarketCapUsd,
-            (Field::MarketCapUsd, LessThan, Usd, false) => MarketCapUsd,
-            (Field::MarketCapUsd, LessThanEqual, Usd, false) => MarketCapUsd,
+            (MarketCap, MoreThan, Usd, false) => MarketCapUsd,
+            (MarketCap, MoreThanEqual, Usd, false) => MarketCapUsd,
+            (MarketCap, LessThan, Usd, false) => MarketCapUsd,
+            (MarketCap, LessThanEqual, Usd, false) => MarketCapUsd,
 
             // MarketCapQuoteAggregate
-            (Field::MarketCapQuote, MoreThan, Quote, true) => MarketCapQuoteAggregate,
-            (Field::MarketCapQuote, MoreThanEqual, Quote, true) => MarketCapQuoteAggregate,
-            (Field::MarketCapQuote, LessThan, Quote, true) => MarketCapQuoteAggregate,
-            (Field::MarketCapQuote, LessThanEqual, Quote, true) => MarketCapQuoteAggregate,
+            (MarketCap, MoreThan, Quote, true) => MarketCapQuoteAggregate,
+            (MarketCap, MoreThanEqual, Quote, true) => MarketCapQuoteAggregate,
+            (MarketCap, LessThan, Quote, true) => MarketCapQuoteAggregate,
+            (MarketCap, LessThanEqual, Quote, true) => MarketCapQuoteAggregate,
 
             // MarketCapSolAggregate
-            (Field::MarketCapSol, MoreThan, Sol, true) => MarketCapSolAggregate,
-            (Field::MarketCapSol, MoreThanEqual, Sol, true) => MarketCapSolAggregate,
-            (Field::MarketCapSol, LessThan, Sol, true) => MarketCapSolAggregate,
-            (Field::MarketCapSol, LessThanEqual, Sol, true) => MarketCapSolAggregate,
+            (MarketCap, MoreThan, Sol, true) => MarketCapSolAggregate,
+            (MarketCap, MoreThanEqual, Sol, true) => MarketCapSolAggregate,
+            (MarketCap, LessThan, Sol, true) => MarketCapSolAggregate,
+            (MarketCap, LessThanEqual, Sol, true) => MarketCapSolAggregate,
 
             // MarketCapUsdAggregate
-            (Field::MarketCapUsd, MoreThan, Usd, true) => MarketCapUsdAggregate,
-            (Field::MarketCapUsd, MoreThanEqual, Usd, true) => MarketCapUsdAggregate,
-            (Field::MarketCapUsd, LessThan, Usd, true) => MarketCapUsdAggregate,
-            (Field::MarketCapUsd, LessThanEqual, Usd, true) => MarketCapUsdAggregate,
+            (MarketCap, MoreThan, Usd, true) => MarketCapUsdAggregate,
+            (MarketCap, MoreThanEqual, Usd, true) => MarketCapUsdAggregate,
+            (MarketCap, LessThan, Usd, true) => MarketCapUsdAggregate,
+            (MarketCap, LessThanEqual, Usd, true) => MarketCapUsdAggregate,
 
             // PriceQuote
             (Price, MoreThan, Quote, false) => PriceQuote,
@@ -543,12 +543,12 @@ mod tests {
     #[test]
     fn test_market_cap_quote() {
         assert_eq!(
-            Fact::from_comparison(&Field::MarketCapQuote, &MoreThan, &Value::quote(99), false),
+            Fact::from_comparison(&MarketCap, &MoreThan, &Value::quote(99), false),
             Some(MarketCapQuote)
         );
         assert_eq!(
             Fact::from_comparison(
-                &Field::MarketCapQuote,
+                &MarketCap,
                 &MoreThanEqual,
                 &Value::quote(99),
                 false
@@ -556,12 +556,12 @@ mod tests {
             Some(MarketCapQuote)
         );
         assert_eq!(
-            Fact::from_comparison(&Field::MarketCapQuote, &LessThan, &Value::quote(99), false),
+            Fact::from_comparison(&MarketCap, &LessThan, &Value::quote(99), false),
             Some(MarketCapQuote)
         );
         assert_eq!(
             Fact::from_comparison(
-                &Field::MarketCapQuote,
+                &MarketCap,
                 &LessThanEqual,
                 &Value::quote(99),
                 false
@@ -573,19 +573,19 @@ mod tests {
     #[test]
     fn test_market_cap_sol() {
         assert_eq!(
-            Fact::from_comparison(&Field::MarketCapSol, &MoreThan, &Value::sol(99), false),
+            Fact::from_comparison(&MarketCap, &MoreThan, &Value::sol(99), false),
             Some(MarketCapSol)
         );
         assert_eq!(
-            Fact::from_comparison(&Field::MarketCapSol, &MoreThanEqual, &Value::sol(99), false),
+            Fact::from_comparison(&MarketCap, &MoreThanEqual, &Value::sol(99), false),
             Some(MarketCapSol)
         );
         assert_eq!(
-            Fact::from_comparison(&Field::MarketCapSol, &LessThan, &Value::sol(99), false),
+            Fact::from_comparison(&MarketCap, &LessThan, &Value::sol(99), false),
             Some(MarketCapSol)
         );
         assert_eq!(
-            Fact::from_comparison(&Field::MarketCapSol, &LessThanEqual, &Value::sol(99), false),
+            Fact::from_comparison(&MarketCap, &LessThanEqual, &Value::sol(99), false),
             Some(MarketCapSol)
         );
     }
@@ -593,19 +593,19 @@ mod tests {
     #[test]
     fn test_market_cap_usd() {
         assert_eq!(
-            Fact::from_comparison(&Field::MarketCapUsd, &MoreThan, &Value::usd(99), false),
+            Fact::from_comparison(&MarketCap, &MoreThan, &Value::usd(99), false),
             Some(MarketCapUsd)
         );
         assert_eq!(
-            Fact::from_comparison(&Field::MarketCapUsd, &MoreThanEqual, &Value::usd(99), false),
+            Fact::from_comparison(&MarketCap, &MoreThanEqual, &Value::usd(99), false),
             Some(MarketCapUsd)
         );
         assert_eq!(
-            Fact::from_comparison(&Field::MarketCapUsd, &LessThan, &Value::usd(99), false),
+            Fact::from_comparison(&MarketCap, &LessThan, &Value::usd(99), false),
             Some(MarketCapUsd)
         );
         assert_eq!(
-            Fact::from_comparison(&Field::MarketCapUsd, &LessThanEqual, &Value::usd(99), false),
+            Fact::from_comparison(&MarketCap, &LessThanEqual, &Value::usd(99), false),
             Some(MarketCapUsd)
         );
     }
@@ -613,12 +613,12 @@ mod tests {
     #[test]
     fn test_market_cap_quote_aggregate() {
         assert_eq!(
-            Fact::from_comparison(&Field::MarketCapQuote, &MoreThan, &Value::quote(99), true),
+            Fact::from_comparison(&MarketCap, &MoreThan, &Value::quote(99), true),
             Some(MarketCapQuoteAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
-                &Field::MarketCapQuote,
+                &MarketCap,
                 &MoreThanEqual,
                 &Value::quote(99),
                 true
@@ -626,12 +626,12 @@ mod tests {
             Some(MarketCapQuoteAggregate)
         );
         assert_eq!(
-            Fact::from_comparison(&Field::MarketCapQuote, &LessThan, &Value::quote(99), true),
+            Fact::from_comparison(&MarketCap, &LessThan, &Value::quote(99), true),
             Some(MarketCapQuoteAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
-                &Field::MarketCapQuote,
+                &MarketCap,
                 &LessThanEqual,
                 &Value::quote(99),
                 true
@@ -643,19 +643,19 @@ mod tests {
     #[test]
     fn test_market_cap_sol_aggregate() {
         assert_eq!(
-            Fact::from_comparison(&Field::MarketCapSol, &MoreThan, &Value::sol(99), true),
+            Fact::from_comparison(&MarketCap, &MoreThan, &Value::sol(99), true),
             Some(MarketCapSolAggregate)
         );
         assert_eq!(
-            Fact::from_comparison(&Field::MarketCapSol, &MoreThanEqual, &Value::sol(99), true),
+            Fact::from_comparison(&MarketCap, &MoreThanEqual, &Value::sol(99), true),
             Some(MarketCapSolAggregate)
         );
         assert_eq!(
-            Fact::from_comparison(&Field::MarketCapSol, &LessThan, &Value::sol(99), true),
+            Fact::from_comparison(&MarketCap, &LessThan, &Value::sol(99), true),
             Some(MarketCapSolAggregate)
         );
         assert_eq!(
-            Fact::from_comparison(&Field::MarketCapSol, &LessThanEqual, &Value::sol(99), true),
+            Fact::from_comparison(&MarketCap, &LessThanEqual, &Value::sol(99), true),
             Some(MarketCapSolAggregate)
         );
     }
@@ -663,19 +663,19 @@ mod tests {
     #[test]
     fn test_market_cap_usd_aggregate() {
         assert_eq!(
-            Fact::from_comparison(&Field::MarketCapUsd, &MoreThan, &Value::usd(99), true),
+            Fact::from_comparison(&MarketCap, &MoreThan, &Value::usd(99), true),
             Some(MarketCapUsdAggregate)
         );
         assert_eq!(
-            Fact::from_comparison(&Field::MarketCapUsd, &MoreThanEqual, &Value::usd(99), true),
+            Fact::from_comparison(&MarketCap, &MoreThanEqual, &Value::usd(99), true),
             Some(MarketCapUsdAggregate)
         );
         assert_eq!(
-            Fact::from_comparison(&Field::MarketCapUsd, &LessThan, &Value::usd(99), true),
+            Fact::from_comparison(&MarketCap, &LessThan, &Value::usd(99), true),
             Some(MarketCapUsdAggregate)
         );
         assert_eq!(
-            Fact::from_comparison(&Field::MarketCapUsd, &LessThanEqual, &Value::usd(99), true),
+            Fact::from_comparison(&MarketCap, &LessThanEqual, &Value::usd(99), true),
             Some(MarketCapUsdAggregate)
         );
     }

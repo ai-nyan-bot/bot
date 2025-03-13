@@ -12,9 +12,7 @@ pub enum Field {
     CurveProgress,
     CurveProgressAge,
 
-    MarketCapQuote,
-    MarketCapSol,
-    MarketCapUsd,
+    MarketCap,
 
     Price,
     PriceAvg,

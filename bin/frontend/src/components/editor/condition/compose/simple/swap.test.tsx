@@ -31,7 +31,7 @@ describe("RenderText", () => {
         expect(warningDiv!!.className).toContain("font-bold");
 
         expect(warningDiv?.querySelector("p:nth-child(1)")?.textContent).toBe("⚠️ The rule will never execute ⚠️");
-        expect(warningDiv?.querySelector("p:nth-child(2)")?.textContent).toBe("Minimum txn count is greater than the maximum txn count for the same timeframe.");
+        expect(warningDiv?.querySelector("p:nth-child(2)")?.textContent).toBe("Minimum txn count is greater than the maximum txn count for the same timeframe");
     });
 
     test("min value === max value - same timeframe", () => {

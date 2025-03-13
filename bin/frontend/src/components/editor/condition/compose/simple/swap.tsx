@@ -156,7 +156,7 @@ export const RenderText: FC<RenderTextProps> = ({minValue, minTimeframe, maxValu
             return (
                 <div className="mt-4 text-sm text-center text-yellow-700 font-bold">
                     <p>⚠️ The rule will never execute ⚠️</p>
-                    <p>Minimum txn count is greater than the maximum txn count for the same timeframe.</p>
+                    <p>Minimum txn count is greater than the maximum txn count for the same timeframe</p>
                 </div>
             );
         }

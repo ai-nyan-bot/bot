@@ -326,6 +326,7 @@ export type ComposedPumpFunQuick = {
             ComposedSimpleSwapTotalAggregate?,
             ComposedSimpleSwapBuyAggregate?,
             ComposedSimpleSwapSellAggregate?,
+            ComposedSimpleMarketCap?
         ]
     }
 }
@@ -343,6 +344,7 @@ export const DEFAULT_COMPOSED_PUMP_FUN_QUICK: ComposedPumpFunQuick = {
             {...DEFAULT_COMPOSED_SIMPLE_SWAP_TOTAL_AGGREGATE},
             {...DEFAULT_COMPOSED_SIMPLE_SWAP_BUY_AGGREGATE},
             {...DEFAULT_COMPOSED_SIMPLE_SWAP_SELL_AGGREGATE},
+            {...DEFAULT_COMPOSED_SIMPLE_MARKET_CAP}
         ]
     }
 };

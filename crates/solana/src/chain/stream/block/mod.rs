@@ -96,7 +96,6 @@ impl<S: SlotStream> BlockStream for RpcBlockStream<S> {
                         start.elapsed().as_millis()
                     );
 
-                    let start = Instant::now();
                     for block in blocks {
                         if let Err(_) = self.tx.send(block).await {
                             error!("Failed to send block to channel");
@@ -104,11 +103,6 @@ impl<S: SlotStream> BlockStream for RpcBlockStream<S> {
                             return;
                         }
                     }
-                    debug!( 
-                        "sending {} blocks took {} ms",
-                        number_of_blocks,
-                        start.elapsed().as_millis()
-                    );
                 }
                 sleep(Duration::from_millis(10)).await;
             }
