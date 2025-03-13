@@ -84,14 +84,14 @@ impl FactService {
             .await
             .unwrap()
         {
-            let facts = result.get_mut(&curve.id).unwrap();
-
-            facts.set_value(CurveProgressPercent, Value::percent(curve.progress.0));
-            facts.set_value(
-                CurveProgressAgeDuration,
-                Value::duration(curve.age.0, TimeUnit::Second),
-            );
-            facts.set_value(VenuePumpfun, Value::boolean(true));
+            if let Some(facts) = result.get_mut(&curve.id) {
+                facts.set_value(CurveProgressPercent, Value::percent(curve.progress.0));
+                facts.set_value(
+                    CurveProgressAgeDuration,
+                    Value::duration(curve.age.0, TimeUnit::Second),
+                );
+                facts.set_value(VenuePumpfun, Value::boolean(true));
+            }
         }
 
         for timeframe in [
