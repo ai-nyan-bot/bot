@@ -1,18 +1,20 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::Fact::CurveProgressPercent;
+use crate::model::Fact::{CurveProgressPercent, MarketCapSolAggregate, MarketCapUsdAggregate};
 use crate::model::FactError::UnableToDeriveFact;
 use crate::model::Field::{AgeQuote, PriceAvg};
-use crate::model::ValueType::{Count, Duration, Percent, Quote, Usd};
+use crate::model::ValueType::{Count, Duration, Percent, Quote, Sol, Usd};
 use crate::model::{Condition, FactError, Field, Operator, Value, ValueType};
 use serde::{Deserialize, Serialize};
 use Fact::{
-    AgeBaseDuration, AgeQuoteDuration, CurveProgressAgeDuration, PriceAvgQuote, PriceAvgUsd,
-    PriceQuote, PriceUsd, SwapAllChangeCount, SwapAllCount, SwapBuyChangeCount,
-    SwapBuyChangePercent, SwapBuyCount, SwapChangePercent, SwapSellChangeCount,
-    SwapSellChangePercent, SwapSellCount, TelegramGroup, TelegramGroupHandle, TwitterAccount,
-    TwitterAccountHandle, VenueJupiter, VenuePumpfun, VolumeChangeQuote,
+    AgeBaseDuration, AgeQuoteDuration, CurveProgressAgeDuration, MarketCapQuote,
+    MarketCapQuoteAggregate, MarketCapSol, MarketCapUsd, PriceAvgQuoteAggregate,
+    PriceAvgUsdAggregate, PriceQuote, PriceUsd, SwapAllChangeAggregate, SwapAllCountAggregate,
+    SwapAllPercentAggregate, SwapBuyChangeAggregate, SwapBuyCountAggregate,
+    SwapBuyPercentAggregate, SwapSellChangeAggregate, SwapSellCountAggregate,
+    SwapSellPercentAggregate, TelegramGroup, TelegramGroupHandle, TwitterAccount,
+    TwitterAccountHandle, VenueJupiter, VenuePumpfun, VolumeChangeQuoteAggregate,
 };
 use Field::{AgeBase, CurveProgress, CurveProgressAge, Price, SwapAll, SwapBuy, SwapSell, Volume};
 use Operator::{
@@ -30,35 +32,37 @@ pub enum Fact {
     AgeQuoteDuration,
 
     CurveProgressPercent,
-
     /// Duration since last update of curve progress
     CurveProgressAgeDuration,
+
+    MarketCapQuote,
+    MarketCapSol,
+    MarketCapUsd,
+
+    MarketCapQuoteAggregate,
+    MarketCapSolAggregate,
+    MarketCapUsdAggregate,
 
     PriceQuote,
     PriceUsd,
 
-    PriceAvgQuote,
-    PriceAvgUsd,
-    // PriceChangePercent,
-    // PriceChangeQuote,
-    // PriceChangeUsd,
-    SwapAllCount,
-    SwapBuyCount,
-    SwapSellCount,
+    PriceAvgQuoteAggregate,
+    PriceAvgUsdAggregate,
 
-    SwapAllChangeCount,
-    SwapBuyChangeCount,
-    SwapSellChangeCount,
+    SwapAllCountAggregate,
+    SwapBuyCountAggregate,
+    SwapSellCountAggregate,
 
-    SwapChangePercent,
-    SwapBuyChangePercent,
-    SwapSellChangePercent,
+    SwapAllChangeAggregate,
+    SwapBuyChangeAggregate,
+    SwapSellChangeAggregate,
 
-    // VolumeQuote,
-    // VolumeUsd,
-    // VolumeChangePercent,
-    VolumeChangeQuote,
-    // VolumeChangeUsd,
+    SwapAllPercentAggregate,
+    SwapBuyPercentAggregate,
+    SwapSellPercentAggregate,
+
+    VolumeChangeQuoteAggregate,
+
     TelegramGroup,
     TelegramGroupHandle,
 
@@ -78,30 +82,39 @@ impl Fact {
             CurveProgressPercent => false,
             CurveProgressAgeDuration => false,
 
+            MarketCapQuote => false,
+            MarketCapSol => false,
+            MarketCapUsd => false,
+
+            MarketCapQuoteAggregate => true,
+            MarketCapSolAggregate => true,
+            MarketCapUsdAggregate => true,
+
             PriceQuote => false,
             PriceUsd => false,
 
-            PriceAvgQuote => true,
-            PriceAvgUsd => true,
+            PriceAvgQuoteAggregate => true,
+            PriceAvgUsdAggregate => true,
+
             //
             // PriceChangeQuote => true,
             // PriceChangePercent => true,
             // PriceChangeUsd => true,
-            SwapAllCount => true,
-            SwapBuyCount => true,
-            SwapSellCount => true,
+            SwapAllCountAggregate => true,
+            SwapBuyCountAggregate => true,
+            SwapSellCountAggregate => true,
 
-            SwapAllChangeCount => true,
-            SwapBuyChangeCount => true,
-            SwapSellChangeCount => true,
+            SwapAllChangeAggregate => true,
+            SwapBuyChangeAggregate => true,
+            SwapSellChangeAggregate => true,
 
-            SwapChangePercent => true,
-            SwapBuyChangePercent => true,
-            SwapSellChangePercent => true,
+            SwapAllPercentAggregate => true,
+            SwapBuyPercentAggregate => true,
+            SwapSellPercentAggregate => true,
 
             // VolumeQuote => false,
             // VolumeUsd => false,
-            VolumeChangeQuote => true,
+            VolumeChangeQuoteAggregate => true,
             // VolumeChangePercent => true,
             // VolumeChangeUsd => true,
             TelegramGroup => false,
@@ -123,30 +136,38 @@ impl Fact {
             CurveProgressPercent => Percent,
             CurveProgressAgeDuration => Duration,
 
+            MarketCapQuote => Quote,
+            MarketCapSol => Sol,
+            MarketCapUsd => Usd,
+
+            MarketCapQuoteAggregate => Quote,
+            MarketCapSolAggregate => Sol,
+            MarketCapUsdAggregate => Usd,
+
             PriceQuote => Quote,
             PriceUsd => Usd,
 
-            PriceAvgQuote => Quote,
-            PriceAvgUsd => Usd,
+            PriceAvgQuoteAggregate => Quote,
+            PriceAvgUsdAggregate => Usd,
             //
             // PriceChangeQuote => Quote,
             // PriceChangeUsd => Usd,
             // PriceChangePercent => Percent,
-            SwapAllCount => Count,
-            SwapBuyCount => Count,
-            SwapSellCount => Count,
+            SwapAllCountAggregate => Count,
+            SwapBuyCountAggregate => Count,
+            SwapSellCountAggregate => Count,
 
-            SwapAllChangeCount => Count,
-            SwapBuyChangeCount => Count,
-            SwapSellChangeCount => Count,
+            SwapAllChangeAggregate => Count,
+            SwapBuyChangeAggregate => Count,
+            SwapSellChangeAggregate => Count,
 
-            SwapChangePercent => Percent,
-            SwapBuyChangePercent => Percent,
-            SwapSellChangePercent => Percent,
+            SwapAllPercentAggregate => Percent,
+            SwapBuyPercentAggregate => Percent,
+            SwapSellPercentAggregate => Percent,
 
             // VolumeQuote => Quote,
             // VolumeUsd => Usd,
-            VolumeChangeQuote => Quote,
+            VolumeChangeQuoteAggregate => Quote,
             // VolumeChangePercent => Percent,
             // VolumeChangeUsd => Usd,
             TelegramGroup => Boolean,
@@ -219,6 +240,42 @@ impl Fact {
             (CurveProgressAge, LessThan, Duration, false) => CurveProgressAgeDuration,
             (CurveProgressAge, LessThanEqual, Duration, false) => CurveProgressAgeDuration,
 
+            // MarketCapQuote
+            (Field::MarketCapQuote, MoreThan, Quote, false) => MarketCapQuote,
+            (Field::MarketCapQuote, MoreThanEqual, Quote, false) => MarketCapQuote,
+            (Field::MarketCapQuote, LessThan, Quote, false) => MarketCapQuote,
+            (Field::MarketCapQuote, LessThanEqual, Quote, false) => MarketCapQuote,
+
+            // MarketCapSol
+            (Field::MarketCapSol, MoreThan, Sol, false) => MarketCapSol,
+            (Field::MarketCapSol, MoreThanEqual, Sol, false) => MarketCapSol,
+            (Field::MarketCapSol, LessThan, Sol, false) => MarketCapSol,
+            (Field::MarketCapSol, LessThanEqual, Sol, false) => MarketCapSol,
+
+            // MarketCapUsd
+            (Field::MarketCapUsd, MoreThan, Usd, false) => MarketCapUsd,
+            (Field::MarketCapUsd, MoreThanEqual, Usd, false) => MarketCapUsd,
+            (Field::MarketCapUsd, LessThan, Usd, false) => MarketCapUsd,
+            (Field::MarketCapUsd, LessThanEqual, Usd, false) => MarketCapUsd,
+
+            // MarketCapQuoteAggregate
+            (Field::MarketCapQuote, MoreThan, Quote, true) => MarketCapQuoteAggregate,
+            (Field::MarketCapQuote, MoreThanEqual, Quote, true) => MarketCapQuoteAggregate,
+            (Field::MarketCapQuote, LessThan, Quote, true) => MarketCapQuoteAggregate,
+            (Field::MarketCapQuote, LessThanEqual, Quote, true) => MarketCapQuoteAggregate,
+
+            // MarketCapSolAggregate
+            (Field::MarketCapSol, MoreThan, Sol, true) => MarketCapSolAggregate,
+            (Field::MarketCapSol, MoreThanEqual, Sol, true) => MarketCapSolAggregate,
+            (Field::MarketCapSol, LessThan, Sol, true) => MarketCapSolAggregate,
+            (Field::MarketCapSol, LessThanEqual, Sol, true) => MarketCapSolAggregate,
+
+            // MarketCapUsdAggregate
+            (Field::MarketCapUsd, MoreThan, Usd, true) => MarketCapUsdAggregate,
+            (Field::MarketCapUsd, MoreThanEqual, Usd, true) => MarketCapUsdAggregate,
+            (Field::MarketCapUsd, LessThan, Usd, true) => MarketCapUsdAggregate,
+            (Field::MarketCapUsd, LessThanEqual, Usd, true) => MarketCapUsdAggregate,
+
             // PriceQuote
             (Price, MoreThan, Quote, false) => PriceQuote,
             (Price, MoreThanEqual, Quote, false) => PriceQuote,
@@ -231,105 +288,105 @@ impl Fact {
             (Price, LessThan, Usd, false) => PriceUsd,
             (Price, LessThanEqual, Usd, false) => PriceUsd,
 
-            // PriceAvgQuote
-            (PriceAvg, MoreThan, Quote, true) => PriceAvgQuote,
-            (PriceAvg, MoreThanEqual, Quote, true) => PriceAvgQuote,
-            (PriceAvg, LessThan, Quote, true) => PriceAvgQuote,
-            (PriceAvg, LessThanEqual, Quote, true) => PriceAvgQuote,
+            // PriceAvgQuoteAggregate
+            (PriceAvg, MoreThan, Quote, true) => PriceAvgQuoteAggregate,
+            (PriceAvg, MoreThanEqual, Quote, true) => PriceAvgQuoteAggregate,
+            (PriceAvg, LessThan, Quote, true) => PriceAvgQuoteAggregate,
+            (PriceAvg, LessThanEqual, Quote, true) => PriceAvgQuoteAggregate,
 
-            // PriceAvgUsd
-            (PriceAvg, MoreThan, Usd, true) => PriceAvgUsd,
-            (PriceAvg, MoreThanEqual, Usd, true) => PriceAvgUsd,
-            (PriceAvg, LessThan, Usd, true) => PriceAvgUsd,
-            (PriceAvg, LessThanEqual, Usd, true) => PriceAvgUsd,
+            // PriceAvgUsdAggregate
+            (PriceAvg, MoreThan, Usd, true) => PriceAvgUsdAggregate,
+            (PriceAvg, MoreThanEqual, Usd, true) => PriceAvgUsdAggregate,
+            (PriceAvg, LessThan, Usd, true) => PriceAvgUsdAggregate,
+            (PriceAvg, LessThanEqual, Usd, true) => PriceAvgUsdAggregate,
 
-            // SwapAllCount
-            (SwapAll, MoreThan, Count, true) => SwapAllCount,
-            (SwapAll, MoreThanEqual, Count, true) => SwapAllCount,
-            (SwapAll, LessThan, Count, true) => SwapAllCount,
-            (SwapAll, LessThanEqual, Count, true) => SwapAllCount,
+            // SwapAllCountAggregate
+            (SwapAll, MoreThan, Count, true) => SwapAllCountAggregate,
+            (SwapAll, MoreThanEqual, Count, true) => SwapAllCountAggregate,
+            (SwapAll, LessThan, Count, true) => SwapAllCountAggregate,
+            (SwapAll, LessThanEqual, Count, true) => SwapAllCountAggregate,
 
-            // SwapBuyCount
-            (SwapBuy, MoreThan, Count, true) => SwapBuyCount,
-            (SwapBuy, MoreThanEqual, Count, true) => SwapBuyCount,
-            (SwapBuy, LessThan, Count, true) => SwapBuyCount,
-            (SwapBuy, LessThanEqual, Count, true) => SwapBuyCount,
+            // SwapBuyCountAggregate
+            (SwapBuy, MoreThan, Count, true) => SwapBuyCountAggregate,
+            (SwapBuy, MoreThanEqual, Count, true) => SwapBuyCountAggregate,
+            (SwapBuy, LessThan, Count, true) => SwapBuyCountAggregate,
+            (SwapBuy, LessThanEqual, Count, true) => SwapBuyCountAggregate,
 
-            // SwapSellCount
-            (SwapSell, MoreThan, Count, true) => SwapSellCount,
-            (SwapSell, MoreThanEqual, Count, true) => SwapSellCount,
-            (SwapSell, LessThan, Count, true) => SwapSellCount,
-            (SwapSell, LessThanEqual, Count, true) => SwapSellCount,
+            // SwapSellCountAggregate
+            (SwapSell, MoreThan, Count, true) => SwapSellCountAggregate,
+            (SwapSell, MoreThanEqual, Count, true) => SwapSellCountAggregate,
+            (SwapSell, LessThan, Count, true) => SwapSellCountAggregate,
+            (SwapSell, LessThanEqual, Count, true) => SwapSellCountAggregate,
 
-            // SwapAllChangeCount
-            (SwapAll, IncreasedByMoreThan, Count, true) => SwapAllChangeCount,
-            (SwapAll, IncreasedByMoreThanEqual, Count, true) => SwapAllChangeCount,
-            (SwapAll, IncreasedByLessThan, Count, true) => SwapAllChangeCount,
-            (SwapAll, IncreasedByLessThanEqual, Count, true) => SwapAllChangeCount,
-            (SwapAll, DecreasedByMoreThan, Count, true) => SwapAllChangeCount,
-            (SwapAll, DecreasedByMoreThanEqual, Count, true) => SwapAllChangeCount,
-            (SwapAll, DecreasedByLessThan, Count, true) => SwapAllChangeCount,
-            (SwapAll, DecreasedByLessThanEqual, Count, true) => SwapAllChangeCount,
+            // SwapAllChangeAggregate
+            (SwapAll, IncreasedByMoreThan, Count, true) => SwapAllChangeAggregate,
+            (SwapAll, IncreasedByMoreThanEqual, Count, true) => SwapAllChangeAggregate,
+            (SwapAll, IncreasedByLessThan, Count, true) => SwapAllChangeAggregate,
+            (SwapAll, IncreasedByLessThanEqual, Count, true) => SwapAllChangeAggregate,
+            (SwapAll, DecreasedByMoreThan, Count, true) => SwapAllChangeAggregate,
+            (SwapAll, DecreasedByMoreThanEqual, Count, true) => SwapAllChangeAggregate,
+            (SwapAll, DecreasedByLessThan, Count, true) => SwapAllChangeAggregate,
+            (SwapAll, DecreasedByLessThanEqual, Count, true) => SwapAllChangeAggregate,
 
-            // SwapBuyChangeCount
-            (SwapBuy, IncreasedByMoreThan, Count, true) => SwapBuyChangeCount,
-            (SwapBuy, IncreasedByMoreThanEqual, Count, true) => SwapBuyChangeCount,
-            (SwapBuy, IncreasedByLessThan, Count, true) => SwapBuyChangeCount,
-            (SwapBuy, IncreasedByLessThanEqual, Count, true) => SwapBuyChangeCount,
-            (SwapBuy, DecreasedByMoreThan, Count, true) => SwapBuyChangeCount,
-            (SwapBuy, DecreasedByMoreThanEqual, Count, true) => SwapBuyChangeCount,
-            (SwapBuy, DecreasedByLessThan, Count, true) => SwapBuyChangeCount,
-            (SwapBuy, DecreasedByLessThanEqual, Count, true) => SwapBuyChangeCount,
+            // SwapBuyChangeAggregate
+            (SwapBuy, IncreasedByMoreThan, Count, true) => SwapBuyChangeAggregate,
+            (SwapBuy, IncreasedByMoreThanEqual, Count, true) => SwapBuyChangeAggregate,
+            (SwapBuy, IncreasedByLessThan, Count, true) => SwapBuyChangeAggregate,
+            (SwapBuy, IncreasedByLessThanEqual, Count, true) => SwapBuyChangeAggregate,
+            (SwapBuy, DecreasedByMoreThan, Count, true) => SwapBuyChangeAggregate,
+            (SwapBuy, DecreasedByMoreThanEqual, Count, true) => SwapBuyChangeAggregate,
+            (SwapBuy, DecreasedByLessThan, Count, true) => SwapBuyChangeAggregate,
+            (SwapBuy, DecreasedByLessThanEqual, Count, true) => SwapBuyChangeAggregate,
 
-            // SwapSellChangeCount
-            (SwapSell, IncreasedByMoreThan, Count, true) => SwapSellChangeCount,
-            (SwapSell, IncreasedByMoreThanEqual, Count, true) => SwapSellChangeCount,
-            (SwapSell, IncreasedByLessThan, Count, true) => SwapSellChangeCount,
-            (SwapSell, IncreasedByLessThanEqual, Count, true) => SwapSellChangeCount,
-            (SwapSell, DecreasedByMoreThan, Count, true) => SwapSellChangeCount,
-            (SwapSell, DecreasedByMoreThanEqual, Count, true) => SwapSellChangeCount,
-            (SwapSell, DecreasedByLessThan, Count, true) => SwapSellChangeCount,
-            (SwapSell, DecreasedByLessThanEqual, Count, true) => SwapSellChangeCount,
+            // SwapSellChangeAggregate
+            (SwapSell, IncreasedByMoreThan, Count, true) => SwapSellChangeAggregate,
+            (SwapSell, IncreasedByMoreThanEqual, Count, true) => SwapSellChangeAggregate,
+            (SwapSell, IncreasedByLessThan, Count, true) => SwapSellChangeAggregate,
+            (SwapSell, IncreasedByLessThanEqual, Count, true) => SwapSellChangeAggregate,
+            (SwapSell, DecreasedByMoreThan, Count, true) => SwapSellChangeAggregate,
+            (SwapSell, DecreasedByMoreThanEqual, Count, true) => SwapSellChangeAggregate,
+            (SwapSell, DecreasedByLessThan, Count, true) => SwapSellChangeAggregate,
+            (SwapSell, DecreasedByLessThanEqual, Count, true) => SwapSellChangeAggregate,
 
-            // SwapChangePercent
-            (SwapAll, IncreasedByMoreThan, Percent, true) => SwapChangePercent,
-            (SwapAll, IncreasedByMoreThanEqual, Percent, true) => SwapChangePercent,
-            (SwapAll, IncreasedByLessThan, Percent, true) => SwapChangePercent,
-            (SwapAll, IncreasedByLessThanEqual, Percent, true) => SwapChangePercent,
-            (SwapAll, DecreasedByMoreThan, Percent, true) => SwapChangePercent,
-            (SwapAll, DecreasedByMoreThanEqual, Percent, true) => SwapChangePercent,
-            (SwapAll, DecreasedByLessThan, Percent, true) => SwapChangePercent,
-            (SwapAll, DecreasedByLessThanEqual, Percent, true) => SwapChangePercent,
+            // SwapAllPercentAggregate
+            (SwapAll, IncreasedByMoreThan, Percent, true) => SwapAllPercentAggregate,
+            (SwapAll, IncreasedByMoreThanEqual, Percent, true) => SwapAllPercentAggregate,
+            (SwapAll, IncreasedByLessThan, Percent, true) => SwapAllPercentAggregate,
+            (SwapAll, IncreasedByLessThanEqual, Percent, true) => SwapAllPercentAggregate,
+            (SwapAll, DecreasedByMoreThan, Percent, true) => SwapAllPercentAggregate,
+            (SwapAll, DecreasedByMoreThanEqual, Percent, true) => SwapAllPercentAggregate,
+            (SwapAll, DecreasedByLessThan, Percent, true) => SwapAllPercentAggregate,
+            (SwapAll, DecreasedByLessThanEqual, Percent, true) => SwapAllPercentAggregate,
 
-            // SwapBuyChangePercent
-            (SwapBuy, IncreasedByMoreThan, Percent, true) => SwapBuyChangePercent,
-            (SwapBuy, IncreasedByMoreThanEqual, Percent, true) => SwapBuyChangePercent,
-            (SwapBuy, IncreasedByLessThan, Percent, true) => SwapBuyChangePercent,
-            (SwapBuy, IncreasedByLessThanEqual, Percent, true) => SwapBuyChangePercent,
-            (SwapBuy, DecreasedByMoreThan, Percent, true) => SwapBuyChangePercent,
-            (SwapBuy, DecreasedByMoreThanEqual, Percent, true) => SwapBuyChangePercent,
-            (SwapBuy, DecreasedByLessThan, Percent, true) => SwapBuyChangePercent,
-            (SwapBuy, DecreasedByLessThanEqual, Percent, true) => SwapBuyChangePercent,
+            // SwapBuyPercentAggregate
+            (SwapBuy, IncreasedByMoreThan, Percent, true) => SwapBuyPercentAggregate,
+            (SwapBuy, IncreasedByMoreThanEqual, Percent, true) => SwapBuyPercentAggregate,
+            (SwapBuy, IncreasedByLessThan, Percent, true) => SwapBuyPercentAggregate,
+            (SwapBuy, IncreasedByLessThanEqual, Percent, true) => SwapBuyPercentAggregate,
+            (SwapBuy, DecreasedByMoreThan, Percent, true) => SwapBuyPercentAggregate,
+            (SwapBuy, DecreasedByMoreThanEqual, Percent, true) => SwapBuyPercentAggregate,
+            (SwapBuy, DecreasedByLessThan, Percent, true) => SwapBuyPercentAggregate,
+            (SwapBuy, DecreasedByLessThanEqual, Percent, true) => SwapBuyPercentAggregate,
 
-            // SwapSellChangePercent
-            (SwapSell, IncreasedByMoreThan, Percent, true) => SwapSellChangePercent,
-            (SwapSell, IncreasedByMoreThanEqual, Percent, true) => SwapSellChangePercent,
-            (SwapSell, IncreasedByLessThan, Percent, true) => SwapSellChangePercent,
-            (SwapSell, IncreasedByLessThanEqual, Percent, true) => SwapSellChangePercent,
-            (SwapSell, DecreasedByMoreThan, Percent, true) => SwapSellChangePercent,
-            (SwapSell, DecreasedByMoreThanEqual, Percent, true) => SwapSellChangePercent,
-            (SwapSell, DecreasedByLessThan, Percent, true) => SwapSellChangePercent,
-            (SwapSell, DecreasedByLessThanEqual, Percent, true) => SwapSellChangePercent,
+            // SwapBuyPercentAggregate
+            (SwapSell, IncreasedByMoreThan, Percent, true) => SwapSellPercentAggregate,
+            (SwapSell, IncreasedByMoreThanEqual, Percent, true) => SwapSellPercentAggregate,
+            (SwapSell, IncreasedByLessThan, Percent, true) => SwapSellPercentAggregate,
+            (SwapSell, IncreasedByLessThanEqual, Percent, true) => SwapSellPercentAggregate,
+            (SwapSell, DecreasedByMoreThan, Percent, true) => SwapSellPercentAggregate,
+            (SwapSell, DecreasedByMoreThanEqual, Percent, true) => SwapSellPercentAggregate,
+            (SwapSell, DecreasedByLessThan, Percent, true) => SwapSellPercentAggregate,
+            (SwapSell, DecreasedByLessThanEqual, Percent, true) => SwapSellPercentAggregate,
 
-            // VolumeChangeQuote
-            (Volume, IncreasedByMoreThan, Quote, true) => VolumeChangeQuote,
-            (Volume, IncreasedByMoreThanEqual, Quote, true) => VolumeChangeQuote,
-            (Volume, IncreasedByLessThan, Quote, true) => VolumeChangeQuote,
-            (Volume, IncreasedByLessThanEqual, Quote, true) => VolumeChangeQuote,
-            (Volume, DecreasedByMoreThan, Quote, true) => VolumeChangeQuote,
-            (Volume, DecreasedByMoreThanEqual, Quote, true) => VolumeChangeQuote,
-            (Volume, DecreasedByLessThan, Quote, true) => VolumeChangeQuote,
-            (Volume, DecreasedByLessThanEqual, Quote, true) => VolumeChangeQuote,
+            // VolumeChangeQuoteAggregate
+            (Volume, IncreasedByMoreThan, Quote, true) => VolumeChangeQuoteAggregate,
+            (Volume, IncreasedByMoreThanEqual, Quote, true) => VolumeChangeQuoteAggregate,
+            (Volume, IncreasedByLessThan, Quote, true) => VolumeChangeQuoteAggregate,
+            (Volume, IncreasedByLessThanEqual, Quote, true) => VolumeChangeQuoteAggregate,
+            (Volume, DecreasedByMoreThan, Quote, true) => VolumeChangeQuoteAggregate,
+            (Volume, DecreasedByMoreThanEqual, Quote, true) => VolumeChangeQuoteAggregate,
+            (Volume, DecreasedByLessThan, Quote, true) => VolumeChangeQuoteAggregate,
+            (Volume, DecreasedByLessThanEqual, Quote, true) => VolumeChangeQuoteAggregate,
 
             // Telegram
             (Field::TelegramGroupHandle, Equal, ValueType::String, false) => TelegramGroupHandle,
@@ -484,6 +541,146 @@ mod tests {
     }
 
     #[test]
+    fn test_market_cap_quote() {
+        assert_eq!(
+            Fact::from_comparison(&Field::MarketCapQuote, &MoreThan, &Value::quote(99), false),
+            Some(MarketCapQuote)
+        );
+        assert_eq!(
+            Fact::from_comparison(
+                &Field::MarketCapQuote,
+                &MoreThanEqual,
+                &Value::quote(99),
+                false
+            ),
+            Some(MarketCapQuote)
+        );
+        assert_eq!(
+            Fact::from_comparison(&Field::MarketCapQuote, &LessThan, &Value::quote(99), false),
+            Some(MarketCapQuote)
+        );
+        assert_eq!(
+            Fact::from_comparison(
+                &Field::MarketCapQuote,
+                &LessThanEqual,
+                &Value::quote(99),
+                false
+            ),
+            Some(MarketCapQuote)
+        );
+    }
+
+    #[test]
+    fn test_market_cap_sol() {
+        assert_eq!(
+            Fact::from_comparison(&Field::MarketCapSol, &MoreThan, &Value::sol(99), false),
+            Some(MarketCapSol)
+        );
+        assert_eq!(
+            Fact::from_comparison(&Field::MarketCapSol, &MoreThanEqual, &Value::sol(99), false),
+            Some(MarketCapSol)
+        );
+        assert_eq!(
+            Fact::from_comparison(&Field::MarketCapSol, &LessThan, &Value::sol(99), false),
+            Some(MarketCapSol)
+        );
+        assert_eq!(
+            Fact::from_comparison(&Field::MarketCapSol, &LessThanEqual, &Value::sol(99), false),
+            Some(MarketCapSol)
+        );
+    }
+
+    #[test]
+    fn test_market_cap_usd() {
+        assert_eq!(
+            Fact::from_comparison(&Field::MarketCapUsd, &MoreThan, &Value::usd(99), false),
+            Some(MarketCapUsd)
+        );
+        assert_eq!(
+            Fact::from_comparison(&Field::MarketCapUsd, &MoreThanEqual, &Value::usd(99), false),
+            Some(MarketCapUsd)
+        );
+        assert_eq!(
+            Fact::from_comparison(&Field::MarketCapUsd, &LessThan, &Value::usd(99), false),
+            Some(MarketCapUsd)
+        );
+        assert_eq!(
+            Fact::from_comparison(&Field::MarketCapUsd, &LessThanEqual, &Value::usd(99), false),
+            Some(MarketCapUsd)
+        );
+    }
+
+    #[test]
+    fn test_market_cap_quote_aggregate() {
+        assert_eq!(
+            Fact::from_comparison(&Field::MarketCapQuote, &MoreThan, &Value::quote(99), true),
+            Some(MarketCapQuoteAggregate)
+        );
+        assert_eq!(
+            Fact::from_comparison(
+                &Field::MarketCapQuote,
+                &MoreThanEqual,
+                &Value::quote(99),
+                true
+            ),
+            Some(MarketCapQuoteAggregate)
+        );
+        assert_eq!(
+            Fact::from_comparison(&Field::MarketCapQuote, &LessThan, &Value::quote(99), true),
+            Some(MarketCapQuoteAggregate)
+        );
+        assert_eq!(
+            Fact::from_comparison(
+                &Field::MarketCapQuote,
+                &LessThanEqual,
+                &Value::quote(99),
+                true
+            ),
+            Some(MarketCapQuoteAggregate)
+        );
+    }
+
+    #[test]
+    fn test_market_cap_sol_aggregate() {
+        assert_eq!(
+            Fact::from_comparison(&Field::MarketCapSol, &MoreThan, &Value::sol(99), true),
+            Some(MarketCapSolAggregate)
+        );
+        assert_eq!(
+            Fact::from_comparison(&Field::MarketCapSol, &MoreThanEqual, &Value::sol(99), true),
+            Some(MarketCapSolAggregate)
+        );
+        assert_eq!(
+            Fact::from_comparison(&Field::MarketCapSol, &LessThan, &Value::sol(99), true),
+            Some(MarketCapSolAggregate)
+        );
+        assert_eq!(
+            Fact::from_comparison(&Field::MarketCapSol, &LessThanEqual, &Value::sol(99), true),
+            Some(MarketCapSolAggregate)
+        );
+    }
+
+    #[test]
+    fn test_market_cap_usd_aggregate() {
+        assert_eq!(
+            Fact::from_comparison(&Field::MarketCapUsd, &MoreThan, &Value::usd(99), true),
+            Some(MarketCapUsdAggregate)
+        );
+        assert_eq!(
+            Fact::from_comparison(&Field::MarketCapUsd, &MoreThanEqual, &Value::usd(99), true),
+            Some(MarketCapUsdAggregate)
+        );
+        assert_eq!(
+            Fact::from_comparison(&Field::MarketCapUsd, &LessThan, &Value::usd(99), true),
+            Some(MarketCapUsdAggregate)
+        );
+        assert_eq!(
+            Fact::from_comparison(&Field::MarketCapUsd, &LessThanEqual, &Value::usd(99), true),
+            Some(MarketCapUsdAggregate)
+        );
+    }
+
+    #[test]
     fn test_price_quote() {
         assert_eq!(
             Fact::from_comparison(&Price, &MoreThan, &Value::quote(99), false),
@@ -524,110 +721,110 @@ mod tests {
     }
 
     #[test]
-    fn test_price_avg_quote() {
+    fn test_price_avg_quote_aggregate() {
         assert_eq!(
             Fact::from_comparison(&PriceAvg, &MoreThan, &Value::quote(99), true),
-            Some(PriceAvgQuote)
+            Some(PriceAvgQuoteAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&PriceAvg, &MoreThanEqual, &Value::quote(99), true),
-            Some(PriceAvgQuote)
+            Some(PriceAvgQuoteAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&PriceAvg, &LessThan, &Value::quote(99), true),
-            Some(PriceAvgQuote)
+            Some(PriceAvgQuoteAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&PriceAvg, &LessThanEqual, &Value::quote(99), true),
-            Some(PriceAvgQuote)
+            Some(PriceAvgQuoteAggregate)
         );
     }
 
     #[test]
-    fn test_price_avg_usd() {
+    fn test_price_avg_usd_aggregate() {
         assert_eq!(
             Fact::from_comparison(&PriceAvg, &MoreThan, &Value::usd(99), true),
-            Some(PriceAvgUsd)
+            Some(PriceAvgUsdAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&PriceAvg, &MoreThanEqual, &Value::usd(99), true),
-            Some(PriceAvgUsd)
+            Some(PriceAvgUsdAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&PriceAvg, &LessThan, &Value::usd(99), true),
-            Some(PriceAvgUsd)
+            Some(PriceAvgUsdAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&PriceAvg, &LessThanEqual, &Value::usd(99), true),
-            Some(PriceAvgUsd)
+            Some(PriceAvgUsdAggregate)
         );
     }
 
     #[test]
-    fn test_swaps_count() {
+    fn test_swap_all_count_aggregate() {
         assert_eq!(
             Fact::from_comparison(&SwapAll, &MoreThan, &Value::count(9924), true),
-            Some(SwapAllCount)
+            Some(SwapAllCountAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&SwapAll, &MoreThanEqual, &Value::count(9924), true),
-            Some(SwapAllCount)
+            Some(SwapAllCountAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&SwapAll, &LessThan, &Value::count(9924), true),
-            Some(SwapAllCount)
+            Some(SwapAllCountAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&SwapAll, &LessThanEqual, &Value::count(9924), true),
-            Some(SwapAllCount)
+            Some(SwapAllCountAggregate)
         );
     }
 
     #[test]
-    fn test_swaps_buy_count() {
+    fn test_swap_buy_count_aggregate() {
         assert_eq!(
             Fact::from_comparison(&SwapBuy, &MoreThan, &Value::count(9924), true),
-            Some(SwapBuyCount)
+            Some(SwapBuyCountAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&SwapBuy, &MoreThanEqual, &Value::count(9924), true),
-            Some(SwapBuyCount)
+            Some(SwapBuyCountAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&SwapBuy, &LessThan, &Value::count(9924), true),
-            Some(SwapBuyCount)
+            Some(SwapBuyCountAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&SwapBuy, &LessThanEqual, &Value::count(9924), true),
-            Some(SwapBuyCount)
+            Some(SwapBuyCountAggregate)
         );
     }
 
     #[test]
-    fn test_swaps_sell_count() {
+    fn test_swap_sell_count_aggregate() {
         assert_eq!(
             Fact::from_comparison(&SwapSell, &MoreThan, &Value::count(9924), true),
-            Some(SwapSellCount)
+            Some(SwapSellCountAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&SwapSell, &MoreThanEqual, &Value::count(9924), true),
-            Some(SwapSellCount)
+            Some(SwapSellCountAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&SwapSell, &LessThan, &Value::count(9924), true),
-            Some(SwapSellCount)
+            Some(SwapSellCountAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&SwapSell, &LessThanEqual, &Value::count(9924), true),
-            Some(SwapSellCount)
+            Some(SwapSellCountAggregate)
         );
     }
 
     #[test]
-    fn test_swaps_change_count() {
+    fn test_swap_change_aggregate() {
         assert_eq!(
             Fact::from_comparison(&SwapAll, &IncreasedByMoreThan, &Value::count(9924), true),
-            Some(SwapAllChangeCount)
+            Some(SwapAllChangeAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -636,11 +833,11 @@ mod tests {
                 &Value::count(9924),
                 true
             ),
-            Some(SwapAllChangeCount)
+            Some(SwapAllChangeAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&SwapAll, &IncreasedByLessThan, &Value::count(9924), true),
-            Some(SwapAllChangeCount)
+            Some(SwapAllChangeAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -649,11 +846,11 @@ mod tests {
                 &Value::count(9924),
                 true
             ),
-            Some(SwapAllChangeCount)
+            Some(SwapAllChangeAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&SwapAll, &DecreasedByMoreThan, &Value::count(9924), true),
-            Some(SwapAllChangeCount)
+            Some(SwapAllChangeAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -662,11 +859,11 @@ mod tests {
                 &Value::count(9924),
                 true
             ),
-            Some(SwapAllChangeCount)
+            Some(SwapAllChangeAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&SwapAll, &DecreasedByLessThan, &Value::count(9924), true),
-            Some(SwapAllChangeCount)
+            Some(SwapAllChangeAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -675,15 +872,15 @@ mod tests {
                 &Value::count(9924),
                 true
             ),
-            Some(SwapAllChangeCount)
+            Some(SwapAllChangeAggregate)
         );
     }
 
     #[test]
-    fn test_swaps_buy_change_count() {
+    fn test_swap_buy_change_aggregate() {
         assert_eq!(
             Fact::from_comparison(&SwapBuy, &IncreasedByMoreThan, &Value::count(9924), true),
-            Some(SwapBuyChangeCount)
+            Some(SwapBuyChangeAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -692,11 +889,11 @@ mod tests {
                 &Value::count(9924),
                 true
             ),
-            Some(SwapBuyChangeCount)
+            Some(SwapBuyChangeAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&SwapBuy, &IncreasedByLessThan, &Value::count(9924), true),
-            Some(SwapBuyChangeCount)
+            Some(SwapBuyChangeAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -705,11 +902,11 @@ mod tests {
                 &Value::count(9924),
                 true
             ),
-            Some(SwapBuyChangeCount)
+            Some(SwapBuyChangeAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&SwapBuy, &DecreasedByMoreThan, &Value::count(9924), true),
-            Some(SwapBuyChangeCount)
+            Some(SwapBuyChangeAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -718,11 +915,11 @@ mod tests {
                 &Value::count(9924),
                 true
             ),
-            Some(SwapBuyChangeCount)
+            Some(SwapBuyChangeAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&SwapBuy, &DecreasedByLessThan, &Value::count(9924), true),
-            Some(SwapBuyChangeCount)
+            Some(SwapBuyChangeAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -731,15 +928,15 @@ mod tests {
                 &Value::count(9924),
                 true
             ),
-            Some(SwapBuyChangeCount)
+            Some(SwapBuyChangeAggregate)
         );
     }
 
     #[test]
-    fn test_swaps_sell_change_count() {
+    fn test_swap_sell_change_aggregate() {
         assert_eq!(
             Fact::from_comparison(&SwapSell, &IncreasedByMoreThan, &Value::count(9924), true),
-            Some(SwapSellChangeCount)
+            Some(SwapSellChangeAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -748,11 +945,11 @@ mod tests {
                 &Value::count(9924),
                 true
             ),
-            Some(SwapSellChangeCount)
+            Some(SwapSellChangeAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&SwapSell, &IncreasedByLessThan, &Value::count(9924), true),
-            Some(SwapSellChangeCount)
+            Some(SwapSellChangeAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -761,11 +958,11 @@ mod tests {
                 &Value::count(9924),
                 true
             ),
-            Some(SwapSellChangeCount)
+            Some(SwapSellChangeAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&SwapSell, &DecreasedByMoreThan, &Value::count(9924), true),
-            Some(SwapSellChangeCount)
+            Some(SwapSellChangeAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -774,11 +971,11 @@ mod tests {
                 &Value::count(9924),
                 true
             ),
-            Some(SwapSellChangeCount)
+            Some(SwapSellChangeAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&SwapSell, &DecreasedByLessThan, &Value::count(9924), true),
-            Some(SwapSellChangeCount)
+            Some(SwapSellChangeAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -787,15 +984,15 @@ mod tests {
                 &Value::count(9924),
                 true
             ),
-            Some(SwapSellChangeCount)
+            Some(SwapSellChangeAggregate)
         );
     }
 
     #[test]
-    fn test_swaps_percent() {
+    fn test_swap_percent_aggregate() {
         assert_eq!(
             Fact::from_comparison(&SwapAll, &IncreasedByMoreThan, &Value::percent(99.24), true),
-            Some(SwapChangePercent)
+            Some(SwapAllPercentAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -804,11 +1001,11 @@ mod tests {
                 &Value::percent(99.24),
                 true
             ),
-            Some(SwapChangePercent)
+            Some(SwapAllPercentAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&SwapAll, &IncreasedByLessThan, &Value::percent(99.24), true),
-            Some(SwapChangePercent)
+            Some(SwapAllPercentAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -817,11 +1014,11 @@ mod tests {
                 &Value::percent(99.24),
                 true
             ),
-            Some(SwapChangePercent)
+            Some(SwapAllPercentAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&SwapAll, &DecreasedByMoreThan, &Value::percent(99.24), true),
-            Some(SwapChangePercent)
+            Some(SwapAllPercentAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -830,11 +1027,11 @@ mod tests {
                 &Value::percent(99.24),
                 true
             ),
-            Some(SwapChangePercent)
+            Some(SwapAllPercentAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&SwapAll, &DecreasedByLessThan, &Value::percent(99.24), true),
-            Some(SwapChangePercent)
+            Some(SwapAllPercentAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -843,15 +1040,15 @@ mod tests {
                 &Value::percent(99.24),
                 true
             ),
-            Some(SwapChangePercent)
+            Some(SwapAllPercentAggregate)
         );
     }
 
     #[test]
-    fn test_swaps_buy_percent() {
+    fn test_swap_buy_percent_aggregate() {
         assert_eq!(
             Fact::from_comparison(&SwapBuy, &IncreasedByMoreThan, &Value::percent(99.24), true),
-            Some(SwapBuyChangePercent)
+            Some(SwapBuyPercentAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -860,11 +1057,11 @@ mod tests {
                 &Value::percent(99.24),
                 true
             ),
-            Some(SwapBuyChangePercent)
+            Some(SwapBuyPercentAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&SwapBuy, &IncreasedByLessThan, &Value::percent(99.24), true),
-            Some(SwapBuyChangePercent)
+            Some(SwapBuyPercentAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -873,11 +1070,11 @@ mod tests {
                 &Value::percent(99.24),
                 true
             ),
-            Some(SwapBuyChangePercent)
+            Some(SwapBuyPercentAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&SwapBuy, &DecreasedByMoreThan, &Value::percent(99.24), true),
-            Some(SwapBuyChangePercent)
+            Some(SwapBuyPercentAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -886,11 +1083,11 @@ mod tests {
                 &Value::percent(99.24),
                 true
             ),
-            Some(SwapBuyChangePercent)
+            Some(SwapBuyPercentAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&SwapBuy, &DecreasedByLessThan, &Value::percent(99.24), true),
-            Some(SwapBuyChangePercent)
+            Some(SwapBuyPercentAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -899,12 +1096,12 @@ mod tests {
                 &Value::percent(99.24),
                 true
             ),
-            Some(SwapBuyChangePercent)
+            Some(SwapBuyPercentAggregate)
         );
     }
 
     #[test]
-    fn test_swaps_sell_percent() {
+    fn test_swap_sell_percent_aggregate() {
         assert_eq!(
             Fact::from_comparison(
                 &SwapSell,
@@ -912,7 +1109,7 @@ mod tests {
                 &Value::percent(99.24),
                 true
             ),
-            Some(SwapSellChangePercent)
+            Some(SwapSellPercentAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -921,7 +1118,7 @@ mod tests {
                 &Value::percent(99.24),
                 true
             ),
-            Some(SwapSellChangePercent)
+            Some(SwapSellPercentAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -930,7 +1127,7 @@ mod tests {
                 &Value::percent(99.24),
                 true
             ),
-            Some(SwapSellChangePercent)
+            Some(SwapSellPercentAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -939,7 +1136,7 @@ mod tests {
                 &Value::percent(99.24),
                 true
             ),
-            Some(SwapSellChangePercent)
+            Some(SwapSellPercentAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -948,7 +1145,7 @@ mod tests {
                 &Value::percent(99.24),
                 true
             ),
-            Some(SwapSellChangePercent)
+            Some(SwapSellPercentAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -957,7 +1154,7 @@ mod tests {
                 &Value::percent(99.24),
                 true
             ),
-            Some(SwapSellChangePercent)
+            Some(SwapSellPercentAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -966,7 +1163,7 @@ mod tests {
                 &Value::percent(99.24),
                 true
             ),
-            Some(SwapSellChangePercent)
+            Some(SwapSellPercentAggregate)
         );
         assert_eq!(
             Fact::from_comparison(
@@ -975,43 +1172,43 @@ mod tests {
                 &Value::percent(99.24),
                 true
             ),
-            Some(SwapSellChangePercent)
+            Some(SwapSellPercentAggregate)
         );
     }
 
     #[test]
-    fn test_volume_change_quote() {
+    fn test_volume_change_quote_aggregate() {
         assert_eq!(
             Fact::from_comparison(&Volume, &IncreasedByMoreThan, &Value::quote(99), true),
-            Some(VolumeChangeQuote)
+            Some(VolumeChangeQuoteAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&Volume, &IncreasedByMoreThanEqual, &Value::quote(99), true),
-            Some(VolumeChangeQuote)
+            Some(VolumeChangeQuoteAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&Volume, &IncreasedByLessThan, &Value::quote(99), true),
-            Some(VolumeChangeQuote)
+            Some(VolumeChangeQuoteAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&Volume, &IncreasedByLessThanEqual, &Value::quote(99), true),
-            Some(VolumeChangeQuote)
+            Some(VolumeChangeQuoteAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&Volume, &DecreasedByMoreThan, &Value::quote(99), true),
-            Some(VolumeChangeQuote)
+            Some(VolumeChangeQuoteAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&Volume, &DecreasedByMoreThanEqual, &Value::quote(99), true),
-            Some(VolumeChangeQuote)
+            Some(VolumeChangeQuoteAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&Volume, &DecreasedByLessThan, &Value::quote(99), true),
-            Some(VolumeChangeQuote)
+            Some(VolumeChangeQuoteAggregate)
         );
         assert_eq!(
             Fact::from_comparison(&Volume, &DecreasedByLessThanEqual, &Value::quote(99), true),
-            Some(VolumeChangeQuote)
+            Some(VolumeChangeQuoteAggregate)
         );
     }
 

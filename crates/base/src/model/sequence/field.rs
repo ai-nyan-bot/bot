@@ -12,11 +12,17 @@ pub enum Field {
     CurveProgress,
     CurveProgressAge,
 
+    MarketCapQuote,
+    MarketCapSol,
+    MarketCapUsd,
+
     Price,
     PriceAvg,
+
     SwapAll,
     SwapBuy,
     SwapSell,
+
     Volume,
 
     //
@@ -24,7 +30,7 @@ pub enum Field {
     TelegramGroupHandle,
     TwitterExists,
     TwitterAccountHandle,
-    
+
     VenuePumpfun,
     VenueJupiter
 }

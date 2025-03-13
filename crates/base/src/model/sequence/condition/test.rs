@@ -82,15 +82,15 @@ mod tests {
     use super::*;
     use crate::model::Value;
     use common::model::Timeframe;
-    use Fact::{PriceQuote, PriceUsd, VolumeChangeQuote};
+    use Fact::{PriceQuote, PriceUsd, VolumeChangeQuoteAggregate};
     use Timeframe::{M1, S1};
 
     fn facts() -> Facts {
         Facts::new()
             .with_value(PriceQuote, Value::quote(1))
             .with_value(PriceUsd, Value::usd(2))
-            .with_timeframe_value(VolumeChangeQuote, Value::quote(3), S1)
-            .with_timeframe_value(VolumeChangeQuote, Value::quote(4), M1)
+            .with_timeframe_value(VolumeChangeQuoteAggregate, Value::quote(3), S1)
+            .with_timeframe_value(VolumeChangeQuoteAggregate, Value::quote(4), M1)
     }
 
     mod compose {

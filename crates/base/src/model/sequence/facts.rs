@@ -124,7 +124,7 @@ mod tests {
     #[test]
     fn test_set_and_get_fact_with_timeframe() {
         let mut test_instance = Facts::new();
-        let fact = Fact::SwapBuyChangePercent;
+        let fact = Fact::SwapBuyPercentAggregate;
         let timeframe = Timeframe::D1;
         let value = Value::percent(-2.5);
 
@@ -151,7 +151,7 @@ mod tests {
     #[test]
     fn test_set_fact_without_timeframe_when_required() {
         let mut test_instance = Facts::new();
-        let fact = Fact::SwapBuyChangePercent;
+        let fact = Fact::SwapBuyPercentAggregate;
         let value = Value::percent(-3.0);
 
         let result = test_instance.set(fact, value.clone(), None);
@@ -161,7 +161,7 @@ mod tests {
     #[test]
     fn test_set_fact_with_invalid_value_kind() {
         let mut test_instance = Facts::new();
-        let fact = Fact::SwapBuyChangePercent;
+        let fact = Fact::SwapBuyPercentAggregate;
         let invalid_value = Value::boolean(true);
 
         let result = test_instance.set(fact, invalid_value.clone(), Some(Timeframe::H1));
@@ -188,7 +188,7 @@ mod tests {
     #[test]
     fn test_exists_fact_with_timeframe() {
         let mut test_instance = Facts::new();
-        let fact = Fact::SwapChangePercent;
+        let fact = Fact::SwapAllPercentAggregate;
         let timeframe = Timeframe::D1;
         let value = Value::percent(500.0);
 
@@ -214,7 +214,7 @@ mod tests {
     #[test]
     fn test_overwrite_existing_fact_with_timeframe() {
         let mut test_instance = Facts::new();
-        let fact = Fact::SwapChangePercent;
+        let fact = Fact::SwapAllPercentAggregate;
         let timeframe = Timeframe::D1;
         let value1 = Value::percent(300.0);
         let value2 = Value::percent(500.0);
@@ -239,16 +239,16 @@ mod tests {
     #[test]
     fn test_get_nonexistent_fact() {
         let test_instance = Facts::new();
-        assert!(test_instance.get(&Fact::SwapBuyChangePercent).is_none());
+        assert!(test_instance.get(&Fact::SwapBuyPercentAggregate).is_none());
         assert!(test_instance
-            .get_with_timeframe(&Fact::SwapBuyChangePercent, &Timeframe::S1)
+            .get_with_timeframe(&Fact::SwapBuyPercentAggregate, &Timeframe::S1)
             .is_none());
     }
 
     #[test]
     fn test_set_fact_with_different_timeframes() {
         let mut test_instance = Facts::new();
-        let fact = Fact::SwapBuyChangePercent;
+        let fact = Fact::SwapBuyPercentAggregate;
 
         let value1 = Value::percent(1.2);
         let value2 = Value::percent(2.4);
@@ -285,7 +285,7 @@ mod tests {
     #[test]
     fn test_exists_for_different_timeframes() {
         let mut test_instance = Facts::new();
-        let fact = Fact::SwapBuyChangePercent;
+        let fact = Fact::SwapBuyPercentAggregate;
 
         let timeframe1 = Timeframe::H1;
         let timeframe2 = Timeframe::D1;
@@ -308,7 +308,7 @@ mod tests {
     #[test]
     fn test_update_multiple_timeframes_independently() {
         let mut test_instance = Facts::new();
-        let fact = Fact::SwapBuyChangePercent;
+        let fact = Fact::SwapBuyPercentAggregate;
 
         let timeframe1 = Timeframe::H1;
         let timeframe2 = Timeframe::D1;
