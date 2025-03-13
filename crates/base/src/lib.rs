@@ -20,11 +20,12 @@ pub async fn load_all(
     loader: &dyn LoadTokenInfo,
     mints: impl IntoIterator<Item = impl Into<Mint>>,
 ) -> Vec<Option<TokenInfo>> {
+    let mints: Vec<Mint> = mints.into_iter().map(Into::into).collect();
     let start = Instant::now();
 
     let handles = mints
         .into_iter()
-        .map(|mint| async move { loader.load(mint.into()).await });
+        .map(|mint| async move { loader.load(mint).await });
 
     let result = join_all(handles).await;
 
