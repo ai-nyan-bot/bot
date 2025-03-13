@@ -3,6 +3,8 @@
 use crate::model::{Amount, Decimals, Description, Mint, Name, Symbol, Uri};
 use async_trait::async_trait;
 use futures_util::future::join_all;
+use log::debug;
+use tokio::time::Instant;
 
 pub mod model;
 pub mod repo;
@@ -18,11 +20,21 @@ pub async fn load_all(
     loader: &dyn LoadTokenInfo,
     mints: impl IntoIterator<Item = impl Into<Mint>>,
 ) -> Vec<Option<TokenInfo>> {
+    let start = Instant::now();
+
     let handles = mints
         .into_iter()
         .map(|mint| async move { loader.load(mint.into()).await });
 
-    join_all(handles).await
+    let result = join_all(handles).await;
+
+    debug!(
+        "Downloading {} token infos took {} ms",
+        result.len(),
+        start.elapsed().as_millis()
+    );
+
+    result
 }
 
 #[derive(Debug, Clone)]
