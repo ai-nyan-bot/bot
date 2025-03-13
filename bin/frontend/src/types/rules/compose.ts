@@ -2,9 +2,10 @@ import {
     CompareCurveProgressAge,
     CompareCurveProgressPercent,
     CompareSimpleAgeBase,
-    CompareSimpleSwapBuy,
+    CompareSimpleMarketCap,
+    CompareSimpleSwapBuyAggregate,
     CompareSimpleSwapSell,
-    CompareSimpleSwapTotal,
+    CompareSimpleSwapTotalAggregate,
     CompareVenuePumpfun,
     DEFAULT_COMPARE_VENUE_PUMPFUN
 } from "./compare";
@@ -23,9 +24,11 @@ export enum ComposeType {
     PUMP_FUN_QUICK = 'PUMP_FUN_QUICK',
 
     SIMPLE_AGE = 'SIMPLE_AGE',
-    SIMPLE_SWAP_TOTAL = 'SIMPLE_SWAP_TOTAL',
-    SIMPLE_SWAP_BUY = 'SIMPLE_SWAP_BUY',
-    SIMPLE_SWAP_SELL = 'SIMPLE_SWAP_SELL',
+    SIMPLE_MARKET_CAP = 'SIMPLE_MARKET_CAP',
+
+    SIMPLE_SWAP_TOTAL_AGGREGATE = 'SIMPLE_SWAP_TOTAL_AGGREGATE',
+    SIMPLE_SWAP_BUY_AGGREGATE = 'SIMPLE_SWAP_BUY_AGGREGATE',
+    SIMPLE_SWAP_SELL_AGGREGATE = 'SIMPLE_SWAP_SELL_AGGREGATE',
 }
 
 export type Compose = {
@@ -137,24 +140,61 @@ export const DEFAULT_COMPOSED_SIMPLE_AGE: ComposedSimpleAge = {
     }
 };
 
-
-export type ComposedSimpleSwapTotal = {
+export type ComposedSimpleMarketCap = {
     id: string;
     type: ConditionType.COMPOSE;
-    composition: ComposeType.SIMPLE_SWAP_TOTAL,
+    composition: ComposeType.SIMPLE_MARKET_CAP,
     condition: {
         type: ConditionType.AND,
         conditions: [
-            CompareSimpleSwapTotal,
-            CompareSimpleSwapTotal
+            CompareSimpleMarketCap,
+            CompareSimpleMarketCap
         ]
     }
 }
 
-export const DEFAULT_COMPOSED_SIMPLE_SWAP_TOTAL: ComposedSimpleSwapTotal = {
+export const DEFAULT_COMPOSED_SIMPLE_MARKET_CAP: ComposedSimpleMarketCap = {
     id: uuidv4(),
     type: ConditionType.COMPOSE,
-    composition: ComposeType.SIMPLE_SWAP_TOTAL,
+    composition: ComposeType.SIMPLE_MARKET_CAP,
+    condition: {
+        type: ConditionType.AND,
+        conditions: [
+            {
+                id: uuidv4(),
+                type: ConditionType.COMPARE,
+                field: Field.MARKET_CAP,
+                operator: Operator.MORE_THAN_EQUAL,
+                value: undefined,
+            },
+            {
+                id: uuidv4(),
+                type: ConditionType.COMPARE,
+                field: Field.MARKET_CAP,
+                operator: Operator.LESS_THAN_EQUAL,
+                value: undefined
+            }
+        ]
+    }
+};
+
+export type ComposedSimpleSwapTotalAggregate = {
+    id: string;
+    type: ConditionType.COMPOSE;
+    composition: ComposeType.SIMPLE_SWAP_TOTAL_AGGREGATE,
+    condition: {
+        type: ConditionType.AND,
+        conditions: [
+            CompareSimpleSwapTotalAggregate,
+            CompareSimpleSwapTotalAggregate
+        ]
+    }
+}
+
+export const DEFAULT_COMPOSED_SIMPLE_SWAP_TOTAL_AGGREGATE: ComposedSimpleSwapTotalAggregate = {
+    id: uuidv4(),
+    type: ConditionType.COMPOSE,
+    composition: ComposeType.SIMPLE_SWAP_TOTAL_AGGREGATE,
     condition: {
         type: ConditionType.AND,
         conditions: [
@@ -179,28 +219,28 @@ export const DEFAULT_COMPOSED_SIMPLE_SWAP_TOTAL: ComposedSimpleSwapTotal = {
 };
 
 
-export const isComposedSimpleSwapTotal = (condition: any): condition is ComposedSimpleSwapTotal => {
-    return condition && condition.composition === ComposeType.SIMPLE_SWAP_TOTAL;
+export const isComposedSimpleSwapTotalAggregate = (condition: any): condition is ComposedSimpleSwapTotalAggregate => {
+    return condition && condition.composition === ComposeType.SIMPLE_SWAP_TOTAL_AGGREGATE;
 }
 
 
-export type ComposedSimpleSwapBuy = {
+export type ComposedSimpleSwapBuyAggregate = {
     id: string;
     type: ConditionType.COMPOSE;
-    composition: ComposeType.SIMPLE_SWAP_BUY,
+    composition: ComposeType.SIMPLE_SWAP_BUY_AGGREGATE,
     condition: {
         type: ConditionType.AND,
         conditions: [
-            CompareSimpleSwapBuy,
-            CompareSimpleSwapBuy
+            CompareSimpleSwapBuyAggregate,
+            CompareSimpleSwapBuyAggregate
         ]
     }
 }
 
-export const DEFAULT_COMPOSED_SIMPLE_SWAP_BUY: ComposedSimpleSwapBuy = {
+export const DEFAULT_COMPOSED_SIMPLE_SWAP_BUY_AGGREGATE: ComposedSimpleSwapBuyAggregate = {
     id: uuidv4(),
     type: ConditionType.COMPOSE,
-    composition: ComposeType.SIMPLE_SWAP_BUY,
+    composition: ComposeType.SIMPLE_SWAP_BUY_AGGREGATE,
     condition: {
         type: ConditionType.AND,
         conditions: [
@@ -224,15 +264,15 @@ export const DEFAULT_COMPOSED_SIMPLE_SWAP_BUY: ComposedSimpleSwapBuy = {
     }
 };
 
-export const isComposedSimpleSwapBuy = (condition: any): condition is ComposedSimpleSwapBuy => {
-    return condition && condition.composition === ComposeType.SIMPLE_SWAP_BUY;
+export const isComposedSimpleSwapBuyAggregate = (condition: any): condition is ComposedSimpleSwapBuyAggregate => {
+    return condition && condition.composition === ComposeType.SIMPLE_SWAP_BUY_AGGREGATE;
 }
 
 
-export type ComposedSimpleSwapSell = {
+export type ComposedSimpleSwapSellAggregate = {
     id: string;
     type: ConditionType.COMPOSE;
-    composition: ComposeType.SIMPLE_SWAP_SELL,
+    composition: ComposeType.SIMPLE_SWAP_SELL_AGGREGATE,
     condition: {
         type: ConditionType.AND,
         conditions: [
@@ -242,10 +282,10 @@ export type ComposedSimpleSwapSell = {
     }
 }
 
-export const DEFAULT_COMPOSED_SIMPLE_SWAP_SELL: ComposedSimpleSwapSell = {
+export const DEFAULT_COMPOSED_SIMPLE_SWAP_SELL_AGGREGATE: ComposedSimpleSwapSellAggregate = {
     id: uuidv4(),
     type: ConditionType.COMPOSE,
-    composition: ComposeType.SIMPLE_SWAP_SELL,
+    composition: ComposeType.SIMPLE_SWAP_SELL_AGGREGATE,
     condition: {
         type: ConditionType.AND,
         conditions: [
@@ -269,8 +309,8 @@ export const DEFAULT_COMPOSED_SIMPLE_SWAP_SELL: ComposedSimpleSwapSell = {
     }
 };
 
-export const isComposedSimpleSwapSell = (condition: any): condition is ComposedSimpleSwapSell => {
-    return condition && condition.composition === ComposeType.SIMPLE_SWAP_SELL;
+export const isComposedSimpleSwapSellAggregate = (condition: any): condition is ComposedSimpleSwapSellAggregate => {
+    return condition && condition.composition === ComposeType.SIMPLE_SWAP_SELL_AGGREGATE;
 }
 
 export type ComposedPumpFunQuick = {
@@ -283,9 +323,9 @@ export type ComposedPumpFunQuick = {
             CompareVenuePumpfun?,
             ComposedSimpleAge?,
             ComposedCurveProgress?,
-            ComposedSimpleSwapTotal?,
-            ComposedSimpleSwapBuy?,
-            ComposedSimpleSwapSell?,
+            ComposedSimpleSwapTotalAggregate?,
+            ComposedSimpleSwapBuyAggregate?,
+            ComposedSimpleSwapSellAggregate?,
         ]
     }
 }
@@ -300,9 +340,9 @@ export const DEFAULT_COMPOSED_PUMP_FUN_QUICK: ComposedPumpFunQuick = {
             {...DEFAULT_COMPARE_VENUE_PUMPFUN},
             {...DEFAULT_COMPOSED_SIMPLE_AGE},
             {...DEFAULT_COMPOSED_CURVE_PROGRESS},
-            {...DEFAULT_COMPOSED_SIMPLE_SWAP_TOTAL},
-            {...DEFAULT_COMPOSED_SIMPLE_SWAP_BUY},
-            {...DEFAULT_COMPOSED_SIMPLE_SWAP_SELL},
+            {...DEFAULT_COMPOSED_SIMPLE_SWAP_TOTAL_AGGREGATE},
+            {...DEFAULT_COMPOSED_SIMPLE_SWAP_BUY_AGGREGATE},
+            {...DEFAULT_COMPOSED_SIMPLE_SWAP_SELL_AGGREGATE},
         ]
     }
 };

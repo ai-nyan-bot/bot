@@ -2,12 +2,12 @@ import React, {FC, useEffect, useState} from "react";
 import {SelectTimeframe, TimeframeText} from "@components/editor/condition/component";
 import {
     ALL_TIME_FRAMES,
-    ComposedSimpleSwapBuy,
-    ComposedSimpleSwapSell,
-    ComposedSimpleSwapTotal,
-    isComposedSimpleSwapBuy,
-    isComposedSimpleSwapSell,
-    isComposedSimpleSwapTotal,
+    ComposedSimpleSwapBuyAggregate,
+    ComposedSimpleSwapSellAggregate,
+    ComposedSimpleSwapTotalAggregate,
+    isComposedSimpleSwapBuyAggregate,
+    isComposedSimpleSwapSellAggregate,
+    isComposedSimpleSwapTotalAggregate,
     Timeframe,
     ValueCount,
     ValueType
@@ -15,19 +15,19 @@ import {
 import {ValueNumberInput} from "@components/editor/value";
 
 
-export type SimpleSwapComposeProps = {
-    condition: ComposedSimpleSwapTotal | ComposedSimpleSwapBuy | ComposedSimpleSwapSell;
-    onChange: (condition: ComposedSimpleSwapTotal | ComposedSimpleSwapBuy | ComposedSimpleSwapSell) => void;
+export type SimpleSwapAggregateComposeProps = {
+    condition: ComposedSimpleSwapTotalAggregate | ComposedSimpleSwapBuyAggregate | ComposedSimpleSwapSellAggregate;
+    onChange: (condition: ComposedSimpleSwapTotalAggregate | ComposedSimpleSwapBuyAggregate | ComposedSimpleSwapSellAggregate) => void;
 };
 
-export const SimpleSwapCompose: FC<SimpleSwapComposeProps> = ({condition, onChange}) => {
+export const SimpleSwapAggregateCompose: FC<SimpleSwapAggregateComposeProps> = ({condition, onChange}) => {
     const min = condition.condition.conditions[0];
     const max = condition.condition.conditions[1];
 
     const type: SwapType =
-        isComposedSimpleSwapTotal(condition) ? SwapType.Total :
-            isComposedSimpleSwapBuy(condition) ? SwapType.Buy :
-                isComposedSimpleSwapSell(condition) ? SwapType.Sell :
+        isComposedSimpleSwapTotalAggregate(condition) ? SwapType.Total :
+            isComposedSimpleSwapBuyAggregate(condition) ? SwapType.Buy :
+                isComposedSimpleSwapSellAggregate(condition) ? SwapType.Sell :
                     (() => {
                         throw new Error("Unsupported condition");
                     })();
@@ -137,6 +137,7 @@ export enum SwapType {
     Buy,
     Sell
 }
+
 export type RenderTextProps = {
     minValue?: ValueCount;
     minTimeframe: Timeframe;

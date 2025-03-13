@@ -1,7 +1,16 @@
 import {ConditionType} from "./condition";
 import {Field} from "./field";
 import {Operator} from "./operator";
-import {ValueBoolean, ValueCount, ValueDuration, ValuePercent, ValueType,} from "./value";
+import {
+    ValueBoolean,
+    ValueCount,
+    ValueDuration,
+    ValuePercent,
+    ValueQuote,
+    ValueSol,
+    ValueType,
+    ValueUsd,
+} from "./value";
 import {Timeframe} from "./time";
 import {uuidv4} from "@utils";
 
@@ -29,8 +38,16 @@ export type CompareSimpleAgeBase = {
     value?: ValueDuration
 }
 
+export type CompareSimpleMarketCap = {
+    id: string;
+    type: ConditionType.COMPARE,
+    field: Field.MARKET_CAP,
+    operator: Operator.MORE_THAN_EQUAL | Operator.LESS_THAN_EQUAL,
+    value?: ValueQuote | ValueSol | ValueUsd,
+}
 
-export type CompareSimpleSwapTotal = {
+
+export type CompareSimpleSwapTotalAggregate = {
     id: string;
     type: ConditionType.COMPARE,
     field: Field.SWAP_ALL,
@@ -40,7 +57,7 @@ export type CompareSimpleSwapTotal = {
 }
 
 
-export type CompareSimpleSwapBuy = {
+export type CompareSimpleSwapBuyAggregate = {
     id: string;
     type: ConditionType.COMPARE,
     field: Field.SWAP_BUY,
