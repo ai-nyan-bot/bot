@@ -6,4 +6,5 @@ export enum Field {
     SWAP_ALL = 'SWAP_ALL',
     SWAP_BUY = 'SWAP_BUY',
     SWAP_SELL = 'SWAP_SELL',
+    VENUE_PUMPFUN = 'VENUE_PUMPFUN',
 }

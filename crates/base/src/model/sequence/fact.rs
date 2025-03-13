@@ -7,12 +7,18 @@ use crate::model::Field::{AgeQuote, PriceAvg};
 use crate::model::ValueType::{Count, Duration, Percent, Quote, Usd};
 use crate::model::{Condition, FactError, Field, Operator, Value, ValueType};
 use serde::{Deserialize, Serialize};
-use Fact::{AgeBaseDuration, AgeQuoteDuration, CurveProgressAgeDuration, PriceAvgQuote, PriceAvgUsd, PriceQuote, PriceUsd, SwapAllChangeCount, SwapAllCount, SwapBuyChangeCount, SwapBuyChangePercent, SwapBuyCount, SwapChangePercent, SwapSellChangeCount, SwapSellChangePercent, SwapSellCount, TelegramGroup, TelegramGroupHandle, TwitterAccount, TwitterAccountHandle, VolumeChangeQuote};
+use Fact::{
+    AgeBaseDuration, AgeQuoteDuration, CurveProgressAgeDuration, PriceAvgQuote, PriceAvgUsd,
+    PriceQuote, PriceUsd, SwapAllChangeCount, SwapAllCount, SwapBuyChangeCount,
+    SwapBuyChangePercent, SwapBuyCount, SwapChangePercent, SwapSellChangeCount,
+    SwapSellChangePercent, SwapSellCount, TelegramGroup, TelegramGroupHandle, TwitterAccount,
+    TwitterAccountHandle, VenueJupiter, VenuePumpfun, VolumeChangeQuote,
+};
 use Field::{AgeBase, CurveProgress, CurveProgressAge, Price, SwapAll, SwapBuy, SwapSell, Volume};
 use Operator::{
     DecreasedByLessThan, DecreasedByLessThanEqual, DecreasedByMoreThan, DecreasedByMoreThanEqual,
     Equal, IncreasedByLessThan, IncreasedByLessThanEqual, IncreasedByMoreThan,
-    IncreasedByMoreThanEqual, LessThan, LessThanEqual, MoreThan, MoreThanEqual,
+    IncreasedByMoreThanEqual, LessThan, LessThanEqual, MoreThan, MoreThanEqual, NotEqual,
 };
 use ValueType::Boolean;
 
@@ -20,6 +26,7 @@ use ValueType::Boolean;
 pub enum Fact {
     /// Age of the base token
     AgeBaseDuration,
+    /// Age of the quote token
     AgeQuoteDuration,
 
     CurveProgressPercent,
@@ -57,6 +64,9 @@ pub enum Fact {
 
     TwitterAccount,
     TwitterAccountHandle,
+
+    VenuePumpfun,
+    VenueJupiter,
 }
 
 impl Fact {
@@ -99,6 +109,9 @@ impl Fact {
 
             TwitterAccount => false,
             TwitterAccountHandle => false,
+
+            VenuePumpfun => false,
+            VenueJupiter => false,
         }
     }
 
@@ -140,6 +153,9 @@ impl Fact {
             TelegramGroupHandle => ValueType::String,
             TwitterAccount => Boolean,
             TwitterAccountHandle => ValueType::String,
+
+            VenuePumpfun => Boolean,
+            VenueJupiter => Boolean,
         }
     }
 }
@@ -321,6 +337,12 @@ impl Fact {
             // Twitter
             (Field::TwitterAccountHandle, Equal, ValueType::String, false) => TwitterAccountHandle,
 
+            // Venue
+            (Field::VenuePumpfun, Equal, Boolean, false) => VenuePumpfun,
+            (Field::VenuePumpfun, NotEqual, Boolean, false) => VenuePumpfun,
+            (Field::VenueJupiter, Equal, Boolean, false) => VenueJupiter,
+            (Field::VenueJupiter, NotEqual, Boolean, false) => VenueJupiter,
+
             _ => return None,
         };
 
@@ -362,7 +384,12 @@ mod tests {
             Some(AgeQuoteDuration)
         );
         assert_eq!(
-            Fact::from_comparison(&AgeQuote, &MoreThanEqual, &Value::duration(1, Minute), false),
+            Fact::from_comparison(
+                &AgeQuote,
+                &MoreThanEqual,
+                &Value::duration(1, Minute),
+                false
+            ),
             Some(AgeQuoteDuration)
         );
 
@@ -372,7 +399,12 @@ mod tests {
         );
 
         assert_eq!(
-            Fact::from_comparison(&AgeQuote, &LessThanEqual, &Value::duration(1, Minute), false),
+            Fact::from_comparison(
+                &AgeQuote,
+                &LessThanEqual,
+                &Value::duration(1, Minute),
+                false
+            ),
             Some(AgeQuoteDuration)
         );
     }
@@ -980,6 +1012,42 @@ mod tests {
         assert_eq!(
             Fact::from_comparison(&Volume, &DecreasedByLessThanEqual, &Value::quote(99), true),
             Some(VolumeChangeQuote)
+        );
+    }
+
+    #[test]
+    fn test_venue_pumpfun() {
+        assert_eq!(
+            Fact::from_comparison(&Field::VenuePumpfun, &Equal, &Value::boolean(true), false),
+            Some(VenuePumpfun)
+        );
+
+        assert_eq!(
+            Fact::from_comparison(
+                &Field::VenuePumpfun,
+                &NotEqual,
+                &Value::boolean(true),
+                false
+            ),
+            Some(VenuePumpfun)
+        );
+    }
+
+    #[test]
+    fn test_venue_jupiter() {
+        assert_eq!(
+            Fact::from_comparison(&Field::VenueJupiter, &Equal, &Value::boolean(true), false),
+            Some(VenueJupiter)
+        );
+
+        assert_eq!(
+            Fact::from_comparison(
+                &Field::VenueJupiter,
+                &NotEqual,
+                &Value::boolean(true),
+                false
+            ),
+            Some(VenueJupiter)
         );
     }
 }

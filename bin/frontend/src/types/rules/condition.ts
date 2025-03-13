@@ -1,5 +1,8 @@
-import {Field, Operator, Timeframe, Value} from "@types";
-import {Compose} from "@app/types/rules/compose.ts";
+import {Field} from "./field";
+import {Operator} from "./operator";
+import {Value} from "./value";
+import {Timeframe} from "./time";
+import {Compose} from "./compose";
 
 export enum ConditionType {
     AND = 'AND',

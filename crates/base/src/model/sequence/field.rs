@@ -24,4 +24,7 @@ pub enum Field {
     TelegramGroupHandle,
     TwitterExists,
     TwitterAccountHandle,
+    
+    VenuePumpfun,
+    VenueJupiter
 }

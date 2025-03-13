@@ -1,4 +1,9 @@
-import {ConditionType, Field, Operator, Timeframe, ValueCount, ValueDuration, ValuePercent} from "@types";
+import {ConditionType} from "./condition";
+import {Field} from "./field";
+import {Operator} from "./operator";
+import {ValueBoolean, ValueCount, ValueDuration, ValuePercent, ValueType,} from "./value";
+import {Timeframe} from "./time";
+import {uuidv4} from "@utils";
 
 export type CompareCurveProgressPercent = {
     id: string;
@@ -40,7 +45,7 @@ export type CompareSimpleSwapBuy = {
     type: ConditionType.COMPARE,
     field: Field.SWAP_BUY,
     operator: Operator.MORE_THAN_EQUAL | Operator.LESS_THAN_EQUAL,
-    value?: ValueCount ,
+    value?: ValueCount,
     timeframe: Timeframe
 }
 
@@ -52,3 +57,22 @@ export type CompareSimpleSwapSell = {
     value?: ValueCount,
     timeframe: Timeframe
 }
+
+export type CompareVenuePumpfun = {
+    id: string;
+    type: ConditionType.COMPARE,
+    field: Field.VENUE_PUMPFUN,
+    operator: Operator.EQUAL | Operator.NOT_EQUAL,
+    value?: ValueBoolean,
+}
+
+export const DEFAULT_COMPARE_VENUE_PUMPFUN: CompareVenuePumpfun = {
+    id: uuidv4(),
+    type: ConditionType.COMPARE,
+    field: Field.VENUE_PUMPFUN,
+    operator: Operator.EQUAL,
+    value: {
+        type: ValueType.BOOLEAN,
+        value: true
+    }
+};

@@ -4,7 +4,7 @@
 mod summary;
 
 use crate::pumpfun::fact::summary::add_summary_to_facts;
-use base::model::Fact::CurveProgressAgeDuration;
+use base::model::Fact::{CurveProgressAgeDuration, VenuePumpfun};
 use base::model::{Fact, Facts, TokenPairId, Value};
 use base::repo::TokenPairRepo;
 use common::model::{Limit, TimeUnit, Timeframe};
@@ -91,6 +91,7 @@ impl FactService {
                 CurveProgressAgeDuration,
                 Value::duration(curve.age.0, TimeUnit::Second),
             );
+            facts.set_value(VenuePumpfun, Value::boolean(true));
         }
 
         for timeframe in [
@@ -118,6 +119,8 @@ impl FactService {
             for (token_pair_id, summary) in summary {
                 let facts = result.entry(token_pair_id).or_insert(Facts::default());
                 add_summary_to_facts(facts, summary, timeframe);
+
+                facts.set_value(VenuePumpfun, Value::boolean(true));
             }
 
             println!(
@@ -129,5 +132,16 @@ impl FactService {
         tx.commit().await.unwrap();
 
         result
+            .into_iter()
+            .filter(|(_, facts)| {
+                facts
+                    .get(&VenuePumpfun)
+                    .filter(|v| match v {
+                        Value::Boolean { value } => *value == true,
+                        _ => false,
+                    })
+                    .is_some()
+            })
+            .collect()
     }
 }

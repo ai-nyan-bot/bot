@@ -1,15 +1,18 @@
-import {Condition, ConditionType} from "./condition";
 import {
     CompareCurveProgressAge,
     CompareCurveProgressPercent,
     CompareSimpleAgeBase,
     CompareSimpleSwapBuy,
     CompareSimpleSwapSell,
-    CompareSimpleSwapTotal
+    CompareSimpleSwapTotal,
+    CompareVenuePumpfun,
+    DEFAULT_COMPARE_VENUE_PUMPFUN
 } from "./compare";
+
 import {Field} from "./field";
 import {Operator} from "./operator";
 import {ValueType} from "./value";
+import {Condition, ConditionType} from "./condition";
 import {Timeframe, TimeUnit} from "./time";
 
 import {uuidv4} from "@utils";
@@ -277,11 +280,12 @@ export type ComposedPumpFunQuick = {
     condition: {
         type: ConditionType.AND,
         conditions: [
+            CompareVenuePumpfun?,
+            ComposedSimpleAge?,
             ComposedCurveProgress?,
             ComposedSimpleSwapTotal?,
             ComposedSimpleSwapBuy?,
             ComposedSimpleSwapSell?,
-            ComposedSimpleAge?,
         ]
     }
 }
@@ -293,11 +297,12 @@ export const DEFAULT_COMPOSED_PUMP_FUN_QUICK: ComposedPumpFunQuick = {
     condition: {
         type: ConditionType.AND,
         conditions: [
+            {...DEFAULT_COMPARE_VENUE_PUMPFUN},
+            {...DEFAULT_COMPOSED_SIMPLE_AGE},
             {...DEFAULT_COMPOSED_CURVE_PROGRESS},
             {...DEFAULT_COMPOSED_SIMPLE_SWAP_TOTAL},
             {...DEFAULT_COMPOSED_SIMPLE_SWAP_BUY},
             {...DEFAULT_COMPOSED_SIMPLE_SWAP_SELL},
-            {...DEFAULT_COMPOSED_SIMPLE_AGE}
         ]
     }
 };
