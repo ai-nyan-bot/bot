@@ -625,54 +625,34 @@ on conflict (token_pair_id) do update set
 		{destination_table}.curve_progress_avg is distinct from excluded.curve_progress_avg or
 		{destination_table}.curve_progress_avg_change is distinct from excluded.curve_progress_avg_change or
 		{destination_table}.market_cap_open is distinct from excluded.market_cap_open or
-		{destination_table}.market_cap_open_usd is distinct from excluded.market_cap_open_usd or
 		{destination_table}.market_cap_open_change is distinct from excluded.market_cap_open_change or
-		{destination_table}.market_cap_open_usd_change is distinct from excluded.market_cap_open_usd_change or
 		{destination_table}.market_cap_open_percent is distinct from excluded.market_cap_open_percent or
 		{destination_table}.market_cap_high is distinct from excluded.market_cap_high or
-		{destination_table}.market_cap_high_usd is distinct from excluded.market_cap_high_usd or
 		{destination_table}.market_cap_high_change is distinct from excluded.market_cap_high_change or
-		{destination_table}.market_cap_high_usd_change is distinct from excluded.market_cap_high_usd_change or
 		{destination_table}.market_cap_high_percent is distinct from excluded.market_cap_high_percent or
 		{destination_table}.market_cap_low is distinct from excluded.market_cap_low or
-		{destination_table}.market_cap_low_usd is distinct from excluded.market_cap_low_usd or
 		{destination_table}.market_cap_low_change is distinct from excluded.market_cap_low_change or
-		{destination_table}.market_cap_low_usd_change is distinct from excluded.market_cap_low_usd_change or
 		{destination_table}.market_cap_low_percent is distinct from excluded.market_cap_low_percent or
 		{destination_table}.market_cap_close is distinct from excluded.market_cap_close or
-		{destination_table}.market_cap_close_usd is distinct from excluded.market_cap_close_usd or
 		{destination_table}.market_cap_close_change is distinct from excluded.market_cap_close_change or
-		{destination_table}.market_cap_close_usd_change is distinct from excluded.market_cap_close_usd_change or
 		{destination_table}.market_cap_close_percent is distinct from excluded.market_cap_close_percent or
 		{destination_table}.market_cap_avg is distinct from excluded.market_cap_avg or
-		{destination_table}.market_cap_avg_usd is distinct from excluded.market_cap_avg_usd or
 		{destination_table}.market_cap_avg_change is distinct from excluded.market_cap_avg_change or
-		{destination_table}.market_cap_avg_usd_change is distinct from excluded.market_cap_avg_usd_change or
 		{destination_table}.market_cap_avg_percent is distinct from excluded.market_cap_avg_percent or
 		{destination_table}.price_open is distinct from excluded.price_open or
-		{destination_table}.price_open_usd is distinct from excluded.price_open_usd or
 		{destination_table}.price_open_change is distinct from excluded.price_open_change or
-		{destination_table}.price_open_usd_change is distinct from excluded.price_open_usd_change or
 		{destination_table}.price_open_percent is distinct from excluded.price_open_percent or
 		{destination_table}.price_high is distinct from excluded.price_high or
-		{destination_table}.price_high_usd is distinct from excluded.price_high_usd or
 		{destination_table}.price_high_change is distinct from excluded.price_high_change or
-		{destination_table}.price_high_usd_change is distinct from excluded.price_high_usd_change or
 		{destination_table}.price_high_percent is distinct from excluded.price_high_percent or
 		{destination_table}.price_low is distinct from excluded.price_low or
-		{destination_table}.price_low_usd is distinct from excluded.price_low_usd or
 		{destination_table}.price_low_change is distinct from excluded.price_low_change or
-		{destination_table}.price_low_usd_change is distinct from excluded.price_low_usd_change or
 		{destination_table}.price_low_percent is distinct from excluded.price_low_percent or
 		{destination_table}.price_close is distinct from excluded.price_close or
-		{destination_table}.price_close_usd is distinct from excluded.price_close_usd or
 		{destination_table}.price_close_change is distinct from excluded.price_close_change or
-		{destination_table}.price_close_usd_change is distinct from excluded.price_close_usd_change or
 		{destination_table}.price_close_percent is distinct from excluded.price_close_percent or
 		{destination_table}.price_avg is distinct from excluded.price_avg or
-		{destination_table}.price_avg_usd is distinct from excluded.price_avg_usd or
 		{destination_table}.price_avg_change is distinct from excluded.price_avg_change or
-		{destination_table}.price_avg_usd_change is distinct from excluded.price_avg_usd_change or
 		{destination_table}.price_avg_percent is distinct from excluded.price_avg_percent or
 		{destination_table}.swap is distinct from excluded.swap or
 		{destination_table}.swap_change is distinct from excluded.swap_change or
@@ -684,19 +664,13 @@ on conflict (token_pair_id) do update set
 		{destination_table}.swap_sell_change is distinct from excluded.swap_sell_change or
 		{destination_table}.swap_sell_percent is distinct from excluded.swap_sell_percent or
 		{destination_table}.volume is distinct from excluded.volume or
-		{destination_table}.volume_usd is distinct from excluded.volume_usd or
 		{destination_table}.volume_change is distinct from excluded.volume_change or
-		{destination_table}.volume_usd_change is distinct from excluded.volume_usd_change or
 		{destination_table}.volume_percent is distinct from excluded.volume_percent or
 		{destination_table}.volume_buy is distinct from excluded.volume_buy or
-		{destination_table}.volume_buy_usd is distinct from excluded.volume_buy_usd or
 		{destination_table}.volume_buy_change is distinct from excluded.volume_buy_change or
-		{destination_table}.volume_buy_usd_change is distinct from excluded.volume_buy_usd_change or
 		{destination_table}.volume_buy_percent is distinct from excluded.volume_buy_percent or
 		{destination_table}.volume_sell is distinct from excluded.volume_sell or
-		{destination_table}.volume_sell_usd is distinct from excluded.volume_sell_usd or
 		{destination_table}.volume_sell_change is distinct from excluded.volume_sell_change or
-		{destination_table}.volume_sell_usd_change is distinct from excluded.volume_sell_usd_change or
 		{destination_table}.volume_sell_percent is distinct from excluded.volume_sell_percent
     )
 "#
