@@ -3,7 +3,7 @@
 
 use crate::{markdown, AppState};
 use base::model::{Notification, TokenPairId, User};
-use base::service::NotificationResult;
+use base::service::{NotificationError, NotificationResult};
 use render::page::pumpfun::{pumpfun_summary, PumpfunSummary};
 use render::render;
 use teloxide::payloads::SendPhotoSetters;
@@ -11,6 +11,7 @@ use teloxide::requests::Requester;
 use teloxide::types::{
     ChatId, InlineKeyboardButton, InlineKeyboardMarkup, InputFile, ParseMode, Recipient,
 };
+use teloxide::{ApiError, RequestError};
 use url::Url;
 
 pub(crate) async fn send(
@@ -73,7 +74,8 @@ pub(crate) async fn send(
     // let buy_swaps = token_summary.summary.swaps.buy.swaps.0;
     // let sell_swaps = token_summary.summary.swaps.sell.swaps.0;
 
-    let caption = markdown!(r#"
+    let caption = markdown!(
+        r#"
         ;*{symbol};*
         is ;*{progress}%;* along the bonding curve and on its way to graduate to Raydium 🔥🚀
     "#
@@ -110,7 +112,20 @@ pub(crate) async fn send(
         // .reply_markup(create_keyboard(state.callback_store.clone(), &notification).await)
         .reply_markup(buttons)
         .await
-        .unwrap();
+        .map_err(|err| match err {
+            RequestError::Api(err) => match err {
+                ApiError::BotBlocked
+                | ApiError::InvalidToken
+                | ApiError::MessageNotModified
+                | ApiError::BotKicked
+                | ApiError::BotKickedFromSupergroup
+                | ApiError::UserDeactivated
+                | ApiError::CantTalkWithBots => NotificationError::Ignore(err.to_string()),
+
+                _ => NotificationError::Rollback(err.to_string()),
+            },
+            _ => NotificationError::Rollback(err.to_string()),
+        })?;
 
     Ok(())
 }

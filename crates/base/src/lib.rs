@@ -29,7 +29,7 @@ pub async fn load_all(
     let result = join_all(handles).await;
 
     debug!(
-        "Downloading {} token infos took {} ms",
+        "downloading {} token infos took {} ms",
         result.len(),
         start.elapsed().as_millis()
     );

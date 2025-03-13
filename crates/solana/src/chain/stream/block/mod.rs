@@ -12,9 +12,11 @@ use crate::stream::SlotStream;
 use async_trait::async_trait;
 use common::model::RpcUrl;
 use common::Signal;
-use log::error;
+use log::{debug, error};
+use std::time::Duration;
 use tokio::sync::mpsc::{Receiver, Sender};
 use tokio::task::JoinHandle;
+use tokio::time::{sleep, Instant};
 use tokio::{select, try_join};
 
 #[async_trait]
@@ -79,17 +81,36 @@ impl<S: SlotStream> BlockStream for RpcBlockStream<S> {
                 let rpc_client = rpc_client.clone();
 
                 let slots_to_download = slots_to_download.next_slots().await;
-                let blocks =
-                    download_blocks(rpc_client, slots_to_download, concurrency, signal.clone())
-                        .await;
 
-                for block in blocks {
-                    if let Err(_) = self.tx.send(block).await {
-                        error!("Failed to send block to channel");
-                        signal.terminate("RpcBlockStream failed to send to channel");
-                        return;
+                if !slots_to_download.is_empty() {
+                    let start = Instant::now();
+
+                    let blocks =
+                        download_blocks(rpc_client, slots_to_download, concurrency, signal.clone())
+                            .await;
+                    let number_of_blocks = blocks.len();
+
+                    debug!(
+                        "downloading {} blocks took {} ms",
+                        number_of_blocks,
+                        start.elapsed().as_millis()
+                    );
+
+                    let start = Instant::now();
+                    for block in blocks {
+                        if let Err(_) = self.tx.send(block).await {
+                            error!("Failed to send block to channel");
+                            signal.terminate("RpcBlockStream failed to send to channel");
+                            return;
+                        }
                     }
+                    debug!( 
+                        "sending {} blocks took {} ms",
+                        number_of_blocks,
+                        start.elapsed().as_millis()
+                    );
                 }
+                sleep(Duration::from_millis(10)).await;
             }
         });
 

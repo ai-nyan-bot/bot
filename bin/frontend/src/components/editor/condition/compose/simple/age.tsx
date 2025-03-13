@@ -1,7 +1,7 @@
 import React, {FC, useEffect, useState} from "react";
 import {ALL_TIME_UNITS, compareDurations, ComposedSimpleAge, ValueDuration} from "@types";
-import {ValueDurationInput} from "@components/editor/value/duration.tsx";
-import {DurationText} from "@components/editor/condition/component/timeunit.tsx";
+import {ValueDurationInput} from "@components/editor/value";
+import {DurationText} from "@components/editor/condition/component/timeunit";
 
 export type SimpleAgeComposeProps = {
     condition: ComposedSimpleAge;

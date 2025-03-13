@@ -1,1 +1,2 @@
-export * from './number'
+export * from './duration';
+export * from './number';

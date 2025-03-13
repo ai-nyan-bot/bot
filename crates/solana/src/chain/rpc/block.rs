@@ -5,7 +5,7 @@ use crate::convert::convert_transaction;
 use crate::model::{Block, Slot};
 use crate::rpc::{RpcClient, RpcResult};
 use common::model::{BlockTime, Timestamp};
-use log::{error, trace, warn};
+use log::{error, warn};
 use solana_client::client_error::ClientError;
 use solana_client::rpc_config::RpcBlockConfig;
 use solana_client::rpc_request::RpcError;
@@ -30,8 +30,6 @@ impl RpcClient {
     pub async fn get_block(&self, slot: impl Into<Slot>) -> RpcResult<Option<Block>> {
         let slot = slot.into();
         loop {
-            trace!("get block for {slot}");
-
             let result = (self.get_block_with_config)(
                 self.delegate.clone(),
                 slot,

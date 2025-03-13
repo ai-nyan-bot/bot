@@ -29,7 +29,7 @@ pub(crate) async fn download_blocks(
 
         let handle = tokio::spawn(async move {
             let _permit = semaphore.acquire().await.unwrap();
-            debug!("Downloading block of slot: {}", slot);
+            debug!("initiate download of block of slot: {}", slot);
 
             match rpc_client.get_block(slot).await {
                 Ok(Some(block)) => {
@@ -38,7 +38,7 @@ pub(crate) async fn download_blocks(
                 }
                 Ok(None) => {}
                 Err(err) => {
-                    error!("Failed to fetch block for slot: {} - {}", slot, err);
+                    error!("failed to fetch block for slot: {} - {}", slot, err);
                     signal.terminate("RpcBlockStream failed to fetch block");
                 }
             }
