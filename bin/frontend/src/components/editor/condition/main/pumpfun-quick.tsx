@@ -2,16 +2,19 @@ import React, {FC} from "react";
 import {
     ComposedCurveProgress,
     ComposedPumpFunQuick,
+    ComposedSimpleAge,
     ComposedSimpleSwapBuy,
     ComposedSimpleSwapSell,
     ComposedSimpleSwapTotal,
     DEFAULT_COMPOSED_CURVE_PROGRESS,
+    DEFAULT_COMPOSED_SIMPLE_AGE,
     DEFAULT_COMPOSED_SIMPLE_SWAP_BUY,
     DEFAULT_COMPOSED_SIMPLE_SWAP_SELL,
     DEFAULT_COMPOSED_SIMPLE_SWAP_TOTAL
 } from "@types";
 import {CurveProgressCompose} from "@components/editor/condition/compose/curve-progress.tsx";
 import {SimpleSwapCompose} from "@components/editor/condition/compose/simple";
+import {SimpleAgeCompose} from "@components/editor/condition/compose/simple/age.tsx";
 
 export type PumpFunComposeQuickProps = {
     condition: ComposedPumpFunQuick;
@@ -25,6 +28,7 @@ export const PumpFunComposeQuick: FC<PumpFunComposeQuickProps> = ({condition, on
     const swap_total = condition.condition.conditions[1] || DEFAULT_COMPOSED_SIMPLE_SWAP_TOTAL as unknown as ComposedSimpleSwapTotal;
     const swap_buy = condition.condition.conditions[2] || DEFAULT_COMPOSED_SIMPLE_SWAP_BUY as unknown as ComposedSimpleSwapBuy;
     const swap_sell = condition.condition.conditions[3] || DEFAULT_COMPOSED_SIMPLE_SWAP_SELL as unknown as ComposedSimpleSwapSell;
+    const age = condition.condition.conditions[4] || DEFAULT_COMPOSED_SIMPLE_AGE as unknown as ComposedSimpleAge;
 
     return (
         <div className="px-4 w-full max-w-md mx-auto space-y-4">
@@ -35,6 +39,17 @@ export const PumpFunComposeQuick: FC<PumpFunComposeQuickProps> = ({condition, on
                     onChange={updated => {
                         const changed = {...condition};
                         changed.condition.conditions[0] = updated;
+                        onChange(changed);
+                    }}
+                />
+            </Container>
+
+            <Container title={"Age"}>
+                <SimpleAgeCompose
+                    condition={age}
+                    onChange={updated => {
+                        const changed = {...condition};
+                        changed.condition.conditions[4] = updated;
                         onChange(changed);
                     }}
                 />

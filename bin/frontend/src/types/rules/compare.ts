@@ -16,6 +16,15 @@ export type CompareCurveProgressAge = {
     value: ValueDuration
 }
 
+export type CompareSimpleAgeBase = {
+    id: string;
+    type: ConditionType.COMPARE,
+    field: Field.AGE_BASE,
+    operator: Operator.MORE_THAN_EQUAL | Operator.LESS_THAN_EQUAL,
+    value?: ValueDuration
+}
+
+
 export type CompareSimpleSwapTotal = {
     id: string;
     type: ConditionType.COMPARE,

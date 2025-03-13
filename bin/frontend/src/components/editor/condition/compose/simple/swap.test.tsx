@@ -1,5 +1,5 @@
 import {render} from "@testing-library/react";
-import {RenderText, SwapType} from ".";
+import {RenderText, SwapType} from "./swap";
 import {Timeframe, ValueType} from "@types";
 
 describe("RenderText", () => {
@@ -30,7 +30,7 @@ describe("RenderText", () => {
         expect(warningDiv!!.className).toContain("text-yellow-700");
         expect(warningDiv!!.className).toContain("font-bold");
 
-        expect(warningDiv?.querySelector("p:nth-child(1)")?.textContent).toBe("⚠️ The rule will never match ⚠️");
+        expect(warningDiv?.querySelector("p:nth-child(1)")?.textContent).toBe("⚠️ The rule will never execute ⚠️");
         expect(warningDiv?.querySelector("p:nth-child(2)")?.textContent).toBe("Minimum txn count is greater than the maximum txn count for the same timeframe.");
     });
 

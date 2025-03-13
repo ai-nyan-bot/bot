@@ -3,7 +3,7 @@ import {Button} from "@components/ui/button.tsx";
 import {ActionNotifyTelegram, TelegramButtonAction, TelegramButtonConfig, ValueNumber, ValueType} from "@types";
 import {Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle} from "@components/ui/dialog.tsx";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@components/ui/select.tsx";
-import {ValueNumberInput} from "@components/editor/value.tsx";
+import {ValueNumberInput} from "@components/editor/value";
 
 
 export type TelegramButtonsProps = {

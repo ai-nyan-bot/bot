@@ -1,7 +1,7 @@
 import React, {FC, useEffect, useState} from "react";
 import {SelectTimeframe, TimeframeText} from "@components/editor/condition/component";
 import {
-    ALL_TIMEFRAMES,
+    ALL_TIME_FRAMES,
     ComposedSimpleSwapBuy,
     ComposedSimpleSwapSell,
     ComposedSimpleSwapTotal,
@@ -12,7 +12,7 @@ import {
     ValueCount,
     ValueType
 } from "@types";
-import {ValueNumberInput} from "@components/editor/value.tsx";
+import {ValueNumberInput} from "@components/editor/value";
 
 
 export type SimpleSwapComposeProps = {
@@ -44,7 +44,6 @@ export const SimpleSwapCompose: FC<SimpleSwapComposeProps> = ({condition, onChan
             max.value !== maxValue ||
             max.timeframe !== maxTimeframe
         ) {
-            console.log(minTimeframe)
             onChange({
                 ...condition,
                 condition: {
@@ -93,7 +92,7 @@ export const SimpleSwapCompose: FC<SimpleSwapComposeProps> = ({condition, onChan
                     <SelectTimeframe
                         value={minTimeframe}
                         defaultValue={Timeframe.H1}
-                        supported={ALL_TIMEFRAMES}
+                        supported={ALL_TIME_FRAMES}
                         onChange={setMinTimeframe}
                     />
                 </div>
@@ -116,7 +115,7 @@ export const SimpleSwapCompose: FC<SimpleSwapComposeProps> = ({condition, onChan
                     <SelectTimeframe
                         value={maxTimeframe}
                         defaultValue={Timeframe.H1}
-                        supported={ALL_TIMEFRAMES}
+                        supported={ALL_TIME_FRAMES}
                         onChange={setMaxTimeframe}
                     />
                 </div>
@@ -138,7 +137,6 @@ export enum SwapType {
     Buy,
     Sell
 }
-
 export type RenderTextProps = {
     minValue?: ValueCount;
     minTimeframe: Timeframe;
@@ -156,12 +154,13 @@ export const RenderText: FC<RenderTextProps> = ({minValue, minTimeframe, maxValu
         if (minTimeframe === maxTimeframe && minValue.value > maxValue.value) {
             return (
                 <div className="mt-4 text-sm text-center text-yellow-700 font-bold">
-                    <p>⚠️ The rule will never match ⚠️</p>
+                    <p>⚠️ The rule will never execute ⚠️</p>
                     <p>Minimum txn count is greater than the maximum txn count for the same timeframe.</p>
                 </div>
             );
         }
     }
+
 
     const text = (value: number) => {
         switch (type) {

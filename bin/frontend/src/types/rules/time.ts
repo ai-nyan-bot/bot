@@ -7,14 +7,8 @@ export enum Timeframe {
     D1 = "D1"
 }
 
-export enum TimeUnit {
-    SECOND = "SECOND",
-    MINUTE = "MINUTE",
-    HOUR = "HOUR",
-    DAY = "DAY"
-}
 
-export const ALL_TIMEFRAMES = [
+export const ALL_TIME_FRAMES = [
     Timeframe.M1,
     Timeframe.M5,
     Timeframe.M15,
@@ -22,3 +16,18 @@ export const ALL_TIMEFRAMES = [
     Timeframe.H6,
     Timeframe.D1,
 ];
+
+export enum TimeUnit {
+    SECOND = "SECOND",
+    MINUTE = "MINUTE",
+    HOUR = "HOUR",
+    DAY = "DAY"
+}
+
+
+export const ALL_TIME_UNITS = [
+    TimeUnit.SECOND,
+    TimeUnit.MINUTE,
+    TimeUnit.HOUR,
+    TimeUnit.DAY,
+]

@@ -43,6 +43,24 @@ export type ValueDuration = {
     unit: TimeUnit;
 }
 
+const durationToSeconds = (duration: ValueDuration): number => {
+    const conversionFactors: Record<TimeUnit, number> = {
+        [TimeUnit.SECOND]: 1,
+        [TimeUnit.MINUTE]: 60,
+        [TimeUnit.HOUR]: 3600,
+        [TimeUnit.DAY]: 86400,
+    };
+
+    return duration.value * conversionFactors[duration.unit];
+}
+
+export const compareDurations = (a: ValueDuration, b: ValueDuration): number => {
+    const aSeconds = durationToSeconds(a);
+    const bSeconds = durationToSeconds(b);
+    return aSeconds - bSeconds;
+}
+
+
 export type ValuePercent = {
     type: ValueType.PERCENT;
     value: number;

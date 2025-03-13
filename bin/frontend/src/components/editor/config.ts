@@ -1,4 +1,4 @@
-import {ALL_TIMEFRAMES, COUNT_AND_PERCENT, Field, Operator, Timeframe, ValueType} from "@types";
+import {ALL_TIME_FRAMES, COUNT_AND_PERCENT, Field, Operator, Timeframe, ValueType} from "@types";
 
 
 export const config: Record<
@@ -40,19 +40,19 @@ export const config: Record<
         operators: {
             [Operator.INCREASED_BY_MORE_THAN]: {
                 valueTypes: COUNT_AND_PERCENT,
-                timeframes: ALL_TIMEFRAMES
+                timeframes: ALL_TIME_FRAMES
             },
             [Operator.INCREASED_BY_MORE_THAN_EQUAL]: {
                 valueTypes: COUNT_AND_PERCENT,
-                timeframes: ALL_TIMEFRAMES
+                timeframes: ALL_TIME_FRAMES
             },
             [Operator.DECREASED_BY_MORE_THAN]: {
                 valueTypes: COUNT_AND_PERCENT,
-                timeframes: ALL_TIMEFRAMES
+                timeframes: ALL_TIME_FRAMES
             },
             [Operator.DECREASED_BY_MORE_THAN_EQUAL]: {
                 valueTypes: COUNT_AND_PERCENT,
-                timeframes: ALL_TIMEFRAMES
+                timeframes: ALL_TIME_FRAMES
             },
         },
     },
@@ -60,11 +60,11 @@ export const config: Record<
         operators: {
             [Operator.MORE_THAN]: {
                 valueTypes: COUNT_AND_PERCENT,
-                timeframes: ALL_TIMEFRAMES
+                timeframes: ALL_TIME_FRAMES
             },
             [Operator.LESS_THAN]: {
                 valueTypes: COUNT_AND_PERCENT,
-                timeframes: ALL_TIMEFRAMES
+                timeframes: ALL_TIME_FRAMES
             },
         },
     },
@@ -72,11 +72,11 @@ export const config: Record<
         operators: {
             [Operator.MORE_THAN]: {
                 valueTypes: COUNT_AND_PERCENT,
-                timeframes: ALL_TIMEFRAMES
+                timeframes: ALL_TIME_FRAMES
             },
             [Operator.LESS_THAN]: {
                 valueTypes: COUNT_AND_PERCENT,
-                timeframes: ALL_TIMEFRAMES
+                timeframes: ALL_TIME_FRAMES
             },
         },
     },

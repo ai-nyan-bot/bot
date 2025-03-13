@@ -16,7 +16,7 @@ use solana::pumpfun::repo::{CurveRepo, SummaryRepo};
 use std::sync::Arc;
 use std::time::Duration;
 use tokio::runtime::Builder;
-use tokio::time::sleep;
+use tokio::time::{sleep, Instant};
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
 use tracing_subscriber::EnvFilter;
@@ -64,8 +64,13 @@ fn main() {
         loop {
             let rules = state.service.rule.list_active().await.unwrap();
 
+            let start = Instant::now();
             let pumpfun_facts = state.service.fact.pumpfun_facts().await;
-            println!("{} pumpfun facts", pumpfun_facts.len());
+            println!(
+                "{} pumpfun facts - took {}",
+                pumpfun_facts.len(),
+                (Instant::now().duration_since(start)).as_millis()
+            );
 
             for rule in &rules {
                 if !rule.applicable() {
@@ -73,7 +78,6 @@ fn main() {
                     continue;
                 }
                 println!("test rule - {}", rule.id.0);
-
                 for (token_pair_id, facts) in &pumpfun_facts {
                     if rule.sequence.condition.test(facts) {
                         let mut tx = pool.begin().await.unwrap();

@@ -2,6 +2,7 @@ import {Condition, ConditionType} from "./condition";
 import {
     CompareCurveProgressAge,
     CompareCurveProgressPercent,
+    CompareSimpleAgeBase,
     CompareSimpleSwapBuy,
     CompareSimpleSwapSell,
     CompareSimpleSwapTotal
@@ -18,6 +19,7 @@ export enum ComposeType {
     GROUP = 'GROUP',
     PUMP_FUN_QUICK = 'PUMP_FUN_QUICK',
 
+    SIMPLE_AGE = 'SIMPLE_AGE',
     SIMPLE_SWAP_TOTAL = 'SIMPLE_SWAP_TOTAL',
     SIMPLE_SWAP_BUY = 'SIMPLE_SWAP_BUY',
     SIMPLE_SWAP_SELL = 'SIMPLE_SWAP_SELL',
@@ -85,6 +87,53 @@ export const DEFAULT_COMPOSED_CURVE_PROGRESS: ComposedCurveProgress = {
         ]
     }
 }
+
+export type ComposedSimpleAge = {
+    id: string;
+    type: ConditionType.COMPOSE;
+    composition: ComposeType.SIMPLE_AGE,
+    condition: {
+        type: ConditionType.AND,
+        conditions: [
+            CompareSimpleAgeBase,
+            CompareSimpleAgeBase
+        ]
+    }
+}
+
+export const DEFAULT_COMPOSED_SIMPLE_AGE: ComposedSimpleAge = {
+    id: uuidv4(),
+    type: ConditionType.COMPOSE,
+    composition: ComposeType.SIMPLE_AGE,
+    condition: {
+        type: ConditionType.AND,
+        conditions: [
+            {
+                id: uuidv4(),
+                type: ConditionType.COMPARE,
+                field: Field.AGE_BASE,
+                operator: Operator.MORE_THAN_EQUAL,
+                value: {
+                    type: ValueType.DURATION,
+                    value: 1,
+                    unit: TimeUnit.HOUR
+                },
+            },
+            {
+                id: uuidv4(),
+                type: ConditionType.COMPARE,
+                field: Field.AGE_BASE,
+                operator: Operator.LESS_THAN_EQUAL,
+                value: {
+                    type: ValueType.DURATION,
+                    value: 1,
+                    unit: TimeUnit.DAY
+                },
+            }
+        ]
+    }
+};
+
 
 export type ComposedSimpleSwapTotal = {
     id: string;
@@ -232,6 +281,7 @@ export type ComposedPumpFunQuick = {
             ComposedSimpleSwapTotal?,
             ComposedSimpleSwapBuy?,
             ComposedSimpleSwapSell?,
+            ComposedSimpleAge?,
         ]
     }
 }
@@ -247,6 +297,7 @@ export const DEFAULT_COMPOSED_PUMP_FUN_QUICK: ComposedPumpFunQuick = {
             {...DEFAULT_COMPOSED_SIMPLE_SWAP_TOTAL},
             {...DEFAULT_COMPOSED_SIMPLE_SWAP_BUY},
             {...DEFAULT_COMPOSED_SIMPLE_SWAP_SELL},
+            {...DEFAULT_COMPOSED_SIMPLE_AGE}
         ]
     }
 };

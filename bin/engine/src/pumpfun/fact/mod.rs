@@ -11,6 +11,7 @@ use common::model::{Limit, TimeUnit, Timeframe};
 use solana::pumpfun::repo::{CurveQuery, CurveRepo, SummaryQuery, SummaryRepo};
 use sqlx::PgPool;
 use std::collections::HashMap;
+use tokio::time::Instant;
 use Fact::CurveProgressPercent;
 
 #[derive(Clone)]
@@ -39,6 +40,7 @@ impl FactService {
     pub async fn pumpfun_facts(&self) -> HashMap<TokenPairId, Facts> {
         let mut tx = self.pool.begin().await.unwrap();
 
+        let start = Instant::now();
         let mut result: HashMap<TokenPairId, Facts> = self
             .token_pair_repo
             .list_all(&mut tx)
@@ -65,6 +67,11 @@ impl FactService {
                 (tp.id, facts)
             })
             .collect();
+
+        println!(
+            "token pairs took: {}",
+            Instant::now().duration_since(start).as_millis()
+        );
 
         for curve in self
             .curve_repo
@@ -94,6 +101,8 @@ impl FactService {
             Timeframe::H6,
             Timeframe::D1,
         ] {
+            let start = Instant::now();
+
             let summary = self
                 .summary_repo
                 .list(
@@ -110,11 +119,15 @@ impl FactService {
                 let facts = result.entry(token_pair_id).or_insert(Facts::default());
                 add_summary_to_facts(facts, summary, timeframe);
             }
+
+            println!(
+                "Summary {:?} took: {}",
+                timeframe,
+                Instant::now().duration_since(start).as_millis()
+            );
         }
         tx.commit().await.unwrap();
-        
-        dbg!(&result);
-        
+
         result
     }
 }
