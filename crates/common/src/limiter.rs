@@ -1,11 +1,24 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use std::ops::Deref;
+use std::sync::Arc;
 use std::time::Duration;
 use tokio::sync::Mutex;
 use tokio::time::{sleep_until, Instant};
 
-pub struct Limiter {
+#[derive(Clone)]
+pub struct Limiter(Arc<LimiterInner>);
+
+impl Deref for Limiter {
+    type Target = LimiterInner;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+pub struct LimiterInner {
     max_calls: usize,
     interval: Duration,
     data: Mutex<Data>,
@@ -18,14 +31,14 @@ struct Data {
 
 impl Limiter {
     pub fn new(max_calls: usize, interval: Duration) -> Self {
-        Self {
+        Self(Arc::new(LimiterInner {
             max_calls,
             interval,
             data: Mutex::new(Data {
                 last_reset: Instant::now(),
                 calls: 0,
             }),
-        }
+        }))
     }
 
     pub fn new_per_second(max_calls: usize) -> Self {
@@ -49,6 +62,13 @@ impl Limiter {
         }
 
         data.calls += 1;
+    }
+
+    pub async fn has_capacity(&self) -> bool {
+        let now = Instant::now();
+
+        let data = self.data.lock().await;
+        now.duration_since(data.last_reset) >= self.interval || data.calls >= self.max_calls
     }
 }
 

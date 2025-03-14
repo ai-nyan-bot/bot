@@ -18,6 +18,10 @@ impl Slot {
         self.0 += 1;
         Self(self.0)
     }
+
+    pub fn next(&self) -> Self {
+        Self(self.0 + 1)
+    }
 }
 
 impl Into<BlockId> for Slot {

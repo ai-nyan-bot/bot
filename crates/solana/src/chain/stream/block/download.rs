@@ -3,56 +3,47 @@
 
 use crate::model::{Block, Slot};
 use crate::rpc::RpcClient;
-use common::Signal;
+use common::Limiter;
 use futures_util::future::join_all;
-use log::{debug, error};
-use std::collections::BTreeMap;
-use std::sync::Arc;
-use tokio::sync::{Mutex, Semaphore};
+use log::debug;
+use tokio::sync::mpsc::Sender;
+
+pub(crate) enum DownloadResult {
+    Ok(Slot, Block),
+    Skip(Slot),
+    Error(Slot, String),
+}
 
 pub(crate) async fn download_blocks(
     rpc_client: RpcClient,
     slots: Vec<Slot>,
-    concurrency: usize,
-    signal: Signal,
-) -> Vec<Block> {
-    let semaphore = Arc::new(Semaphore::new(concurrency));
-
+    limiter: Limiter,
+    tx: Sender<DownloadResult>,
+) {
     let mut handles = Vec::new();
-    let blocks = Arc::new(Mutex::new(BTreeMap::new()));
 
     for slot in slots {
         let rpc_client = rpc_client.clone();
-        let semaphore = semaphore.clone();
-        let blocks = blocks.clone();
-        let signal = signal.clone();
+        let tx = tx.clone();
+        let limiter = limiter.clone();
 
-        let handle = tokio::spawn(async move {
-            let _permit = semaphore.acquire().await.unwrap();
-            debug!("initiate download of block of slot: {}", slot);
-
+        handles.push(tokio::spawn(async move {
+            limiter.limit().await;
+            debug!("start download of block {}", slot);
             match rpc_client.get_block(slot).await {
                 Ok(Some(block)) => {
-                    let mut res = blocks.lock().await;
-                    res.insert(slot, block);
+                    tx.send(DownloadResult::Ok(slot, block)).await.unwrap();
                 }
-                Ok(None) => {}
+                Ok(None) => {
+                    tx.send(DownloadResult::Skip(slot)).await.unwrap();
+                }
                 Err(err) => {
-                    error!("failed to fetch block for slot: {} - {}", slot, err);
-                    signal.terminate("RpcBlockStream failed to fetch block");
+                    tx.send(DownloadResult::Error(slot, err.to_string()))
+                        .await
+                        .unwrap();
                 }
             }
-        });
-
-        handles.push(handle);
+        }));
     }
-
     join_all(handles).await;
-
-    let mut blocks = blocks.lock().await;
-    let mut result = Vec::with_capacity(blocks.len());
-    while let Some((_slot, block)) = blocks.pop_first() {
-        result.push(block)
-    }
-    result
 }
