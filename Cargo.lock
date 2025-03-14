@@ -5159,6 +5159,7 @@ dependencies = [
  "lazy_static",
  "log",
  "mpl-token-metadata",
+ "rayon",
  "regex",
  "serde",
  "serde_json",

@@ -7,6 +7,7 @@ use common::Limiter;
 use futures_util::future::join_all;
 use log::debug;
 use tokio::sync::mpsc::Sender;
+use tokio::time::Instant;
 
 pub(crate) enum DownloadResult {
     Ok(Slot, Block),
@@ -29,6 +30,7 @@ pub(crate) async fn download_blocks(
 
         handles.push(tokio::spawn(async move {
             limiter.limit().await;
+            let start = Instant::now();
             debug!("start download of block {}", slot);
             match rpc_client.get_block(slot).await {
                 Ok(Some(block)) => {
@@ -43,6 +45,11 @@ pub(crate) async fn download_blocks(
                         .unwrap();
                 }
             }
+            debug!(
+                "download of block {} took {} ms",
+                slot,
+                start.elapsed().as_millis()
+            );
         }));
     }
     join_all(handles).await;

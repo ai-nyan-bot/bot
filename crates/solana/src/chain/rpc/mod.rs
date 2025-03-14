@@ -8,10 +8,12 @@ use crate::model::Slot;
 use crate::rpc::block::GetBlockWithConfigFn;
 use crate::rpc::error::RpcClientError;
 use common::model::RpcUrl;
+use log::debug;
 use solana_client::rpc_config::RpcBlockConfig;
 use solana_rpc_client::nonblocking::rpc_client;
 use std::ops::Deref;
 use std::sync::Arc;
+use tokio::time::Instant;
 
 mod account;
 mod block;
@@ -28,9 +30,14 @@ impl RpcClient {
             get_block_with_config: Arc::new(
                 move |delegate: Arc<rpc_client::RpcClient>, slot: Slot, config: RpcBlockConfig| {
                     Box::pin(async move {
-                        delegate
-                            .get_block_with_config(slot.0 as u64, config)
-                            .await
+                        let start = Instant::now();
+                        let result = delegate.get_block_with_config(slot.0 as u64, config).await;
+                        debug!(
+                            "download of block {} took {} ms",
+                            slot.0,
+                            start.elapsed().as_millis()
+                        );
+                        result
                     })
                 },
             ),
@@ -46,11 +53,9 @@ impl Default for RpcClient {
             )),
             get_block_with_config: Arc::new(
                 move |delegate: Arc<rpc_client::RpcClient>, slot: Slot, config: RpcBlockConfig| {
-                    Box::pin(async move {
-                        delegate
-                            .get_block_with_config(slot.0 as u64, config)
-                            .await
-                    })
+                    Box::pin(
+                        async move { delegate.get_block_with_config(slot.0 as u64, config).await },
+                    )
                 },
             ),
         }))

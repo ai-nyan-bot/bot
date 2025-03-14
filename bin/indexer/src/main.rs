@@ -15,11 +15,9 @@ mod solana;
 
 pub fn main() {
     tracing_subscriber::registry()
-        .with(
-            EnvFilter::try_from_default_env().unwrap_or_else(|_| {
-                format!("{}=debug,solana=debug,base=debug", env!("CARGO_CRATE_NAME")).into()
-            }),
-        )
+        .with(EnvFilter::try_from_default_env().unwrap_or_else(|_| {
+            format!("{}=debug,solana=debug,base=debug", env!("CARGO_CRATE_NAME")).into()
+        }))
         .with(tracing_subscriber::fmt::layer())
         .init();
 

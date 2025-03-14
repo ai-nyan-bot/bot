@@ -6,6 +6,7 @@ use crate::model::{Block, Slot};
 use crate::rpc::{RpcClient, RpcResult};
 use common::model::{BlockTime, Timestamp};
 use log::{error, warn};
+use rayon::prelude::*;
 use solana_client::client_error::ClientError;
 use solana_client::rpc_config::RpcBlockConfig;
 use solana_client::rpc_request::RpcError;
@@ -16,7 +17,8 @@ use std::future::Future;
 use std::pin::Pin;
 use std::sync::Arc;
 use std::time::Duration;
-use tokio::time::sleep;
+use tokio::time::{sleep, Instant};
+use tracing::debug;
 
 pub(crate) type GetBlockWithConfigFn = dyn Fn(
         Arc<rpc_client::RpcClient>,
@@ -45,15 +47,25 @@ impl RpcClient {
 
             match result {
                 Ok(block) => {
+                    let start = Instant::now();
+
+                    let transactions: Vec<_> = block
+                        .transactions
+                        .map(|t| t.into_par_iter().map(convert_transaction).collect())
+                        .unwrap_or_default();
+
+                    debug!(
+                        "converting {} transactions took {} ms",
+                        transactions.len(),
+                        start.elapsed().as_millis()
+                    );
+
                     return Ok(Some(Block {
                         slot,
                         timestamp: BlockTime(
                             Timestamp::from_epoch_second(block.block_time.unwrap()).unwrap(),
                         ),
-                        transactions: block
-                            .transactions
-                            .map(|t| t.into_iter().map(convert_transaction).collect())
-                            .unwrap_or(vec![]),
+                        transactions,
                     }));
                 }
                 Err(err) => {

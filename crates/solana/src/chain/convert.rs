@@ -25,7 +25,6 @@ pub(crate) fn convert_transaction(tx: EncodedTransactionWithStatusMeta) -> Trans
 
     let decoded = tx.transaction.decode().unwrap();
     let signature = decoded.get_signature();
-    // let tx_to_parse = (slot.clone(), tx).try_into().unwrap();
 
     let vtx = tx.transaction.decode().unwrap();
     let meta = tx.meta.unwrap();
