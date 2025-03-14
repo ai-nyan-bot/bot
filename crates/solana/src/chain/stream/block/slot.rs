@@ -94,7 +94,7 @@ mod tests {
     #[test_log::test(tokio::test)]
     async fn test_ok() {
         // simulates a flow
-        
+
         let test_instance = SlotsToDownload::new(4, Some(Slot::from(1330)));
         test_instance.update(1337).await;
 

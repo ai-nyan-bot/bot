@@ -6,12 +6,12 @@ mod slot;
 
 use crate::model::{Block, Slot};
 use crate::rpc::RpcClient;
-use crate::stream::block::download::{download_blocks, DownloadResult};
+use crate::stream::block::download::{DownloadResult, Downloader};
 use crate::stream::block::slot::SlotsToDownload;
 use crate::stream::SlotStream;
 use async_trait::async_trait;
 use common::model::RpcUrl;
-use common::{Limiter, Signal};
+use common::Signal;
 use log::error;
 use std::collections::BTreeMap;
 use std::time::Duration;
@@ -19,7 +19,6 @@ use tokio::sync::mpsc::{channel, Receiver, Sender};
 use tokio::task::JoinHandle;
 use tokio::time::sleep;
 use tokio::{select, try_join};
-
 
 #[async_trait]
 pub trait BlockStream: Send {
@@ -76,7 +75,7 @@ impl<S: SlotStream> BlockStream for RpcBlockStream<S> {
         let download_signal = signal.clone();
         let download_block_handle = tokio::spawn(async move {
             let rpc_client = RpcClient::new(self.cfg.url);
-            let limiter = Limiter::new_per_second(self.cfg.concurrency);
+            let downloader = Downloader::new(rpc_client, download_tx.clone(), self.cfg.concurrency);
 
             let mut download_signal = download_signal.clone();
             loop {
@@ -84,17 +83,13 @@ impl<S: SlotStream> BlockStream for RpcBlockStream<S> {
                     break;
                 }
 
-                if limiter.has_capacity().await {
-                    let slots_to_download = slots_to_download.next_slots().await;
+                let slots_to_download = slots_to_download.next_slots().await;
 
-                    let rpc_client = rpc_client.clone();
-                    let limiter = limiter.clone();
-                    let download_tx = download_tx.clone();
+                let downloader = downloader.clone();
+                tokio::spawn(async move {
+                    downloader.download(slots_to_download).await;
+                });
 
-                    tokio::spawn(async move {
-                        download_blocks(rpc_client, slots_to_download, limiter, download_tx).await
-                    });
-                }
                 sleep(Duration::from_millis(10)).await;
             }
         });

@@ -9,6 +9,7 @@ base = { path = "../../crates/base" }
 common = { path = "../../crates/common" }
 solana = { path = "../../crates/solana" }
 
+rayon = { workspace = true}
 serde = { workspace = true }
 sqlx = { workspace = true }
 tokio = { workspace = true }

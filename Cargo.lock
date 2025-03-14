@@ -3041,6 +3041,7 @@ dependencies = [
  "common",
  "dotenv",
  "log",
+ "rayon",
  "serde",
  "serde_json",
  "solana",

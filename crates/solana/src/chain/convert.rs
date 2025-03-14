@@ -16,20 +16,15 @@ use solana_transaction_status::{EncodedTransactionWithStatusMeta, UiTransactionS
 use std::str::FromStr;
 
 pub(crate) fn convert_transaction(tx: EncodedTransactionWithStatusMeta) -> Transaction {
-    let meta = tx.meta.clone().unwrap();
-
-    let status = match meta.err {
-        None => TransactionStatus::Success,
-        Some(err) => TransactionStatus::Error(err.to_string()),
-    };
-
-    let decoded = tx.transaction.decode().unwrap();
-    let signature = decoded.get_signature();
-
-    let vtx = tx.transaction.decode().unwrap();
     let meta = tx.meta.unwrap();
 
+    let vtx = tx.transaction.decode().unwrap();
+    let signature = Signature(vtx.get_signature().to_string());
     let keys = extract_keys(&vtx, &meta);
+
+    let status = meta.err.map_or(TransactionStatus::Success, |err| {
+        TransactionStatus::Error(err.to_string())
+    });
 
     let instructions = vtx
         .message
@@ -45,41 +40,34 @@ pub(crate) fn convert_transaction(tx: EncodedTransactionWithStatusMeta) -> Trans
     let inner_instructions = match meta.inner_instructions {
         OptionSerializer::Some(inners) => inners
             .into_iter()
-            .map(|i| {
-                let inner_ixs: Vec<InnerInstruction> = i
+            .map(|i| InnerInstructions {
+                index: i.index,
+                instructions: i
                     .instructions
                     .into_iter()
-                    .map(|ii| match ii {
-                        Compiled(c) => InnerInstruction {
+                    .filter_map(|ii| match ii {
+                        Compiled(c) => Some(InnerInstruction {
                             instruction: CompiledInstruction {
                                 program_id_index: c.program_id_index,
                                 accounts: c.accounts,
                                 data: bs58::decode(c.data).into_vec().unwrap(),
                             },
                             stack_height: c.stack_height,
-                        },
-                        Parsed(_) => unimplemented!(),
+                        }),
+                        Parsed(_) => {
+                            unimplemented!()
+                        }
                     })
-                    .collect::<Vec<_>>();
-
-                InnerInstructions {
-                    index: i.index,
-                    instructions: inner_ixs,
-                }
+                    .collect(),
             })
             .collect(),
-        OptionSerializer::None => vec![],
-        OptionSerializer::Skip => vec![],
+        _ => Vec::new(),
     };
 
-    let log_messages = match meta.log_messages {
-        OptionSerializer::Some(l) => l,
-        OptionSerializer::None => vec![],
-        OptionSerializer::Skip => vec![],
-    };
+    let log_messages = meta.log_messages.unwrap_or(vec![]);
 
     Transaction {
-        signature: Signature(signature.to_string()),
+        signature,
         status,
         instructions,
         inner_instructions,
@@ -87,7 +75,6 @@ pub(crate) fn convert_transaction(tx: EncodedTransactionWithStatusMeta) -> Trans
         keys,
     }
 }
-
 pub(crate) fn extract_keys(vtx: &VersionedTransaction, meta: &UiTransactionStatusMeta) -> Keys {
     let static_account: Vec<PublicKey> = vtx
         .message

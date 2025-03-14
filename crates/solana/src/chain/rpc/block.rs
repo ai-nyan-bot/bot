@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::convert::convert_transaction;
-use crate::model::{Block, Slot};
+use crate::model::{Block, Slot, Transaction};
 use crate::rpc::{RpcClient, RpcResult};
 use common::model::{BlockTime, Timestamp};
 use log::{error, warn};
@@ -17,6 +17,7 @@ use std::future::Future;
 use std::pin::Pin;
 use std::sync::Arc;
 use std::time::Duration;
+use tokio::task::spawn_blocking;
 use tokio::time::{sleep, Instant};
 use tracing::debug;
 
@@ -49,10 +50,16 @@ impl RpcClient {
                 Ok(block) => {
                     let start = Instant::now();
 
-                    let transactions: Vec<_> = block
-                        .transactions
-                        .map(|t| t.into_par_iter().map(convert_transaction).collect())
-                        .unwrap_or_default();
+                    let transactions: Vec<Transaction> = spawn_blocking(move || {
+                        block
+                            .transactions
+                            .unwrap_or_default()
+                            .into_par_iter()
+                            .map(convert_transaction)
+                            .collect()
+                    })
+                    .await
+                    .unwrap();
 
                     debug!(
                         "converting {} transactions took {} ms",
