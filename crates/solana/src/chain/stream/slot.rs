@@ -3,8 +3,9 @@
 
 use crate::model::Slot;
 use crate::rpc::RpcClient;
+use crate::ws::WsClient;
 use async_trait::async_trait;
-use common::model::RpcUrl;
+use common::model::{RpcUrl, WsUrl};
 use common::{Signal, SignalType};
 use log::{debug, error, trace, warn};
 use std::time::Duration;
@@ -78,6 +79,55 @@ impl SlotStream for RpcSlotStream {
                                     error!("failed to retrieve slot: {err}")
                                 }
                             }
+                        }
+                    }
+                }
+            }),
+        )
+    }
+}
+
+pub struct WsSlotStream {
+    client: WsClient,
+    tx: Sender<Slot>,
+    rx: Receiver<Slot>,
+}
+
+impl WsSlotStream {
+    pub async fn new(url: impl Into<WsUrl>) -> Self {
+        let (tx, rx) = channel(1);
+        Self {
+            client: WsClient::new(url.into()).await.unwrap(),
+            tx,
+            rx,
+        }
+    }
+}
+
+#[async_trait]
+impl SlotStream for WsSlotStream {
+    async fn stream(self, mut signal: Signal) -> (Receiver<Slot>, JoinHandle<()>) {
+        let tx = self.tx;
+        (
+            self.rx,
+            tokio::spawn(async move {
+                let (mut slot_info_rx, _) = self.client.subscribe_slot().await.unwrap();
+
+                loop {
+                    select! {
+                        signal = signal.recv() => {
+                            match signal{
+                                SignalType::Shutdown => {
+                                    debug!("{signal}");
+                                }
+                                SignalType::Terminate(_) => {
+                                    warn!("{signal}")
+                                }
+                            }
+                            break
+                        }
+                        Some(info) = slot_info_rx.recv() => {
+                            tx.send(info.slot).await.unwrap();
                         }
                     }
                 }

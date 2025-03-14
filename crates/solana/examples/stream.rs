@@ -2,10 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use common::Signal;
-use solana::model::Slot;
-use solana::stream::{
-    BlockStream, RpcBlockStream, RpcBlockStreamConfig, RpcSlotStream, SlotStream,
-};
+use solana::stream::{BlockStream, RpcBlockStream, RpcBlockStreamConfig, SlotStream, WsSlotStream};
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
 use tracing_subscriber::EnvFilter;
@@ -24,8 +21,8 @@ async fn main() {
             url: "http://api.mainnet-beta.solana.com".into(),
             concurrency: 1,
         },
-        RpcSlotStream::default(),
-        Some(Slot(323544552)),
+        WsSlotStream::new("wss://api.mainnet-beta.solana.com").await,
+        None,
     )
     .stream(signal.clone())
     .await;
