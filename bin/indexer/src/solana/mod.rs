@@ -12,7 +12,7 @@ use crate::solana::state::{State, StateInner};
 use base::repo::{AddressRepo, TokenPairRepo, TokenRepo};
 use common::repo::pool::setup_pool;
 use common::{ResolveOr, Signal};
-use solana::stream::{BlockStream, RpcBlockStream, RpcBlockStreamConfig, WsSlotStream};
+use solana::stream::{BlockStream, RpcBlockStream, RpcBlockStreamConfig, RpcSlotStream};
 use solana::token_info::rpc::TokenInfoRpcLoader;
 use tokio::signal::unix::SignalKind;
 use tracing::info;
@@ -70,13 +70,12 @@ pub fn index_solana(runtime: Runtime, config: Config) {
             }
         });
 
-        let slot_stream = WsSlotStream::new(
+        let slot_stream = RpcSlotStream::new(
             config
                 .slotstream
                 .url
-                .resolve_or("wss://api.mainnet-beta.solana.com".to_string()),
-        )
-        .await;
+                .resolve_or("http://api.mainnet-beta.solana.com".to_string()),
+        );
 
         let mut tx = pool.begin().await.unwrap();
         let previous_slot = indexer_repo.get(&mut tx).await.map(|i| i.slot).ok();
