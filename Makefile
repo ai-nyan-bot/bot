@@ -1,5 +1,4 @@
 SERVER_HOST = one
-REMOTE_DIR = ~/nyanbot
 
 .PHONY: all
 all: check test test-frontend build push migrate deploy
@@ -32,7 +31,7 @@ push: check
 .PHONY: migrate
 migrate: check
 	@echo "Migrating database of $(SERVER_HOST)..."
-	ssh $(SERVER_HOST) 'cd $(REMOTE_DIR)/repo && \
+	ssh $(SERVER_HOST) 'cd repo&& \
 		git pull --rebase && \
 		~/.cargo/bin/sqlx migrate run'
 	@echo "Migration completed"
@@ -40,8 +39,7 @@ migrate: check
 .PHONY: deploy
 deploy: migrate
 	@echo "Deploying Docker container to $(SERVER_HOST)..."
-	ssh $(SERVER_HOST) 'cd $(REMOTE_DIR) && \
-		docker compose pull && \
+	ssh $(SERVER_HOST) 'docker compose pull && \
 		docker compose down && \
 		docker compose rm -f && \
 		docker compose up -d'

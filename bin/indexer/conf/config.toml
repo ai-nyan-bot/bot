@@ -3,7 +3,7 @@ url = '$BLOCKSTREAM_RPC_URL'
 concurrency = '$BLOCKSTREAM_CONCURRENCY'
 
 [slotstream]
-url = '$SLOTSTREAM_RPC_URL'
+url = '$SLOTSTREAM_WS_URL'
 
 [rpc]
 url = '$RPC_URL'
