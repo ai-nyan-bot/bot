@@ -61,19 +61,26 @@ impl RpcClient {
                     .await
                     .unwrap();
 
+                    if transactions.is_empty() {
+                        warn!("block {} without transactions - skip", slot);
+                        return Ok(None);
+                    }
+
                     debug!(
                         "converting {} transactions took {} ms",
                         transactions.len(),
                         start.elapsed().as_millis()
                     );
 
-                    return Ok(Some(Block {
-                        slot,
-                        timestamp: BlockTime(
-                            Timestamp::from_epoch_second(block.block_time.unwrap()).unwrap(),
-                        ),
-                        transactions,
-                    }));
+                    if let Some(block_time) = block.block_time {
+                        return Ok(Some(Block {
+                            slot,
+                            timestamp: BlockTime(Timestamp::from_epoch_second(block_time).unwrap()),
+                            transactions,
+                        }));
+                    }
+
+                    return Ok(None);
                 }
                 Err(err) => {
                     error!("{err}");
@@ -141,7 +148,6 @@ impl RpcClient {
 mod tests {
     use crate::model::Slot;
     use crate::rpc::{RpcClient, RpcClientInner};
-    use common::model::{BlockTime, Timestamp};
     use solana_client::client_error::ClientError;
     use solana_client::rpc_config::RpcBlockConfig;
     use solana_client::rpc_request::{RpcError, RpcResponseErrorData};
@@ -150,7 +156,7 @@ mod tests {
     use std::sync::Arc;
 
     #[tokio::test]
-    async fn test_ok() {
+    async fn test_block_without_transactions() {
         let test_instance = RpcClient(Arc::new(RpcClientInner {
             delegate: Arc::new(rpc_client::RpcClient::new("https://".to_string())),
             get_block_with_config: Arc::new(
@@ -175,11 +181,7 @@ mod tests {
         }));
 
         let result = test_instance.get_block(1).await.unwrap();
-        let result = result.unwrap();
-        assert_eq!(
-            result.timestamp,
-            BlockTime(Timestamp::from_epoch_second(1737344750).unwrap())
-        )
+        assert!(result.is_none())
     }
 
     #[tokio::test]
