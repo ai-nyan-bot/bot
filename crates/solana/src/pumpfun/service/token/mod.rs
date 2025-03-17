@@ -3,7 +3,7 @@
 
 mod summary;
 
-use crate::pumpfun::repo::{CurveRepo, SummaryRepo};
+use crate::pumpfun::repo::{CurrentRepo, SummaryRepo};
 use base::repo::{TokenPairRepo, TokenRepo};
 use base::test::NeverCalledTokenInfoLoader;
 use sqlx::PgPool;
@@ -22,34 +22,34 @@ impl Deref for TokenService {
 
 pub struct TokenServiceInner {
     pool: PgPool,
-    token_pair_repo: TokenPairRepo,
-    curve_repo: CurveRepo,
-    summary_repo: SummaryRepo,
+    pair: TokenPairRepo,
+    current: CurrentRepo,
+    summary: SummaryRepo,
 }
 
 impl TokenService {
     pub fn new(
         pool: PgPool,
         token_pair_repo: TokenPairRepo,
-        curve_repo: CurveRepo,
+        curve_repo: CurrentRepo,
         summary_repo: SummaryRepo,
     ) -> Self {
         Self(Arc::new(TokenServiceInner {
             pool,
-            token_pair_repo,
-            curve_repo,
-            summary_repo,
+            pair: token_pair_repo,
+            current: curve_repo,
+            summary: summary_repo,
         }))
     }
 
     pub fn testing(pool: PgPool) -> Self {
         Self(Arc::new(TokenServiceInner {
             pool,
-            token_pair_repo: TokenPairRepo::testing(TokenRepo::testing(Box::new(
+            pair: TokenPairRepo::testing(TokenRepo::testing(Box::new(
                 NeverCalledTokenInfoLoader {},
             ))),
-            curve_repo: CurveRepo::testing(),
-            summary_repo: SummaryRepo::new(),
+            current: CurrentRepo::testing(),
+            summary: SummaryRepo::new(),
         }))
     }
 }

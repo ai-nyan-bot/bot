@@ -11,7 +11,7 @@ use common::crypt::SecretKey;
 use common::repo::pool::{setup_pool, PostgresConfig};
 use common::ConfigValue;
 use solana::pumpfun;
-use solana::pumpfun::repo::{CurveRepo, SummaryRepo};
+use solana::pumpfun::repo::{CurrentRepo, SummaryRepo};
 use sqlx::{Pool, Postgres};
 use std::ops::Deref;
 use std::sync::Arc;
@@ -83,7 +83,7 @@ impl AppState {
                 pumpfun_token_service: pumpfun::service::TokenService::new(
                     pool.clone(),
                     token_pair_repo.clone(),
-                    CurveRepo::new(),
+                    CurrentRepo::new(),
                     SummaryRepo::new(),
                 ),
                 rule: RuleService::new(pool.clone(), RuleRepo::new()),

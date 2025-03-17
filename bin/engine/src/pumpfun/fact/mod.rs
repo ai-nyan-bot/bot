@@ -4,11 +4,11 @@
 mod summary;
 
 use crate::pumpfun::fact::summary::add_summary_to_facts;
-use base::model::Fact::{CurveProgressAgeDuration, VenuePumpfun};
+use base::model::Fact::{CurveProgressAgeDuration, MarketCapQuote, MarketCapUsd, VenuePumpfun};
 use base::model::{Fact, Facts, TokenPairId, Value};
 use base::repo::TokenPairRepo;
 use common::model::{Limit, TimeUnit, Timeframe};
-use solana::pumpfun::repo::{CurveQuery, CurveRepo, SummaryQuery, SummaryRepo};
+use solana::pumpfun::repo::{CurrentQuery, CurrentRepo, SummaryQuery, SummaryRepo};
 use sqlx::PgPool;
 use std::collections::HashMap;
 use tokio::time::Instant;
@@ -17,23 +17,23 @@ use Fact::CurveProgressPercent;
 #[derive(Clone)]
 pub struct FactService {
     pool: PgPool,
-    token_pair_repo: TokenPairRepo,
-    summary_repo: SummaryRepo,
-    curve_repo: CurveRepo,
+    pair: TokenPairRepo,
+    summary: SummaryRepo,
+    current: CurrentRepo,
 }
 
 impl FactService {
     pub fn new(
         pool: PgPool,
-        token_pair_repo: TokenPairRepo,
-        summary_repo: SummaryRepo,
-        curve_repo: CurveRepo,
+        pair: TokenPairRepo,
+        summary: SummaryRepo,
+        current: CurrentRepo,
     ) -> Self {
         Self {
             pool,
-            token_pair_repo,
-            summary_repo,
-            curve_repo,
+            pair,
+            summary,
+            current,
         }
     }
 
@@ -42,7 +42,7 @@ impl FactService {
 
         let start = Instant::now();
         let mut result: HashMap<TokenPairId, Facts> = self
-            .token_pair_repo
+            .pair
             .list_all(&mut tx)
             .await
             .unwrap()
@@ -73,24 +73,37 @@ impl FactService {
             Instant::now().duration_since(start).as_millis()
         );
 
-        for curve in self
-            .curve_repo
+        for current in self
+            .current
             .list(
                 &mut tx,
-                CurveQuery {
+                CurrentQuery {
                     limit: Limit::unlimited(),
                 },
             )
             .await
             .unwrap()
         {
-            if let Some(facts) = result.get_mut(&curve.id) {
-                facts.set_value(CurveProgressPercent, Value::percent(curve.progress.0));
+            if let Some(facts) = result.get_mut(&current.id) {
+                facts.set_value(CurveProgressPercent, Value::percent(current.progress.0));
                 facts.set_value(
                     CurveProgressAgeDuration,
-                    Value::duration(curve.age.0, TimeUnit::Second),
+                    Value::duration(current.age.0, TimeUnit::Second),
                 );
                 facts.set_value(VenuePumpfun, Value::boolean(true));
+
+                facts.set_value(Fact::PriceQuote, Value::quote(current.price.0));
+                if let Some(usd) = current.price_usd {
+                    facts.set_value(Fact::PriceUsd, Value::usd(usd.0))
+                }
+
+                if let Some(quote) = current.market_cap {
+                    facts.set_value(MarketCapQuote, Value::quote(quote.0));
+                }
+                
+                if let Some(usd) = current.market_cap_usd {
+                    facts.set_value(MarketCapUsd, Value::usd(usd.0))
+                }
             }
         }
 
@@ -105,7 +118,7 @@ impl FactService {
             let start = Instant::now();
 
             let summary = self
-                .summary_repo
+                .summary
                 .list(
                     &mut tx,
                     SummaryQuery {

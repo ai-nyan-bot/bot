@@ -75,14 +75,14 @@ impl From<&str> for MarketCapUsd {
     }
 }
 
-impl PartialEq<i32> for MarketCapUsd {
-    fn eq(&self, other: &i32) -> bool {
+impl PartialEq<i64> for MarketCapUsd {
+    fn eq(&self, other: &i64) -> bool {
         Self(BigDecimal::from(*other)).0.eq(&self.0)
     }
 }
 
-impl PartialOrd<i32> for MarketCapUsd {
-    fn partial_cmp(&self, other: &i32) -> Option<Ordering> {
+impl PartialOrd<i64> for MarketCapUsd {
+    fn partial_cmp(&self, other: &i64) -> Option<Ordering> {
         self.0.partial_cmp(&BigDecimal::from(*other))
     }
 }

@@ -16,9 +16,9 @@ impl TokenService {
     ) -> ServiceResult<PumpfunSummary> {
         let mut tx = self.pool.begin().await?;
 
-        let result = match self.token_pair_repo.get_by_id(&mut tx, token_pair).await {
+        let result = match self.pair.get_by_id(&mut tx, token_pair).await {
             Ok(pair) => {
-                let curve = match self.curve_repo.get(&mut tx, pair.id).await {
+                let curve = match self.current.get(&mut tx, pair.id).await {
                     Ok(curve) => curve,
                     Err(err) => {
                         return match err {
@@ -32,34 +32,34 @@ impl TokenService {
 
                 PumpfunSummary {
                     pair: pair,
-                    curve,
+                    current: curve,
                     m1: self
-                        .summary_repo
+                        .summary
                         .get(&mut tx, pair_id, Timeframe::M1)
                         .await
                         .ok(),
                     m5: self
-                        .summary_repo
+                        .summary
                         .get(&mut tx, pair_id, Timeframe::M5)
                         .await
                         .ok(),
                     m15: self
-                        .summary_repo
+                        .summary
                         .get(&mut tx, pair_id, Timeframe::M15)
                         .await
                         .ok(),
                     h1: self
-                        .summary_repo
+                        .summary
                         .get(&mut tx, pair_id, Timeframe::H1)
                         .await
                         .ok(),
                     h6: self
-                        .summary_repo
+                        .summary
                         .get(&mut tx, pair_id, Timeframe::H6)
                         .await
                         .ok(),
                     d1: self
-                        .summary_repo
+                        .summary
                         .get(&mut tx, pair_id, Timeframe::D1)
                         .await
                         .ok(),

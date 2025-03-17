@@ -13,6 +13,6 @@ pub(crate) async fn index_swap<'a>(tx: &mut Tx<'a>, state: State, swaps: SlotSwa
         .unwrap();
 
     for swap in inserted {
-        state.pumpfun_curve_repo.upsert(tx, swap).await.unwrap();
+        state.pumpfun_current_repo.upsert(tx, swap).await.unwrap();
     }
 }

@@ -64,7 +64,7 @@ pub(crate) async fn send(
     // "#
     //                 ),
 
-    let progress = token_summary.curve.progress;
+    let progress = token_summary.current.progress;
     let progress = format!("{:.2}", progress);
 
     // let swaps = token_summary.summary.swaps.all.swaps.0;

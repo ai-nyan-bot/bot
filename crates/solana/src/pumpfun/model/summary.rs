@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::pumpfun::model::Curve;
+use crate::pumpfun::model::Current;
 use base::model::TokenPair;
 use common::model::{
     Count, MarketCapQuote, MarketCapUsd, Percent, PriceQuote, PriceUsd, VolumeQuote, VolumeUsd,
@@ -10,7 +10,7 @@ use common::model::{
 #[derive(Clone, Debug)]
 pub struct PumpfunSummary {
     pub pair: TokenPair,
-    pub curve: Curve,
+    pub current: Current,
     pub m1: Option<TimeframeSummary>,
     pub m5: Option<TimeframeSummary>,
     pub m15: Option<TimeframeSummary>,

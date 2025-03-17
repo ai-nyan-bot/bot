@@ -45,7 +45,7 @@ async fn test_index_block_326027759() {
 			address_repo: AddressRepo::new(),
 			pool: pool.clone(),
 			pumpfun_swap_repo,
-			pumpfun_curve_repo: Default::default(),
+			pumpfun_current_repo: Default::default(),
 			jupiter_swap_repo,
 		}));
 

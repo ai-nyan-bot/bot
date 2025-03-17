@@ -71,7 +71,7 @@ insert into solana.token (id, version, mint, name, symbol, decimals, supply, met
 			address_repo: AddressRepo::new(),
 			pool: pool.clone(),
 			pumpfun_swap_repo,
-			pumpfun_curve_repo: Default::default(),
+			pumpfun_current_repo: Default::default(),
 			jupiter_swap_repo,
 		}));
 

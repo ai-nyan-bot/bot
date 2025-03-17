@@ -12,7 +12,7 @@ use base::repo::{
 };
 use base::service::{NotificationRuleMatched, NotificationService, RuleService};
 use common::repo::pool::setup_pool;
-use solana::pumpfun::repo::{CurveRepo, SummaryRepo};
+use solana::pumpfun::repo::{CurrentRepo, SummaryRepo};
 use std::sync::Arc;
 use std::time::Duration;
 use tokio::runtime::Builder;
@@ -54,7 +54,7 @@ fn main() {
                     pool.clone(),
                     TokenPairRepo::new(token_repo.clone()),
                     SummaryRepo::new(),
-                    CurveRepo::new(),
+                    CurrentRepo::new(),
                 ),
                 notification: NotificationService::new(pool.clone(), NotificationRepo::new()),
                 rule: RuleService::new(pool.clone(), RuleRepo::new()),

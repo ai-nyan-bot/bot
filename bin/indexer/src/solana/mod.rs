@@ -51,7 +51,7 @@ pub fn index_solana(runtime: Runtime, config: Config) {
             token_repo: token_repo.clone(),
             address_repo: AddressRepo::new(),
             pumpfun_swap_repo,
-            pumpfun_curve_repo: solana::pumpfun::repo::CurveRepo::new(),
+            pumpfun_current_repo: solana::pumpfun::repo::CurrentRepo::new(),
             jupiter_swap_repo,
         }));
 

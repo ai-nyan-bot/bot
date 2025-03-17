@@ -10,35 +10,35 @@ use common::model::Limit;
 use std::ops::Deref;
 use std::sync::Arc;
 
-pub struct CurveQuery {
+pub struct CurrentQuery {
     pub limit: Limit,
 }
 
 #[derive(Debug, Clone)]
-pub struct CurveRepo(pub Arc<CurveRepoInner>);
+pub struct CurrentRepo(pub Arc<CurrentRepoInner>);
 
-impl Deref for CurveRepo {
-    type Target = CurveRepoInner;
+impl Deref for CurrentRepo {
+    type Target = CurrentRepoInner;
     fn deref(&self) -> &Self::Target {
         self.0.deref()
     }
 }
 
 #[derive(Debug)]
-pub struct CurveRepoInner {}
+pub struct CurrentRepoInner {}
 
-impl Default for CurveRepo {
+impl Default for CurrentRepo {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl CurveRepo {
+impl CurrentRepo {
     pub fn new() -> Self {
-        Self(Arc::new(CurveRepoInner {}))
+        Self(Arc::new(CurrentRepoInner {}))
     }
 
     pub fn testing() -> Self {
-        Self(Arc::new(CurveRepoInner {}))
+        Self(Arc::new(CurrentRepoInner {}))
     }
 }

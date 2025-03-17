@@ -21,6 +21,6 @@ pub struct StateInner {
     pub token_repo: TokenRepo,
     pub address_repo: AddressRepo,
     pub pumpfun_swap_repo: solana::pumpfun::repo::SwapRepo,
-    pub pumpfun_curve_repo: solana::pumpfun::repo::CurveRepo,
+    pub pumpfun_current_repo: solana::pumpfun::repo::CurrentRepo,
     pub jupiter_swap_repo: solana::jupiter::repo::SwapRepo,
 }

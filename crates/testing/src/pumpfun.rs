@@ -6,10 +6,10 @@ use common::model::Count;
 use common::repo::Tx;
 use solana::model::Signature;
 use solana::pumpfun::model::Swap;
-use solana::pumpfun::repo::{CurveRepo, ReadSwapRepo, SlotSwaps, SwapRepo};
+use solana::pumpfun::repo::{CurrentRepo, ReadSwapRepo, SlotSwaps, SwapRepo};
 
-pub async fn count_all_curves<'a>(tx: &mut Tx<'a>) -> Count {
-    CurveRepo::new().count_all(tx).await.unwrap()
+pub async fn count_all_currents<'a>(tx: &mut Tx<'a>) -> Count {
+    CurrentRepo::new().count_all(tx).await.unwrap()
 }
 
 pub async fn count_all_swaps<'a>(tx: &mut Tx<'a>) -> Count {
@@ -36,5 +36,3 @@ pub async fn insert_swap<'a>(tx: &mut Tx<'a>, slot_swaps: SlotSwaps) -> Vec<Swap
         .await
         .unwrap()
 }
-
-
