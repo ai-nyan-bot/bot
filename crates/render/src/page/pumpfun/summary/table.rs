@@ -123,7 +123,7 @@ fn draw_market_cap(img: &mut RgbaImage, font: &Font, x: u32, cap: MarketCapWithC
                 Rgba([255, 255, 255, 255])
             };
 
-            draw_cell_bottom(img, font, x, 3, Text::new(percent.pretty(), 28, color));
+            draw_cell_bottom(img, font, x, 2, Text::new(percent.pretty(), 28, color));
         } else {
             draw_cell_center(
                 img,
@@ -155,7 +155,7 @@ fn draw_price(img: &mut RgbaImage, font: &Font, x: u32, cap: PriceWithChange) {
                 Rgba([255, 255, 255, 255])
             };
 
-            draw_cell_bottom(img, font, x, 2, Text::new(percent.pretty(), 28, color));
+            draw_cell_bottom(img, font, x, 1, Text::new(percent.pretty(), 28, color));
         } else {
             draw_cell_center(
                 img,
