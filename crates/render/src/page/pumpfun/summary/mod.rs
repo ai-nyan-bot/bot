@@ -111,15 +111,14 @@ pub fn pumpfun_summary(img: &mut RgbaImage, summary: PumpfunSummary) {
         Text::new("1d", 36, Rgba([100, 100, 100, 255])),
     );
 
-    draw_legend(img, &font, 1, "Bonding Curve");
-    draw_legend(img, &font, 2, "Price");
-    draw_legend(img, &font, 3, "Market Cap");
-    draw_legend(img, &font, 4, "Total Volume");
-    draw_legend(img, &font, 5, "Buy Volume");
-    draw_legend(img, &font, 6, "Sell Volume");
-    draw_legend(img, &font, 7, "Total Txn");
-    draw_legend(img, &font, 8, "Buy Txn");
-    draw_legend(img, &font, 9, "Sell Txn");
+    draw_legend(img, &font, 1, "Price");
+    draw_legend(img, &font, 2, "Market Cap");
+    draw_legend(img, &font, 3, "Total Volume");
+    draw_legend(img, &font, 4, "Buy Volume");
+    draw_legend(img, &font, 5, "Sell Volume");
+    draw_legend(img, &font, 6, "Total Txn");
+    draw_legend(img, &font, 7, "Buy Txn");
+    draw_legend(img, &font, 8, "Sell Txn");
 
     if let Some(summary) = summary.m1 {
         draw_summary(img, &font, 1, summary)

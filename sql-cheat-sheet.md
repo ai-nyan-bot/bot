@@ -6,10 +6,10 @@ from solana.token_pair tp
          join solana.token quote on quote.id = tp.quote_id
 ```
 
-# Pumpfun curves which have progressed less than 95 percent
+# Pumpfun currents which have progressed less than 95 percent
 ```sql
 select c.id, progress, base.mint, quote.mint
-from pumpfun.curve c
+from pumpfun.current c
          left join solana.token_pair tp on tp.id = c.id
          left join solana.token base on base.id = tp.base_id
          left join solana.token quote on quote.id = tp.quote_id
@@ -17,16 +17,16 @@ where progress < 95
 order by progress desc;
 ```
 
-# List curves which have been updated in the last 90 seconds relative to the most recent updated curve
+# List currents which have been updated in the last 90 seconds relative to the most recent updated current
 ```sql
 with latest as (select updated_at
-                from pumpfun.curve
+                from pumpfun.current
                 order by updated_at desc
     limit 1
     )
 select c.*,
        extract(epoch from (latest.updated_at - c.updated_at)) ::int8 as age_seconds
-from pumpfun.curve c,
+from pumpfun.current c,
      latest
 where c.updated_at > latest.updated_at - interval '90 seconds';
 ```

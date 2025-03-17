@@ -8,8 +8,7 @@ use crate::{Font, FontSize, Line, Point, RenderLine, RenderText, Text};
 use common::format::FormatPretty;
 use image::{Rgba, RgbaImage};
 use solana::model::{
-    MarketCapWithChange, PriceWithChange, SummaryCurveProgress, SwapWithChange, TimeframeSummary,
-    VolumeWithChange,
+    MarketCapWithChange, PriceWithChange, SwapWithChange, TimeframeSummary, VolumeWithChange,
 };
 use std::ops::Div;
 
@@ -95,53 +94,14 @@ pub(crate) fn draw_cell_bottom(img: &mut RgbaImage, font: &Font, x: u32, y: u32,
 }
 
 pub(crate) fn draw_summary(img: &mut RgbaImage, font: &Font, x: u32, summary: TimeframeSummary) {
-    draw_bonding_curve(img, font, x, summary.curve);
     draw_price(img, font, x, summary.price.close);
     draw_market_cap(img, font, x, summary.cap.close);
-    draw_volume(img, font, x, 4, summary.volume.all);
-    draw_volume(img, font, x, 5, summary.volume.buy);
-    draw_volume(img, font, x, 6, summary.volume.sell);
-    draw_txn(img, font, x, 7, summary.swap.all);
-    draw_txn(img, font, x, 8, summary.swap.buy);
-    draw_txn(img, font, x, 9, summary.swap.sell);
-}
-
-fn draw_bonding_curve(
-    img: &mut RgbaImage,
-    font: &Font,
-    x: u32,
-    curve_progress: SummaryCurveProgress,
-) {
-    let progress = curve_progress.close;
-    if let Some(percent) = progress.progress {
-        if let Some(change) = progress.change {
-            draw_cell_top(
-                img,
-                font,
-                x,
-                1,
-                Text::new(percent.pretty(), 28, Rgba([255, 255, 255, 255])),
-            );
-
-            let color = if change > 0.0 {
-                INCREASED
-            } else if change < 0.0 {
-                DECREASED
-            } else {
-                Rgba([255, 255, 255, 255])
-            };
-
-            draw_cell_bottom(img, font, x, 1, Text::new(change.pretty(), 28, color));
-        } else {
-            draw_cell_center(
-                img,
-                font,
-                x,
-                1,
-                Text::new(percent.pretty(), 28, Rgba([255, 255, 255, 255])),
-            );
-        }
-    }
+    draw_volume(img, font, x, 3, summary.volume.all);
+    draw_volume(img, font, x, 4, summary.volume.buy);
+    draw_volume(img, font, x, 5, summary.volume.sell);
+    draw_txn(img, font, x, 6, summary.swap.all);
+    draw_txn(img, font, x, 7, summary.swap.buy);
+    draw_txn(img, font, x, 8, summary.swap.sell);
 }
 
 fn draw_market_cap(img: &mut RgbaImage, font: &Font, x: u32, cap: MarketCapWithChange) {
@@ -151,7 +111,7 @@ fn draw_market_cap(img: &mut RgbaImage, font: &Font, x: u32, cap: MarketCapWithC
                 img,
                 font,
                 x,
-                3,
+                2,
                 Text::new(usd.pretty(), 28, Rgba([255, 255, 255, 255])),
             );
 
@@ -169,7 +129,7 @@ fn draw_market_cap(img: &mut RgbaImage, font: &Font, x: u32, cap: MarketCapWithC
                 img,
                 font,
                 x,
-                3,
+                2,
                 Text::new(usd.pretty(), 28, Rgba([255, 255, 255, 255])),
             );
         }
@@ -183,7 +143,7 @@ fn draw_price(img: &mut RgbaImage, font: &Font, x: u32, cap: PriceWithChange) {
                 img,
                 font,
                 x,
-                2,
+                1,
                 Text::new(usd.pretty(), 28, Rgba([255, 255, 255, 255])),
             );
 
@@ -201,7 +161,7 @@ fn draw_price(img: &mut RgbaImage, font: &Font, x: u32, cap: PriceWithChange) {
                 img,
                 font,
                 x,
-                2,
+                1,
                 Text::new(usd.pretty(), 28, Rgba([255, 255, 255, 255])),
             );
         }
