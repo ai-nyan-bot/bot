@@ -9,7 +9,8 @@ use futures::future::join_all;
 use log::{error, info};
 use tokio::runtime::Builder;
 use tokio::task::JoinHandle;
-use tracing_subscriber::fmt::format::FmtSpan;
+use tracing_subscriber::layer::SubscriberExt;
+use tracing_subscriber::util::SubscriberInitExt;
 use tracing_subscriber::EnvFilter;
 
 mod config;
@@ -18,9 +19,12 @@ mod pumpfun;
 mod solana;
 
 fn main() {
-    tracing_subscriber::fmt::fmt()
-        .with_env_filter(EnvFilter::from_default_env())
-        .with_span_events(FmtSpan::CLOSE)
+    tracing_subscriber::registry()
+        .with(
+            EnvFilter::try_from_default_env()
+                .unwrap_or_else(|_| format!("{}=debug", env!("CARGO_CRATE_NAME")).into()),
+        )
+        .with(tracing_subscriber::fmt::layer())
         .init();
 
     let config = Config::load();
