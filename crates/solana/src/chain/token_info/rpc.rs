@@ -74,30 +74,36 @@ pub struct TokenMetadata {
 impl LoadTokenInfo for TokenInfoRpcLoader {
     async fn load(&self, mint: TokenMint) -> Option<TokenInfo> {
         debug!("load token info: {mint}");
-        
+
         let base_delay = Duration::from_millis(100);
 
-        for iteration in 0..4 {
-            let result = download_and_process(self.rpc_client.as_ref(), mint.clone()).await;
-            if result.is_some() {
-                return result;
+        for iteration in 0..3 {
+            match download_and_process(self.rpc_client.as_ref(), mint.clone()).await {
+                DownloadAndProcessResult::Retry => {
+                    let delay = base_delay * 2_u32.pow(iteration);
+                    debug!(
+                        "retry {} load token info {}: waiting for {:?}",
+                        iteration + 1,
+                        mint,
+                        delay
+                    );
+                    sleep(delay).await;
+                }
+                DownloadAndProcessResult::Failed => return None,
+                DownloadAndProcessResult::Ok(result) => return Some(result),
             }
-
-            let delay = base_delay * 2_u32.pow(iteration);
-            debug!(
-                "retry {} load token info {}: waiting for {:?}",
-                iteration + 1,
-                mint,
-                delay
-            );
-            
-            sleep(delay).await;
         }
         None
     }
 }
 
-async fn download_and_process(rpc_client: &RpcClient, mint: TokenMint) -> Option<TokenInfo> {
+enum DownloadAndProcessResult {
+    Retry,
+    Failed,
+    Ok(TokenInfo),
+}
+
+async fn download_and_process(rpc_client: &RpcClient, mint: TokenMint) -> DownloadAndProcessResult {
     let pubkey = mint.0.to_string().parse::<Pubkey>().unwrap();
     let keys: Vec<Pubkey> = vec![pubkey, Metadata::find_pda(&pubkey).0];
 
@@ -110,19 +116,19 @@ async fn download_and_process(rpc_client: &RpcClient, mint: TokenMint) -> Option
 
             let Some(Some(account)) = accounts.first() else {
                 error!("account not found: {mint}");
-                return None;
+                return DownloadAndProcessResult::Retry;
             };
 
             match account.owner {
                 spl_token::ID => {
                     let Ok(unpacked_mint) = Mint::unpack_from_slice(account.data.as_slice()) else {
                         error!("unable to unpack mint: {mint}");
-                        return None;
+                        return DownloadAndProcessResult::Failed;
                     };
 
                     if let Some(Some(pda)) = accounts.get(1) {
                         if let Ok(metadata) = Metadata::from_bytes(pda.data.as_slice()) {
-                            return Some(TokenInfo {
+                            return DownloadAndProcessResult::Ok(TokenInfo {
                                 mint: Some(mint),
                                 name: Some(Name(sanitize_value(metadata.name.as_str()))),
                                 symbol: Some(Symbol(sanitize_value(metadata.symbol.as_str()))),
@@ -136,7 +142,7 @@ async fn download_and_process(rpc_client: &RpcClient, mint: TokenMint) -> Option
                         };
                     }
 
-                    Some(TokenInfo {
+                    DownloadAndProcessResult::Ok(TokenInfo {
                         mint: Some(mint),
                         name: None,
                         symbol: None,
@@ -155,7 +161,7 @@ async fn download_and_process(rpc_client: &RpcClient, mint: TokenMint) -> Option
                         )
                     else {
                         error!("unable to unpack mint: {mint}");
-                        return None;
+                        return DownloadAndProcessResult::Failed;
                     };
 
                     let Ok(metadata) = unpacked_mint
@@ -165,7 +171,7 @@ async fn download_and_process(rpc_client: &RpcClient, mint: TokenMint) -> Option
                         )
                     else {
                         info!("unable to unpack extension: {mint}");
-                        return Some(TokenInfo {
+                        return DownloadAndProcessResult::Ok(TokenInfo {
                             mint: Some(mint),
                             name: None,
                             symbol: None,
@@ -178,7 +184,7 @@ async fn download_and_process(rpc_client: &RpcClient, mint: TokenMint) -> Option
                         });
                     };
 
-                    Some(TokenInfo {
+                    DownloadAndProcessResult::Ok(TokenInfo {
                         mint: Some(mint),
                         name: Some(Name(sanitize_value(metadata.name.as_str()))),
                         symbol: Some(Symbol(sanitize_value(metadata.symbol.as_str()))),
@@ -192,13 +198,13 @@ async fn download_and_process(rpc_client: &RpcClient, mint: TokenMint) -> Option
                 }
                 _ => {
                     error!("token owner not supported {mint}");
-                    None
+                    DownloadAndProcessResult::Failed
                 }
             }
         }
         Err(err) => {
             error!("failed to get accounts: {err}");
-            None
+            DownloadAndProcessResult::Retry
         }
     }
 }
