@@ -4,9 +4,12 @@
 pub use error::*;
 pub use font::*;
 use image::RgbaImage;
+use rand::distributions::Alphanumeric;
+use rand::Rng;
 pub use render::*;
-use std::path::PathBuf;
-use std::str::FromStr;
+use std::fs;
+use std::path::{Path, PathBuf};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use tokio::task::spawn_blocking;
 
 mod error;
@@ -20,14 +23,49 @@ pub async fn render<F>(process_image: F) -> RenderResult
 where
     F: FnOnce(&mut RgbaImage) + Send + 'static,
 {
-    // FIXME every request needs to create an own file
     let path = spawn_blocking(move || {
+        let base_dir = Path::new("/tmp/nyanbot/images");
+        fs::create_dir_all(base_dir).unwrap();
+
         let img_width = 1200;
         let img_height = 1200;
+
         let mut img = RgbaImage::new(img_width, img_height);
         process_image(&mut img);
-        let output_path = PathBuf::from_str("/tmp/nyanbot_image.png").unwrap();
+
+        let output_path = loop {
+            let epoch = SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap()
+                .as_secs();
+
+            let random_string: String = rand::thread_rng()
+                .sample_iter(&Alphanumeric)
+                .take(12)
+                .map(char::from)
+                .collect();
+
+            let output_path = base_dir.join(format!("{}_{}.png", epoch, random_string));
+            if let Ok(false) = fs::exists(output_path.clone()) {
+                break output_path;
+            }
+        };
+
         img.save(&output_path).unwrap();
+
+        if let Ok(entries) = fs::read_dir(base_dir) {
+            let cutoff = SystemTime::now() - Duration::from_secs(60);
+            for entry in entries.flatten() {
+                if let Ok(metadata) = entry.metadata() {
+                    if let Ok(modified) = metadata.modified() {
+                        if modified < cutoff {
+                            let _ = fs::remove_file(entry.path());
+                        }
+                    }
+                }
+            }
+        }
+
         output_path
     })
     .await
@@ -35,6 +73,7 @@ where
 
     Ok(path)
 }
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Width(pub u32);
 

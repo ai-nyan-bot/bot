@@ -8,6 +8,7 @@ edition.workspace = true
 common = { path = "../../crates/common" }
 solana = { path = "../../crates/solana" }
 
+rand = {workspace = true}
 image = { version = "0.25.5" }
 rusttype = { version = "0.9.3" }
 tokio = { workspace = true }

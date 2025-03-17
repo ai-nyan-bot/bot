@@ -4471,6 +4471,7 @@ version = "0.0.1"
 dependencies = [
  "common",
  "image",
+ "rand 0.8.5",
  "rusttype",
  "solana",
  "tokio",
