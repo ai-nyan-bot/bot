@@ -1,8 +1,8 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use common::repo::error::RepoError;
 use base::repo::WalletRepo;
+use common::repo::error::RepoError;
 use sqlx::Acquire;
 use testing::user::create_telegram_user;
 use testing::wallet::count_all;
@@ -13,16 +13,18 @@ use crate::repo::wallet::{create_wallet, PRIVATE_KEY, PUBLIC_KEY};
 #[test_log::test(sqlx::test)]
 async fn test_create_wallet() {
     run_test_on_empty_db(|mut tx| async move {
-        let _ = create_telegram_user(&mut tx, "1").await.unwrap();
+        let _ = create_telegram_user(&mut tx, 1).await.unwrap();
 
-        let user = create_telegram_user(&mut tx, "2").await.unwrap();
+        let user = create_telegram_user(&mut tx, 2).await.unwrap();
         let _ = wallet::create_wallet(&mut tx, user.id).await;
 
         let count = count_all(&mut tx).await;
         assert_eq!(count, 1);
 
-        let user = create_telegram_user(&mut tx, "3").await.unwrap();
-        let wallet = create_wallet(&mut tx, user.id, PUBLIC_KEY.clone(), PRIVATE_KEY.clone()).await.unwrap();
+        let user = create_telegram_user(&mut tx, 3).await.unwrap();
+        let wallet = create_wallet(&mut tx, user.id, PUBLIC_KEY.clone(), PRIVATE_KEY.clone())
+            .await
+            .unwrap();
 
         assert_eq!(wallet.id, 2);
         assert_eq!(wallet.user_id, 3);
@@ -38,7 +40,7 @@ async fn test_create_wallet() {
 #[test_log::test(sqlx::test)]
 async fn test_tries_to_create_wallet_for_not_existing_user() {
     run_test_on_empty_db(|mut tx| async move {
-        let _ = create_telegram_user(&mut tx, "ABC").await.unwrap();
+        let _ = create_telegram_user(&mut tx, 123).await.unwrap();
 
         let result = wallet::create_wallet(&mut tx.begin().await.unwrap(), 3).await;
         assert_eq!(result.err().unwrap(), RepoError::ForeignKeyViolation);
@@ -56,8 +58,8 @@ async fn test_one_wallet_per_user() {
 
         let mut tx = pool.begin().await.unwrap();
 
-        user::create_telegram_user(&mut tx, "1").await.unwrap();
-        let user = user::create_telegram_user(&mut tx, "2").await.unwrap();
+        user::create_telegram_user(&mut tx, 1).await.unwrap();
+        let user = user::create_telegram_user(&mut tx, 2).await.unwrap();
 
         let _ = wallet::create_wallet(&mut tx, user.id).await.unwrap();
 
@@ -81,10 +83,10 @@ async fn test_one_wallet_per_user() {
 #[test_log::test(sqlx::test)]
 async fn test_solana_public_key_is_unique() {
     run_test_on_empty_db(|mut tx| async move {
-        let user = create_telegram_user(&mut tx, "1").await.unwrap();
+        let user = create_telegram_user(&mut tx, 1).await.unwrap();
         let _ = create_wallet(&mut tx, user.id, PUBLIC_KEY.clone(), PRIVATE_KEY.clone()).await.unwrap();
 
-        let user = create_telegram_user(&mut tx, "2").await.unwrap();
+        let user = create_telegram_user(&mut tx, 2).await.unwrap();
         let result = create_wallet(
             &mut tx.begin().await.unwrap(),
             user.id,
@@ -103,10 +105,12 @@ async fn test_solana_public_key_is_unique() {
 #[test_log::test(sqlx::test)]
 async fn test_solana_private_key_is_unique() {
     run_test_on_empty_db(|mut tx| async move {
-        let user = create_telegram_user(&mut tx, "1").await.unwrap();
-        let _ = create_wallet(&mut tx, user.id, PUBLIC_KEY.clone(), PRIVATE_KEY.clone()).await.unwrap();
+        let user = create_telegram_user(&mut tx, 1).await.unwrap();
+        let _ = create_wallet(&mut tx, user.id, PUBLIC_KEY.clone(), PRIVATE_KEY.clone())
+            .await
+            .unwrap();
 
-        let user = create_telegram_user(&mut tx, "2").await.unwrap();
+        let user = create_telegram_user(&mut tx, 2).await.unwrap();
         let result = create_wallet(
             &mut tx.begin().await.unwrap(),
             user.id,

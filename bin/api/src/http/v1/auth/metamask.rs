@@ -10,13 +10,18 @@ use axum::Json;
 use base::service::AuthenticateUserTelegramCmd;
 use log::debug;
 
-pub async fn metamask(State(state): State<AppState>, JsonReq(req): JsonReq<MetamaskAuthRequest>) -> Result<Json<MetamaskAuthResponse>, HttpError> {
+pub async fn metamask(
+    State(state): State<AppState>,
+    JsonReq(req): JsonReq<MetamaskAuthRequest>,
+) -> Result<Json<MetamaskAuthResponse>, HttpError> {
     debug!("POST /v1/auth/metamask {:?}", req);
 
     // FIXME
     let (user, auth, wallet) = state
         .user_service()
-        .authenticate_and_create_telegram_user_if_not_exists(AuthenticateUserTelegramCmd { telegram_id: "0".into() })
+        .authenticate_and_create_telegram_user_if_not_exists(AuthenticateUserTelegramCmd {
+            telegram_id: 0.into(),
+        })
         .await?;
 
     debug!("user {} authenticated via metamask", user.id);

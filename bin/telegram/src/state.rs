@@ -3,17 +3,19 @@
 
 use crate::callback::CallbackStore;
 use crate::config::Config;
+use crate::TelegramConfig;
 use base::repo::{NotificationRepo, RuleRepo, TokenPairRepo, TokenRepo};
 use base::service::{NotificationService, RuleService, TokenService, UserService};
 use base::test::NeverCalledTokenInfoLoader;
-use common::repo::pool::setup_pool;
+use common::repo::pool::{setup_pool, PostgresConfig};
+use common::ConfigValue;
 use solana::pumpfun;
 use solana::pumpfun::repo::{CurveRepo, SummaryRepo};
+use sqlx::{Pool, Postgres};
 use std::ops::Deref;
 use std::sync::Arc;
 use std::time::Duration;
 use teloxide::Bot;
-use testing::get_test_pool;
 
 #[derive(Clone)]
 pub struct AppState(pub Arc<AppStateInner>);
@@ -89,12 +91,19 @@ impl AppState {
         }))
     }
 
-    pub async fn testing(config: Config) -> Self {
-        let pool = get_test_pool().await;
-        let bot = Bot::new(config.telegram.token.resolve());
+    pub async fn testing(pool: Pool<Postgres>) -> Self {
+        let bot = Bot::new("1234567890:QWERTYUIOPASDFGHJKLZXCVBNMQWERTYUIO");
 
         Self(Arc::new(AppStateInner {
-            config,
+            config: Config {
+                telegram: TelegramConfig {
+                    token: ConfigValue::Value(
+                        "1234567890:QWERTYUIOPASDFGHJKLZXCVBNMQWERTYUIO".to_string(),
+                    ), // same as mockbot
+                    webapp_url: ConfigValue::Value("https://test.nyanbot.com".to_string()),
+                },
+                postgres: PostgresConfig::default(),
+            },
             bot,
             callback_store: CallbackStore::new(Duration::from_secs(1)),
             service: Service {

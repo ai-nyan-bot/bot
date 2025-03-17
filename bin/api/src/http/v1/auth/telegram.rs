@@ -144,7 +144,7 @@ mod tests {
         let response: TelegramAuthResponse = extract(response).await.unwrap();
         assert_eq!(response.token.0.len(), 128);
         assert_eq!(response.user.id, 1);
-        assert_eq!(response.telegram.id, "6886037674");
+        assert_eq!(response.telegram.id, 6886037674);
         assert_eq!(response.wallet.id, 1);
         assert!(response.wallet.solana.0.len() > 32);
     }

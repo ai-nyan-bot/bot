@@ -12,13 +12,13 @@ async fn test_creates_user() {
 
         let (user, auth, wallet) = test_instance
             .authenticate_and_create_telegram_user_if_not_exists(AuthenticateUserTelegramCmd {
-                telegram_id: "123".into(),
+                telegram_id: 123.into(),
             })
             .await
             .unwrap();
 
         assert_eq!(user.id, 1);
-        assert_eq!(user.telegram_id.unwrap(), "123");
+        assert_eq!(user.telegram_id.unwrap(), 123);
 
         assert_eq!(auth.id, 1);
         assert_eq!(auth.user.id, 1);
@@ -47,7 +47,7 @@ async fn test_user_already_exists() {
 
         let (_, auth, _) = test_instance
             .authenticate_and_create_telegram_user_if_not_exists(AuthenticateUserTelegramCmd {
-                telegram_id: "123".into(),
+                telegram_id: 123.into(),
             })
             .await
             .unwrap();
@@ -58,13 +58,13 @@ async fn test_user_already_exists() {
 
         let (user, auth, wallet) = test_instance
             .authenticate_and_create_telegram_user_if_not_exists(AuthenticateUserTelegramCmd {
-                telegram_id: "123".into(),
+                telegram_id: 123.into(),
             })
             .await
             .unwrap();
 
         assert_eq!(user.id, 1);
-        assert_eq!(user.telegram_id.unwrap(), "123");
+        assert_eq!(user.telegram_id.unwrap(), 123);
 
         assert_eq!(auth.id, 2);
         assert_eq!(auth.user.id, 1);
@@ -83,14 +83,14 @@ async fn test_token_already_exists() {
 
         let _ = test_instance
             .authenticate_and_create_telegram_user_if_not_exists(AuthenticateUserTelegramCmd {
-                telegram_id: "1".into(),
+                telegram_id: 1.into(),
             })
             .await
             .unwrap();
 
         let result = test_instance
             .authenticate_and_create_telegram_user_if_not_exists(AuthenticateUserTelegramCmd {
-                telegram_id: "2".into(),
+                telegram_id: 2.into(),
             })
             .await;
 

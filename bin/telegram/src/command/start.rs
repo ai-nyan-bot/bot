@@ -46,7 +46,7 @@ pub(crate) async fn start(bot: Bot, msg: Message, state: AppState) -> HandlerRes
             // println!("{:#?}", state.config);
             let (_user, _wallet, _created) = state
                 .user_service()
-                .get_or_create_telegram_user(user.id.0)
+                .get_or_create_telegram_user(user.id.0 as i64)
                 .await
                 .unwrap();
         }

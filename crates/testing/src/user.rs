@@ -15,7 +15,7 @@ pub async fn get_or_create_test_user<'a>(tx: &mut Tx<'a>) -> User {
     match USER_REPO.get_by_id(tx, 1).await {
         Ok(user) => user,
         Err(_) => {
-            let result = create_telegram_user(tx, "test_user").await.unwrap();
+            let result = create_telegram_user(tx, 1234).await.unwrap();
             create_auth(tx, 1, "TestUserToken").await.unwrap();
             assert_eq!(result.id, 1);
             result
@@ -28,7 +28,7 @@ pub async fn get_or_create_another_user<'a>(tx: &mut Tx<'a>) -> User {
     match USER_REPO.get_by_id(tx, 2).await {
         Ok(user) => user,
         Err(_) => {
-            let result = create_telegram_user(tx, "ANOTHER_USER").await.unwrap();
+            let result = create_telegram_user(tx, 5432).await.unwrap();
             create_auth(tx, 2, "AnotherUserToken").await.unwrap();
             assert_eq!(result.id, 2);
             result

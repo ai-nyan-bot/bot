@@ -15,8 +15,8 @@ mod create_telegram_user {
         run_test_on_empty_db(|mut tx| async move {
             let test_instance = AuthRepo::default();
 
-            user::create_telegram_user(&mut tx, "1").await.unwrap();
-            let user = user::create_telegram_user(&mut tx, "2").await.unwrap();
+            user::create_telegram_user(&mut tx, 1).await.unwrap();
+            let user = user::create_telegram_user(&mut tx, 2).await.unwrap();
 
             let auth = test_instance
                 .create(
@@ -44,8 +44,8 @@ mod create_telegram_user {
         run_test_on_empty_db(|mut tx| async move {
             let test_instance = AuthRepo::default();
 
-            user::create_telegram_user(&mut tx, "1").await.unwrap();
-            let _ = user::create_telegram_user(&mut tx, "2").await.unwrap();
+            user::create_telegram_user(&mut tx, 1).await.unwrap();
+            let _ = user::create_telegram_user(&mut tx, 2).await.unwrap();
 
             let result = test_instance
                 .create(
@@ -69,7 +69,7 @@ mod create_telegram_user {
         run_test_on_empty_db(|mut tx| async move {
             let test_instance = AuthRepo::default();
 
-            let user = user::create_telegram_user(&mut tx, "1").await.unwrap();
+            let user = user::create_telegram_user(&mut tx, 1).await.unwrap();
             let _ = test_instance
                 .create(
                     &mut tx,
@@ -81,7 +81,7 @@ mod create_telegram_user {
                 .await
                 .unwrap();
 
-            let user = user::create_telegram_user(&mut tx, "2").await.unwrap();
+            let user = user::create_telegram_user(&mut tx, 2).await.unwrap();
 
             let result = test_instance
                 .create(
@@ -109,7 +109,7 @@ mod create_telegram_user {
         run_test_on_empty_db(|mut tx| async move {
             let test_instance = AuthRepo::default();
 
-            let user = user::create_telegram_user(&mut tx, "1").await.unwrap();
+            let user = user::create_telegram_user(&mut tx, 1).await.unwrap();
 
             test_instance
                 .create(
@@ -168,7 +168,7 @@ mod create_telegram_user {
         run_test_on_empty_db(|mut tx| async move {
             let test_instance = AuthRepo::default();
 
-            let user = user::create_telegram_user(&mut tx, "1").await.unwrap();
+            let user = user::create_telegram_user(&mut tx, 1).await.unwrap();
             let _ = test_instance
                 .create(
                     &mut tx,
@@ -191,7 +191,7 @@ mod create_telegram_user {
                 .await
                 .unwrap();
 
-            let user = user::create_telegram_user(&mut tx, "2").await.unwrap();
+            let user = user::create_telegram_user(&mut tx, 2).await.unwrap();
             let _ = test_instance
                 .create(
                     &mut tx,

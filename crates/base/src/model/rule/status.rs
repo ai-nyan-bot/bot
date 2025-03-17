@@ -35,3 +35,16 @@ impl Display for RuleStatus {
         }
     }
 }
+
+impl RuleStatus {
+    pub fn able_to_receive_notifications(&self) -> bool {
+        match self {
+            RuleStatus::Active => true,
+            RuleStatus::Inactive => false,
+            RuleStatus::ActiveExhausted => true,
+            RuleStatus::InactiveExhausted => false,
+            RuleStatus::Archived => false,
+            RuleStatus::ArchivedExhausted => false,
+        }
+    }
+}

@@ -1,5 +1,5 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-mod command;
-mod notify;
+mod rule_matched;
+mod send_notification;

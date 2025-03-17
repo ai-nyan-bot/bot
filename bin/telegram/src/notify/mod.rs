@@ -45,6 +45,18 @@ pub async fn send_notification(
     notification: Notification,
 ) -> NotificationResult<()> {
     let state = state.clone();
+
+    // match notification.payload::<RuleId>("rule") {
+    //     Some(rule_id) => {
+    //         let rule = state.rule_service().get_by_id(rule_id).await?;
+    //         if !rule.status.able_to_receive_notifications() {
+    //             debug!("rule {} can not receive notifications", rule_id);
+    //             return Ok(());
+    //         }
+    //     }
+    //     None => {}
+    // };
+
     match notification.ty {
         NotificationType::RuleMatched => rule_matched(state, notification).await?,
     };

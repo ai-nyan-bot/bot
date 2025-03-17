@@ -104,7 +104,7 @@ pub(crate) async fn send(
     let _x = state
         .bot
         .send_photo(
-            Recipient::Id(ChatId(telegram_id.0.parse::<i64>().unwrap())),
+            Recipient::Id(ChatId(telegram_id.0)),
             file,
         )
         .caption(caption)

@@ -19,14 +19,14 @@ pub(crate) async fn rules(bot: Bot, msg: Message, _state: AppState) -> HandlerRe
     bot.send_message(msg.chat.id, r#"
 Set your custom rules to screen for potential 100x gems!
 
-For example, you can choose to filter for the following 
-🟢Market Cap: Min/Max (e.g., $50K-500K). 
-🟢Tx Count: Min (e.g., 50) for hype (>100) or sleepers (<20).  
-🟢Honeypot: Exclude scams (Yes/No).   
-🟢Bonding Curve: 0-50% (snipe) or 80-99% (safe). 
- 
-Tweak, save, and pounce on profits! 
-Remember to DYOR!    
+For example, you can choose to filter for the following
+🟢Market Cap: Min/Max (e.g., $50K-500K).
+🟢Tx Count: Min (e.g., 50) for hype (>100) or sleepers (<20).
+🟢Honeypot: Exclude scams (Yes/No).
+🟢Bonding Curve: 0-50% (snipe) or 80-99% (safe).
+
+Tweak, save, and pounce on profits!
+Remember to DYOR!
 "#)
         .reply_markup(options)
         .await?;

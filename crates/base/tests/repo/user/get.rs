@@ -12,10 +12,10 @@ mod get_by_id {
         run_test_on_empty_db(|mut tx| async move {
             let test_instance = UserRepo::default();
 
-            let _ = create_telegram_user(&mut tx, "ABC").await.unwrap();
+            let _ = create_telegram_user(&mut tx, 1234).await.unwrap();
             let user = test_instance.get_by_id(&mut tx, 1).await.unwrap();
             assert_eq!(user.id, 1);
-            assert_eq!(user.telegram_id.unwrap(), "ABC")
+            assert_eq!(user.telegram_id.unwrap(), 1234)
         })
         .await
     }
@@ -25,12 +25,12 @@ mod get_by_id {
         run_test_on_empty_db(|mut tx| async move {
             let test_instance = UserRepo::default();
 
-            let _ = create_telegram_user(&mut tx, "ABC").await.unwrap();
+            let _ = create_telegram_user(&mut tx, 1234).await.unwrap();
             let result = test_instance.get_by_id(&mut tx, 1337).await;
             assert_eq!(result.err(), Some(RepoError::NotFound))
         })
         .await
-    }
+	}
 }
 
 mod get_by_telegram_id {
@@ -44,10 +44,10 @@ mod get_by_telegram_id {
         run_test_on_empty_db(|mut tx| async move {
             let test_instance = UserRepo::default();
 
-            let _ = create_telegram_user(&mut tx, "ABC").await.unwrap();
-            let user = test_instance.get_by_telegram_id(&mut tx, "ABC").await.unwrap();
+            let _ = create_telegram_user(&mut tx, 1234).await.unwrap();
+            let user = test_instance.get_by_telegram_id(&mut tx, 1234).await.unwrap();
             assert_eq!(user.id, 1);
-            assert_eq!(user.telegram_id.unwrap(), "ABC")
+            assert_eq!(user.telegram_id.unwrap(), 1234)
         })
         .await
     }
@@ -57,8 +57,8 @@ mod get_by_telegram_id {
         run_test_on_empty_db(|mut tx| async move {
             let test_instance = UserRepo::default();
 
-            let _ = create_telegram_user(&mut tx, "ABC").await.unwrap();
-            let result = test_instance.get_by_telegram_id(&mut tx, "does not exists").await;
+            let _ = create_telegram_user(&mut tx, 1234).await.unwrap();
+            let result = test_instance.get_by_telegram_id(&mut tx, 404).await;
             assert_eq!(result.err(), Some(RepoError::NotFound))
         })
         .await

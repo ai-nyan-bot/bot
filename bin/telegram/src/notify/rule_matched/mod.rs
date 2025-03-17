@@ -4,14 +4,26 @@
 mod pumpfun;
 
 use crate::AppState;
-use base::model::{Notification, NotificationType, Venue};
+use base::model::{Notification, NotificationType, RuleId, Venue};
 use base::service::NotificationResult;
+use log::debug;
 
 pub(crate) async fn rule_matched(
     state: AppState,
     notification: Notification,
 ) -> NotificationResult<()> {
     assert_eq!(notification.ty, NotificationType::RuleMatched);
+
+    match notification.payload::<RuleId>("rule") {
+        Some(rule_id) => {
+            let rule = state.rule_service().get_by_id(rule_id).await?;
+            if !rule.status.able_to_receive_notifications() {
+                debug!("rule {} can not receive notifications", rule_id);
+                return Ok(());
+            }
+        }
+        None => {}
+    };
 
     let user = state.user_service().get_by_id(notification.user).await?;
 
