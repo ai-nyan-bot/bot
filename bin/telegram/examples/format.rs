@@ -8,7 +8,7 @@ use dotenv::dotenv;
 
 use render::{render, Font, FontType, RenderBackground, RenderWatermark};
 use std::env;
-use telegram::{markdown, AppState, Config, TelegramConfig};
+use telegram::{markdown, AppState, Config, TelegramConfig, WalletConfig};
 use teloxide::payloads::SendPhotoSetters;
 use teloxide::prelude::ChatId;
 use teloxide::requests::Requester;
@@ -35,6 +35,7 @@ pub async fn main() {
             pool_max: Default::default(),
             timeout_acquire_ms: Default::default(),
         },
+        wallet: WalletConfig { secret: Default::default() },
     })
     .await;
 

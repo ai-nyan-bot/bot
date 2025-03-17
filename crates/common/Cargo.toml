@@ -5,7 +5,9 @@ rust-version.workspace = true
 edition.workspace = true
 
 [dependencies]
+aes-gcm = { workspace = true }
 bigdecimal = {workspace = true}
+hex = { workspace = true }
 lazy_static = { workspace = true }
 log = { workspace = true }
 rand = { workspace = true }
@@ -17,3 +19,4 @@ toml = { workspace = true }
 tokio = { workspace = true }
 
 [dev-dependencies]
+test-log = {workspace = true}

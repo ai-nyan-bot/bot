@@ -8,7 +8,7 @@ use base::model::{Notification, NotificationChannel, NotificationPayload, Notifi
 use common::ConfigValue;
 use common::model::CreatedAt;
 use common::repo::pool::PostgresConfig;
-use telegram::{send_notification, AppState, Config, TelegramConfig};
+use telegram::{send_notification, AppState, Config, TelegramConfig, WalletConfig};
 
 #[tokio::main]
 pub async fn main() {
@@ -32,6 +32,7 @@ pub async fn main() {
 				pool_max: Default::default(),
 				timeout_acquire_ms: Default::default(),
 			},
+			wallet: WalletConfig { secret: Default::default() },
 		})
 			.await,
 		Notification {

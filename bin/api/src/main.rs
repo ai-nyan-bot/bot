@@ -2,7 +2,6 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 #![cfg_attr(not(debug_assertions), deny(warnings))]
-
 extern crate core;
 
 use std::net::SocketAddr;
@@ -14,6 +13,7 @@ use crate::http::state::{AppState, AppStateInner, Service};
 use base::repo::{AuthRepo, RuleRepo};
 use base::service::UserService;
 use base::service::{AuthService, RuleService};
+use common::crypt::SecretKey;
 use common::repo::pool::setup_pool;
 use common::ResolveOr;
 use log::info;
@@ -32,7 +32,9 @@ mod ws;
 
 fn main() {
     tracing_subscriber::registry()
-        .with(EnvFilter::try_from_default_env().unwrap_or_else(|_| format!("{}=debug,tower_http=debug", env!("CARGO_CRATE_NAME")).into()))
+        .with(EnvFilter::try_from_default_env().unwrap_or_else(|_| {
+            format!("{}=debug,tower_http=debug", env!("CARGO_CRATE_NAME")).into()
+        }))
         .with(tracing_subscriber::fmt::layer())
         .init();
 
@@ -40,7 +42,11 @@ fn main() {
 
     let config = Config::load();
 
-    let runtime = Builder::new_multi_thread().worker_threads(1).enable_all().build().unwrap();
+    let runtime = Builder::new_multi_thread()
+        .worker_threads(1)
+        .enable_all()
+        .build()
+        .unwrap();
     runtime.block_on(async {
         let (exit_sender, exit) = broadcast::channel(1);
 
@@ -53,12 +59,14 @@ fn main() {
 
         let pool = setup_pool(&config.postgres).await;
 
+        let secret = SecretKey::from(config.wallet.secret.resolve());
+
         let router = router::setup_v1(AppState(Arc::new(AppStateInner {
             config,
             service: Service {
                 auth: AuthService::new(pool.clone(), AuthRepo::new()),
                 rule: RuleService::new(pool.clone(), RuleRepo::new()),
-                user: UserService::new(pool.clone()),
+                user: UserService::new(pool.clone(), secret),
             },
         })));
 

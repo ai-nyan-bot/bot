@@ -15,6 +15,12 @@ use common::ConfigValue;
 pub struct Config {
     pub telegram: TelegramConfig,
     pub postgres: PostgresConfig,
+    pub wallet: WalletConfig,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct WalletConfig {
+    pub secret: ConfigValue,
 }
 
 #[derive(Debug, Deserialize)]

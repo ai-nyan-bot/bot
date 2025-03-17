@@ -7,9 +7,12 @@ use testing::run_test_with_pool_on_empty_db;
 #[test_log::test(sqlx::test)]
 async fn test_creates_user() {
     run_test_with_pool_on_empty_db(|pool| async move {
-        let test_instance = UserService::new(pool);
+        let test_instance = UserService::testing(pool);
 
-        let (user, wallet, created) = test_instance.get_or_create_telegram_user(123).await.unwrap();
+        let (user, wallet, created) = test_instance
+            .get_or_create_telegram_user(123)
+            .await
+            .unwrap();
 
         assert!(created);
 
@@ -25,11 +28,17 @@ async fn test_creates_user() {
 #[test_log::test(sqlx::test)]
 async fn test_gets_existing_user() {
     run_test_with_pool_on_empty_db(|pool| async move {
-        let test_instance = UserService::new(pool);
+        let test_instance = UserService::testing(pool);
 
-        let _ = test_instance.get_or_create_telegram_user(123).await.unwrap();
+        let _ = test_instance
+            .get_or_create_telegram_user(123)
+            .await
+            .unwrap();
 
-        let (user, wallet, created) = test_instance.get_or_create_telegram_user(123).await.unwrap();
+        let (user, wallet, created) = test_instance
+            .get_or_create_telegram_user(123)
+            .await
+            .unwrap();
 
         assert!(!created);
         assert_eq!(user.id, 1);

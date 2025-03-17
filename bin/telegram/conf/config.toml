@@ -1,3 +1,6 @@
+[wallet]
+secret = "$WALLET_SECRET"
+
 [telegram]
 token = '$TELEGRAM_TOKEN'
 webapp_url = '$WEBAPP_URL'

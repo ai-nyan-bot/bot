@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 #[cfg(test)]
-use crate::config::{Config, TelegramConfig};
+use crate::config::{Config, TelegramConfig, WalletConfig};
 #[cfg(test)]
 use crate::http::error::HttpErrorResponse;
 #[cfg(test)]
@@ -19,6 +19,8 @@ use axum::{http, Router};
 use base::service::AuthService;
 #[cfg(test)]
 use base::service::{RuleService, UserService};
+#[cfg(test)]
+use common::crypt::SecretKey;
 #[cfg(test)]
 use common::repo::Tx;
 #[cfg(test)]
@@ -72,11 +74,22 @@ impl Test {
                             "7212584558:AAFyZo37lw4VPHPIdbynqKtMacHPwF0uMGE".to_string(),
                         ),
                     },
+                    wallet: WalletConfig {
+                        secret: ConfigValue::Value(
+                            "c004a55d744672f98c9e996fe4b8c1b33cea79e9afeafca918a6a36e09777b7e"
+                                .to_string(),
+                        ),
+                    },
                 },
                 service: Service {
                     auth: AuthService::testing(pool.clone()),
                     rule: RuleService::testing(pool.clone()),
-                    user: UserService::new(pool.clone()),
+                    user: UserService::new(
+                        pool.clone(),
+                        SecretKey::from(
+                            "276b49cc192cc66ab939de3892eba683152edab76c2162b21049d8fb0d9e7e5f",
+                        ),
+                    ),
                 },
             }))),
             pool,

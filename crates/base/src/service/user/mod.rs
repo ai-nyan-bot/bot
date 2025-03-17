@@ -8,13 +8,14 @@ use rand::distributions::Alphanumeric;
 use rand::Rng;
 use sqlx::PgPool;
 
+use crate::model::AuthToken;
 use crate::repo::{AuthRepo, UserRepo, WalletRepo};
 pub use authenticate::*;
-use crate::model::AuthToken;
+use common::crypt::SecretKey;
 
 mod authenticate;
-mod get_or_create;
 mod get;
+mod get_or_create;
 
 pub type AuthTokenGenerator = fn() -> AuthToken;
 
@@ -37,17 +38,17 @@ impl Deref for UserService {
 }
 
 impl UserService {
-    pub fn new(pool: PgPool) -> Self {
+    pub fn new(pool: PgPool, secret: SecretKey) -> Self {
         Self(Arc::new(UserServiceInner {
             pool,
             token_generator: generate_random_token,
             auth_repo: AuthRepo::default(),
             user_repo: UserRepo::default(),
-            wallet_repo: WalletRepo::default(),
+            wallet_repo: WalletRepo { secret },
         }))
     }
 
-    pub fn testing(pool: PgPool, token_generator: AuthTokenGenerator) -> Self {
+    pub fn new_with_token_generator(pool: PgPool, token_generator: AuthTokenGenerator) -> Self {
         Self(Arc::new(UserServiceInner {
             pool,
             token_generator,
@@ -56,8 +57,28 @@ impl UserService {
             wallet_repo: WalletRepo::default(),
         }))
     }
+
+    pub fn testing(pool: PgPool) -> Self {
+        Self(Arc::new(UserServiceInner {
+            pool,
+            token_generator: generate_random_token,
+            auth_repo: AuthRepo::default(),
+            user_repo: UserRepo::default(),
+            wallet_repo: WalletRepo {
+                secret: SecretKey::from(
+                    "276b49cc192cc66ab939de3892eba683152edab76c2162b21049d8fb0d9e7e5f",
+                ),
+            },
+        }))
+    }
 }
 
 fn generate_random_token() -> AuthToken {
-    AuthToken(rand::thread_rng().sample_iter(&Alphanumeric).take(128).map(char::from).collect())
+    AuthToken(
+        rand::thread_rng()
+            .sample_iter(&Alphanumeric)
+            .take(128)
+            .map(char::from)
+            .collect(),
+    )
 }

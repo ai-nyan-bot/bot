@@ -8,7 +8,7 @@ use testing::run_test_with_pool;
 #[test_log::test(sqlx::test)]
 async fn test_ok() {
     run_test_with_pool(|pool| async move {
-        let test_instance = UserService::new(pool);
+        let test_instance = UserService::testing(pool);
 
         let result = test_instance.get_by_id(1).await.unwrap();
         assert_eq!(result.id, 1);
@@ -20,7 +20,7 @@ async fn test_ok() {
 #[test_log::test(sqlx::test)]
 async fn test_user_not_found() {
     run_test_with_pool(|pool| async move {
-        let test_instance = UserService::new(pool);
+        let test_instance = UserService::testing(pool);
 
         let err = test_instance.get_by_id(404).await.err().unwrap();
         assert_eq!(err, ServiceError::not_found("User not found"));

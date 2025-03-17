@@ -16,13 +16,18 @@ pub struct Config {
     pub server: ServerConfig,
     pub postgres: PostgresConfig,
     pub telegram: TelegramConfig,
+    pub wallet: WalletConfig,
+}
+
+#[derive(Clone, Default, Debug, Deserialize)]
+pub struct WalletConfig {
+    pub secret: ConfigValue,
 }
 
 #[derive(Clone, Debug, Default, Deserialize)]
 pub struct ServerConfig {
     pub port: ConfigValue,
 }
-
 
 #[derive(Clone, Debug, Default, Deserialize)]
 pub struct TelegramConfig {

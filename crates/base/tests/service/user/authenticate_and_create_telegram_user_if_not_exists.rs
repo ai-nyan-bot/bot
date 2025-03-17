@@ -8,7 +8,7 @@ use testing::run_test_with_pool_on_empty_db;
 #[test_log::test(sqlx::test)]
 async fn test_creates_user() {
     run_test_with_pool_on_empty_db(|pool| async move {
-        let test_instance = UserService::testing(pool, || "some_token".into());
+        let test_instance = UserService::new_with_token_generator(pool, || "some_token".into());
 
         let (user, auth, wallet) = test_instance
             .authenticate_and_create_telegram_user_if_not_exists(AuthenticateUserTelegramCmd {
@@ -33,7 +33,7 @@ async fn test_creates_user() {
 #[test_log::test(sqlx::test)]
 async fn test_user_already_exists() {
     run_test_with_pool_on_empty_db(|pool| async move {
-        let test_instance = UserService::testing(pool, || {
+        let test_instance = UserService::new_with_token_generator(pool, || {
             static mut COUNTER: u8 = 0;
             unsafe {
                 COUNTER += 1;
@@ -79,7 +79,7 @@ async fn test_user_already_exists() {
 #[test_log::test(sqlx::test)]
 async fn test_token_already_exists() {
     run_test_with_pool_on_empty_db(|pool| async move {
-        let test_instance = UserService::testing(pool, || "some_token".into());
+        let test_instance = UserService::new_with_token_generator(pool, || "some_token".into());
 
         let _ = test_instance
             .authenticate_and_create_telegram_user_if_not_exists(AuthenticateUserTelegramCmd {

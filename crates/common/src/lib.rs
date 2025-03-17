@@ -10,6 +10,7 @@ pub use signal::{Signal, SignalType};
 
 mod byte;
 mod config;
+pub mod crypt;
 pub mod format;
 mod limiter;
 pub mod model;

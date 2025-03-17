@@ -3,10 +3,11 @@
 
 use crate::callback::CallbackStore;
 use crate::config::Config;
-use crate::TelegramConfig;
+use crate::{TelegramConfig, WalletConfig};
 use base::repo::{NotificationRepo, RuleRepo, TokenPairRepo, TokenRepo};
 use base::service::{NotificationService, RuleService, TokenService, UserService};
 use base::test::NeverCalledTokenInfoLoader;
+use common::crypt::SecretKey;
 use common::repo::pool::{setup_pool, PostgresConfig};
 use common::ConfigValue;
 use solana::pumpfun;
@@ -71,6 +72,7 @@ impl AppState {
 
         let token_repo = TokenRepo::new(Box::new(NeverCalledTokenInfoLoader {}));
         let token_pair_repo = TokenPairRepo::new(token_repo.clone());
+        let secret = SecretKey::from(config.wallet.secret.resolve());
 
         Self(Arc::new(AppStateInner {
             config,
@@ -86,7 +88,7 @@ impl AppState {
                 ),
                 rule: RuleService::new(pool.clone(), RuleRepo::new()),
                 token: TokenService::new(pool.clone(), token_pair_repo.clone()),
-                user: UserService::new(pool),
+                user: UserService::new(pool, secret),
             },
         }))
     }
@@ -103,6 +105,12 @@ impl AppState {
                     webapp_url: ConfigValue::Value("https://test.nyanbot.com".to_string()),
                 },
                 postgres: PostgresConfig::default(),
+                wallet: WalletConfig {
+                    secret: ConfigValue::Value(
+                        "c004a55d744672f98c9e996fe4b8c1b33cea79e9afeafca918a6a36e09777b7e"
+                            .to_string(),
+                    ),
+                },
             },
             bot,
             callback_store: CallbackStore::new(Duration::from_secs(1)),
@@ -111,7 +119,12 @@ impl AppState {
                 pumpfun_token_service: pumpfun::service::TokenService::testing(pool.clone()),
                 rule: RuleService::testing(pool.clone()),
                 token: TokenService::testing(pool.clone()),
-                user: UserService::new(pool.clone()),
+                user: UserService::new(
+                    pool.clone(),
+                    SecretKey::from(
+                        "c004a55d744672f98c9e996fe4b8c1b33cea79e9afeafca918a6a36e09777b7e",
+                    ),
+                ),
             },
         }))
     }
