@@ -96,8 +96,8 @@ pub(crate) fn draw_cell_bottom(img: &mut RgbaImage, font: &Font, x: u32, y: u32,
 
 pub(crate) fn draw_summary(img: &mut RgbaImage, font: &Font, x: u32, summary: TimeframeSummary) {
     draw_bonding_curve(img, font, x, summary.curve);
-    draw_price(img, font, x, summary.price.avg);
-    draw_market_cap(img, font, x, summary.cap.avg);
+    draw_price(img, font, x, summary.price.close);
+    draw_market_cap(img, font, x, summary.cap.close);
     draw_volume(img, font, x, 4, summary.volume.all);
     draw_volume(img, font, x, 5, summary.volume.buy);
     draw_volume(img, font, x, 6, summary.volume.sell);
@@ -112,7 +112,7 @@ fn draw_bonding_curve(
     x: u32,
     curve_progress: SummaryCurveProgress,
 ) {
-    let progress = curve_progress.avg;
+    let progress = curve_progress.close;
     if let Some(percent) = progress.progress {
         if let Some(change) = progress.change {
             draw_cell_top(

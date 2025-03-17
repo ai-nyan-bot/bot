@@ -16,7 +16,7 @@ pub(crate) fn add_summary_to_facts(
     summary: TimeframeSummary,
     timeframe: Timeframe,
 ) {
-    if let Some(quote) = summary.cap.avg.quote {
+    if let Some(quote) = summary.cap.close.quote {
         facts.set_timeframe_value(
             MarketCapQuoteAggregate,
             Value::quote(quote.0.clone()),
@@ -26,7 +26,7 @@ pub(crate) fn add_summary_to_facts(
         facts.set_timeframe_value(MarketCapSolAggregate, Value::sol(quote.0), timeframe);
     }
 
-    if let Some(usd) = summary.cap.avg.usd {
+    if let Some(usd) = summary.cap.close.usd {
         facts.set_timeframe_value(MarketCapUsdAggregate, Value::usd(usd.0), timeframe);
     }
 
