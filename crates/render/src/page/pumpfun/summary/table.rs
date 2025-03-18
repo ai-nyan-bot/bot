@@ -94,8 +94,8 @@ pub(crate) fn draw_cell_bottom(img: &mut RgbaImage, font: &Font, x: u32, y: u32,
 }
 
 pub(crate) fn draw_summary(img: &mut RgbaImage, font: &Font, x: u32, summary: TimeframeSummary) {
-    draw_price(img, font, x, summary.price.close);
-    draw_market_cap(img, font, x, summary.cap.close);
+    draw_price(img, font, x, summary.price.avg);
+    draw_market_cap(img, font, x, summary.cap.avg);
     draw_volume(img, font, x, 3, summary.volume.all);
     draw_volume(img, font, x, 4, summary.volume.buy);
     draw_volume(img, font, x, 5, summary.volume.sell);
