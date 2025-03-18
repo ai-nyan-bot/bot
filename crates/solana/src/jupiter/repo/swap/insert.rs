@@ -11,7 +11,6 @@ use base::model::{
     determine_mints, AddressId, Amount, DecimalAmount, Mint, PublicKey, SwapId, Token, TokenPair,
     TokenPairId, TokenPairMint,
 };
-use bigdecimal::{BigDecimal, Zero};
 use common::model::{BlockTime, PriceQuote, Timestamp};
 use common::repo::{RepoResult, Tx};
 use log::trace;
@@ -238,10 +237,6 @@ fn calculate_amount_and_side(
     };
 
     if swap.input_mint == base_token.mint {
-        assert!(
-            input_amount > BigDecimal::zero(),
-            "Input amount must not be 0"
-        );
         (
             PriceQuote(output_amount.0 / input_amount.0),
             amount_base,
@@ -249,10 +244,6 @@ fn calculate_amount_and_side(
             false,
         )
     } else {
-        assert!(
-            output_amount > BigDecimal::zero(),
-            "Output amount must not be 0"
-        );
         (
             PriceQuote(input_amount.0 / output_amount.0),
             amount_base,
