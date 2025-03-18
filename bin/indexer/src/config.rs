@@ -16,6 +16,18 @@ pub struct Config {
     pub slotstream: SlotStreamConfig,
     pub postgres: PostgresConfig,
     pub rpc: RpcConfig,
+    pub tokio: TokioConfig,
+    pub rayon: RayonConfig,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct TokioConfig {
+    pub threads: ConfigValue,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct RayonConfig {
+    pub threads: ConfigValue,
 }
 
 #[derive(Clone, Debug, Default, Deserialize)]

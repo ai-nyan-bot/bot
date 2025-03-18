@@ -5,6 +5,8 @@
 
 use crate::config::Config;
 use crate::solana::index_solana;
+use common::ResolveOr;
+use log::info;
 use tokio::runtime::Builder;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
@@ -23,10 +25,19 @@ pub fn main() {
 
     let config = Config::load();
 
-    rayon::ThreadPoolBuilder::new().num_threads(8).build().unwrap();
+    let rayon_threads = config.rayon.threads.resolve_or(1);
+    info!("rayon threads: {}", rayon_threads);
+
+    rayon::ThreadPoolBuilder::new()
+        .num_threads(rayon_threads)
+        .build()
+        .unwrap();
+
+    let tokio_threads = config.tokio.threads.resolve_or(1);
+    info!("tokio threads: {}", tokio_threads);
 
     let runtime = Builder::new_multi_thread()
-        .worker_threads(4)
+        .worker_threads(tokio_threads)
         .enable_all()
         .build()
         .unwrap();

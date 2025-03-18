@@ -1,3 +1,9 @@
+[tokion]
+threads = '$TOKIO_THREADS'
+
+[rayon]
+threads = '$RAYON_THREADS'
+
 [blockstream]
 url = '$BLOCKSTREAM_RPC_URL'
 concurrency = '$BLOCKSTREAM_CONCURRENCY'
