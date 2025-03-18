@@ -191,9 +191,7 @@ select
 from jupiter.{candle_source_table} c
 join lateral (
     select usd from solana.{sol_price_usd_table}
-    where timestamp <= c.timestamp
-    order by timestamp desc
-    limit 1
+    where timestamp = c.timestamp
 ) sp on true
 join twaps tw on tw.timestamp = c.timestamp and tw.token_pair_id = c.token_pair_id
 join solana.token_pair tp on tp.id = tw.token_pair_id

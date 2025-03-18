@@ -48,12 +48,12 @@ fn main() {
         let solana_refresh_sol = solana::RefreshSol::new(pg_pool.clone());
 
         let handles: Vec<JoinHandle<()>> = vec![
+            solana_refresh_sol.refresh().await,
             jupiter_refresh_candles.refresh().await,
             jupiter_refresh_twaps.refresh().await,
             pumpfun_refresh_candles.refresh().await,
             pumpfun_refresh_twaps.refresh().await,
             pumpfun_refresh_summaries.refresh().await,
-            solana_refresh_sol.refresh().await,
         ]
         .into_iter()
         .flatten()

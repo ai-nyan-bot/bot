@@ -173,9 +173,7 @@ select
 from jupiter.{candle_source_table} c
 join lateral (
     select usd from solana.{sol_price_usd_table}
-    where timestamp <= c.timestamp
-    order by timestamp desc
-    limit 1
+    where timestamp = c.timestamp
 ) sp on true
 join solana.token_pair tp on tp.id = c.token_pair_id
 join solana.token base on base.id = tp.base_id
@@ -195,15 +193,10 @@ do update set
     updated_at = now()
 where
     {destination_table}.open is distinct from excluded.open or
-    {destination_table}.open_usd is distinct from excluded.open_usd or
     {destination_table}.high is distinct from excluded.high or
-    {destination_table}.high_usd is distinct from excluded.high_usd or
     {destination_table}.low is distinct from excluded.low or
-    {destination_table}.low_usd is distinct from excluded.low_usd or
     {destination_table}.close is distinct from excluded.close or
-    {destination_table}.close_usd is distinct from excluded.close_usd or
-    {destination_table}.avg is distinct from excluded.avg or
-    {destination_table}.avg_usd is distinct from excluded.avg_usd
+    {destination_table}.avg is distinct from excluded.avg
 "#
     );
 
