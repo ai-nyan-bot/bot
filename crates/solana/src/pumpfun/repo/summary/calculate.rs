@@ -117,17 +117,17 @@ async fn calculate_summary<'a>(
 		sum(amount_base_buy) as amount_base_buy,
 		sum(amount_base_sell) as amount_base_sell,
 		sum(amount_base_buy) + sum(amount_base_sell) as amount_base,
-		
+
 		sum(amount_quote_buy) as amount_quote_buy,
 		sum(amount_quote_sell) as amount_quote_sell,
 		sum(amount_quote_buy) + sum(amount_quote_sell) as amount_quote,
-		
+
 		(array_agg(curve_progress_open order by timestamp))[1] as curve_progress_open,
 		max(curve_progress_high) as curve_progress_high,
 		min(curve_progress_low) as curve_progress_low,
 		(array_agg(curve_progress_close order by timestamp desc))[1] as curve_progress_close,
 		avg(curve_progress_avg) as curve_progress_avg,
-		
+
 		(array_agg(market_cap_open order by timestamp))[1] as market_cap_open,
 		(array_agg(market_cap_open_usd order by timestamp))[1] as market_cap_open_usd,
 		max(market_cap_high) as market_cap_high,
@@ -138,7 +138,7 @@ async fn calculate_summary<'a>(
 		(array_agg(market_cap_close_usd order by timestamp desc))[1] as market_cap_close_usd,
 		avg(market_cap_avg) as market_cap_avg,
 		avg(market_cap_avg_usd) as market_cap_avg_usd,
-		
+
 		(array_agg(price_open order by timestamp))[1] as price_open,
 		(array_agg(price_open_usd order by timestamp))[1] as price_open_usd,
 		max(price_high) as price_high,
@@ -149,11 +149,11 @@ async fn calculate_summary<'a>(
 		(array_agg(price_close_usd order by timestamp desc))[1] as price_close_usd,
 		avg(price_avg) as price_avg,
 		avg(price_avg_usd) as price_avg_usd,
-		
+
 		sum(swap_buy) as swap_buy,
 		sum(swap_sell) as swap_sell,
 		sum(swap_buy) + sum(swap_sell) as swap,
-		
+
 		sum(volume_buy) as volume_buy,
 		sum(volume_buy_usd) as volume_buy_usd,
 		sum(volume_sell) as volume_sell,
@@ -678,6 +678,10 @@ on conflict (token_pair_id) do update set
 "#
     );
 
+    // massive speed up when disabling nested loops
+    let _ = sqlx::query("set enable_nestloop = off;")
+        .execute(&mut **tx)
+        .await?;
     let _ = sqlx::query(&query_str).execute(&mut **tx).await?;
     Ok(())
 }
