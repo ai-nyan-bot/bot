@@ -22,8 +22,24 @@ pub async fn list_with_signature<'a>(
         .unwrap()
 }
 
-pub async fn count_all_swaps<'a>(tx: &mut Tx<'a>) -> Count {
-    ReadSwapRepo::new().count_all(tx).await.unwrap()
+
+pub async fn list_micro_with_signature<'a>(
+    tx: &mut Tx<'a>,
+    signature: impl Into<Signature>,
+) -> Vec<Swap> {
+    ReadSwapRepo::new()
+        .list_micro_with_signature(tx, signature)
+        .await
+        .unwrap()
+}
+
+
+pub async fn count_swaps<'a>(tx: &mut Tx<'a>) -> Count {
+    ReadSwapRepo::new().count_swap(tx).await.unwrap()
+}
+
+pub async fn count_micro_swaps<'a>(tx: &mut Tx<'a>) -> Count {
+    ReadSwapRepo::new().count_micro_swap(tx).await.unwrap()
 }
 
 pub async fn insert_swap<'a>(tx: &mut Tx<'a>, slot_swaps: SlotSwaps) -> Vec<Swap> {

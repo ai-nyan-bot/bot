@@ -70,8 +70,8 @@ insert into solana.token (id, version, mint, name, symbol, decimals, supply, met
         (1050, 0, '2sNvt9tRAW29cZgj3cVmwEGLJFfqb127GKnAiEN8iBxY', 'JobSeek AI', 'JOBSEEK', 9, 99999999983652428, 'https://ipfs.io/ipfs/', null, null, null, '2025-02-28 23:15:51.718564 +00:00');
         "#).await.unwrap();
 
-		let pumpfun_swap_repo = solana::pumpfun::repo::SwapRepo::testing(Box::new(NeverCalledTokenInfoLoader{}));
-		let jupiter_swap_repo = solana::jupiter::repo::SwapRepo::testing(Box::new(NeverCalledTokenInfoLoader{}));
+		let pumpfun_swap_repo = solana::pumpfun::repo::SwapRepo::testing(Box::new(NeverCalledTokenInfoLoader {}));
+		let jupiter_swap_repo = solana::jupiter::repo::SwapRepo::testing(Box::new(NeverCalledTokenInfoLoader {}));
 
 		let state = State(Arc::new(StateInner {
 			pool: pool.clone(),
@@ -85,11 +85,23 @@ insert into solana.token (id, version, mint, name, symbol, decimals, supply, met
 		index_block(state, block).await;
 
 		let mut tx = pool.begin().await.unwrap();
-		let count = pumpfun::count_all_swaps(&mut tx).await;
+		let count = pumpfun::count_swaps(&mut tx).await;
 		assert_eq!(count, 41);
 
-		let mut swaps = pumpfun::list_with_signature(&mut tx, "3QVGwMZgNUg4xoLd8eNNo6mXYNXVzro2MbKDZQ2Mz6Yogf22uswTcWZ7K5WKxGhrZccbtrV12rFVa6BGArfpFmn8").await;
-		assert_eq!(swaps.len(), 1);
+		let swaps = pumpfun::list_with_signature(&mut tx, "3QVGwMZgNUg4xoLd8eNNo6mXYNXVzro2MbKDZQ2Mz6Yogf22uswTcWZ7K5WKxGhrZccbtrV12rFVa6BGArfpFmn8").await;
+		assert_eq!(swaps.len(), 0);
+
+		let mut swaps = pumpfun::list_micro_with_signature(&mut tx, "3QVGwMZgNUg4xoLd8eNNo6mXYNXVzro2MbKDZQ2Mz6Yogf22uswTcWZ7K5WKxGhrZccbtrV12rFVa6BGArfpFmn8").await;
+		assert_eq!(swaps.len(), 2);
+
+		let swap = swaps.pop().unwrap();
+		assert_eq!(swap.amount_base, "0.035724");
+		assert_eq!(swap.amount_quote, "0");
+		assert_eq!(swap.price, "0");
+		assert!(!swap.is_buy);
+		assert_eq!(swap.virtual_base_reserves, 1072373976480987);
+		assert_eq!(swap.virtual_quote_reserves, 30017513238);
+
 		let swap = swaps.pop().unwrap();
 		assert_eq!(swap.amount_base, "0.035724");
 		assert_eq!(swap.amount_quote, "0.000000001");
@@ -98,9 +110,12 @@ insert into solana.token (id, version, mint, name, symbol, decimals, supply, met
 		assert_eq!(swap.virtual_base_reserves, 1072373976445263);
 		assert_eq!(swap.virtual_quote_reserves, 30017513238);
 
-		let count = jupiter::count_all_swaps(&mut tx).await;
 		// might be not correct - I just quickly eyeballed it
-		assert_eq!(count, 34);
+		let count = jupiter::count_swaps(&mut tx).await;
+		assert_eq!(count, 27);
+		let count = jupiter::count_micro_swaps(&mut tx).await;
+		assert_eq!(count, 7);
+		/////////////////////////
 
 		let mut swaps = jupiter::list_with_signature(&mut tx, "74CYf6mYrv3bmAvfHfT1wQdZsSoRoUMYtN2w5fDS3CbdLSa51AZtvXD7RUHTYe5ff1TQ6H3XsaVoiebpHHB6Erm").await;
 		assert_eq!(swaps.len(), 1);

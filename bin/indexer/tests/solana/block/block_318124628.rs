@@ -41,12 +41,16 @@ async fn test_index_block_318124628() {
 		index_block(state, block).await;
 
 		let mut tx = pool.begin().await.unwrap();
-		let count = pumpfun::count_all_swaps(&mut tx).await;
+		let count = pumpfun::count_swaps(&mut tx).await;
 		assert_eq!(count, 3);
 		assert_pumpfun_swaps(&mut tx).await;
 
-		let count = jupiter::count_all_swaps(&mut tx).await;
-		assert_eq!(count, 7);
+		let count = jupiter::count_swaps(&mut tx).await;
+		assert_eq!(count, 3);
+		assert_jupiter_swaps(&mut tx).await;
+
+		let count = jupiter::count_micro_swaps(&mut tx).await;
+		assert_eq!(count, 4);
 		assert_jupiter_swaps(&mut tx).await;
 	})
 		.await
@@ -54,25 +58,9 @@ async fn test_index_block_318124628() {
 
 async fn assert_jupiter_swaps<'a>(tx: &mut Tx<'a>) {
     let swaps = jupiter::list_all_swaps(tx).await;
-    assert_eq!(swaps.len(), 7);
-
-    let swap = swaps
-		.iter()
-		.find(|t| t.signature == "DYbMBUwwEdeMiQ6iCHRsKZuDRvkVLvKfkvdAF1rFbshRoNRb2cS5GQEVwwgGJG4vgTxB2TxmYtKX8jfrgmaQN44")
-		.unwrap();
-
-    assert_eq!(swap.address, 6);
-    assert_eq!(swap.token_pair, 2);
-    assert_eq!(swap.amount_base, "0.000010703");
-    assert_eq!(swap.amount_quote, "0.002072");
-    assert_eq!(swap.price, "193.590582079791");
-    assert!(!swap.is_buy);
-    assert_eq!(
-        swap.timestamp,
-        Timestamp::from_epoch_second(1738554016).unwrap()
-    );
-
-    let swap = swaps.iter().find(|t| t.signature == "5Nf5fuXHg1WRYvDcNPeq8ciDQHPGdqUvG1FHU3nEXVfDMqCCP9pMAanGK6YyqDP515tQ4kZJaQVQX5w1NUJXkdoS").unwrap();
+    assert_eq!(swaps.len(), 3);
+	
+	let swap = swaps.iter().find(|t| t.signature == "5Nf5fuXHg1WRYvDcNPeq8ciDQHPGdqUvG1FHU3nEXVfDMqCCP9pMAanGK6YyqDP515tQ4kZJaQVQX5w1NUJXkdoS").unwrap();
 
     assert_eq!(swap.address, 5);
     assert_eq!(swap.amount_base, "920.381148");
@@ -85,13 +73,44 @@ async fn assert_jupiter_swaps<'a>(tx: &mut Tx<'a>) {
         Timestamp::from_epoch_second(1738554016).unwrap()
     );
 
-    let mut swaps = swaps
+    // micro swaps
+    let swaps = swaps
 		.into_iter()
 		.filter(|t| t.signature == "5tC86xHQJHj2oFd23P58bjNtkjQhAE3UDUAigLLJiKf3fmVhDP5YW9KzuZjSMxU5nzKf83njzcMNxoCbHDWNuv13")
 		.collect::<Vec<_>>();
+    assert_eq!(swaps.len(), 0);
 
+    let mut swaps = jupiter::list_micro_with_signature(
+        tx,
+        "5tC86xHQJHj2oFd23P58bjNtkjQhAE3UDUAigLLJiKf3fmVhDP5YW9KzuZjSMxU5nzKf83njzcMNxoCbHDWNuv13",
+    )
+    .await;
     assert_eq!(swaps.len(), 3);
 
+	let third = swaps.pop().unwrap();
+	assert_eq!(third.address, 6);
+	assert_eq!(third.token_pair, 1008);
+	assert_eq!(third.amount_base, "9906000e-12");
+	assert_eq!(third.amount_quote, "207200e-8");
+	assert_eq!(third.price, "209166161922067e-12");
+	assert!(!third.is_buy);
+	assert_eq!(
+		third.timestamp,
+		Timestamp::from_epoch_second(1738554016).unwrap()
+	);
+
+	let second = swaps.pop().unwrap();
+	assert_eq!(second.address, 6);
+	assert_eq!(second.token_pair, 1007);
+	assert_eq!(second.amount_base, "9906000e-12");
+	assert_eq!(second.amount_quote, "8486000e-12");
+	assert_eq!(second.price, "856652533818e-12");
+	assert!(second.is_buy);
+	assert_eq!(
+		second.timestamp,
+		Timestamp::from_epoch_second(1738554016).unwrap()
+	);
+    
     let first = swaps.pop().unwrap();
     assert_eq!(first.address, 6);
     assert_eq!(first.token_pair, 1006);
@@ -103,30 +122,7 @@ async fn assert_jupiter_swaps<'a>(tx: &mut Tx<'a>) {
         first.timestamp,
         Timestamp::from_epoch_second(1738554016).unwrap()
     );
-
-    let second = swaps.pop().unwrap();
-    assert_eq!(second.address, 6);
-    assert_eq!(second.token_pair, 1007);
-    assert_eq!(second.amount_base, "9906000e-12");
-    assert_eq!(second.amount_quote, "8486000e-12");
-    assert_eq!(second.price, "856652533818e-12");
-    assert!(second.is_buy);
-    assert_eq!(
-        second.timestamp,
-        Timestamp::from_epoch_second(1738554016).unwrap()
-    );
-
-    let third = swaps.pop().unwrap();
-    assert_eq!(third.address, 6);
-    assert_eq!(third.token_pair, 1008);
-    assert_eq!(third.amount_base, "9906000e-12");
-    assert_eq!(third.amount_quote, "207200e-8");
-    assert_eq!(third.price, "209166161922067e-12");
-    assert!(!third.is_buy);
-    assert_eq!(
-        third.timestamp,
-        Timestamp::from_epoch_second(1738554016).unwrap()
-    );
+	
 }
 
 async fn assert_pumpfun_swaps<'a>(tx: &mut Tx<'a>) {

@@ -106,9 +106,6 @@ impl SwapRepo {
                 let (price, amount_base, amount_quote, is_buy) =
                     calculate_amount_and_side(&swap, &token_pair.base, &token_pair.quote);
 
-                assert!(amount_base > 0, "base amount required");
-                assert!(amount_quote > 0, "quote amount required");
-
                 slots.push(slot.slot);
                 address_ids.push(keys.get(&swap.wallet).unwrap());
                 token_pair_ids.push(token_pair.id);
@@ -121,20 +118,57 @@ impl SwapRepo {
             }
         }
 
+        sqlx::query(
+            r#"
+insert into jupiter.micro_swap (
+    slot, address_id, token_pair_id, amount_base, amount_quote, price, is_buy, timestamp, signature
+)
+select * from (
+    select
+        unnest($1::int8[]) as slot,
+        unnest($2::int8[]) as address_id,
+        unnest($3::int8[]) as token_pair_id,
+        unnest($4::numeric(36, 12)[]) as amount_base,
+        unnest($5::numeric(36, 12)[]) as amount_quote,
+        unnest($6::numeric(36, 12)[]) as price,
+        unnest($7::boolean[]) as is_buy,
+        unnest($8::timestamptz[]) as timestamp,
+        unnest($9::text[]) as signature
+) as t
+where t.amount_base <= 0.01 or t.amount_quote <= 0.0001
+returning id, slot, address_id, token_pair_id, amount_base, amount_quote, price, is_buy, timestamp, signature;
+            "#,
+        )
+            .bind(&slots)
+            .bind(&address_ids)
+            .bind(&token_pair_ids)
+            .bind(&amount_bases)
+            .bind(&amount_quotes)
+            .bind(&prices)
+            .bind(&is_buys)
+            .bind(&timestamps)
+            .bind(&signatures)
+            .execute(&mut **tx)
+            .await?;
+
         let rows = sqlx::query(
                 r#"
-                insert into jupiter.swap (slot, address_id, token_pair_id, amount_base, amount_quote, price, is_buy, timestamp, signature)
-                select
-                    unnest($1::int8[]) as slot,
-                    unnest($2::int8[]) as address_id,
-                    unnest($3::int8[]) as token_pair_id,
-                    unnest($4::numeric(36, 12)[]) as amount_base,
-                    unnest($5::numeric(36, 12)[]) as amount_quote,
-                    unnest($6::numeric(36, 12)[]) as price,
-                    unnest($7::boolean[]) as is_buy,
-                    unnest($8::timestamptz[]) as timestamp,
-                    unnest($9::text[]) as signature
-on conflict (token_pair_id,signature) do nothing
+insert into jupiter.swap (
+    slot, address_id, token_pair_id, amount_base, amount_quote, price, is_buy, timestamp, signature
+)
+select * from (
+    select
+        unnest($1::int8[]) as slot,
+        unnest($2::int8[]) as address_id,
+        unnest($3::int8[]) as token_pair_id,
+        unnest($4::numeric(36, 12)[]) as amount_base,
+        unnest($5::numeric(36, 12)[]) as amount_quote,
+        unnest($6::numeric(36, 12)[]) as price,
+        unnest($7::boolean[]) as is_buy,
+        unnest($8::timestamptz[]) as timestamp,
+        unnest($9::text[]) as signature
+) as t
+where t.amount_base > 0.01 and t.amount_quote > 0.0001
 returning id, slot, address_id, token_pair_id, amount_base, amount_quote, price, is_buy, timestamp, signature;
             "#,
             )

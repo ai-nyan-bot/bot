@@ -95,20 +95,18 @@ pub async fn index_block(state: State, block: Block) {
                                 virtual_token_reserves,
                                 ..
                             } => {
-                                if sol_amount > 0 && token_amount > 0 {
-                                    pumpfun_slot_swaps.swaps.push(
-                                        solana::pumpfun::repo::SlotSwap {
-                                            mint,
-                                            amount_base: token_amount,
-                                            amount_quote: sol_amount,
-                                            is_buy,
-                                            wallet: user,
-                                            virtual_base_reserves: virtual_token_reserves,
-                                            virtual_quote_reserves: virtual_sol_reserves,
-                                            signature: transaction.signature.clone(),
-                                        },
-                                    );
-                                }
+                                pumpfun_slot_swaps
+                                    .swaps
+                                    .push(solana::pumpfun::repo::SlotSwap {
+                                        mint,
+                                        amount_base: token_amount,
+                                        amount_quote: sol_amount,
+                                        is_buy,
+                                        wallet: user,
+                                        virtual_base_reserves: virtual_token_reserves,
+                                        virtual_quote_reserves: virtual_sol_reserves,
+                                        signature: transaction.signature.clone(),
+                                    });
                             }
                         }
                     }
@@ -121,18 +119,16 @@ pub async fn index_block(state: State, block: Block) {
                         match instruction {
                             solana::jupiter::model::Instruction::Swap { swaps, signer } => {
                                 for swap in &swaps {
-                                    if swap.input_amount > 0 && swap.output_amount > 0 {
-                                        jupiter_slot_swaps.swaps.push(
-                                            solana::jupiter::repo::SlotSwap {
-                                                input_mint: swap.input_mint.clone(),
-                                                input_amount: swap.input_amount,
-                                                output_mint: swap.output_mint.clone(),
-                                                output_amount: swap.output_amount,
-                                                wallet: signer.clone(),
-                                                signature: transaction.signature.clone(),
-                                            },
-                                        );
-                                    }
+                                    jupiter_slot_swaps.swaps.push(
+                                        solana::jupiter::repo::SlotSwap {
+                                            input_mint: swap.input_mint.clone(),
+                                            input_amount: swap.input_amount,
+                                            output_mint: swap.output_mint.clone(),
+                                            output_amount: swap.output_amount,
+                                            wallet: signer.clone(),
+                                            signature: transaction.signature.clone(),
+                                        },
+                                    );
                                 }
                             }
                         }

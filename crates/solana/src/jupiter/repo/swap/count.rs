@@ -10,8 +10,15 @@ use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 
 impl ReadSwapRepo {
-    pub async fn count_all<'a>(&self, tx: &mut Tx<'a>) -> RepoResult<Count> {
+    pub async fn count_swap<'a>(&self, tx: &mut Tx<'a>) -> RepoResult<Count> {
         Ok(sqlx::query("select count(*) from jupiter.swap;")
+            .fetch_one(&mut **tx)
+            .await?
+            .get::<Count, _>("count"))
+    }
+
+    pub async fn count_micro_swap<'a>(&self, tx: &mut Tx<'a>) -> RepoResult<Count> {
+        Ok(sqlx::query("select count(*) from jupiter.micro_swap;")
             .fetch_one(&mut **tx)
             .await?
             .get::<Count, _>("count"))

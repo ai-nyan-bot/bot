@@ -6,7 +6,7 @@ use base::test::{FailingTokenInfoLoader, SuccessfulTokenInfoLoader};
 use common::model::BlockTime;
 use common::repo::error::RepoError;
 use solana::jupiter::repo::{SlotSwap, SlotSwaps, SwapRepo};
-use testing::jupiter::count_all_swaps;
+use testing::jupiter::count_swaps;
 use testing::run_test_on_empty_db;
 
 fn default_slot_swaps() -> SlotSwaps {
@@ -45,7 +45,7 @@ async fn test_ok() {
         assert_eq!(result.price, "2.0");
         assert!(result.is_buy);
 
-        let count = count_all_swaps(&mut tx).await;
+        let count = count_swaps(&mut tx).await;
         assert_eq!(count, 1);
     })
     .await;
@@ -105,7 +105,7 @@ async fn test_multiple() {
         assert_eq!(second.price, "2.0");
         assert!(second.is_buy);
 
-        let count = count_all_swaps(&mut tx).await;
+        let count = count_swaps(&mut tx).await;
         assert_eq!(count, 2);
     })
     .await;
@@ -129,14 +129,14 @@ async fn test_no_swaps() {
 
         assert_eq!(result.len(), 0);
 
-        let count = count_all_swaps(&mut tx).await;
+        let count = count_swaps(&mut tx).await;
         assert_eq!(count, 0);
     })
     .await;
 }
 
 #[test_log::test(sqlx::test)]
-async fn test_duplicate_signature() {
+async fn test_multiple_swaps_per_trade() {
     run_test_on_empty_db(|mut tx| async move {
         let test_instance = SwapRepo::testing(Box::new(SuccessfulTokenInfoLoader::default()));
 
@@ -152,10 +152,10 @@ async fn test_duplicate_signature() {
             .await
             .unwrap();
 
-        assert_eq!(result.len(), 0);
+        assert_eq!(result.len(), 1);
 
-        let count = count_all_swaps(&mut tx).await;
-        assert_eq!(count, 1);
+        let count = count_swaps(&mut tx).await;
+        assert_eq!(count, 2);
     })
     .await;
 }
@@ -170,7 +170,7 @@ async fn test_fails_to_load_token_info() {
             .await;
         assert_eq!(result.err().unwrap(), RepoError::NotFound);
 
-        let count = count_all_swaps(&mut tx).await;
+        let count = count_swaps(&mut tx).await;
         assert_eq!(count, 0);
     })
     .await;
