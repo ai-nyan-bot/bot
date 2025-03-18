@@ -23,6 +23,8 @@ pub fn main() {
 
     let config = Config::load();
 
+    rayon::ThreadPoolBuilder::new().num_threads(8).build().unwrap();
+
     let runtime = Builder::new_multi_thread()
         .worker_threads(4)
         .enable_all()
