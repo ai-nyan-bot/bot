@@ -28,10 +28,10 @@ impl SummaryRepo {
             tx,
             10,
             "minutes",
-            format!("pumpfun.candle_5m_{partition}"),
-            format!("pumpfun.candle_market_cap_5m_{partition}"),
-            format!("pumpfun.candle_progress_5m_{partition}"),
-            format!("pumpfun.candle_usd_5m_{partition}"),
+            format!("pumpfun.candle_1m_{partition}"),
+            format!("pumpfun.candle_market_cap_1m_{partition}"),
+            format!("pumpfun.candle_progress_1m_{partition}"),
+            format!("pumpfun.candle_usd_1m_{partition}"),
             "pumpfun.summary_5m",
         )
         .await
@@ -42,11 +42,11 @@ impl SummaryRepo {
             tx,
             30,
             "minutes",
-            format!("pumpfun.candle_15m_{partition}"),
-            format!("pumpfun.candle_market_cap_15m_{partition}"),
-            format!("pumpfun.candle_progress_15m_{partition}"),
-            format!("pumpfun.candle_usd_15m_{partition}"),
-            "pumpfun.summary_15m",
+            format!("pumpfun.candle_1m_{partition}"),
+            format!("pumpfun.candle_market_cap_1m_{partition}"),
+            format!("pumpfun.candle_progress_1m_{partition}"),
+            format!("pumpfun.candle_usd_1m_{partition}"),
+            "pumpfun.summary_1m",
         )
         .await
     }
@@ -56,10 +56,10 @@ impl SummaryRepo {
             tx,
             2,
             "hours",
-            format!("pumpfun.candle_1h_{partition}"),
-            format!("pumpfun.candle_market_cap_1h_{partition}"),
-            format!("pumpfun.candle_progress_1h_{partition}"),
-            format!("pumpfun.candle_usd_1h_{partition}"),
+            format!("pumpfun.candle_5m_{partition}"),
+            format!("pumpfun.candle_market_cap_5m_{partition}"),
+            format!("pumpfun.candle_progress_5m_{partition}"),
+            format!("pumpfun.candle_usd_5m_{partition}"),
             "pumpfun.summary_1h",
         )
         .await
@@ -70,10 +70,10 @@ impl SummaryRepo {
             tx,
             12,
             "hours",
-            format!("pumpfun.candle_6h_{partition}"),
-            format!("pumpfun.candle_market_cap_6h_{partition}"),
-            format!("pumpfun.candle_progress_6h_{partition}"),
-            format!("pumpfun.candle_usd_6h_{partition}"),
+            format!("pumpfun.candle_15m_{partition}"),
+            format!("pumpfun.candle_market_cap_15m_{partition}"),
+            format!("pumpfun.candle_progress_15m_{partition}"),
+            format!("pumpfun.candle_usd_15m_{partition}"),
             "pumpfun.summary_6h",
         )
         .await
@@ -84,10 +84,10 @@ impl SummaryRepo {
             tx,
             2,
             "days",
-            format!("pumpfun.candle_1d_{partition}"),
-            format!("pumpfun.candle_market_cap_1d_{partition}"),
-            format!("pumpfun.candle_progress_1d_{partition}"),
-            format!("pumpfun.candle_usd_1d_{partition}"),
+            format!("pumpfun.candle_1h_{partition}"),
+            format!("pumpfun.candle_market_cap_1h_{partition}"),
+            format!("pumpfun.candle_progress_1h_{partition}"),
+            format!("pumpfun.candle_usd_1h_{partition}"),
             "pumpfun.summary_1d",
         )
         .await
@@ -114,52 +114,52 @@ async fn calculate_summary<'a>(
     let aggregate = r#"
 		token_pair_id,
 
-		amount_base_buy,
-		amount_base_sell,
-		amount_base_buy + amount_base_sell as amount_base,
+		sum(amount_base_buy) as amount_base_buy,
+		sum(amount_base_sell) as amount_base_sell,
+		sum(amount_base_buy) + sum(amount_base_sell) as amount_base,
 		
-		amount_quote_buy,
-		amount_quote_sell,
-		amount_quote_buy + amount_quote_sell as amount_quote,
-	
-		curve_progress_open,
-		curve_progress_high,
-		curve_progress_low,
-		curve_progress_close,
-		curve_progress_avg,
-	
-		market_cap_open,
-		market_cap_open_usd,
-		market_cap_high,
-		market_cap_high_usd,
-		market_cap_low,
-		market_cap_low_usd,
-		market_cap_close,
-		market_cap_close_usd,
-		market_cap_avg,
-		market_cap_avg_usd,
-	
-		price_open,
-		price_open_usd,
-		price_high,
-		price_high_usd,
-		price_low,
-		price_low_usd,
-		price_close,
-		price_close_usd,
-		price_avg,
-		price_avg_usd,
-	
-		swap_buy,
-		swap_sell,
-		swap_buy + swap_sell as swap,
-	
-		volume_buy,
-		volume_buy_usd,
-		volume_sell,
-		volume_sell_usd,
-		volume_buy + volume_sell as volume,
-		volume_buy_usd + volume_sell_usd as volume_usd
+		sum(amount_quote_buy) as amount_quote_buy,
+		sum(amount_quote_sell) as amount_quote_sell,
+		sum(amount_quote_buy) + sum(amount_quote_sell) as amount_quote,
+		
+		(array_agg(curve_progress_open order by timestamp))[1] as curve_progress_open,
+		max(curve_progress_high) as curve_progress_high,
+		min(curve_progress_low) as curve_progress_low,
+		(array_agg(curve_progress_close order by timestamp desc))[1] as curve_progress_close,
+		avg(curve_progress_avg) as curve_progress_avg,
+		
+		(array_agg(market_cap_open order by timestamp))[1] as market_cap_open,
+		(array_agg(market_cap_open_usd order by timestamp))[1] as market_cap_open_usd,
+		max(market_cap_high) as market_cap_high,
+		max(market_cap_high_usd) as market_cap_high_usd,
+		min(market_cap_low) as market_cap_low,
+		min(market_cap_low_usd) as market_cap_low_usd,
+		(array_agg(market_cap_close order by timestamp desc))[1] as market_cap_close,
+		(array_agg(market_cap_close_usd order by timestamp desc))[1] as market_cap_close_usd,
+		avg(market_cap_avg) as market_cap_avg,
+		avg(market_cap_avg_usd) as market_cap_avg_usd,
+		
+		(array_agg(price_open order by timestamp))[1] as price_open,
+		(array_agg(price_open_usd order by timestamp))[1] as price_open_usd,
+		max(price_high) as price_high,
+		max(price_high_usd) as price_high_usd,
+		min(price_low) as price_low,
+		min(price_low_usd) as price_low_usd,
+		(array_agg(price_close order by timestamp desc))[1] as price_close,
+		(array_agg(price_close_usd order by timestamp desc))[1] as price_close_usd,
+		avg(price_avg) as price_avg,
+		avg(price_avg_usd) as price_avg_usd,
+		
+		sum(swap_buy) as swap_buy,
+		sum(swap_sell) as swap_sell,
+		sum(swap_buy) + sum(swap_sell) as swap,
+		
+		sum(volume_buy) as volume_buy,
+		sum(volume_buy_usd) as volume_buy_usd,
+		sum(volume_sell) as volume_sell,
+		sum(volume_sell_usd) as volume_sell_usd,
+		sum(volume_buy) + sum(volume_sell) as volume,
+		sum(volume_buy_usd) + sum(volume_sell_usd) as volume_usd
 	"#;
 
     let query_str = format!(
@@ -225,13 +225,15 @@ current as (
     from candles
     where
 	    timestamp > (select timestamp from last_candle) - interval '{bucket_separator} {time_unit}'
+	group by token_pair_id
 ),
 previous as (
     select
-		{aggregate}
+	    {aggregate}
     from candles
     where
 	    timestamp <= (select timestamp from last_candle) - interval '{bucket_separator} {time_unit}'
+    group by token_pair_id
 )
 insert into {destination_table} (
     token_pair_id,
