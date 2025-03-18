@@ -46,7 +46,7 @@ impl SummaryRepo {
             format!("pumpfun.candle_market_cap_1m_{partition}"),
             format!("pumpfun.candle_progress_1m_{partition}"),
             format!("pumpfun.candle_usd_1m_{partition}"),
-            "pumpfun.summary_1m",
+            "pumpfun.summary_15m",
         )
         .await
     }
