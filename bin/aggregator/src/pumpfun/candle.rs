@@ -35,9 +35,9 @@ impl RefreshCandles {
                         .calculate_progress_1s(&mut tx, partition)
                         .await
                         .unwrap();
-                        
+
                     let _ = tx.commit().await;
-                    tokio::time::sleep(Duration::from_millis(10)).await;
+                    tokio::time::sleep(Duration::from_millis(400)).await;
                 }
             }));
 

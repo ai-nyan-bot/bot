@@ -33,7 +33,7 @@ impl RefreshCandles {
                         let mut tx = pool_1s.begin().await.unwrap();
                         repo_1s.calculate_1s(&mut tx, partition).await.unwrap();
                         let _ = tx.commit().await;
-                        tokio::time::sleep(Duration::from_millis(10)).await;
+                        tokio::time::sleep(Duration::from_millis(400)).await;
                     }
                 })
             );
