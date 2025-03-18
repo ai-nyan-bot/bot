@@ -4,13 +4,15 @@
 pub(crate) use balance::balance;
 pub(crate) use cancel::cancel;
 pub(crate) use help::help;
-pub(crate) use start::start;
-pub(crate) use wallet::wallet;
 pub(crate) use rules::rules;
+pub(crate) use start::start;
+pub(crate) use token::token;
+pub(crate) use wallet::wallet;
 
 mod balance;
 mod cancel;
 mod help;
-mod start;
-mod wallet;
 mod rules;
+mod start;
+mod token;
+mod wallet;

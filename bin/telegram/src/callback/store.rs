@@ -9,6 +9,7 @@ use tokio::sync::Mutex;
 use tokio::time::{sleep, Instant};
 use uuid::Uuid;
 
+#[derive(Clone)]
 struct StoredCallback {
     callback: Callback,
     at: Instant,
@@ -53,6 +54,15 @@ impl CallbackStore {
             .lock()
             .await
             .remove(id)
+            .map(|stored| stored.callback)
+    }
+
+    pub async fn peak(&self, id: &str) -> Option<Callback> {
+        self.inner
+            .lock()
+            .await
+            .get(id)
+            .cloned()
             .map(|stored| stored.callback)
     }
 }

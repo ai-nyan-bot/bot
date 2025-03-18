@@ -103,10 +103,7 @@ pub(crate) async fn send(
 
     let _x = state
         .bot
-        .send_photo(
-            Recipient::Id(ChatId(telegram_id.0)),
-            file,
-        )
+        .send_photo(Recipient::Id(ChatId(telegram_id.0)), file)
         .caption(caption)
         .parse_mode(ParseMode::MarkdownV2)
         // .reply_markup(create_keyboard(state.callback_store.clone(), &notification).await)

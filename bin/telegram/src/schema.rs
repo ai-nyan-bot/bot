@@ -18,6 +18,7 @@ enum Command {
     Help,
     Rules,
     Start,
+    Token,
     Wallet,
 }
 
@@ -31,7 +32,8 @@ pub fn schema() -> UpdateHandler<Box<dyn std::error::Error + Send + Sync + 'stat
                 .branch(case![Command::Rules].endpoint(command::rules))
                 .branch(case![Command::Start].endpoint(command::start))
                 .branch(case![Command::Balance].endpoint(command::balance))
-                .branch(case![Command::Wallet].endpoint(command::wallet)),
+                .branch(case![Command::Wallet].endpoint(command::wallet))
+                .branch(case![Command::Token].endpoint(command::token)),
         )
         .branch(case![Command::Cancel].endpoint(command::cancel));
 

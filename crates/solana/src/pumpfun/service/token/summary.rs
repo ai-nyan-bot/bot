@@ -19,10 +19,12 @@ impl TokenService {
         let result = match self.pair.get_by_id(&mut tx, token_pair).await {
             Ok(pair) => {
                 let curve = match self.current.get(&mut tx, pair.id).await {
-                    Ok(curve) => curve,
+                    Ok(current) => current,
                     Err(err) => {
                         return match err {
-                            RepoError::NotFound => Err(ServiceError::not_found("Curve not found")),
+                            RepoError::NotFound => {
+                                Err(ServiceError::not_found("Current not found"))
+                            }
                             _ => Err(err.into()),
                         }
                     }
@@ -33,36 +35,16 @@ impl TokenService {
                 PumpfunSummary {
                     pair: pair,
                     current: curve,
-                    m1: self
-                        .summary
-                        .get(&mut tx, pair_id, Timeframe::M1)
-                        .await
-                        .ok(),
-                    m5: self
-                        .summary
-                        .get(&mut tx, pair_id, Timeframe::M5)
-                        .await
-                        .ok(),
+                    m1: self.summary.get(&mut tx, pair_id, Timeframe::M1).await.ok(),
+                    m5: self.summary.get(&mut tx, pair_id, Timeframe::M5).await.ok(),
                     m15: self
                         .summary
                         .get(&mut tx, pair_id, Timeframe::M15)
                         .await
                         .ok(),
-                    h1: self
-                        .summary
-                        .get(&mut tx, pair_id, Timeframe::H1)
-                        .await
-                        .ok(),
-                    h6: self
-                        .summary
-                        .get(&mut tx, pair_id, Timeframe::H6)
-                        .await
-                        .ok(),
-                    d1: self
-                        .summary
-                        .get(&mut tx, pair_id, Timeframe::D1)
-                        .await
-                        .ok(),
+                    h1: self.summary.get(&mut tx, pair_id, Timeframe::H1).await.ok(),
+                    h6: self.summary.get(&mut tx, pair_id, Timeframe::H6).await.ok(),
+                    d1: self.summary.get(&mut tx, pair_id, Timeframe::D1).await.ok(),
                 }
             }
             Err(err) => {
