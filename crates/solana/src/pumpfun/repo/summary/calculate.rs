@@ -217,14 +217,14 @@ candles as(
 			 join {candle_progress_table} cp on cp.token_pair_id = c.token_pair_id and cp.timestamp = c.timestamp
 			 join {candle_usd_table} cu on cu.token_pair_id = c.token_pair_id and cu.timestamp = c.timestamp
 			 join {candle_market_cap_table} cm on cm.token_pair_id = c.token_pair_id and cm.timestamp = c.timestamp
-	where c.timestamp > (select timestamp from last_candle) - interval '{window} {time_unit}'
+	where c.timestamp >= (select timestamp from last_candle) - interval '{window} {time_unit}'
 ),
 current as (
     select
 		{aggregate}
     from candles
     where
-	    timestamp > (select timestamp from last_candle) - interval '{bucket_separator} {time_unit}'
+	    timestamp >= (select timestamp from last_candle) - interval '{bucket_separator} {time_unit}'
 	group by token_pair_id
 ),
 previous as (
@@ -232,7 +232,7 @@ previous as (
 	    {aggregate}
     from candles
     where
-	    timestamp <= (select timestamp from last_candle) - interval '{bucket_separator} {time_unit}'
+	    timestamp < (select timestamp from last_candle) - interval '{bucket_separator} {time_unit}'
     group by token_pair_id
 )
 insert into {destination_table} (
