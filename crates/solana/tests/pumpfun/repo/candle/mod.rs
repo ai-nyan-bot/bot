@@ -2,3 +2,4 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 mod candle_1s;
+mod candle_progress_1s;

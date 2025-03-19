@@ -251,24 +251,23 @@ values  (4628606, 327383755, 652883, 100763, 34612903.225806000000, 1.0000000000
 
 		let mut tx = pool.begin().await.unwrap();
 		for _ in 0..100 {
-			test_instance.calculate_1s(&mut tx, Partition::SEVEN).await.unwrap();
+			test_instance.calculate_progress_1s(&mut tx, Partition::SEVEN).await.unwrap();
 		}
 		tx.commit().await.unwrap();
 
 		let mut tx = pool.begin().await.unwrap();
-		assert_sql!(&mut tx, "(select count(*) from pumpfun.candle_1s) = 132");
-		assert_sql!(&mut tx, "(select sum(swap_buy + swap_sell) from pumpfun.candle_1s) = 146");
-		assert_sql!(&mut tx, "(select sum(swap_buy) from pumpfun.candle_1s) = 91");
-		assert_sql!(&mut tx, "(select sum(swap_sell) from pumpfun.candle_1s) = 55");
+		assert_sql!(&mut tx, "(select count(*) from pumpfun.candle_progress_1s) = 132");
 
-		// most recent candle has no duration
-		assert_sql!(&mut tx, "(select duration from pumpfun.candle_1s order by timestamp desc limit 1) is null");
+		// most recent
+		assert_sql!(&mut tx, "(select close from pumpfun.candle_progress_1s where timestamp = '2025-03-18 22:55:52') = '62.188858'");
 
-		// 2025-03-18 22:33:58 - only exists for 1 second
-		assert_sql!(&mut tx, "(select duration from pumpfun.candle_1s where timestamp = '2025-03-18 22:33:58') = 1");
+		assert_sql!(&mut tx, "(select close from pumpfun.candle_progress_1s where timestamp = '2025-03-18 20:21:18') = '50.464676'");
 
-		// 2025-03-18 22:33:59 - exists for 138 seconds
-		assert_sql!(&mut tx, "(select duration from pumpfun.candle_1s where timestamp = '2025-03-18 22:33:59') = 138");
+		// first
+		assert_sql!(&mut tx, "(select open from pumpfun.candle_progress_1s where timestamp = '2025-03-17 15:57:14') = '4.3642545'");
+		assert_sql!(&mut tx, "(select high from pumpfun.candle_progress_1s where timestamp = '2025-03-17 15:57:14') = '7.1543465'");
+		assert_sql!(&mut tx, "(select close from pumpfun.candle_progress_1s where timestamp = '2025-03-17 15:57:14') = '4.3642545'");
+		assert_sql!(&mut tx, "(select avg from pumpfun.candle_progress_1s where timestamp = '2025-03-17 15:57:14') = '5.7593'");
 
 		tx.commit().await.unwrap();
 	}).await;
