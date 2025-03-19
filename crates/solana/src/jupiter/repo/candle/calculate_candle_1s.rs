@@ -4,15 +4,14 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
-
-use crate::pumpfun::repo::CandleRepo;
+use crate::jupiter::repo::CandleRepo;
 use common::model::Partition;
 use common::repo::{RepoResult, Tx};
 
 impl CandleRepo {
     pub async fn calculate_1s<'a>(&self, tx: &mut Tx<'a>, partition: Partition) -> RepoResult<()> {
-        let candle_table = format!("pumpfun.candle_1s_{partition}");
-        let swap_table = format!("pumpfun.swap_{partition}");
+        let candle_table = format!("jupiter.candle_1s_{partition}");
+        let swap_table = format!("jupiter.swap_{partition}");
 
         calculate_candles(tx, &candle_table, &swap_table).await?;
         calculate_duration(tx, &candle_table).await?;

@@ -259,6 +259,15 @@ values  (4628606, 327383755, 652883, 100763, 34612903.225806000000, 1.0000000000
 		assert_sql!(&mut tx, "(select sum(swap_buy) from pumpfun.candle_1s) = 91");
 		assert_sql!(&mut tx, "(select sum(swap_sell) from pumpfun.candle_1s) = 55");
 
+		// most recent candle has no duration
+		assert_sql!(&mut tx, "(select duration from pumpfun.candle_1s order by timestamp desc limit 1) is null");
+
+		// 2025-03-18 22:33:58 - only exists for 1 second
+		assert_sql!(&mut tx, "(select duration from pumpfun.candle_1s where timestamp = '2025-03-18 22:33:58') = 1");
+
+		// 2025-03-18 22:33:59 - exists for 138 seconds
+		assert_sql!(&mut tx, "(select duration from pumpfun.candle_1s where timestamp = '2025-03-18 22:33:59') = 138");
+
 		tx.commit().await.unwrap();
 	}).await;
 }
