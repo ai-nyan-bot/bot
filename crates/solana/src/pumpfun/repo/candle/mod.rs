@@ -10,6 +10,7 @@ mod calculate_mcap;
 mod calculate_progress;
 mod calculate_usd;
 mod count;
+mod calculate_candle_1s;
 
 pub struct CandleQuery {
     pub limit: Limit,

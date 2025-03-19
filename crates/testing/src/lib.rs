@@ -73,7 +73,7 @@ async fn with_snapshot() -> &'static str {
                 .execute(format!("create database {}", snapshot_db_name).as_str())
                 .await
                 .unwrap();
-            info!("Created test database: {}", snapshot_db_name);
+            info!("Created snapshot database: {}", snapshot_db_name);
 
             let snapshot_pool = PgPoolOptions::new()
                 .connect_with(
@@ -118,6 +118,8 @@ pub async fn get_test_pool() -> PgPool {
         .execute(format!("create database {test_db} template {snapshot};").as_str())
         .await
         .unwrap();
+
+    info!("Created test database: {}", test_db);
 
     let pool = PgPoolOptions::new()
         .connect_with(
@@ -230,4 +232,14 @@ where
     if let Some(err) = result {
         panic::resume_unwind(err)
     }
+}
+
+#[macro_export]
+macro_rules! assert_sql {
+    ($tx:expr, $query:expr) => {{
+        use sqlx::Executor;
+        let formatted_query = format!(r#"do $$ begin assert {}; end $$;"#, $query);
+        let result = sqlx::query(&formatted_query).execute(&mut **$tx).await;
+        assert!(result.is_ok(), "{}", formatted_query);
+    }};
 }

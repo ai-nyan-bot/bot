@@ -5,6 +5,6 @@ services:
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=pass
-    command: -c 'max_locks_per_transaction=1024'
+    command: [ "postgres", "-c", "log_statement=all", "-c", "log_destination=stderr", "-c", "max_locks_per_transaction=1024" ]
     ports:
       - "127.0.0.1:2345:5432"
