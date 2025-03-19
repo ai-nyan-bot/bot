@@ -6,6 +6,7 @@ use solana::jupiter::repo::CandleRepo;
 use sqlx::PgPool;
 use std::time::Duration;
 use tokio::task::JoinHandle;
+use tokio::time::Instant;
 
 pub struct RefreshCandles {
     pool: PgPool,
@@ -27,16 +28,23 @@ impl RefreshCandles {
         for partition in Partition::enumerate() {
             let repo_1s = repo.clone();
             let pool_1s = pool.clone();
-            result.push(
-                tokio::spawn(async move {
-                    loop {
-                        let mut tx = pool_1s.begin().await.unwrap();
-                        repo_1s.calculate_1s(&mut tx, partition).await.unwrap();
-                        let _ = tx.commit().await;
-                        tokio::time::sleep(Duration::from_millis(400)).await;
-                    }
-                })
-            );
+            result.push(tokio::spawn(async move {
+                loop {
+                    let start = Instant::now();
+
+                    let mut tx = pool_1s.begin().await.unwrap();
+                    repo_1s.calculate_1s(&mut tx, partition).await.unwrap();
+                    let _ = tx.commit().await;
+
+                    println!(
+                        "jupiter candle_1s_{} took: {}ms",
+                        partition.0,
+                        start.elapsed().as_millis()
+                    );
+
+                    tokio::time::sleep(Duration::from_millis(400)).await;
+                }
+            }));
 
             let repo = repo.clone();
             let pool = pool.clone();

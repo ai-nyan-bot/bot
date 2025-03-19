@@ -6,6 +6,7 @@ use solana::pumpfun::repo::CandleRepo;
 use sqlx::PgPool;
 use std::time::Duration;
 use tokio::task::JoinHandle;
+use tokio::time::Instant;
 
 pub struct RefreshCandles {
     pool: PgPool,
@@ -30,11 +31,28 @@ impl RefreshCandles {
             result.push(tokio::spawn(async move {
                 loop {
                     let mut tx = pool_1s.begin().await.unwrap();
+
+                    let start = Instant::now();
                     repo_1s.calculate_1s(&mut tx, partition).await.unwrap();
+                    println!(
+                        "pumpfun candle_1s_{} took: {}ms",
+                        partition.0,
+                        start.elapsed().as_millis()
+                    );
+
+
+                    let start = Instant::now();
                     repo_1s
                         .calculate_progress_1s(&mut tx, partition)
                         .await
                         .unwrap();
+
+                    println!(
+                        "pumpfun candle_progress_1s_{} took: {}ms",
+                        partition.0,
+                        start.elapsed().as_millis()
+                    );
+
 
                     let _ = tx.commit().await;
                     tokio::time::sleep(Duration::from_millis(400)).await;
