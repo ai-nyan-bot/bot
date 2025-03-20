@@ -9,9 +9,10 @@ use teloxide::payloads::SendMessageSetters;
 use teloxide::prelude::Message;
 use teloxide::requests::Requester;
 use teloxide::types::{InlineKeyboardButton, InlineKeyboardMarkup, ParseMode, WebAppInfo};
+use teloxide::Bot;
 use url::Url;
 
-pub(crate) async fn start(state: AppState, msg: Message) -> CommandResult {
+pub(crate) async fn start(bot: Bot, msg: Message, state: AppState) -> CommandResult {
     let i18n = I18N::load(Language::En).await;
 
     let options = InlineKeyboardMarkup::new(vec![
@@ -50,15 +51,15 @@ pub(crate) async fn start(state: AppState, msg: Message) -> CommandResult {
 
             let address = wallet.solana_public_key.to_string();
 
-            state.bot.send_message(msg.chat.id, markdown!(r#"
+            bot.send_message(msg.chat.id, markdown!(r#"
 Welcome to AI Nyanbot!
   
 You’ve just joined the purr-fect Telegram bot for navigating the Solana ecosystem. 
 I’m Nyanbot, your trading companion to help you find your next 100x gem and dodge scams!
-
-Your address:
+ 
+Your address: 
 ;`{address};` (click to copy)
-
+ 
 Trading Tips & Rules💡: 
 Set Your Conditions:
 🟢 Bonding Curve Progress: Aim for pump.fun tokens <50% bonded for early entries, or >80% for safer bets.  

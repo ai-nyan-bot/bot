@@ -6,9 +6,10 @@ use crate::AppState;
 use teloxide::payloads::SendMessageSetters;
 use teloxide::prelude::{Message, Requester};
 use teloxide::types::{InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo};
+use teloxide::Bot;
 use url::Url;
 
-pub(crate) async fn rules(state: AppState, msg: Message) -> CommandResult {
+pub(crate) async fn rules(bot: Bot, msg: Message, _state: AppState) -> CommandResult {
     let options = InlineKeyboardMarkup::new(vec![vec![InlineKeyboardButton::web_app(
         "Open rules".to_string(),
         WebAppInfo {
@@ -16,11 +17,9 @@ pub(crate) async fn rules(state: AppState, msg: Message) -> CommandResult {
         },
     )]]);
 
-    state
-        .bot
-        .send_message(
-            msg.chat.id,
-            r#"
+    bot.send_message(
+        msg.chat.id,
+        r#"
 Set your custom rules to screen for potential 100x gems!
 
 For example, you can choose to filter for the following
@@ -32,8 +31,8 @@ For example, you can choose to filter for the following
 Tweak, save, and pounce on profits!
 Remember to DYOR!
 "#,
-        )
-        .reply_markup(options)
-        .await?;
+    )
+    .reply_markup(options)
+    .await?;
     Ok(())
 }

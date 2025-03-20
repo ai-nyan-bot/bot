@@ -2,30 +2,30 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::command::CommandResult;
-use crate::AppState;
 use teloxide::payloads::SendMessageSetters;
 use teloxide::prelude::{Message, Requester};
-use teloxide::types::{InlineKeyboardButton, InlineKeyboardMarkup, ParseMode, WebAppInfo};
+use teloxide::types::{InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo};
+use teloxide::Bot;
 use url::Url;
 
-pub(crate) async fn balance(state: AppState, msg: Message) -> CommandResult {
+pub(crate) async fn balance(bot: Bot, msg: Message) -> CommandResult {
     let keyboard = InlineKeyboardMarkup::new(vec![vec![InlineKeyboardButton::web_app(
         "📊 Show details",
         WebAppInfo {
-            url: Url::parse("https://telegram.nyan.bot/rules").unwrap(),
+            url: Url::parse("https://nyanbot.com/balance").unwrap(),
         },
     )]]);
 
-    state
-        .bot
-        .send_message(
-            msg.chat.id,
-            r#"
-Balance of $133
+    bot.send_message(
+        msg.chat.id,
+        r#"
+Your balance is: $133.70
+====================================
+Sol:    10 ($     230)
+BTC:    23 ($ 214.413)
 "#,
-        )
-        .parse_mode(ParseMode::MarkdownV2)
-        .reply_markup(keyboard)
-        .await?;
+    )
+    .reply_markup(keyboard)
+    .await?;
     Ok(())
 }
