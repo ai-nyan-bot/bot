@@ -43,66 +43,28 @@ pub(crate) async fn start(bot: Bot, msg: Message, state: AppState) -> CommandRes
 
     if let Some(user) = msg.from {
         if !user.is_bot {
-            // println!("User {user:#?} started");
-            // println!("{:#?}", state.config);
-            let (_user, _wallet, _created) = state
+            let (_user, wallet, _created) = state
                 .user_service()
                 .get_or_create_telegram_user(user.id.0 as i64)
                 .await
                 .unwrap();
-        }
-    }
 
-    //     bot.send_message(msg.chat.id, r#"
-    // Welcome to AI Nyanbot!
-    // You’ve just joined the purr-fect Telegram bot for navigating the Solana ecosystem. I’m Nyanbot, your AI-powered DEX screener to help you find your next 100x gem and dodge scams!
-    //
-    // Your Wallet:
-    // Solana · 🅴
-    // Your Wallet Address: [Insert User Wallet Here] (Tap to copy)
-    // Balance: [Insert SOL Balance] SOL ($[Insert USD Value])
-    // —
-    // Hit the Refresh button to update your balance anytime!
-    //
-    // 🚀Top Movers of the Day:
-    // [Dynamic List e.g., "1. MEOW (+15%) | 2. PURR (+10%) | 3. CATNIP (+8%)"]
-    //
-    // 💡Trading Tips & Rules:
-    // Set Your Conditions:
-    // 🟢 Market Cap Filter: Set a min/max market cap (e.g., $10-100k) to spot hidden gems or avoid pumps.
-    // 🟢 Bonding Curve Progress: Aim for pump.fun tokens <50% bonded for early entries, or >80% for safer bets.
-    // 🟢 Volume Spike Filter: Look for tokens that pumped >$30k over last 6 hours.
-    // 🟢 Swaps per hour: Watch out for tokens that have rapid buy activity, like >30+ swaps per hour as they are nearing the graduation threshold.
-    // 🟢 1st 70 buyers: Check if the first 70 buyers are still holding, or if they bought more, and if the tokens have high concentration, e.g. >50% screams insider control or dev dumping!
-    // 🟢 Wallet Setup: Ensure your SOL balance is >0.1 SOL for swaps—don’t get caught napping!
-    //
-    // Verify swaps via official links only.
-    //  ⚠️Ad Disclaimer:
-    //  Heads up! We don’t control ads shown by Telegram here. Beware of fake airdrops, phishing links, or sketchy login pages—stick to https://nyan.bot for the real deal.
-    //
-    // 💡Pro Tip:
-    //  You’re in Basic Mode now with [max] number of filters. Want more? Tap [Here] to upgrade!
-    //
-    // Get more alpha:
-    // 🌐Check out our website: https://nyan.bot
-    // 🐥Follow us on X: http://x.com/AI_Nyanbot
-    // 💬Join our TG: @AI_Nyanbot
-    //     "#)
-    //         .reply_markup(options)
-    //         .await?;
-    //     Ok(())
+            let address = wallet.solana_public_key.to_string();
 
-    bot.send_message(msg.chat.id, markdown!(r#"
+            bot.send_message(msg.chat.id, markdown!(r#"
 Welcome to AI Nyanbot!
   
 You’ve just joined the purr-fect Telegram bot for navigating the Solana ecosystem. 
-I’m Nyanbot, your AI-powered DEX screener to help you find your next 100x gem and dodge scams!
+I’m Nyanbot, your trading companion to help you find your next 100x gem and dodge scams!
+ 
+Your address: 
+;`{address};` (click to copy)
  
 Trading Tips & Rules💡: 
 Set Your Conditions:
 🟢 Bonding Curve Progress: Aim for pump.fun tokens <50% bonded for early entries, or >80% for safer bets.  
  
-Verify swaps via official links only.
+Verify trades via official links only.
 
 ⚠️Ad Disclaimer⚠️:
 Heads up! We don’t control ads shown by Telegram here.
@@ -114,8 +76,11 @@ Get more alpha:
 🌐Check out our ;[Website;];(https://nyan.bot;) 
 🐥Follow us on X: ;[AI_Nyanbot;];(https://x.com/AI_Nyanbot;)
 "#))
-        .parse_mode(ParseMode::MarkdownV2)
-        .reply_markup(options)
-        .await?;
+            .parse_mode(ParseMode::MarkdownV2)
+            .reply_markup(options)
+            .await?;
+        }
+    }
+
     Ok(())
 }

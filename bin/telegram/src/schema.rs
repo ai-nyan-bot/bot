@@ -25,16 +25,14 @@ enum Command {
 pub fn schema() -> UpdateHandler<Box<dyn std::error::Error + Send + Sync + 'static>> {
     use dptree::case;
 
-    let command_handler = filter_command::<Command, _>()
-        .branch(
-            case![MessageState::Main]
-                .branch(case![Command::Help].endpoint(command::help))
-                .branch(case![Command::Rules].endpoint(command::rules))
-                .branch(case![Command::Start].endpoint(command::start))
-                .branch(case![Command::Balance].endpoint(command::balance))
-                .branch(case![Command::Wallet].endpoint(command::wallet))
-                .branch(case![Command::Token].endpoint(command::token)),
-        );
+    let command_handler = filter_command::<Command, _>().branch(
+        case![MessageState::Main]
+            .branch(case![Command::Help].endpoint(command::help))
+            .branch(case![Command::Rules].endpoint(command::rules))
+            .branch(case![Command::Start].endpoint(command::start))
+            .branch(case![Command::Balance].endpoint(command::balance))
+            .branch(case![Command::Token].endpoint(command::token)),
+    );
 
     let message_handler = Update::filter_message().branch(command_handler);
 

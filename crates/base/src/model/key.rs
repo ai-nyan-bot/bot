@@ -62,6 +62,12 @@ impl std::error::Error for PublicKeyError {}
 #[sqlx(transparent)]
 pub struct PublicKey(pub String);
 
+impl PublicKey {
+    pub fn short(&self) -> String {
+        format!("{}...{}", &self.0[..4], &self.0[self.0.len() - 4..])
+    }
+}
+
 impl PartialEq<&str> for PublicKey {
     fn eq(&self, other: &&str) -> bool {
         self.0.as_str() == *other

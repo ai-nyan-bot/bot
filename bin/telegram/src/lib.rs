@@ -3,7 +3,6 @@
 
 pub use crate::config::*;
 use crate::dispatch::dispatch;
-pub use crate::format::*;
 pub use crate::notify::{notify, send_notification};
 pub use crate::schema::schema;
 pub use crate::state::*;
@@ -21,7 +20,6 @@ mod message;
 mod notify;
 mod schema;
 mod state;
-
 
 #[derive(Clone, Default)]
 pub enum MessageState {

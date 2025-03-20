@@ -31,7 +31,7 @@ macro_rules! markdown {
             }
 
             match c {
-                '[' | ']' | '(' | ')' | '~' | '`' | '’' | '"' | '\'' | '>' | '#' | '=' | '|' | '{'
+                '[' | ']' | '(' | ')' | '~' | '`' | '"' | '\'' | '>' | '#' | '=' | '|' | '{'
                 | '}' | '.' | '!' | '*' | '_' | '+' | '-' => {
                     current_line.push('\\');
                     current_line.push(c);
@@ -128,10 +128,10 @@ mod tests {
 
     #[test]
     fn test_apostrophes() {
-        let result = markdown!(r#"’'""#);
-        assert_eq!(result, "\\’\\'\\\"");
+        let result = markdown!(r#"'""#);
+        assert_eq!(result, "\\'\\\"");
 
-        let result = markdown!(r#";’;';""#);
-        assert_eq!(result, r#"’'""#);
+        let result = markdown!(r#";';""#);
+        assert_eq!(result, r#"'""#);
     }
 }
