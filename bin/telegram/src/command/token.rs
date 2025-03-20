@@ -9,10 +9,9 @@ use base::model::TokenPairId;
 use regex::Regex;
 use teloxide::prelude::Message;
 use teloxide::types::{InlineKeyboardButton, InlineKeyboardMarkup};
-use teloxide::Bot;
 use url::Url;
 
-pub(crate) async fn token(_bot: Bot, msg: Message, state: AppState) -> CommandResult {
+pub(crate) async fn token(state: AppState, msg: Message) -> CommandResult {
     if let Some(text) = msg.text() {
         let re = Regex::new(r"^/token (\d+)$").unwrap();
 
