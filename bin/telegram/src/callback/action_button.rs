@@ -1,8 +1,8 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::callback::CallbackActionButton;
-use crate::{AppState, HandlerResult};
+use crate::callback::{CallbackActionButton, CallbackResult};
+use crate::AppState;
 use base::model::TelegramActionButtonConfig;
 use std::time::Duration;
 use teloxide::dispatching::dialogue::GetChatId;
@@ -16,8 +16,7 @@ pub(crate) async fn action_button(
     state: AppState,
     callback: CallbackActionButton,
     query: CallbackQuery,
-) -> HandlerResult {
-
+) -> CallbackResult {
     if let Some(msg) = &query.message {
         state
             .bot

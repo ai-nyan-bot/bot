@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::callback::callback;
-use crate::{command, message, MessageState};
+use crate::{command, MessageState};
 use teloxide::dispatching::dialogue::InMemStorage;
 use teloxide::dispatching::{dialogue, UpdateFilterExt, UpdateHandler};
 use teloxide::dptree::case;
@@ -34,18 +34,11 @@ pub fn schema() -> UpdateHandler<Box<dyn std::error::Error + Send + Sync + 'stat
                 .branch(case![Command::Balance].endpoint(command::balance))
                 .branch(case![Command::Wallet].endpoint(command::wallet))
                 .branch(case![Command::Token].endpoint(command::token)),
-        )
-        .branch(case![Command::Cancel].endpoint(command::cancel));
+        );
 
-    let message_handler = Update::filter_message()
-        .branch(command_handler)
-        // .branch(case![MessageState::ReceiveFullName].endpoint(receive_full_name))
-        .branch(dptree::endpoint(message::invalid));
+    let message_handler = Update::filter_message().branch(command_handler);
 
     let callback_query_handler = Update::filter_callback_query().endpoint(callback);
-    // .branch(case![MessageState::ReceiveProductChoice { full_name }]
-    //         .endpoint(receive_product_selection),
-    // );
 
     dialogue::enter::<Update, InMemStorage<MessageState>, MessageState, _>()
         .branch(message_handler)

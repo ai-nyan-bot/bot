@@ -4,7 +4,7 @@
 use crate::callback::action_button::action_button;
 use crate::callback::close::close_button;
 use crate::callback::refresh::refresh_button;
-use crate::{AppState, HandlerResult};
+use crate::{AppState};
 use base::model::{TelegramActionButtonConfig, TokenPairId};
 pub use store::CallbackStore;
 use teloxide::payloads::EditMessageReplyMarkupSetters;
@@ -34,9 +34,12 @@ pub struct CallbackActionButton {
     pub config: TelegramActionButtonConfig,
 }
 
+pub type CallbackResult = Result<(), Box<dyn std::error::Error + Send + Sync>>;
+
+
 pub const IGNORE_CALLBACK: &str = "@!IGNORE!@";
 
-pub(crate) async fn callback(state: AppState, query: CallbackQuery) -> HandlerResult {
+pub(crate) async fn callback(state: AppState, query: CallbackQuery) -> CallbackResult {
     if let Some(data) = query.data.as_ref() {
         if data == IGNORE_CALLBACK {
             state.bot.answer_callback_query(query.id.clone()).await?;

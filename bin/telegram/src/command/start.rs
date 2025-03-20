@@ -1,9 +1,10 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use crate::command::CommandResult;
 use crate::i18n::{Language, I18N};
+use crate::markdown;
 use crate::state::AppState;
-use crate::{markdown, HandlerResult};
 use teloxide::payloads::SendMessageSetters;
 use teloxide::prelude::Message;
 use teloxide::requests::Requester;
@@ -11,7 +12,7 @@ use teloxide::types::{InlineKeyboardButton, InlineKeyboardMarkup, ParseMode, Web
 use teloxide::Bot;
 use url::Url;
 
-pub(crate) async fn start(bot: Bot, msg: Message, state: AppState) -> HandlerResult {
+pub(crate) async fn start(bot: Bot, msg: Message, state: AppState) -> CommandResult {
     let i18n = I18N::load(Language::En).await;
 
     let options = InlineKeyboardMarkup::new(vec![

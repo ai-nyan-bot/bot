@@ -9,8 +9,6 @@ pub use crate::schema::schema;
 pub use crate::state::*;
 use common::Signal;
 use log::info;
-use teloxide::dispatching::dialogue::InMemStorage;
-use teloxide::prelude::Dialogue;
 use tokio::try_join;
 
 mod callback;
@@ -24,8 +22,6 @@ mod notify;
 mod schema;
 mod state;
 
-pub type MyDialog = Dialogue<MessageState, InMemStorage<MessageState>>;
-pub type HandlerResult = Result<(), Box<dyn std::error::Error + Send + Sync>>;
 
 #[derive(Clone, Default)]
 pub enum MessageState {

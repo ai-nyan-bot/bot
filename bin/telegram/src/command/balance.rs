@@ -1,14 +1,14 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::HandlerResult;
+use crate::command::CommandResult;
 use teloxide::payloads::SendMessageSetters;
 use teloxide::prelude::{Message, Requester};
 use teloxide::types::{InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo};
 use teloxide::Bot;
 use url::Url;
 
-pub(crate) async fn balance(bot: Bot, msg: Message) -> HandlerResult {
+pub(crate) async fn balance(bot: Bot, msg: Message) -> CommandResult {
     let keyboard = InlineKeyboardMarkup::new(vec![vec![InlineKeyboardButton::web_app(
         "📊 Show details",
         WebAppInfo {

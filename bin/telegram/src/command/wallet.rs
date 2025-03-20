@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::HandlerResult;
+use crate::command::CommandResult;
 use teloxide::dispatching::dialogue::GetChatId;
 use teloxide::payloads::SendMessageSetters;
 use teloxide::prelude::Message;
@@ -10,7 +10,7 @@ use teloxide::types::{InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo};
 use teloxide::Bot;
 use url::Url;
 
-pub(crate) async fn wallet(bot: Bot, msg: Message) -> HandlerResult {
+pub(crate) async fn wallet(bot: Bot, msg: Message) -> CommandResult {
     let keyboard = InlineKeyboardMarkup::new(vec![vec![InlineKeyboardButton::web_app(
         "🏦 Open",
         WebAppInfo {

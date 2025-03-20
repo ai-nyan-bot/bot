@@ -1,11 +1,12 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::{AppState, HandlerResult};
+use crate::callback::CallbackResult;
+use crate::AppState;
 use teloxide::requests::Requester;
 use teloxide::types::CallbackQuery;
 
-pub(crate) async fn close_button(state: AppState, query: CallbackQuery) -> HandlerResult {
+pub(crate) async fn close_button(state: AppState, query: CallbackQuery) -> CallbackResult {
     if let Some(message) = query.message {
         state
             .bot
