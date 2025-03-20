@@ -21,10 +21,10 @@ pub async fn setup_pool(postgres_config: &PostgresConfig) -> PgPool {
         .acquire_slow_threshold(Duration::from_secs(5))
         .min_connections(postgres_config.pool_min.resolve_or(1) as u32)
         .max_connections(postgres_config.pool_max.resolve_or(2) as u32)
-        .test_before_acquire(true)
-        .acquire_timeout(Duration::from_millis(
-            postgres_config.timeout_acquire_ms.resolve_or(5_000) as u64,
-        ));
+        .test_before_acquire(true);
+        // .acquire_timeout(Duration::from_millis(
+        //     postgres_config.timeout_acquire_ms.resolve_or(5_000) as u64,
+        // ));
 
     let connection_string = &postgres_config.connection_string.resolve();
 

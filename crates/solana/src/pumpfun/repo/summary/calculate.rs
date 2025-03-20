@@ -42,10 +42,10 @@ impl SummaryRepo {
             tx,
             30,
             "minutes",
-            format!("pumpfun.candle_1m_{partition}"),
-            format!("pumpfun.candle_market_cap_1m_{partition}"),
-            format!("pumpfun.candle_progress_1m_{partition}"),
-            format!("pumpfun.candle_usd_1m_{partition}"),
+            format!("pumpfun.candle_5m_{partition}"),
+            format!("pumpfun.candle_market_cap_5m_{partition}"),
+            format!("pumpfun.candle_progress_5m_{partition}"),
+            format!("pumpfun.candle_usd_5m_{partition}"),
             "pumpfun.summary_15m",
         )
         .await
@@ -56,10 +56,10 @@ impl SummaryRepo {
             tx,
             2,
             "hours",
-            format!("pumpfun.candle_5m_{partition}"),
-            format!("pumpfun.candle_market_cap_5m_{partition}"),
-            format!("pumpfun.candle_progress_5m_{partition}"),
-            format!("pumpfun.candle_usd_5m_{partition}"),
+            format!("pumpfun.candle_15m_{partition}"),
+            format!("pumpfun.candle_market_cap_15m_{partition}"),
+            format!("pumpfun.candle_progress_15m_{partition}"),
+            format!("pumpfun.candle_usd_15m_{partition}"),
             "pumpfun.summary_1h",
         )
         .await
@@ -70,10 +70,10 @@ impl SummaryRepo {
             tx,
             12,
             "hours",
-            format!("pumpfun.candle_15m_{partition}"),
-            format!("pumpfun.candle_market_cap_15m_{partition}"),
-            format!("pumpfun.candle_progress_15m_{partition}"),
-            format!("pumpfun.candle_usd_15m_{partition}"),
+            format!("pumpfun.candle_1h_{partition}"),
+            format!("pumpfun.candle_market_cap_1h_{partition}"),
+            format!("pumpfun.candle_progress_1h_{partition}"),
+            format!("pumpfun.candle_usd_1h_{partition}"),
             "pumpfun.summary_6h",
         )
         .await
@@ -84,10 +84,10 @@ impl SummaryRepo {
             tx,
             2,
             "days",
-            format!("pumpfun.candle_1h_{partition}"),
-            format!("pumpfun.candle_market_cap_1h_{partition}"),
-            format!("pumpfun.candle_progress_1h_{partition}"),
-            format!("pumpfun.candle_usd_1h_{partition}"),
+            format!("pumpfun.candle_6h_{partition}"),
+            format!("pumpfun.candle_market_cap_6h_{partition}"),
+            format!("pumpfun.candle_progress_6h_{partition}"),
+            format!("pumpfun.candle_usd_6h_{partition}"),
             "pumpfun.summary_1d",
         )
         .await

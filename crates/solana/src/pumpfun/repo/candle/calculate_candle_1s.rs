@@ -174,21 +174,6 @@ do update set
     volume_sell = excluded.volume_sell,
     swap_sell = excluded.swap_sell,
     updated_at = now()
-where (
-    {candle_table}.open is distinct from excluded.open or
-    {candle_table}.high is distinct from excluded.high or
-    {candle_table}.low is distinct from excluded.low or
-    {candle_table}.close is distinct from excluded.close or
-    {candle_table}.avg is distinct from excluded.avg or
-    {candle_table}.amount_base_buy is distinct from excluded.amount_base_buy or
-    {candle_table}.amount_quote_buy is distinct from excluded.amount_quote_buy or
-    {candle_table}.volume_buy is distinct from excluded.volume_buy or
-    {candle_table}.swap_buy is distinct from excluded.swap_buy or
-    {candle_table}.amount_base_sell is distinct from excluded.amount_base_sell or
-    {candle_table}.amount_quote_sell is distinct from excluded.amount_quote_sell or
-    {candle_table}.volume_sell is distinct from excluded.volume_sell or
-    {candle_table}.swap_sell is distinct from excluded.swap_sell
-);
         "#).as_str())
 		.execute(&mut **tx)
 		.await?;

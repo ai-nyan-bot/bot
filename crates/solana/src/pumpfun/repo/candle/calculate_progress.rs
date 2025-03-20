@@ -89,13 +89,6 @@ do update set
     close = excluded.close,
     avg = excluded.avg,
     updated_at = now()
-where (
-    {progress_table}.open is distinct from excluded.open or
-    {progress_table}.high is distinct from excluded.high or
-    {progress_table}.low is distinct from excluded.low or
-    {progress_table}.close is distinct from excluded.close or
-    {progress_table}.avg is distinct from excluded.avg
-)
         "#).as_str())
             .execute(&mut **tx)
             .await?;

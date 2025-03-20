@@ -122,7 +122,7 @@ async fn calculate<'a>(
     let query_str = format!(
         r#"
 with
-last_candle_ts as (
+last_candle_cte as (
     select coalesce(
         (select date_trunc('{time_unit}', timestamp) - (extract({time_unit} from timestamp)::int % {window}) * interval '1 {time_unit}' as ts
          from pumpfun.{destination_table}
@@ -130,17 +130,17 @@ last_candle_ts as (
          limit 1),
         '1900-01-01 00:00:00'::timestamp) as ts
 ),
-next_candle_ts as (
+next_candle_cte as (
     select date_trunc('{time_unit}', timestamp) - (extract({time_unit} from timestamp)::int % {window}) * interval '1 {time_unit}' as ts
     from pumpfun.{candle_source_table}
-    where timestamp > (select ts from last_candle_ts)
+    where timestamp > (select ts from last_candle_cte)
     order by timestamp
     limit 1
 ),
-timestamp as (
+range_cte as (
     select
-        (coalesce((select ts from next_candle_ts), (select ts from last_candle_ts))) - interval '{window} {time_unit}' as start_ts,
-        (coalesce((select ts from next_candle_ts), (select ts from last_candle_ts))) + interval '3 days' as end_ts
+        (coalesce((select ts from next_candle_cte), (select ts from last_candle_cte))) - interval '{window} {time_unit}' as start_ts,
+        (coalesce((select ts from next_candle_cte), (select ts from last_candle_cte))) + interval '3 days' as end_ts
 )
 insert into pumpfun.{destination_table}
 (
@@ -174,10 +174,14 @@ from pumpfun.{candle_source_table} c
 join lateral (
     select usd from solana.{sol_price_usd_table}
     where timestamp = c.timestamp
+    limit 1
 ) sp on true
 join solana.token_pair tp on tp.id = c.token_pair_id
 join solana.token base on base.id = tp.base_id
-where base.supply is not null
+join range_cte r on true
+where
+    base.supply is not null and
+    c.timestamp between r.start_ts and r.end_ts
 on conflict (token_pair_id, timestamp)
 do update set
     open = excluded.open,

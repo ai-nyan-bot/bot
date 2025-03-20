@@ -46,7 +46,7 @@ async fn calculate_twap<'a>(
 
     let query_str = format!(
         r#"
-with last_twap_ts as (
+with last_twap_cte as (
     select coalesce(
      (select date_trunc('{time_unit}', timestamp) - (extract({time_unit} from timestamp)::int % {window}) * interval '1 {time_unit}' as ts
       from pumpfun.{destination_table}
@@ -54,40 +54,41 @@ with last_twap_ts as (
       limit 1),
      '1900-01-01 00:00:00'::timestamp) as ts
 ),
-next_candle_ts as (
+next_candle_cte as (
     select date_trunc('{time_unit}', timestamp) - (extract({time_unit} from timestamp)::int % {window}) * interval '1 {time_unit}' as ts from pumpfun.candle_1m_{partition}
-        where timestamp >= (select ts from last_twap_ts) + interval '{window} {time_unit}'
+        where timestamp >= (select ts from last_twap_cte) + interval '{window} {time_unit}'
         order by timestamp
         limit 1
 ),
-timestamp as (
+range_cte as (
     select
-        coalesce((select ts from  next_candle_ts), (select ts from  last_twap_ts))   as start_ts,
-        coalesce((select ts from next_candle_ts), (select ts from last_twap_ts)) + interval '{window} {time_unit}' as end_ts
+        coalesce((select ts from  next_candle_cte), (select ts from  last_twap_cte))   as start_ts,
+        coalesce((select ts from next_candle_cte), (select ts from last_twap_cte)) + interval '{window} {time_unit}' as end_ts
 ),
-price_data as (
+price_data_cte as (
     select
         token_pair_id,
         timestamp,
         case
             when timestamp = max(timestamp) over (partition by token_pair_id)
-                then extract(epoch from ((select end_ts from timestamp) - timestamp))
+                then extract(epoch from ((r.end_ts) - timestamp))
             else duration
         end as duration,
         avg
     from
         pumpfun.candle_1s_{partition}
+    join range_cte r on true
     where
-        timestamp >=  (select start_ts from timestamp) and
-        timestamp < (select end_ts from timestamp)
+        timestamp between r.start_ts and r.end_ts
     order by
         token_pair_id, timestamp desc
 ),
 start_offset as (
     select
-        token_pair_id, min(timestamp), min(timestamp) - (select start_ts from timestamp) as start_offset
-    from price_data
-    group by token_pair_id
+        token_pair_id, min(timestamp), min(timestamp) - r.start_ts as start_offset
+    from price_data_cte
+    join range_cte r on true
+    group by token_pair_id, r.start_ts
 )
 insert into pumpfun.{destination_table} (
     token_pair_id,
@@ -99,7 +100,7 @@ select
     sum(avg * duration) / ({total_window_seconds} - extract(epoch from so.start_offset)),
     date_trunc('{time_unit}', pd.timestamp) - (extract({time_unit} from pd.timestamp)::int % {window}) * interval '1 {time_unit}' as bucket
 from
-    price_data pd
+    price_data_cte pd
 join start_offset so on so.token_pair_id = pd.token_pair_id
 group by
     pd.token_pair_id, bucket, so.start_offset
