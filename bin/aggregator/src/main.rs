@@ -31,24 +31,23 @@ fn main() {
     let config = Config::load();
 
     let runtime = Builder::new_multi_thread()
-        .worker_threads(2)
+        .worker_threads(6)
         .enable_all()
         .build()
         .unwrap();
 
     runtime.block_on(async {
-        let pg_pool = setup_pool(&config.postgres).await;
-        let pg_pool_summary = setup_pool(&config.postgres).await;
+        let jupiter_refresh_candles =
+            jupiter::RefreshCandles::new(setup_pool(&config.postgres).await);
+        let jupiter_refresh_twaps = jupiter::RefreshTwaps::new(setup_pool(&config.postgres).await);
 
-        let jupiter_refresh_candles = jupiter::RefreshCandles::new(pg_pool.clone());
-        let jupiter_refresh_twaps = jupiter::RefreshTwaps::new(pg_pool.clone());
+        let pumpfun_refresh_candles =
+            pumpfun::RefreshCandles::new(setup_pool(&config.postgres).await);
+        let pumpfun_refresh_summaries =
+            pumpfun::RefreshSummaries::new(setup_pool(&config.postgres).await);
+        let pumpfun_refresh_twaps = pumpfun::RefreshTwaps::new(setup_pool(&config.postgres).await);
 
-        let pumpfun_refresh_candles = pumpfun::RefreshCandles::new(pg_pool.clone());
-        // let pumpfun_refresh_summaries = pumpfun::RefreshSummaries::new(pg_pool.clone());
-        let pumpfun_refresh_summaries = pumpfun::RefreshSummaries::new(pg_pool_summary.clone());
-        let pumpfun_refresh_twaps = pumpfun::RefreshTwaps::new(pg_pool.clone());
-
-        let solana_refresh_sol = solana::RefreshSol::new(pg_pool.clone());
+        let solana_refresh_sol = solana::RefreshSol::new(setup_pool(&config.postgres).await);
 
         let handles: Vec<JoinHandle<()>> = vec![
             solana_refresh_sol.refresh().await,

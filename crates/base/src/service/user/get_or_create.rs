@@ -36,7 +36,7 @@ impl UserService {
             .await
         {
             Ok(user) => {
-                let wallet = self.get_wallet(tx, &user).await?;
+                let wallet = self.get_wallet_tx(tx, &user).await?;
                 Ok((user, wallet, false))
             }
             Err(_) => match self
@@ -76,13 +76,6 @@ impl UserService {
                 RepoError::AlreadyExists => Err(ServiceError::conflict("Wallet already exists")),
                 _ => Err(ServiceError::internal(err.to_string())),
             },
-        }
-    }
-
-    async fn get_wallet(&self, tx: &mut Tx<'_>, user: &User) -> ServiceResult<Wallet> {
-        match self.wallet_repo.get_by_user_id(tx, user.id).await {
-            Ok(wallet) => Ok(wallet),
-            Err(_) => Err(ServiceError::not_found("Wallet not found".to_string())),
         }
     }
 }

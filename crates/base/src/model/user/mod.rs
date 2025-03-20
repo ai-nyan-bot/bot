@@ -22,7 +22,13 @@ impl From<i64> for UserId {
     }
 }
 
-impl Display for UserId{
+impl From<&User> for UserId {
+    fn from(value: &User) -> Self {
+        value.id.clone()
+    }
+}
+
+impl Display for UserId {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         Display::fmt(&self.0, f)
     }

@@ -10,7 +10,6 @@ use testing::run_test_with_pool;
 use url::Url;
 
 #[test_log::test(tokio::test)]
-#[ignore]
 async fn test_rules_command() {
     run_test_with_pool(|pool| async move {
         let state = AppState::testing(pool).await;

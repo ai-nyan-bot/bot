@@ -14,8 +14,9 @@ pub use authenticate::*;
 use common::crypt::SecretKey;
 
 mod authenticate;
-mod get;
+mod get_by_id;
 mod get_or_create;
+mod get_wallet;
 
 pub type AuthTokenGenerator = fn() -> AuthToken;
 

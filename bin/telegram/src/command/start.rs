@@ -66,7 +66,7 @@ Set Your Conditions:
  
 Verify trades via official links only.
 
-⚠️Ad Disclaimer⚠️:
+⚠ Ad Disclaimer⚠ :
 Heads up! We don’t control ads shown by Telegram here.
 Beware of fake airdrops, phishing links, or sketchy login pages.
 Stick to ;[nyan.bot;];(https://nyan.bot;) for the real deal.
