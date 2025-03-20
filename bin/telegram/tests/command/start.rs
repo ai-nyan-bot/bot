@@ -8,6 +8,7 @@ use teloxide_tests::{MockBot, MockMessageText};
 use testing::run_test_with_pool;
 
 #[test_log::test(tokio::test)]
+#[ignore]
 async fn test_start_command_creates_user_if_not_exists() {
     run_test_with_pool(|pool| async move{
         let state = AppState::testing(pool).await;

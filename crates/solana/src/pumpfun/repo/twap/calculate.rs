@@ -102,6 +102,7 @@ select
 from
     price_data_cte pd
 join start_offset so on so.token_pair_id = pd.token_pair_id
+where pd.duration > 0
 group by
     pd.token_pair_id, bucket, so.start_offset
 on conflict (token_pair_id, timestamp)
