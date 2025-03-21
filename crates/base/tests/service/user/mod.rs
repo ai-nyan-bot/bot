@@ -4,3 +4,4 @@
 mod authenticate_and_create_telegram_user_if_not_exists;
 mod get_or_create;
 mod get_by_id;
+mod get_wallet;

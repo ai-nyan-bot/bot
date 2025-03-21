@@ -6,6 +6,7 @@ use common::model::{Count, Limit, TelegramId};
 use common::repo::{RepoResult, Tx};
 
 use crate::auth::create_auth;
+use crate::wallet::create_wallet;
 use base::repo::{UserCreateTelegramCmd, UserQueryAll, UserRepo};
 
 const USER_REPO: UserRepo = UserRepo {};
@@ -17,6 +18,7 @@ pub async fn get_or_create_test_user<'a>(tx: &mut Tx<'a>) -> User {
         Err(_) => {
             let result = create_telegram_user(tx, 1234).await.unwrap();
             create_auth(tx, 1, "TestUserToken").await.unwrap();
+            create_wallet(tx, 1).await.unwrap();
             assert_eq!(result.id, 1);
             result
         }
@@ -30,6 +32,7 @@ pub async fn get_or_create_another_user<'a>(tx: &mut Tx<'a>) -> User {
         Err(_) => {
             let result = create_telegram_user(tx, 5432).await.unwrap();
             create_auth(tx, 2, "AnotherUserToken").await.unwrap();
+            create_wallet(tx, 2).await.unwrap();
             assert_eq!(result.id, 2);
             result
         }
