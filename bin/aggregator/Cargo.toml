@@ -5,16 +5,14 @@ rust-version.workspace = true
 edition.workspace = true
 
 [dependencies]
-base = { path = "../../crates/base" }
 common = { path = "../../crates/common" }
 solana = { path = "../../crates/solana" }
 
-futures = {workspace = true}
+futures = { workspace = true }
 log = { workspace = true }
 
-rand = { workspace = true, features = [] }
+rand = { workspace = true }
 serde = { workspace = true }
-serde_json = { workspace = true }
 sqlx = { workspace = true }
 
 tokio = { workspace = true }

@@ -1,12 +1,11 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use std::ops::Deref;
-use std::sync::Arc;
-
-use rand::distributions::Alphanumeric;
+use rand::distr::Alphanumeric;
 use rand::Rng;
 use sqlx::PgPool;
+use std::ops::Deref;
+use std::sync::Arc;
 
 use crate::model::AuthToken;
 use crate::repo::{AuthRepo, UserRepo, WalletRepo};
@@ -76,7 +75,7 @@ impl UserService {
 
 fn generate_random_token() -> AuthToken {
     AuthToken(
-        rand::thread_rng()
+        rand::rng()
             .sample_iter(&Alphanumeric)
             .take(128)
             .map(char::from)

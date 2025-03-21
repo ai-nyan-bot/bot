@@ -10,10 +10,9 @@ services:
     volumes:
       - /opt/nyanbot/postgres:/var/lib/postgresql/data
 
-  api:
+  engine:
     image: nyanbot/nyanbot
     restart: no
-    ports:
-      - "127.0.0.1:8080:8080"
-    command:
-      - /app/api/api
+    environment:
+      - "POSTGRES_CONNECTION_STRING=postgres://root:tor@localhost:5432/dev"
+    command: /app/engine/engine /app/engine/config.toml

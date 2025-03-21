@@ -1,7 +1,8 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use rand::distributions::{Distribution, Standard};
+use rand::distr::StandardUniform;
+use rand::prelude::Distribution;
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 
@@ -45,9 +46,9 @@ impl Timeframe {
     }
 }
 
-impl Distribution<Timeframe> for Standard {
+impl Distribution<Timeframe> for StandardUniform {
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Timeframe {
         let variants = Timeframe::all();
-        variants[rng.gen_range(0..variants.len())]
+        variants[rng.random_range(0..variants.len())]
     }
 }

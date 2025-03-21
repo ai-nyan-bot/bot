@@ -4,7 +4,7 @@
 pub use error::*;
 pub use font::*;
 use image::RgbaImage;
-use rand::distributions::Alphanumeric;
+use rand::distr::Alphanumeric;
 use rand::Rng;
 pub use render::*;
 use std::fs;
@@ -39,7 +39,7 @@ where
                 .unwrap()
                 .as_secs();
 
-            let random_string: String = rand::thread_rng()
+            let random_string: String = rand::rng()
                 .sample_iter(&Alphanumeric)
                 .take(12)
                 .map(char::from)

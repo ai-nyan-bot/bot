@@ -9,7 +9,7 @@ use common::repo::Tx;
 use futures_util::FutureExt;
 pub use hash::hash_for_testing;
 use log::info;
-use rand::{thread_rng, Rng};
+use rand::{rng, Rng};
 use rule::create_inactive_rule_for_another_user;
 use sqlx::postgres::{PgConnectOptions, PgPoolOptions};
 use sqlx::{Executor, PgPool};
@@ -33,20 +33,20 @@ pub mod wallet;
 
 fn generate_db_name() -> String {
     const CHARSET: &[u8] = b"abcdefghijklmnopqrstuvwxyz";
-    let mut rng = thread_rng();
+    let mut rng = rng();
     let name: String = (0..32)
-        .map(|_| CHARSET[rng.gen_range(0..CHARSET.len())] as char)
+        .map(|_| CHARSET[rng.random_range(0..CHARSET.len())] as char)
         .collect();
     format!("test_{}", name)
 }
 
 fn generate_snapshot_db_name() -> String {
-    let mut rng = thread_rng();
+    let mut rng = rng();
     let charset: Vec<char> = ('a'..='z').collect();
     format!(
         "snapshot_{}",
         (0..32)
-            .map(|_| charset[rng.gen_range(0..charset.len())])
+            .map(|_| charset[rng.random_range(0..charset.len())])
             .collect::<String>()
     )
 }

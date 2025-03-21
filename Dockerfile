@@ -1,4 +1,4 @@
-FROM rust:1.84.0-bullseye AS base
+FROM rust:1.85.1-bullseye AS base
 RUN cargo install cargo-chef --locked
 RUN rustup component add rustfmt
 RUN rustup update

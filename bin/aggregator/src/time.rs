@@ -1,8 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use rand::prelude::StdRng;
-use rand::{Rng, SeedableRng};
+use rand::{rng, Rng};
 use std::time::Duration;
 
 #[macro_export]
@@ -34,7 +33,6 @@ macro_rules! log_ms {
 }
 
 pub async fn sleep_ms(lower: u64, upper: u64) {
-    let mut rng = StdRng::from_entropy();
-    let sleep_time = rng.gen_range(lower..=upper);
+    let sleep_time = rng().random_range(lower..=upper);
     tokio::time::sleep(Duration::from_millis(sleep_time)).await;
 }
