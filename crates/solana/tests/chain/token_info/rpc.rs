@@ -24,7 +24,7 @@ async fn test_ok() {
     assert_eq!(result.name.unwrap(), "kith gil");
     assert_eq!(result.symbol.unwrap(), "gil");
     assert_eq!(result.decimals.unwrap(), 6);
-    assert!(result.supply.unwrap().0 > 0, "has supply");
+    assert!(result.supply.unwrap() > 0, "has supply");
     assert_eq!(
         result.metadata.unwrap(),
         "https://ipfs.io/ipfs/QmSb77j7oyJrzwbJTc3EtXA6rCNcwrMAFMVQm3yqcRXZ4y"
@@ -50,7 +50,7 @@ async fn test_no_pda() {
     assert_eq!(result.name, None);
     assert_eq!(result.symbol, None);
     assert_eq!(result.decimals.unwrap(), 6);
-    assert!(result.supply.unwrap().0 > 0, "has supply");
+    assert!(result.supply.unwrap() > 0, "has supply");
     assert_eq!(result.metadata, None);
 }
 
@@ -68,7 +68,7 @@ async fn test_token_2022_without_extension() {
     assert_eq!(result.name, None);
     assert_eq!(result.symbol, None);
     assert_eq!(result.decimals.unwrap(), 2);
-    assert!(result.supply.unwrap().0 > 0, "has supply");
+    assert!(result.supply.unwrap() > 0, "has supply");
 }
 
 #[test_log::test(tokio::test)]
@@ -89,7 +89,7 @@ async fn test_token_2022_with_extension() {
     assert_eq!(result.name.unwrap(), "PayPal USD");
     assert_eq!(result.symbol.unwrap(), "PYUSD");
     assert_eq!(result.decimals.unwrap(), 6);
-    assert!(result.supply.unwrap().0 > 0, "has supply");
+    assert!(result.supply.unwrap() > 0, "has supply");
     assert_eq!(
         result.metadata.unwrap(),
         "https://token-metadata.paxos.com/pyusd_metadata/prod/solana/pyusd_metadata.json"

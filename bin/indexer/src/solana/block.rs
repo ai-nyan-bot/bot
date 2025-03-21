@@ -122,9 +122,9 @@ pub async fn index_block(state: State, block: Block) {
                                     jupiter_slot_swaps.swaps.push(
                                         solana::jupiter::repo::SlotSwap {
                                             input_mint: swap.input_mint.clone(),
-                                            input_amount: swap.input_amount,
+                                            input_amount: swap.input_amount.clone(),
                                             output_mint: swap.output_mint.clone(),
-                                            output_amount: swap.output_amount,
+                                            output_amount: swap.output_amount.clone(),
                                             wallet: signer.clone(),
                                             signature: transaction.signature.clone(),
                                         },

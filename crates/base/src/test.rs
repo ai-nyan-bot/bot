@@ -34,7 +34,7 @@ impl LoadTokenInfo for SuccessfulTokenInfoLoader {
             name: Some(Name::new(counter.to_string())),
             symbol: Some(Symbol::new(counter.to_string())),
             decimals: Some(Decimals(6)),
-            supply: Some(Amount(*counter as i64)),
+            supply: Some(Amount::from(*counter as i64)),
             description: Some(Description(format!("Token-Description-{counter}"))),
             metadata: Some(Uri(format!("http://metadata-{counter}"))),
             image: Some(Uri(format!("http://image-{counter}"))),

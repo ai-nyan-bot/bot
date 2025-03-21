@@ -2,11 +2,13 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use base::model::Amount;
+use bigdecimal::{BigDecimal, ToPrimitive};
 use common::model::Percent;
 
 pub fn calculate_progress(virtual_base_reserves: Amount) -> Percent {
     let base_reserve = virtual_base_reserves.0 / 1_000_000;
-    let progress = ((((1_073_000_000) - base_reserve) * 100) as f64) / (793_100_000) as f64;
+    let progress: BigDecimal = (((1_073_000_000) - base_reserve) * 100) / (793_100_000) as f64;
+    let progress = progress.to_f32().unwrap();
     let progress = progress.clamp(0.0, 100.0) as f32;
     Percent::from(progress)
 }
@@ -27,7 +29,7 @@ mod tests {
         };
 
         let result = calculate_progress(test_instance.virtual_base_reserves);
-        assert_eq!(result, 0.19626226);
+        assert_eq!(result, 0.19626218);
     }
 
     #[test]

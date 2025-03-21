@@ -2,10 +2,11 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::{
-    CompiledInstruction, InnerInstruction, InnerInstructions, Keys, Signature, Transaction,
-    TransactionStatus,
+    Balance, CompiledInstruction, InnerInstruction, InnerInstructions, Keys, Signature, SolBalance,
+    TokenBalance, Transaction, TransactionStatus,
 };
-use base::model::PublicKey;
+use base::model::{DecimalAmount, Mint, PublicKey};
+use bigdecimal::BigDecimal;
 use regex::Regex;
 use solana_rpc_client::rpc_client::SerializableTransaction;
 use solana_sdk::bs58;
@@ -21,6 +22,7 @@ pub(crate) fn convert_transaction(tx: EncodedTransactionWithStatusMeta) -> Trans
     let vtx = tx.transaction.decode().unwrap();
     let signature = Signature(vtx.get_signature().to_string());
     let keys = extract_keys(&vtx, &meta);
+    let balance = extract_balance(&meta, &keys);
 
     let status = meta.err.map_or(TransactionStatus::Success, |err| {
         TransactionStatus::Error(err.to_string())
@@ -69,13 +71,48 @@ pub(crate) fn convert_transaction(tx: EncodedTransactionWithStatusMeta) -> Trans
     Transaction {
         signature,
         status,
+        balance,
         instructions,
         inner_instructions,
         log_messages,
         keys,
     }
 }
-pub(crate) fn extract_keys(vtx: &VersionedTransaction, meta: &UiTransactionStatusMeta) -> Keys {
+
+fn extract_balance(meta: &UiTransactionStatusMeta, keys: &Keys) -> Balance {
+    let mut sol = Vec::with_capacity(meta.pre_balances.len());
+    for (idx, key) in keys.static_account.iter().enumerate() {
+        let pre = meta.pre_balances[idx];
+        let post = meta.post_balances[idx];
+        sol.push(SolBalance {
+            address: key.clone(),
+            pre: DecimalAmount::new(pre, 9),
+            post: DecimalAmount::new(post, 9),
+        });
+    }
+
+    let mut token = Vec::new();
+
+    if let (OptionSerializer::Some(pre), OptionSerializer::Some(post)) =
+        (&meta.pre_token_balances, &meta.post_token_balances)
+    {
+        for (pre, post) in pre.iter().zip(post.iter()) {
+            pre.ui_token_amount.decimals;
+            let pre_balance = BigDecimal::from_str(pre.ui_token_amount.amount.as_str()).unwrap();
+            let post_balance = BigDecimal::from_str(post.ui_token_amount.amount.as_str()).unwrap();
+
+            token.push(TokenBalance {
+                mint: Mint::from(pre.mint.clone()),
+                pre: DecimalAmount::new(pre_balance, pre.ui_token_amount.decimals),
+                post: DecimalAmount::new(post_balance, post.ui_token_amount.decimals),
+            })
+        }
+    }
+
+    Balance { sol, token }
+}
+
+fn extract_keys(vtx: &VersionedTransaction, meta: &UiTransactionStatusMeta) -> Keys {
     let static_account: Vec<PublicKey> = vtx
         .message
         .static_account_keys()

@@ -95,11 +95,11 @@ impl SwapRepo {
         let mut signatures = Vec::with_capacity(len);
 
         for swap in &slot.swaps {
-            let amount_base = DecimalAmount::new(swap.amount_base, 6);
-            let amount_quote = DecimalAmount::new(swap.amount_quote, 9);
+            let amount_base = DecimalAmount::new(swap.amount_base.clone(), 6);
+            let amount_quote = DecimalAmount::new(swap.amount_quote.clone(), 9);
 
-            let base_reserve = swap.virtual_base_reserves;
-            let quote_reserve = swap.virtual_quote_reserves;
+            let base_reserve = swap.virtual_base_reserves.clone();
+            let quote_reserve = swap.virtual_quote_reserves.clone();
 
             let price = PriceQuote(amount_quote.0.clone() / amount_base.0.clone());
 
@@ -111,7 +111,7 @@ impl SwapRepo {
             prices.push(price);
             is_buys.push(swap.is_buy);
             timestamps.push(slot.timestamp);
-            base_reserves.push(base_reserve);
+            base_reserves.push(base_reserve.clone());
             quote_reserves.push(quote_reserve);
             progresses.push(calculate_progress(base_reserve));
 
@@ -156,8 +156,6 @@ returning id, slot, address_id, token_pair_id, amount_base, amount_quote, price,
             .bind(&signatures)
             .execute(&mut **tx)
             .await?;
-            
-            
 
         let rows = sqlx::query(
             r#"
@@ -175,8 +173,8 @@ select * from (
         unnest($6::numeric(36, 12)[]) as price,
         unnest($7::boolean[]) as is_buy,
         unnest($8::timestamptz[]) as timestamp,
-        unnest($9::int8[]) as virtual_base_reserves,
-        unnest($10::int8[]) as virtual_quote_reserves,
+        unnest($9::numeric(36, 12)[]) as virtual_base_reserves,
+        unnest($10::numeric(36, 12)[]) as virtual_quote_reserves,
         unnest($11::real[]) as progress,
         unnest($12::text[]) as signature
 ) as s

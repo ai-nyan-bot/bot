@@ -5,7 +5,7 @@ use base::repo::WalletRepo;
 use common::crypt::Nonce;
 use common::repo::error::RepoError;
 use sqlx::Acquire;
-use testing::user::{create_telegram_user, get_or_create_test_user};
+use testing::user::create_telegram_user;
 use testing::wallet::count_all;
 use testing::{run_test_on_empty_db, run_test_with_pool_on_empty_db, user, wallet};
 
@@ -46,7 +46,7 @@ async fn test_create_wallet() {
 #[test_log::test(sqlx::test)]
 async fn test_wallet_encryption() {
     run_test_on_empty_db(|mut tx| async move {
-        let user = get_or_create_test_user(&mut tx).await;
+        let user = create_telegram_user(&mut tx, 123).await.unwrap();
 
         let wallet = create_wallet(
             &mut tx,

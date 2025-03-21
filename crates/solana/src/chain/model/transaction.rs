@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::Signature;
-use base::model::PublicKey;
+use base::model::{DecimalAmount, Mint, PublicKey};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
@@ -15,10 +15,31 @@ pub enum TransactionStatus {
 pub struct Transaction {
     pub signature: Signature,
     pub status: TransactionStatus,
+    pub balance: Balance,
     pub instructions: Vec<CompiledInstruction>,
     pub inner_instructions: Vec<InnerInstructions>,
     pub log_messages: Vec<String>,
     pub keys: Keys,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct Balance {
+    pub sol: Vec<SolBalance>,
+    pub token: Vec<TokenBalance>,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct SolBalance {
+    pub address: PublicKey,
+    pub pre: DecimalAmount,
+    pub post: DecimalAmount,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct TokenBalance {
+    pub mint: Mint,
+    pub pre: DecimalAmount,
+    pub post: DecimalAmount,
 }
 
 #[derive(Debug, Deserialize, Serialize)]

@@ -221,8 +221,8 @@ fn calculate_amount_and_side(
         &quote_token.decimals
     };
 
-    let input_amount = DecimalAmount::new(swap.input_amount, input_decimals.clone());
-    let output_amount = DecimalAmount::new(swap.output_amount, output_decimals.clone());
+    let input_amount = DecimalAmount::new(swap.input_amount.clone(), input_decimals.clone());
+    let output_amount = DecimalAmount::new(swap.output_amount.clone(), output_decimals.clone());
 
     let amount_base = if swap.input_mint == base_token.mint {
         input_amount.clone()

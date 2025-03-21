@@ -2,6 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::Decimals;
+use bigdecimal::ToPrimitive;
 use serde::{Deserialize, Serialize};
 use sqlx::types::BigDecimal;
 use sqlx::Type;
@@ -9,37 +10,43 @@ use std::cmp::Ordering;
 use std::ops::Div;
 use std::str::FromStr;
 
-#[derive(Copy, Clone, Debug, PartialEq, PartialOrd, Deserialize, Serialize, sqlx::Type)]
+#[derive(Clone, Debug, PartialEq, PartialOrd, Deserialize, Serialize, sqlx::Type)]
 #[sqlx(transparent)]
-pub struct Amount(pub i64);
+pub struct Amount(pub BigDecimal);
 
 impl From<i32> for Amount {
     fn from(value: i32) -> Self {
-        Self(value as i64)
+        Self(BigDecimal::from(value))
     }
 }
 
 impl From<i64> for Amount {
     fn from(value: i64) -> Self {
-        Self(value)
+        Self(BigDecimal::from(value))
     }
 }
 
 impl From<u64> for Amount {
     fn from(value: u64) -> Self {
-        Self(value as i64)
+        Self(BigDecimal::from(value))
+    }
+}
+
+impl From<BigDecimal> for Amount {
+    fn from(value: BigDecimal) -> Self {
+        Self(value)
     }
 }
 
 impl PartialEq<i64> for Amount {
     fn eq(&self, other: &i64) -> bool {
-        self.0 == *other
+        self.0.to_i64().unwrap() == *other
     }
 }
 
 impl PartialOrd<i64> for Amount {
     fn partial_cmp(&self, other: &i64) -> Option<Ordering> {
-        self.0.partial_cmp(other)
+        self.0.to_i64().unwrap().partial_cmp(other)
     }
 }
 
