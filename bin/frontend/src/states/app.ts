@@ -141,13 +141,9 @@ export const appReducer = (state: AppState, action: AppAction): AppState => {
 }
 
 export const appInitialState = (localStorage: LocalStorage): AppState => {
-    // // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // // @ts-ignore
-    // let isTelegram = (window?.Telegram?.WebApp?.initData || "") !== "";
-    // let type: AppType = isTelegram ? "Telegram" : "WebApp";
-
-    const host = window.location.host.split(".");
-    const isTelegram = host[0] === "telegram";
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    let isTelegram = (window?.Telegram?.WebApp?.initData || "") !== "";
     let type: AppType = isTelegram ? "Telegram" : "WebApp";
 
     return ({

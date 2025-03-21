@@ -35,13 +35,8 @@ export const useLogout = (): [LogoutAction, boolean, Error | null] => {
             })
             .catch(error => {
                 if (error.name !== 'AbortError') {
-                    // FIXME NETWORK ERROR
                     setError(error)
                     setLoading(false)
-                }
-
-                if (error.message === 'NetworkError when attempting to fetch resource.') {
-                    window.location.href = '/'
                 }
             })
 
@@ -76,6 +71,7 @@ export const useMetaMask = (): [MetaMaskAction, string | null, boolean, Error | 
                 if (!response.ok) {
                     setError(Error(`Request submission failed: ${response.status} - ${response.statusText}`))
                     setLoading(false)
+                    return;
                 }
 
                 response.json().then(data => {
@@ -95,15 +91,11 @@ export const useMetaMask = (): [MetaMaskAction, string | null, boolean, Error | 
             })
             .catch(error => {
                 if (error.name !== 'AbortError') {
-                    // FIXME NETWORK ERROR
                     setError(error)
                     setLoading(false)
+                    return
                 }
 
-                if (error.message === 'NetworkError when attempting to fetch resource.') {
-                    appDispatch({type: 'APP_LOGOUT'})
-                    window.location.href = '/'
-                }
             })
     }, [appDispatch, navigate])
 
@@ -133,6 +125,8 @@ export const useTelegram = (): [TelegramAction, string | null, boolean, Error | 
                 if (!response.ok) {
                     setError(Error(`Request submission failed: ${response.status} - ${response.statusText}`))
                     setLoading(false)
+                    return;
+
                 }
 
                 response
@@ -156,14 +150,8 @@ export const useTelegram = (): [TelegramAction, string | null, boolean, Error | 
             })
             .catch(error => {
                 if (error.name !== 'AbortError') {
-                    // FIXME NETWORK ERROR
                     setError(error)
                     setLoading(false)
-                }
-
-                if (error.message === 'NetworkError when attempting to fetch resource.') {
-                    dispatch({type: 'APP_LOGOUT'})
-                    window.location.href = '/'
                 }
             })
     }, [dispatch])

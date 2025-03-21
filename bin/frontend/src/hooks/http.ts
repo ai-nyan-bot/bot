@@ -27,11 +27,13 @@ export const useGet = <T>(): [GetAction, T | null, boolean, Error | null] => {
                 .then(response => {
                     if (response.status === 403) {
                         logout()
+                        return;
                     }
 
                     if (!response.ok) {
                         setError(Error(`Request submission failed: ${response.status} - ${response.statusText}`))
                         setLoading(false)
+                        return;
                     }
                     response.json().then(data => {
                         setData(data)
@@ -40,14 +42,9 @@ export const useGet = <T>(): [GetAction, T | null, boolean, Error | null] => {
                 })
                 .catch(error => {
                     if (error.name !== 'AbortError') {
-                        // FIXME NETWORK ERROR
                         setError(error)
                         setLoading(false)
-                    }
-
-                    if (error.message === 'NetworkError when attempting to fetch resource.') {
-                        // setAuth(null) // FIXME
-                        window.location.href = '/'
+                        return;
                     }
                 })
         }
@@ -83,11 +80,13 @@ export const usePost = <T>(): [PostAction, T | null, boolean, Error | null] => {
                 .then(response => {
                     if (response.status === 403) {
                         logout()
+                        return;
                     }
 
                     if (!response.ok) {
                         setError(Error(`Request submission failed: ${response.status} - ${response.statusText}`))
                         setLoading(false)
+                        return;
                     }
                     response.json().then(data => {
                         setData(data)
@@ -95,18 +94,11 @@ export const usePost = <T>(): [PostAction, T | null, boolean, Error | null] => {
                     })
                 })
                 .catch(error => {
-
                     if (error.name !== 'AbortError') {
-                        // FIXME NETWORK ERROR
                         setError(error)
                         setLoading(false)
+                        return;
                     }
-
-                    if (error.message === 'NetworkError when attempting to fetch resource.') {
-                        // setAuth(null) // FIXME
-                        window.location.href = '/'
-                    }
-
                 })
         }
     }, [auth])
@@ -142,11 +134,13 @@ export const usePatch = <T>(): [PatchAction, T | null, boolean, Error | null] =>
 
                     if (response.status === 403) {
                         logout()
+                        return;
                     }
 
                     if (!response.ok) {
                         setError(Error(`Request submission failed: ${response.status} - ${response.statusText}`))
                         setLoading(false)
+                        return;
                     }
                     response.json().then(data => {
                         setData(data)
@@ -154,18 +148,11 @@ export const usePatch = <T>(): [PatchAction, T | null, boolean, Error | null] =>
                     })
                 })
                 .catch(error => {
-
                     if (error.name !== 'AbortError') {
-                        // FIXME NETWORK ERROR
                         setError(error)
                         setLoading(false)
+                        return;
                     }
-
-                    if (error.message === 'NetworkError when attempting to fetch resource.') {
-                        // setAuth(null) // FIXME
-                        window.location.href = '/'
-                    }
-
                 })
         }
     }, [auth])

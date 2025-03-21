@@ -1,4 +1,4 @@
-import React, {FC, ReactNode, useContext, useEffect, useReducer} from "react";
+import React, {FC, ReactNode, useCallback, useContext, useEffect, useReducer, useState} from "react";
 import {BrowserRouter, Route, Routes, useLocation} from "react-router-dom";
 
 import {modalInitialState, modalReducer} from "@states/modal";
@@ -42,37 +42,78 @@ const WebAuthenticated: FC<{ children: ReactNode }> = ({children}) => {
 
 const TelegramAuthenticated: FC<{ children: ReactNode }> = ({children}) => {
     const location = useLocation();
-    const [telegramLogin, , , telegramErr] = useTelegram();
+    const [telegramLogin, , loading, telegramErr] = useTelegram();
     const {telegramData, auth} = useContext(ContextAppState);
+    const [retries, setRetries] = useState(0);
+    const [manualRetry, setManualRetry] = useState(false);
+    const MAX_RETRIES = 5;
 
-    useEffect(() => {
-        const abortController = new AbortController();
-
-        const retryLogin = () => {
-            if (auth.type === "Unauthorized" && telegramData?.initData) {
-                telegramLogin(telegramData.initData, location.pathname, abortController);
-
-                setTimeout(() => {
-                    if (auth.type === "Unauthorized") {
-                        retryLogin();
-                    }
-                }, 1500);
-            }
-        };
-
-        retryLogin();
-
-        return () => {
-            abortController.abort();
-        };
+    const doLogin = useCallback(() => {
+        if (auth.type === "Unauthorized" && telegramData?.initData) {
+            const abortController = new AbortController();
+            telegramLogin(telegramData.initData, location.pathname, abortController);
+        }
     }, [auth, telegramData, location.pathname, telegramLogin]);
 
-    if (auth.type === "Unauthorized") {
-        return <h1 className="text-center text-blue-800 text-xl">Starting your telegram terminal</h1>;
+    useEffect(() => {
+        if (retries < MAX_RETRIES && !manualRetry) {
+            const timeout = setTimeout(() => {
+                if (auth.type === "Unauthorized") {
+                    setRetries(prev => prev + 1);
+                    doLogin();
+                }
+            }, 1500);
+
+            return () => clearTimeout(timeout);
+        }
+    }, [auth, retries, manualRetry, doLogin]);
+
+    const handleRetry = () => {
+        setRetries(0);
+        setManualRetry(false);
+        doLogin();
+    };
+
+    if (!telegramData) {
+        return (
+            <div className="text-center">
+                <h1 className="text-red-700 text-xl mb-4">Failed to retrieve data from Telegram</h1>
+                <h2 className="text-center text-blue-800 text-xl"> Please close & reopen the bot</h2>
+            </div>
+        );
     }
 
     if (telegramErr) {
-        return <h1>Telegram terminal says no</h1>;
+        return (
+            <div className="text-center">
+                <h1 className="text-red-700 text-xl mb-4">Telegram terminal says no</h1>
+                <button
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                    onClick={handleRetry}
+                >
+                    Retry
+                </button>
+            </div>
+        );
+    }
+
+    if (auth.type === "Unauthorized" && retries < MAX_RETRIES && loading) {
+        return <h1 className="text-center text-blue-800 text-xl">Starting your telegram terminal</h1>;
+    }
+
+    if (auth.type === "Unauthorized" && retries >= MAX_RETRIES) {
+        return (
+            <div className="text-center">
+                <h1 className="text-yellow-800 text-xl mb-4">We are sorry, login failed
+                    after {MAX_RETRIES} attempts</h1>
+                <button
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                    onClick={handleRetry}
+                >
+                    Retry
+                </button>
+            </div>
+        );
     }
 
     return children;
