@@ -24,8 +24,8 @@ lazy_static! {
 pub(crate) async fn create_wallet(
     tx: &mut Tx<'_>,
     user_id: impl Into<UserId>,
-    solana_public_key: impl Into<PublicKey>,
-    solana_private_key: impl Into<PrivateKey>,
+    public_key: impl Into<PublicKey>,
+    private_key: impl Into<PrivateKey>,
     nonce: Nonce,
 ) -> RepoResult<Wallet> {
     WalletRepo {
@@ -35,8 +35,8 @@ pub(crate) async fn create_wallet(
         tx,
         WalletCreateCmd {
             user_id: user_id.into(),
-            solana_public_key: solana_public_key.into(),
-            solana_private_key: solana_private_key.into(),
+            public_key: public_key.into(),
+            private_key: private_key.into(),
             nonce,
         },
     )
@@ -50,6 +50,6 @@ pub(crate) async fn get_solana_private(
     WalletRepo {
         secret: SecretKey::from("3d7948d31771b3924dbeec3de83d905580d988c84964a6afd4c9cedd06776e91"),
     }
-    .get_solana_private_key(tx, wallet_id)
+    .get_private_key(tx, wallet_id)
     .await
 }

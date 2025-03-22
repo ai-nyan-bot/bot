@@ -49,7 +49,7 @@ pub(crate) async fn start(bot: Bot, msg: Message, state: AppState) -> CommandRes
                 .await
                 .unwrap();
 
-            let address = wallet.solana_public_key.to_string();
+            let address = wallet.public_key.to_string();
 
             bot.send_message(msg.chat.id, markdown!(r#"
 Welcome to AI Nyanbot!

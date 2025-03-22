@@ -1,12 +1,12 @@
--- Copyright (c) nyanbot.com 2025.
--- This file is licensed under the AGPL-3.0-or-later.
-
-drop trigger trigger_update_most_recent_token_balance on solana.balance_token;
-drop function solana.update_balance_token_most_recent;
-drop table solana.balance_token_most_recent;
-drop table solana.balance_token;
-
-drop trigger trigger_update_most_recent_sol_balance on solana.balance_sol;
-drop function solana.update_balance_sol_most_recent;
-drop table solana.balance_sol_most_recent;
-drop table solana.balance_sol;
+-- -- Copyright (c) nyanbot.com 2025.
+-- -- This file is licensed under the AGPL-3.0-or-later.
+--
+-- drop trigger trigger_update_most_recent_token_balance on solana.balance_token;
+-- drop function solana.update_balance_token_most_recent;
+-- drop table solana.balance_token_most_recent;
+-- drop table solana.balance_token;
+--
+-- drop trigger trigger_update_most_recent_sol_balance on solana.balance_sol;
+-- drop function solana.update_balance_sol_most_recent;
+-- drop table solana.balance_sol_most_recent;
+-- drop table solana.balance_sol;

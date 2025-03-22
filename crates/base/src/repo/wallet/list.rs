@@ -16,7 +16,7 @@ impl WalletRepo {
         query: WalletQueryAll,
     ) -> RepoResult<Box<[Wallet]>> {
         Ok(
-            sqlx::query("select * from nyanbot.wallet order by id desc limit $1;")
+            sqlx::query("select * from solana.wallet order by id desc limit $1;")
                 .bind(query.limit)
                 .fetch_all(&mut **tx)
                 .await?
@@ -24,7 +24,7 @@ impl WalletRepo {
                 .map(|r| Wallet {
                     id: r.get::<WalletId, _>("id"),
                     user_id: r.get::<UserId, _>("user_id"),
-                    solana_public_key: r.get::<PublicKey, _>("solana_public_key"),
+                    public_key: r.get::<PublicKey, _>("public_key"),
                     created_at: r.get::<CreatedAt, _>("created_at"),
                     updated_at: r.get::<UpdatedAt, _>("updated_at"),
                 })

@@ -64,8 +64,8 @@ impl UserService {
                 tx,
                 WalletCreateCmd {
                     user_id: user.id,
-                    solana_public_key: keypair.public,
-                    solana_private_key: keypair.private,
+                    public_key: keypair.public,
+                    private_key: keypair.private,
                     nonce: Nonce::generate(),
                 },
             )

@@ -27,7 +27,7 @@ impl From<i64> for WalletId {
 pub struct Wallet {
     pub id: WalletId,
     pub user_id: UserId,
-    pub solana_public_key: PublicKey,
+    pub public_key: PublicKey,
     pub created_at: CreatedAt,
     pub updated_at: UpdatedAt,
 }
@@ -36,8 +36,8 @@ pub struct Wallet {
 pub struct WalletUnsafe {
     pub id: WalletId,
     pub user_id: UserId,
-    pub solana_public_key: PublicKey,
-    pub solana_private_key: PrivateKey,
+    pub public_key: PublicKey,
+    pub private_key: PrivateKey,
     pub created_at: CreatedAt,
     pub updated_at: UpdatedAt,
     pub nonce: Nonce,

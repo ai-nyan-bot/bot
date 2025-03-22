@@ -12,21 +12,19 @@ use sqlx::{query, Row};
 
 pub struct WalletCreateCmd {
     pub user_id: UserId,
-    pub solana_public_key: PublicKey,
-    pub solana_private_key: PrivateKey,
+    pub public_key: PublicKey,
+    pub private_key: PrivateKey,
     pub nonce: Nonce,
 }
 
 impl WalletRepo {
     pub async fn create<'a>(&self, tx: &mut Tx<'a>, cmd: WalletCreateCmd) -> RepoResult<Wallet> {
-        if let Some(encrypted) = encrypt_string(
-            &self.secret,
-            &cmd.nonce,
-            cmd.solana_private_key.0.as_bytes(),
-        ) {
-            let user_id = query("insert into nyanbot.wallet (user_id, solana_public_key, solana_private_key, nonce) values ($1, $2, $3,$4) returning id")
+        if let Some(encrypted) =
+            encrypt_string(&self.secret, &cmd.nonce, cmd.private_key.0.as_bytes())
+        {
+            let user_id = query("insert into solana.wallet (user_id, public_key, private_key, nonce) values ($1, $2, $3,$4) returning id")
             .bind(cmd.user_id)
-            .bind(cmd.solana_public_key)
+            .bind(cmd.public_key)
             .bind::<String>(encrypted)
             .bind::<String>(cmd.nonce.into())
             .fetch_one(&mut **tx)

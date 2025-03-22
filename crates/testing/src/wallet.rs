@@ -18,8 +18,8 @@ pub async fn create_wallet<'a>(tx: &mut Tx<'a>, user_id: impl Into<UserId>) -> R
         tx,
         WalletCreateCmd {
             user_id: user_id.into(),
-            solana_public_key: keypair.public,
-            solana_private_key: keypair.private,
+            public_key: keypair.public,
+            private_key: keypair.private,
             nonce: Nonce::generate(),
         },
     )

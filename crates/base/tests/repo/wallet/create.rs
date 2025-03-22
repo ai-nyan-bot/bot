@@ -35,7 +35,7 @@ async fn test_create_wallet() {
 
         assert_eq!(wallet.id, 2);
         assert_eq!(wallet.user_id, 3);
-        assert_eq!(wallet.solana_public_key, *PUBLIC_KEY);
+        assert_eq!(wallet.public_key, *PUBLIC_KEY);
 
         let count = count_all(&mut tx).await;
         assert_eq!(count, 2);
@@ -108,7 +108,7 @@ async fn test_one_wallet_per_user() {
 }
 
 #[test_log::test(sqlx::test)]
-async fn test_solana_public_key_is_unique() {
+async fn test_public_key_is_unique() {
     run_test_on_empty_db(|mut tx| async move {
         let user = create_telegram_user(&mut tx, 1).await.unwrap();
         let _ = create_wallet(&mut tx, user.id, PUBLIC_KEY.clone(), PRIVATE_KEY.clone(), Nonce::generate()).await.unwrap();
@@ -131,7 +131,7 @@ async fn test_solana_public_key_is_unique() {
 }
 
 #[test_log::test(sqlx::test)]
-async fn test_solana_private_key_is_unique() {
+async fn test_private_key_is_unique() {
     run_test_on_empty_db(|mut tx| async move {
         let nonce = Nonce::generate();
 

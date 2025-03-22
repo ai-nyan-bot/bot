@@ -31,7 +31,7 @@ async fn test_get() {
         let wallet = test_instance.get_by_id(&mut tx, 2).await.unwrap();
         assert_eq!(wallet.id, 2);
         assert_eq!(wallet.user_id, 3);
-        assert_eq!(wallet.solana_public_key, *PUBLIC_KEY);
+        assert_eq!(wallet.public_key, *PUBLIC_KEY);
     })
     .await
 }

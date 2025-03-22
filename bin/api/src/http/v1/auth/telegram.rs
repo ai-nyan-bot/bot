@@ -34,7 +34,7 @@ pub async fn telegram(State(state): State<AppState>, JsonReq(req): JsonReq<Teleg
         telegram: Telegram { id: user.telegram_id.unwrap() },
         wallet: Wallet {
             id: wallet.id,
-            solana: wallet.solana_public_key,
+            solana: wallet.public_key,
         },
     }))
 }

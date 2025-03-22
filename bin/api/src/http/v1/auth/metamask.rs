@@ -31,7 +31,7 @@ pub async fn metamask(
         user: User { id: user.id },
         wallet: Wallet {
             id: wallet.id,
-            solana: wallet.solana_public_key,
+            solana: wallet.public_key,
         },
     }))
 }

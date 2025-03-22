@@ -19,7 +19,7 @@ async fn test_start_command_creates_user_if_not_exists() {
         let message = responses.sent_messages.last().unwrap();
 
         let wallet = state.user_service().get_wallet(3).await.unwrap();
-        let address = wallet.solana_public_key.to_string();
+        let address = wallet.public_key.to_string();
 
         assert_eq!(message.text(),Some(format!(r#"Welcome to AI Nyanbot\!
 
