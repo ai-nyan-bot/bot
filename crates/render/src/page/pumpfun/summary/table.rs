@@ -7,7 +7,7 @@ use crate::page::pumpfun::summary::{
 use crate::{Font, FontSize, Line, Point, RenderLine, RenderText, Text};
 use common::format::FormatPretty;
 use image::{Rgba, RgbaImage};
-use solana::model::{
+use solana::pumpfun::model::summary::{
     MarketCapWithChange, PriceWithChange, SwapWithChange, TimeframeSummary, VolumeWithChange,
 };
 use std::ops::Div;

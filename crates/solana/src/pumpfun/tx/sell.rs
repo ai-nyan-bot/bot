@@ -4,7 +4,7 @@
 // This file includes portions of code from https://github.com/nhuxhr/pumpfun-rs (MIT License).
 // Original MIT License Copyright (c) nhuxhr 2024.
 
-use crate::model::Signature;
+use crate::model::solana::Signature;
 use crate::pumpfun;
 use crate::pumpfun::Pumpfun;
 use base::model::KeyPair;

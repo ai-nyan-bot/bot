@@ -2,9 +2,9 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::solana::indexer::IndexerRepo;
+use base::model::solana::{Indexer, Slot};
 use common::model::UpdatedAt;
 use common::repo::{RepoResult, Tx};
-use solana::model::{Indexer, Slot};
 use sqlx::{query, Row};
 
 impl IndexerRepo {

@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::Slot;
+use base::model::solana::Slot;
 use crate::pumpfun::model::Current;
 use crate::pumpfun::repo::CurrentRepo;
 use base::model::{Amount, TokenPairId};

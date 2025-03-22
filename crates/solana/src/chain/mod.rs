@@ -2,8 +2,6 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 pub mod convert;
-pub mod model;
-pub mod repo;
 pub mod rpc;
 pub mod stream;
 pub mod token_info;

@@ -4,7 +4,7 @@
 mod download;
 mod slot;
 
-use crate::model::{Block, Slot};
+use base::model::solana::{Block, Slot};
 use crate::rpc::RpcClient;
 use crate::stream::block::download::{DownloadResult, Downloader};
 use crate::stream::block::slot::SlotsToDownload;

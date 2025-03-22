@@ -4,7 +4,7 @@
 use base::model::{Fact, Facts, Value};
 use bigdecimal::ToPrimitive;
 use common::model::Timeframe;
-use solana::model::TimeframeSummary;
+use solana::pumpfun::model::summary::TimeframeSummary;
 use Fact::{
     MarketCapQuoteAggregate, MarketCapSolAggregate, MarketCapUsdAggregate, SwapAllChangeAggregate,
     SwapAllCountAggregate, SwapAllPercentAggregate, SwapBuyCountAggregate, SwapBuyPercentAggregate,

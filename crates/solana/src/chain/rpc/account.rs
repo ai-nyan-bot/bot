@@ -1,8 +1,8 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::{AccountInfo, AccountInfoAtSlot};
 use crate::rpc::{RpcClient, RpcResult};
+use base::model::solana::{AccountInfo, AccountInfoAtSlot};
 use base::model::PublicKey;
 use solana_account_decoder_client_types::UiAccountEncoding;
 use solana_client::rpc_config::RpcAccountInfoConfig;

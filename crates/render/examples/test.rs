@@ -1,7 +1,7 @@
 use common::model::{Percent, PriceUsd};
 use image::RgbaImage;
 use render::page::pumpfun::{pumpfun_summary, PumpfunSummary};
-use solana::model::{MarketCapWithChange, PriceWithChange, ProgressWithChange, SummaryCurveProgress, SummaryMarketCap, SummaryPrice, SummarySwap, SummaryVolume, SwapWithChange, TimeframeSummary, VolumeWithChange};
+use solana::pumpfun::model::summary::{MarketCapWithChange, PriceWithChange, ProgressWithChange, SummaryCurveProgress, SummaryMarketCap, SummaryPrice, SummarySwap, SummaryVolume, SwapWithChange, TimeframeSummary, VolumeWithChange};
 
 fn main() {
     let img_width = 1200;

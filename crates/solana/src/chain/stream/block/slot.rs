@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::Slot;
+use base::model::solana::Slot;
 use std::cell::RefCell;
 use std::sync::Arc;
 use tokio::sync::Mutex;
@@ -62,7 +62,7 @@ impl SlotsToDownload {
 
 #[cfg(test)]
 mod tests {
-    use crate::model::Slot;
+    use base::model::solana::Slot;
     use crate::stream::block::slot::SlotsToDownload;
 
     #[test_log::test(tokio::test)]

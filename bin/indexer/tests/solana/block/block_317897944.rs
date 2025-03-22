@@ -1,15 +1,14 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use base::model::solana::Slot;
 use base::model::DecimalAmount;
-use base::repo::{AddressRepo, TokenRepo};
+use base::repo::{AddressRepo, TokenBalanceRepo, TokenRepo};
 use base::test::NeverCalledTokenInfoLoader;
 use common::model::{BlockTimestamp, Timestamp};
 use indexer::solana::block::index_block;
 use indexer::solana::state::{State, StateInner};
 use solana::convert::convert_block;
-use solana::model::Slot;
-use solana::repo::BalanceRepo;
 use sqlx::Executor;
 use std::sync::Arc;
 use testing::run_test_with_pool_on_empty_db;
@@ -133,7 +132,7 @@ insert into solana.token (mint, name, symbol, decimals, supply, metadata, descri
 		let state = State(Arc::new(StateInner {
 			token_repo: token_repo.clone(),
 			address_repo: AddressRepo::new(),
-			balance_repo: BalanceRepo::new(),
+			token_balance_repo: TokenBalanceRepo::new(),
 			pool: pool.clone(),
 			pumpfun_swap_repo,
 			pumpfun_current_repo: Default::default(),

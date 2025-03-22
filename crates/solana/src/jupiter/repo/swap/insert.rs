@@ -6,7 +6,7 @@
 
 use crate::jupiter::model::Swap;
 use crate::jupiter::repo::SwapRepo;
-use crate::model::{Signature, Slot};
+use base::model::solana::{Signature, Slot};
 use base::model::{
     determine_mints, AddressId, Amount, DecimalAmount, Mint, PublicKey, SwapId, Token, TokenPair,
     TokenPairId, TokenPairMint,

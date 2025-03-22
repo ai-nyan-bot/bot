@@ -1,10 +1,10 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
+use base::model::solana::Signature;
 use base::test::SuccessfulTokenInfoLoader;
 use common::model::Count;
 use common::repo::Tx;
-use solana::model::Signature;
 use solana::pumpfun::model::Swap;
 use solana::pumpfun::repo::{CurrentRepo, ReadSwapRepo, SlotSwaps, SwapRepo};
 
@@ -43,7 +43,6 @@ pub async fn list_micro_with_signature<'a>(
         .await
         .unwrap()
 }
-
 
 pub async fn insert_swap<'a>(tx: &mut Tx<'a>, slot_swaps: SlotSwaps) -> Vec<Swap> {
     SwapRepo::testing(Box::new(SuccessfulTokenInfoLoader::default()))

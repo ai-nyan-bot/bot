@@ -1,17 +1,16 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use base::repo::{AddressRepo, TokenRepo};
+use base::model::solana::Slot;
+use base::repo::{AddressRepo, TokenBalanceRepo, TokenRepo};
 use base::test::NeverCalledTokenInfoLoader;
 use common::model::Timestamp;
 use common::repo::Tx;
 use indexer::solana::block::index_block;
 use indexer::solana::state::{State, StateInner};
-use solana::repo::BalanceRepo;
+use solana::convert::convert_block;
 use sqlx::Executor;
 use std::sync::Arc;
-use solana::convert::convert_block;
-use solana::model::Slot;
 use testing::{jupiter, pumpfun, run_test_with_pool_on_empty_db};
 
 #[test_log::test(sqlx::test)]
@@ -52,7 +51,7 @@ insert into solana.token (mint, name, symbol, decimals, supply, metadata, descri
 		let state = State(Arc::new(StateInner {
 			token_repo: TokenRepo::testing_no_token_info(),
 			address_repo: AddressRepo::new(),
-			balance_repo: BalanceRepo::new(),
+			token_balance_repo: TokenBalanceRepo::new(),
 			pool: pool.clone(),
 			pumpfun_swap_repo,
 			pumpfun_current_repo: Default::default(),

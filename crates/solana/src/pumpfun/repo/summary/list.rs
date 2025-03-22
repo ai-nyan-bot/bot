@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::TimeframeSummary;
+use crate::pumpfun::model::summary::TimeframeSummary;
 use crate::pumpfun::repo::summary::row::{
     row_to_curve_progress, row_to_market_cap, row_to_price, row_to_swaps, row_to_volume,
 };

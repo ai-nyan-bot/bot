@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::pumpfun::repo::current::{inserting_slot_swaps, updating_slot_swaps};
-use solana::model::Signature;
+use base::model::solana::Signature;
 use solana::pumpfun::repo::CurrentRepo;
 use sqlx::Executor;
 use testing::pumpfun::{count_all_currents, insert_swap};

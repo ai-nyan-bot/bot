@@ -1,12 +1,12 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::{
+use crate::rpc::RpcResult;
+use base::model::solana::{
     Block, CompiledInstruction, InnerInstruction, InnerInstructions, Keys, Signature, Slot,
     Transaction, TransactionBalance, TransactionSolBalance, TransactionStatus,
     TransactionTokenBalance,
 };
-use crate::rpc::RpcResult;
 use base::model::{DecimalAmount, Mint, PublicKey};
 use bigdecimal::BigDecimal;
 use common::model::{BlockTimestamp, Timestamp};

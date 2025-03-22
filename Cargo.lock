@@ -357,6 +357,7 @@ dependencies = [
 name = "aggregator"
 version = "0.0.1"
 dependencies = [
+ "base",
  "common",
  "futures",
  "log",

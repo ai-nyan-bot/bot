@@ -6,7 +6,6 @@
 
 use std::sync::Arc;
 
-use crate::model::Signature;
 use crate::raydium;
 use crate::raydium::amm::AmmKeys;
 use crate::raydium::ix::SwapInstructionsBuilder;
@@ -14,6 +13,7 @@ use crate::raydium::{
     Raydium, RaydiumQuote, SwapConfigOverrides, RAYDIUM_AUTHORITY,
     RAYDIUM_LIQUIDITY_POOL_V4_PROGRAM_ID,
 };
+use base::model::solana::Signature;
 use solana_client::rpc_config::RpcSendTransactionConfig;
 use solana_rpc_client::nonblocking::rpc_client::RpcClient;
 use solana_sdk::instruction::{AccountMeta, Instruction};

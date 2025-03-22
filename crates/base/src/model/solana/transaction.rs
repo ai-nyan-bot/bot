@@ -1,8 +1,8 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::Signature;
-use base::model::{DecimalAmount, Mint, PublicKey};
+use crate::model::solana::Signature;
+use crate::model::{DecimalAmount, Mint, PublicKey};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]

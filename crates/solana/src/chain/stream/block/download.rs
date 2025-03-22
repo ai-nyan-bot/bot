@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::{Block, Slot};
+use base::model::solana::{Block, Slot};
 use crate::rpc::RpcClient;
 use common::Limiter;
 use futures_util::future::join_all;

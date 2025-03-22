@@ -4,7 +4,7 @@
 // This file includes portions of code from https://github.com/blockworks-foundation/traffic (AGPL 3.0).
 // Original AGPL 3 License Copyright (c) blockworks-foundation 2024.
 
-use crate::model::{Signature, Slot};
+use base::model::solana::{Signature, Slot};
 use crate::pumpfun::model::{calculate_progress, Swap};
 use crate::pumpfun::repo::SwapRepo;
 use base::model::{AddressId, Amount, DecimalAmount, Mint, PublicKey, SwapId, TokenPairId};

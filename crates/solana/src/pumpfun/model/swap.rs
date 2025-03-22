@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::{Signature, Slot};
+use base::model::solana::{Signature, Slot};
 use base::model::{AddressId, Amount, DecimalAmount, SwapId, TokenPairId};
 use common::model::{Percent, PriceQuote, Timestamp};
 

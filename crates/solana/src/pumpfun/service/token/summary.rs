@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::PumpfunSummary;
+use crate::pumpfun::model::summary::PumpfunSummary;
 use crate::pumpfun::service::token::TokenService;
 use base::model::TokenPairId;
 use common::model::Timeframe;

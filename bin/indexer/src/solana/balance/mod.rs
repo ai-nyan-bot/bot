@@ -2,8 +2,8 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::solana::state::State;
+use base::repo::TokenBalanceToInsert;
 use common::repo::Tx;
-use solana::repo::TokenBalanceToInsert;
 
 pub(crate) async fn index_token_balance<'a>(
     tx: &mut Tx<'a>,
@@ -11,7 +11,7 @@ pub(crate) async fn index_token_balance<'a>(
     balances: Vec<TokenBalanceToInsert>,
 ) {
     state
-        .balance_repo
+        .token_balance_repo
         .insert_token_balances(tx, balances)
         .await
         .unwrap();

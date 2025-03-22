@@ -4,9 +4,9 @@
 // This file includes portions of code from https://github.com/0xcrust/raydium-swap (MIT License).
 // Original MIT License Copyright (c) 0xcrust 2024.
 
-use crate::model::Slot;
 use crate::rpc::block::GetBlockWithConfigFn;
 use crate::rpc::error::RpcClientError;
+use base::model::solana::Slot;
 use common::model::RpcUrl;
 use log::debug;
 use solana_client::rpc_config::RpcBlockConfig;

@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::Slot;
+use base::model::solana::Slot;
 use base::model::{Amount, TokenPairId};
 use common::model::{AgeRelativeToLatestInSeconds, Percent};
 pub use progress::calculate_progress;

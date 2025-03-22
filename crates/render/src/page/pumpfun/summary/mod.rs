@@ -8,7 +8,7 @@ use crate::page::pumpfun::summary::table::{
 };
 use crate::{Font, FontType, RenderBackground, RenderWatermark, Text};
 use image::{Rgba, RgbaImage};
-use solana::model::TimeframeSummary;
+use solana::pumpfun::model::summary::TimeframeSummary;
 
 pub const PADDING_WIDTH: u32 = 40;
 pub const CELL_WIDTH: u32 = 160;

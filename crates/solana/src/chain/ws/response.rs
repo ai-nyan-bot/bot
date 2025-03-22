@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::Slot;
+use base::model::solana::Slot;
 use solana_client::rpc_response::SlotInfo as SdkSlotInfo;
 
 #[derive(Clone, Copy, Debug)]

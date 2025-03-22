@@ -3,7 +3,7 @@
 
 use crate::jupiter::model::Swap;
 use crate::jupiter::repo::ReadSwapRepo;
-use crate::model::{Signature, Slot};
+use base::model::solana::{Signature, Slot};
 use base::model::{AddressId, DecimalAmount, SwapId, TokenPairId};
 use common::model::{PriceQuote, Timestamp};
 use common::repo::{RepoResult, Tx};

@@ -6,9 +6,9 @@ pub use insert_token::TokenBalanceToInsert;
 mod insert_token;
 
 #[derive(Clone, Default)]
-pub struct BalanceRepo {}
+pub struct TokenBalanceRepo {}
 
-impl BalanceRepo {
+impl TokenBalanceRepo {
     pub fn new() -> Self {
         Self {}
     }

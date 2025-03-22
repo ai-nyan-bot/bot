@@ -2,8 +2,8 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::jupiter::model::{Instruction, Jupiter6Swap};
-use crate::model::Transaction;
 use crate::parse::{log_and_return_parse_error, ParseError, ParseResult, Parser};
+use base::model::solana::Transaction;
 use base::model::{Amount, Mint, PublicKey};
 use common::ByteReader;
 use solana_sdk::pubkey::Pubkey;
@@ -105,7 +105,7 @@ pub(crate) fn parse_swaps(tx: &Transaction) -> ParseResult<Vec<Jupiter6Swap>> {
 #[cfg(test)]
 mod tests {
     use crate::convert::convert_transaction;
-    use crate::model::Transaction;
+    use base::model::solana::Transaction;
     use lazy_static::lazy_static;
     use solana_transaction_status::EncodedTransactionWithStatusMeta;
     use std::collections::HashMap;

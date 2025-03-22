@@ -7,12 +7,12 @@ mod block_323481688;
 mod block_326027759;
 //
 
+use base::model::solana::Slot;
 use base::repo::{AddressRepo, TokenRepo};
 use dotenv::dotenv;
 use indexer::solana::block::index_block;
 use indexer::solana::state::{State, StateInner};
 use solana::convert::convert_block;
-use solana::model::Slot;
 use solana::rpc::RpcClient;
 use solana::token_info::rpc::TokenInfoRpcLoader;
 use std::sync::Arc;
@@ -55,7 +55,7 @@ async fn prepare_test() {
             pumpfun_current_repo: Default::default(),
             jupiter_swap_repo,
             address_repo: AddressRepo::new(),
-            balance_repo: Default::default(),
+            token_balance_repo: Default::default(),
         }));
 
         index_block(state, block).await;

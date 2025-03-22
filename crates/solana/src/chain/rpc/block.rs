@@ -2,17 +2,15 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::chain::convert::convert_block;
-use crate::model::{Block, Slot};
 use crate::rpc::{RpcClient, RpcResult};
+use base::model::solana::{Block, Slot};
 use log::{error, warn};
 use solana_client::client_error::ClientError;
 use solana_client::rpc_config::RpcBlockConfig;
 use solana_client::rpc_request::RpcError;
 use solana_rpc_client::nonblocking::rpc_client;
 use solana_sdk::commitment_config::CommitmentConfig;
-use solana_transaction_status::{
-    TransactionDetails, UiConfirmedBlock, UiTransactionEncoding,
-};
+use solana_transaction_status::{TransactionDetails, UiConfirmedBlock, UiTransactionEncoding};
 use std::future::Future;
 use std::pin::Pin;
 use std::sync::Arc;
@@ -134,8 +132,8 @@ impl RpcClient {
 
 #[cfg(test)]
 mod tests {
-    use crate::model::Slot;
     use crate::rpc::{RpcClient, RpcClientInner};
+    use base::model::solana::Slot;
     use solana_client::client_error::ClientError;
     use solana_client::rpc_config::RpcBlockConfig;
     use solana_client::rpc_request::{RpcError, RpcResponseErrorData};

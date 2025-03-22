@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::{Signature, Slot, Transaction};
+use base::model::solana::{Signature, Slot, Transaction};
 use common::ReaderError;
 use log::error;
 use solana_sdk::instruction::CompiledInstruction;

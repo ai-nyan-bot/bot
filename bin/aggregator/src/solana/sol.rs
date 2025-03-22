@@ -3,8 +3,8 @@
 
 use crate::log_ms;
 use crate::time::sleep_ms;
+use base::repo::SolRepo;
 use log::trace;
-use solana::repo::SolRepo;
 use sqlx::PgPool;
 use tokio::task::JoinHandle;
 

@@ -1,9 +1,9 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::model::Slot;
-use crate::repo::balance::BalanceRepo;
-use base::model::{AddressId, DecimalAmount, TokenId};
+use crate::model::solana::Slot;
+use crate::model::{AddressId, DecimalAmount, TokenId};
+use crate::repo::TokenBalanceRepo;
 use common::model::Timestamp;
 use common::repo::{RepoResult, Tx};
 use std::collections::HashMap;
@@ -17,7 +17,7 @@ pub struct TokenBalanceToInsert {
     pub post: DecimalAmount,
 }
 
-impl BalanceRepo {
+impl TokenBalanceRepo {
     pub async fn insert_token_balances<'a>(
         &self,
         tx: &mut Tx<'a>,
