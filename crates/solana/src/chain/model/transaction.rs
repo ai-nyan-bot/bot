@@ -15,7 +15,7 @@ pub enum TransactionStatus {
 pub struct Transaction {
     pub signature: Signature,
     pub status: TransactionStatus,
-    pub balance: Balance,
+    pub balance: TransactionBalance,
     pub instructions: Vec<CompiledInstruction>,
     pub inner_instructions: Vec<InnerInstructions>,
     pub log_messages: Vec<String>,
@@ -23,21 +23,22 @@ pub struct Transaction {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct Balance {
-    pub sol: Vec<SolBalance>,
-    pub token: Vec<TokenBalance>,
+pub struct TransactionBalance {
+    pub sol: Vec<TransactionSolBalance>,
+    pub token: Vec<TransactionTokenBalance>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct SolBalance {
+pub struct TransactionSolBalance {
     pub address: PublicKey,
     pub pre: DecimalAmount,
     pub post: DecimalAmount,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
-pub struct TokenBalance {
+pub struct TransactionTokenBalance {
     pub mint: Mint,
+    pub address: PublicKey,
     pub pre: DecimalAmount,
     pub post: DecimalAmount,
 }

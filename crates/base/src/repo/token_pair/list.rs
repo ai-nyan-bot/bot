@@ -11,7 +11,7 @@ use crate::model::{
 use crate::repo::token_pair::shared::{find_missing_ids, find_missing_mints};
 use crate::repo::token_pair::CachedTokenPair;
 use crate::repo::TokenPairRepo;
-use common::model::{BlockId, BlockTime};
+use common::model::{BlockId, BlockTimestamp};
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 
@@ -70,7 +70,7 @@ join solana.token quote on tp.quote_id = quote.id
                 website: r.try_get::<Uri, _>("base_website").ok(),
                 creator: r.try_get::<AddressId, _>("base_creator_id").ok(),
                 block: r.try_get::<BlockId, _>("base_block_id").ok(),
-                block_time: r.try_get::<BlockTime, _>("base_block_time").ok(),
+                block_time: r.try_get::<BlockTimestamp, _>("base_block_time").ok(),
             },
             quote: Token {
                 id: r.get::<TokenId, _>("quote_id"),
@@ -85,7 +85,7 @@ join solana.token quote on tp.quote_id = quote.id
                 website: r.try_get::<Uri, _>("quote_website").ok(),
                 creator: r.try_get::<AddressId, _>("quote_creator_id").ok(),
                 block: r.try_get::<BlockId, _>("quote_block_id").ok(),
-                block_time: r.try_get::<BlockTime, _>("quote_block_time").ok(),
+                block_time: r.try_get::<BlockTimestamp, _>("quote_block_time").ok(),
             },
         })
         .collect::<Vec<_>>())

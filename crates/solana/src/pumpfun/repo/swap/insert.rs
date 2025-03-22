@@ -8,7 +8,7 @@ use crate::model::{Signature, Slot};
 use crate::pumpfun::model::{calculate_progress, Swap};
 use crate::pumpfun::repo::SwapRepo;
 use base::model::{AddressId, Amount, DecimalAmount, Mint, PublicKey, SwapId, TokenPairId};
-use common::model::{BlockTime, Percent, PriceQuote, Timestamp};
+use common::model::{BlockTimestamp, Percent, PriceQuote, Timestamp};
 use common::repo::{RepoResult, Tx};
 use log::trace;
 use sqlx::Row;
@@ -17,7 +17,7 @@ use std::collections::HashMap;
 #[derive(Debug, Clone)]
 pub struct SlotSwaps {
     pub slot: Slot,
-    pub timestamp: BlockTime,
+    pub timestamp: BlockTimestamp,
     pub swaps: Vec<SlotSwap>,
 }
 
@@ -55,7 +55,7 @@ impl SwapRepo {
 
         let addresses: HashMap<PublicKey, AddressId> = self
             .address_repo
-            .list_or_populate_by_keys(tx, keys)
+            .list_or_populate(tx, keys)
             .await?
             .into_iter()
             .map(|address| (address.address, address.id))

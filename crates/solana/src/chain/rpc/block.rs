@@ -1,25 +1,23 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::convert::convert_transaction;
-use crate::model::{Block, Slot, Transaction};
+use crate::chain::convert::convert_block;
+use crate::model::{Block, Slot};
 use crate::rpc::{RpcClient, RpcResult};
-use common::model::{BlockTime, Timestamp};
 use log::{error, warn};
-use rayon::prelude::*;
 use solana_client::client_error::ClientError;
 use solana_client::rpc_config::RpcBlockConfig;
 use solana_client::rpc_request::RpcError;
 use solana_rpc_client::nonblocking::rpc_client;
 use solana_sdk::commitment_config::CommitmentConfig;
-use solana_transaction_status::{TransactionDetails, UiConfirmedBlock, UiTransactionEncoding};
+use solana_transaction_status::{
+    TransactionDetails, UiConfirmedBlock, UiTransactionEncoding,
+};
 use std::future::Future;
 use std::pin::Pin;
 use std::sync::Arc;
 use std::time::Duration;
-use tokio::task::spawn_blocking;
-use tokio::time::{sleep, Instant};
-use tracing::debug;
+use tokio::time::sleep;
 
 pub(crate) type GetBlockWithConfigFn = dyn Fn(
         Arc<rpc_client::RpcClient>,
@@ -48,39 +46,7 @@ impl RpcClient {
 
             match result {
                 Ok(block) => {
-                    let start = Instant::now();
-
-                    let transactions: Vec<Transaction> = spawn_blocking(move || {
-                        block
-                            .transactions
-                            .unwrap_or_default()
-                            .into_par_iter()
-                            .map(convert_transaction)
-                            .collect()
-                    })
-                    .await
-                    .unwrap();
-
-                    if transactions.is_empty() {
-                        warn!("block {} without transactions - skip", slot);
-                        return Ok(None);
-                    }
-
-                    debug!(
-                        "converting {} transactions took {} ms",
-                        transactions.len(),
-                        start.elapsed().as_millis()
-                    );
-
-                    if let Some(block_time) = block.block_time {
-                        return Ok(Some(Block {
-                            slot,
-                            timestamp: BlockTime(Timestamp::from_epoch_second(block_time).unwrap()),
-                            transactions,
-                        }));
-                    }
-
-                    return Ok(None);
+                    return convert_block(slot, block).await;
                 }
                 Err(err) => {
                     error!("{err}");
@@ -141,6 +107,28 @@ impl RpcClient {
                 }
             }
         }
+    }
+
+    pub async fn get_ui_block_for_testing(
+        &self,
+        slot: impl Into<Slot>,
+    ) -> RpcResult<UiConfirmedBlock> {
+        let slot = slot.into();
+        let result = self
+            .delegate
+            .get_block_with_config(
+                slot.0 as u64,
+                RpcBlockConfig {
+                    encoding: Some(UiTransactionEncoding::Base58),
+                    transaction_details: Some(TransactionDetails::Full),
+                    rewards: None,
+                    commitment: Some(CommitmentConfig::confirmed()),
+                    max_supported_transaction_version: Some(0),
+                },
+            )
+            .await?;
+
+        Ok(result)
     }
 }
 

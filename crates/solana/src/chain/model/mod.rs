@@ -3,7 +3,7 @@
 
 pub use crate::pumpfun::model::summary::*;
 pub use account::*;
-use common::model::BlockTime;
+use common::model::BlockTimestamp;
 pub use indexer::Indexer;
 use serde::{Deserialize, Serialize};
 pub use signature::*;
@@ -19,6 +19,6 @@ mod transaction;
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Block {
     pub slot: Slot,
-    pub timestamp: BlockTime,
+    pub timestamp: BlockTimestamp,
     pub transactions: Vec<Transaction>,
 }

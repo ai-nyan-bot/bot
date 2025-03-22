@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::types::BigDecimal;
 use sqlx::Type;
 use std::cmp::Ordering;
-use std::ops::Div;
+use std::ops::{Div, Sub};
 use std::str::FromStr;
 
 #[derive(Clone, Debug, PartialEq, PartialOrd, Deserialize, Serialize, sqlx::Type)]
@@ -101,5 +101,13 @@ impl PartialOrd<BigDecimal> for DecimalAmount {
 impl PartialEq<&str> for DecimalAmount {
     fn eq(&self, other: &&str) -> bool {
         self.eq(&BigDecimal::from_str(other).unwrap())
+    }
+}
+
+impl Sub for DecimalAmount {
+    type Output = DecimalAmount;
+
+    fn sub(self, rhs: Self) -> Self::Output {
+        DecimalAmount(self.0.sub(rhs.0))
     }
 }

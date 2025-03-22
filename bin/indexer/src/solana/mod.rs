@@ -12,11 +12,13 @@ use crate::solana::state::{State, StateInner};
 use base::repo::{AddressRepo, TokenPairRepo, TokenRepo};
 use common::repo::pool::setup_pool;
 use common::{ResolveOr, Signal};
+use solana::repo::BalanceRepo;
 use solana::stream::{BlockStream, RpcBlockStream, RpcBlockStreamConfig, RpcSlotStream};
 use solana::token_info::rpc::TokenInfoRpcLoader;
 use tokio::signal::unix::SignalKind;
 use tracing::info;
 
+mod balance;
 pub mod block;
 pub mod indexer;
 mod jupiter;
@@ -50,6 +52,7 @@ pub fn index_solana(runtime: Runtime, config: Config) {
             pool: pool.clone(),
             token_repo: token_repo.clone(),
             address_repo: AddressRepo::new(),
+            balance_repo: BalanceRepo::new(),
             pumpfun_swap_repo,
             pumpfun_current_repo: solana::pumpfun::repo::CurrentRepo::new(),
             jupiter_swap_repo,

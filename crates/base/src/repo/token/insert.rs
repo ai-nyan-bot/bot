@@ -8,14 +8,14 @@ use crate::model::{
     AddressId, DecimalAmount, Decimals, Description, Mint, Name, Symbol, Token, TokenId, Uri,
 };
 use crate::repo::TokenRepo;
-use common::model::{BlockId, BlockTime, Timestamp};
+use common::model::{BlockId, BlockTimestamp, Timestamp};
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 
 #[derive(Debug)]
 pub struct TokenToInsert {
     pub block: Option<BlockId>,
-    pub block_time: Option<BlockTime>,
+    pub block_time: Option<BlockTimestamp>,
     pub mint: Mint,
     pub name: Option<Name>,
     pub symbol: Option<Symbol>,
@@ -73,7 +73,7 @@ impl TokenRepo {
             block_times.push(
                 to_insert
                     .block_time
-                    .unwrap_or(BlockTime(Timestamp::from_epoch_second(0).unwrap())),
+                    .unwrap_or(BlockTimestamp(Timestamp::from_epoch_second(0).unwrap())),
             );
         }
 
@@ -151,7 +151,7 @@ impl TokenRepo {
             website: r.try_get::<Uri, _>("website").ok(),
             creator: r.try_get::<AddressId, _>("creator_id").ok(),
             block: r.try_get::<BlockId, _>("block_id").ok(),
-            block_time: r.try_get::<BlockTime, _>("block_time").ok()
+            block_time: r.try_get::<BlockTimestamp, _>("block_time").ok()
         })
         .collect::<Vec<_>>())
     }

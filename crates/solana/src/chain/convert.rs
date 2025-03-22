@@ -2,19 +2,64 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use crate::model::{
-    Balance, CompiledInstruction, InnerInstruction, InnerInstructions, Keys, Signature, SolBalance,
-    TokenBalance, Transaction, TransactionStatus,
+    Block, CompiledInstruction, InnerInstruction, InnerInstructions, Keys, Signature, Slot,
+    Transaction, TransactionBalance, TransactionSolBalance, TransactionStatus,
+    TransactionTokenBalance,
 };
+use crate::rpc::RpcResult;
 use base::model::{DecimalAmount, Mint, PublicKey};
 use bigdecimal::BigDecimal;
+use common::model::{BlockTimestamp, Timestamp};
+use log::warn;
+use rayon::prelude::*;
 use regex::Regex;
 use solana_rpc_client::rpc_client::SerializableTransaction;
 use solana_sdk::bs58;
 use solana_sdk::transaction::VersionedTransaction;
 use solana_transaction_status::option_serializer::OptionSerializer;
 use solana_transaction_status::UiInstruction::{Compiled, Parsed};
-use solana_transaction_status::{EncodedTransactionWithStatusMeta, UiTransactionStatusMeta};
+use solana_transaction_status::{
+    EncodedTransactionWithStatusMeta, UiConfirmedBlock, UiTransactionStatusMeta,
+};
 use std::str::FromStr;
+use tokio::task::spawn_blocking;
+use tokio::time::Instant;
+use tracing::debug;
+
+pub async fn convert_block(slot: Slot, block: UiConfirmedBlock) -> RpcResult<Option<Block>> {
+    let start = Instant::now();
+
+    let transactions: Vec<Transaction> = spawn_blocking(move || {
+        block
+            .transactions
+            .unwrap_or_default()
+            .into_par_iter()
+            .map(convert_transaction)
+            .collect()
+    })
+    .await
+    .unwrap();
+
+    if transactions.is_empty() {
+        warn!("block {} without transactions - skip", slot);
+        return Ok(None);
+    }
+    debug!(
+        "converting {} transactions took {} ms",
+        transactions.len(),
+        start.elapsed().as_millis()
+    );
+
+    if let Some(block_time) = block.block_time {
+        return Ok(Some(Block {
+            slot,
+            timestamp: BlockTimestamp(Timestamp::from_epoch_second(block_time).unwrap()),
+            transactions,
+        }));
+    }
+
+    Ok(None)
+}
 
 pub(crate) fn convert_transaction(tx: EncodedTransactionWithStatusMeta) -> Transaction {
     let meta = tx.meta.unwrap();
@@ -79,12 +124,12 @@ pub(crate) fn convert_transaction(tx: EncodedTransactionWithStatusMeta) -> Trans
     }
 }
 
-fn extract_balance(meta: &UiTransactionStatusMeta, keys: &Keys) -> Balance {
+fn extract_balance(meta: &UiTransactionStatusMeta, keys: &Keys) -> TransactionBalance {
     let mut sol = Vec::with_capacity(meta.pre_balances.len());
     for (idx, key) in keys.static_account.iter().enumerate() {
         let pre = meta.pre_balances[idx];
         let post = meta.post_balances[idx];
-        sol.push(SolBalance {
+        sol.push(TransactionSolBalance {
             address: key.clone(),
             pre: DecimalAmount::new(pre, 9),
             post: DecimalAmount::new(post, 9),
@@ -97,19 +142,20 @@ fn extract_balance(meta: &UiTransactionStatusMeta, keys: &Keys) -> Balance {
         (&meta.pre_token_balances, &meta.post_token_balances)
     {
         for (pre, post) in pre.iter().zip(post.iter()) {
-            pre.ui_token_amount.decimals;
+            let address = PublicKey::from(pre.owner.clone().unwrap());
             let pre_balance = BigDecimal::from_str(pre.ui_token_amount.amount.as_str()).unwrap();
             let post_balance = BigDecimal::from_str(post.ui_token_amount.amount.as_str()).unwrap();
 
-            token.push(TokenBalance {
+            token.push(TransactionTokenBalance {
                 mint: Mint::from(pre.mint.clone()),
+                address,
                 pre: DecimalAmount::new(pre_balance, pre.ui_token_amount.decimals),
                 post: DecimalAmount::new(post_balance, post.ui_token_amount.decimals),
             })
         }
     }
 
-    Balance { sol, token }
+    TransactionBalance { sol, token }
 }
 
 fn extract_keys(vtx: &VersionedTransaction, meta: &UiTransactionStatusMeta) -> Keys {

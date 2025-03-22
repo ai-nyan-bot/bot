@@ -2,6 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use base::repo::{AddressRepo, TokenRepo};
+use solana::repo::BalanceRepo;
 use sqlx::PgPool;
 use std::ops::Deref;
 use std::sync::Arc;
@@ -20,6 +21,7 @@ pub struct StateInner {
     pub pool: PgPool,
     pub token_repo: TokenRepo,
     pub address_repo: AddressRepo,
+    pub balance_repo: BalanceRepo,
     pub pumpfun_swap_repo: solana::pumpfun::repo::SwapRepo,
     pub pumpfun_current_repo: solana::pumpfun::repo::CurrentRepo,
     pub jupiter_swap_repo: solana::jupiter::repo::SwapRepo,

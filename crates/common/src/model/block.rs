@@ -31,17 +31,17 @@ impl Display for BlockId {
 
 #[derive(Clone, Copy, Debug, PartialEq, Ord, PartialOrd, Eq, Serialize, Deserialize, Type)]
 #[sqlx(transparent)]
-pub struct BlockTime(pub Timestamp);
+pub struct BlockTimestamp(pub Timestamp);
 
-impl Deref for BlockTime {
+impl Deref for BlockTimestamp {
     type Target = Timestamp;
     fn deref(&self) -> &Self::Target {
         &self.0
     }
 }
 
-impl BlockTime {
+impl BlockTimestamp {
     pub fn now() -> Self {
-        BlockTime(Timestamp::now())
+        BlockTimestamp(Timestamp::now())
     }
 }

@@ -11,7 +11,7 @@ use base::model::{
     determine_mints, AddressId, Amount, DecimalAmount, Mint, PublicKey, SwapId, Token, TokenPair,
     TokenPairId, TokenPairMint,
 };
-use common::model::{BlockTime, PriceQuote, Timestamp};
+use common::model::{BlockTimestamp, PriceQuote, Timestamp};
 use common::repo::{RepoResult, Tx};
 use log::trace;
 use sqlx::Row;
@@ -19,7 +19,7 @@ use std::collections::HashMap;
 
 pub struct SlotSwaps {
     pub slot: Slot,
-    pub timestamp: BlockTime,
+    pub timestamp: BlockTimestamp,
     pub swaps: Vec<SlotSwap>,
 }
 
@@ -55,7 +55,7 @@ impl SwapRepo {
 
         let keys: HashMap<PublicKey, AddressId> = self
             .address_repo
-            .list_or_populate_by_keys(tx, addresses)
+            .list_or_populate(tx, addresses)
             .await?
             .into_iter()
             .map(|address| (address.address, address.id))

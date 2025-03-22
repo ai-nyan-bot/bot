@@ -9,7 +9,7 @@ use crate::model::{
     TokenPairId, TokenPairMint, Uri,
 };
 use crate::repo::TokenPairRepo;
-use common::model::{BlockId, BlockTime};
+use common::model::{BlockId, BlockTimestamp};
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 use std::collections::{HashMap, HashSet};
@@ -195,7 +195,7 @@ join input_pairs ip on base.mint = ip.base_mint and quote.mint = ip.quote_mint;
                 website: r.try_get::<Uri, _>("base_website").ok(),
                 creator: r.try_get::<AddressId, _>("base_creator_id").ok(),
                 block: r.try_get::<BlockId, _>("base_block_id").ok(),
-                block_time: r.try_get::<BlockTime, _>("base_block_time").ok(),
+                block_time: r.try_get::<BlockTimestamp, _>("base_block_time").ok(),
             },
             quote: Token {
                 id: r.get::<TokenId, _>("quote_id"),
@@ -210,7 +210,7 @@ join input_pairs ip on base.mint = ip.base_mint and quote.mint = ip.quote_mint;
                 website: r.try_get::<Uri, _>("quote_website").ok(),
                 creator: r.try_get::<AddressId, _>("quote_creator_id").ok(),
                 block: r.try_get::<BlockId, _>("quote_block_id").ok(),
-                block_time: r.try_get::<BlockTime, _>("quote_block_time").ok(),
+                block_time: r.try_get::<BlockTimestamp, _>("quote_block_time").ok(),
             },
         })
         .collect::<Vec<_>>())
@@ -280,7 +280,7 @@ where tp.id in (select unnest($1::int8[]));
                 website: r.try_get::<Uri, _>("base_website").ok(),
                 creator: r.try_get::<AddressId, _>("base_creator_id").ok(),
                 block: r.try_get::<BlockId, _>("base_block_id").ok(),
-                block_time: r.try_get::<BlockTime, _>("base_block_time").ok(),
+                block_time: r.try_get::<BlockTimestamp, _>("base_block_time").ok(),
             },
             quote: Token {
                 id: r.get::<TokenId, _>("quote_id"),
@@ -295,7 +295,7 @@ where tp.id in (select unnest($1::int8[]));
                 website: r.try_get::<Uri, _>("quote_website").ok(),
                 creator: r.try_get::<AddressId, _>("quote_creator_id").ok(),
                 block: r.try_get::<BlockId, _>("quote_block_id").ok(),
-                block_time: r.try_get::<BlockTime, _>("quote_block_time").ok(),
+                block_time: r.try_get::<BlockTimestamp, _>("quote_block_time").ok(),
             },
         })
         .collect::<Vec<_>>())

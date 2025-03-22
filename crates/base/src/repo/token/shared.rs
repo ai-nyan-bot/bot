@@ -9,7 +9,7 @@ use crate::model::{
 };
 use crate::repo::cache::Cache;
 use crate::repo::TokenRepo;
-use common::model::{BlockId, BlockTime};
+use common::model::{BlockId, BlockTimestamp};
 use common::repo::{RepoResult, Tx};
 use sqlx::Row;
 use std::collections::HashSet;
@@ -116,7 +116,7 @@ impl TokenRepo {
             website: r.try_get::<Uri, _>("website").ok(),
             creator: r.try_get::<AddressId, _>("creator_id").ok(),
             block: r.try_get::<BlockId, _>("block_id").ok(),
-            block_time: r.try_get::<BlockTime, _>("block_time").ok(),
+            block_time: r.try_get::<BlockTimestamp, _>("block_time").ok(),
         })
         .collect::<Vec<_>>())
     }
@@ -165,7 +165,7 @@ impl TokenRepo {
             website: r.try_get::<Uri, _>("website").ok(),
             creator: r.try_get::<AddressId, _>("creator_id").ok(),
             block: r.try_get::<BlockId, _>("block_id").ok(),
-            block_time: r.try_get::<BlockTime, _>("block_time").ok(),
+            block_time: r.try_get::<BlockTimestamp, _>("block_time").ok(),
         })
         .collect::<Vec<_>>())
     }

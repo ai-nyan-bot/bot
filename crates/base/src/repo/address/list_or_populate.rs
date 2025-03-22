@@ -10,7 +10,7 @@ use crate::repo::AddressRepo;
 use common::repo::{RepoResult, Tx};
 
 impl AddressRepo {
-    pub async fn list_or_populate_by_keys<'a>(
+    pub async fn list_or_populate<'a>(
         &self,
         tx: &mut Tx<'a>,
         keys: impl IntoIterator<Item = impl Into<PublicKey>> + Send,

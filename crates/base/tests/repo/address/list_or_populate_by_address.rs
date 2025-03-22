@@ -13,13 +13,13 @@ async fn test_already_in_db() {
     run_test_on_empty_db(|mut tx| async move {
         let address_repo = AddressRepo::new();
         let _ = address_repo
-            .list_or_populate_by_keys(&mut tx, vec!["BFAWVmF5aoALggQ9Y2RpTijpYKRESxcdNe6JDNZEpoxC"])
+            .list_or_populate(&mut tx, vec!["BFAWVmF5aoALggQ9Y2RpTijpYKRESxcdNe6JDNZEpoxC"])
             .await
             .unwrap();
 
         let test_instance = AddressRepo::new();
         let result = test_instance
-            .list_or_populate_by_keys(&mut tx, vec!["BFAWVmF5aoALggQ9Y2RpTijpYKRESxcdNe6JDNZEpoxC"])
+            .list_or_populate(&mut tx, vec!["BFAWVmF5aoALggQ9Y2RpTijpYKRESxcdNe6JDNZEpoxC"])
             .await
             .unwrap();
 
@@ -40,12 +40,12 @@ async fn test_already_in_cache() {
     run_test_on_empty_db(|mut tx| async move {
         let test_instance = AddressRepo::new();
         let _ = test_instance
-            .list_or_populate_by_keys(&mut tx, vec!["BFAWVmF5aoALggQ9Y2RpTijpYKRESxcdNe6JDNZEpoxC"])
+            .list_or_populate(&mut tx, vec!["BFAWVmF5aoALggQ9Y2RpTijpYKRESxcdNe6JDNZEpoxC"])
             .await
             .unwrap();
 
         let result = test_instance
-            .list_or_populate_by_keys(&mut tx, vec!["BFAWVmF5aoALggQ9Y2RpTijpYKRESxcdNe6JDNZEpoxC"])
+            .list_or_populate(&mut tx, vec!["BFAWVmF5aoALggQ9Y2RpTijpYKRESxcdNe6JDNZEpoxC"])
             .await
             .unwrap();
 
@@ -67,7 +67,7 @@ async fn test_insert_one() {
         let test_instance = AddressRepo::new();
 
         let result = test_instance
-            .list_or_populate_by_keys(&mut tx, vec!["9uRJ5aGgeu2i3J98hsC5FDxd2PmRjVy9fQwNAy7fzLG3"])
+            .list_or_populate(&mut tx, vec!["9uRJ5aGgeu2i3J98hsC5FDxd2PmRjVy9fQwNAy7fzLG3"])
             .await
             .unwrap();
 
@@ -88,7 +88,7 @@ async fn test_one_in_cache_one_in_db_one_insert() {
     run_test_on_empty_db(|mut tx| async move {
         let address_repo = AddressRepo::new();
         address_repo
-            .list_or_populate_by_keys(
+            .list_or_populate(
                 &mut tx,
                 ["BFAWVmF5aoALggQ9Y2RpTijpYKRESxcdNe6JDNZEpoxC", "53nHsQXkzZUp5MF1BK6Qoa48ud3aXfDFJBbe1oECPucC"],
             )
@@ -97,12 +97,12 @@ async fn test_one_in_cache_one_in_db_one_insert() {
 
         let test_instance = AddressRepo::new();
         test_instance
-            .list_or_populate_by_keys(&mut tx, ["BFAWVmF5aoALggQ9Y2RpTijpYKRESxcdNe6JDNZEpoxC"])
+            .list_or_populate(&mut tx, ["BFAWVmF5aoALggQ9Y2RpTijpYKRESxcdNe6JDNZEpoxC"])
             .await
             .unwrap();
 
         let result = test_instance
-            .list_or_populate_by_keys(
+            .list_or_populate(
                 &mut tx,
                 [
                     "53nHsQXkzZUp5MF1BK6Qoa48ud3aXfDFJBbe1oECPucC",
@@ -139,7 +139,7 @@ async fn test_insert_many() {
         let test_instance = AddressRepo::new();
 
         let result = test_instance
-            .list_or_populate_by_keys(
+            .list_or_populate(
                 &mut tx,
                 [
                     "9uRJ5aGgeu2i3J98hsC5FDxd2PmRjVy9fQwNAy7fzLG3",

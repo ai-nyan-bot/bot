@@ -2,7 +2,7 @@
 // This file is licensed under the AGPL-3.0-or-later.
 
 use base::test::{FailingTokenInfoLoader, SuccessfulTokenInfoLoader};
-use common::model::BlockTime;
+use common::model::BlockTimestamp;
 use common::repo::error::RepoError;
 use solana::pumpfun::repo::{SlotSwap, SlotSwaps, SwapRepo};
 use testing::pumpfun::count_swaps;
@@ -11,7 +11,7 @@ use testing::run_test_on_empty_db;
 fn default_slot_swaps() -> SlotSwaps {
     SlotSwaps {
         slot: 12345.into(),
-        timestamp: BlockTime::now(),
+        timestamp: BlockTimestamp::now(),
         swaps: vec![SlotSwap {
             mint: "mint1".into(),
             amount_base: 1_000_000.into(),
@@ -61,7 +61,7 @@ async fn test_multiple() {
 
         let slot_swaps = SlotSwaps {
             slot: 12345.into(),
-            timestamp: BlockTime::now(),
+            timestamp: BlockTimestamp::now(),
             swaps: vec![
                 SlotSwap {
                     mint: "mint1".into(),
@@ -129,7 +129,7 @@ async fn test_no_swaps() {
 
         let slot_swaps = SlotSwaps {
             slot: 12345.into(),
-            timestamp: BlockTime::now(),
+            timestamp: BlockTimestamp::now(),
             swaps: vec![],
         };
 

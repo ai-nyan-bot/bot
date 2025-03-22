@@ -12,7 +12,7 @@ use common::repo::{RepoResult, Tx};
 
 impl AddressRepo {
     pub async fn get_or_populate_by_key<'a>(&self, tx: &mut Tx<'a>, keys: impl Into<PublicKey> + Send) -> RepoResult<Address> {
-        let mut result = self.list_or_populate_by_keys(tx, vec![keys.into()]).await?;
+        let mut result = self.list_or_populate(tx, vec![keys.into()]).await?;
         if result.is_empty() {
             return Err(RepoError::NotFound);
         }
