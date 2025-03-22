@@ -53,25 +53,25 @@ impl BalanceRepo {
         let mut addresses = Vec::with_capacity(aggregates.len());
         let mut tokens = Vec::with_capacity(aggregates.len());
         let mut balances = Vec::with_capacity(aggregates.len());
+        let mut deltas = Vec::with_capacity(aggregates.len());
         let mut slots = Vec::with_capacity(aggregates.len());
         let mut timestamps = Vec::with_capacity(aggregates.len());
 
         for ((address, token), (pre, post, block_id, timestamp)) in aggregates {
             let balance = post.clone();
             let delta = post - pre;
-            if delta != 0 {
-                addresses.push(address);
-                tokens.push(token);
-                balances.push(balance);
-                slots.push(block_id);
-                timestamps.push(timestamp);
-            }
+            addresses.push(address);
+            tokens.push(token);
+            balances.push(balance);
+            deltas.push(delta);
+            slots.push(block_id);
+            timestamps.push(timestamp);
         }
 
         sqlx::query(
             r#"
             insert into solana.token_balance (
-                address_id, token_id, balance, slot, timestamp
+                address_id, token_id, balance, delta, slot, timestamp
             )
             select *
             from (
@@ -79,18 +79,21 @@ impl BalanceRepo {
                     unnest($1::int8[]) as address_id,
                     unnest($2::int8[]) as token_id,
                     unnest($3::numeric(36, 12)[]) as balance,
-                    unnest($4::int8[]) as slot,
-                    unnest($5::timestamptz[]) as timestamp
+                    unnest($4::numeric(36, 12)[]) as delta,
+                    unnest($5::int8[]) as slot,
+                    unnest($6::timestamptz[]) as timestamp
             ) as rows
-            on conflict (token_id, address_id) do update
+            where delta != 0
+            on conflict (address_id, token_id, slot) do update
             set
                 balance = excluded.balance,
-                updated_at = now()
+                delta = excluded.delta
             "#,
         )
         .bind(addresses)
         .bind(tokens)
         .bind(balances)
+        .bind(deltas)
         .bind(slots)
         .bind(timestamps)
         .execute(&mut **tx)

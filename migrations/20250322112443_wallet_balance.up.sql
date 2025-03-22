@@ -1,7 +1,7 @@
 -- -- Copyright (c) nyanbot.com 2025.
 -- -- This file is licensed under the AGPL-3.0-or-later.
 --
--- create table solana.wallet_balance_token_most_recent
+-- create table solana.wallet_token_balance_most_recent
 -- (
 --     wallet_id  int8            not null,
 --     token_id   int8            not null,
@@ -16,7 +16,7 @@
 --     constraint fk_token foreign key (token_id) references solana.token (id)
 -- );
 --
--- create table solana.wallet_balance_token
+-- create table solana.wallet_token_balance
 -- (
 --     wallet_id  int8            not null,
 --     token_id   int8            not null,
@@ -30,26 +30,26 @@
 --     constraint fk_token foreign key (token_id) references solana.token (id)
 -- ) partition by hash (wallet_id);
 --
--- create table solana.wallet_balance_token_1 partition of solana.wallet_balance_token for values with (modulus 8, remainder 0);
+-- create table solana.wallet_token_balance_1 partition of solana.wallet_token_balance for values with (modulus 8, remainder 0);
 --
--- create table solana.wallet_balance_token_2 partition of solana.wallet_balance_token for values with (modulus 8, remainder 1);
+-- create table solana.wallet_token_balance_2 partition of solana.wallet_token_balance for values with (modulus 8, remainder 1);
 --
--- create table solana.wallet_balance_token_3 partition of solana.wallet_balance_token for values with (modulus 8, remainder 2);
+-- create table solana.wallet_token_balance_3 partition of solana.wallet_token_balance for values with (modulus 8, remainder 2);
 --
--- create table solana.wallet_balance_token_4 partition of solana.wallet_balance_token for values with (modulus 8, remainder 3);
+-- create table solana.wallet_token_balance_4 partition of solana.wallet_token_balance for values with (modulus 8, remainder 3);
 --
--- create table solana.wallet_balance_token_5 partition of solana.wallet_balance_token for values with (modulus 8, remainder 4);
+-- create table solana.wallet_token_balance_5 partition of solana.wallet_token_balance for values with (modulus 8, remainder 4);
 --
--- create table solana.wallet_balance_token_6 partition of solana.wallet_balance_token for values with (modulus 8, remainder 5);
+-- create table solana.wallet_token_balance_6 partition of solana.wallet_token_balance for values with (modulus 8, remainder 5);
 --
--- create table solana.wallet_balance_token_7 partition of solana.wallet_balance_token for values with (modulus 8, remainder 6);
+-- create table solana.wallet_token_balance_7 partition of solana.wallet_token_balance for values with (modulus 8, remainder 6);
 --
--- create table solana.wallet_balance_token_8 partition of solana.wallet_balance_token for values with (modulus 8, remainder 7);
+-- create table solana.wallet_token_balance_8 partition of solana.wallet_token_balance for values with (modulus 8, remainder 7);
 --
 --
--- create function solana.update_wallet_balance_token_most_recent() returns trigger as $$
+-- create function solana.update_wallet_token_balance_most_recent() returns trigger as $$
 -- begin
--- insert into solana.wallet_balance_token_most_recent (wallet_id, token_id, balance, delta, slot, timestamp, created_at, updated_at)
+-- insert into solana.wallet_token_balance_most_recent (wallet_id, token_id, balance, delta, slot, timestamp, created_at, updated_at)
 -- values (new.wallet_id, new.token_id, new.balance, new.delta, new.slot, new.timestamp, new.created_at, now()) on conflict (wallet_id, token_id) do
 -- update set balance = excluded.balance, delta = excluded.delta, slot = excluded.slot, timestamp = excluded.timestamp, updated_at = now();
 -- return null;
@@ -59,8 +59,8 @@
 --
 -- create trigger trigger_update_most_recent_token_balance
 --     after insert
---     on solana.wallet_balance_token
---     for each row execute function solana.update_wallet_balance_token_most_recent();
+--     on solana.wallet_token_balance
+--     for each row execute function solana.update_wallet_token_balance_most_recent();
 --
 -- create table solana.wallet_balance_sol_most_recent
 -- (

@@ -3,7 +3,7 @@
 
 use crate::solana::state::State;
 use common::repo::Tx;
-use solana::repo::{SolBalanceToInsert, TokenBalanceToInsert};
+use solana::repo::TokenBalanceToInsert;
 
 pub(crate) async fn index_token_balance<'a>(
     tx: &mut Tx<'a>,
@@ -13,18 +13,6 @@ pub(crate) async fn index_token_balance<'a>(
     state
         .balance_repo
         .insert_token_balances(tx, balances)
-        .await
-        .unwrap();
-}
-
-pub(crate) async fn index_sol_balance<'a>(
-    tx: &mut Tx<'a>,
-    state: State,
-    balances: Vec<SolBalanceToInsert>,
-) {
-    state
-        .balance_repo
-        .insert_sol_balances(tx, balances)
         .await
         .unwrap();
 }

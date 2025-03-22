@@ -1,7 +1,7 @@
 // Copyright (c) nyanbot.com 2025.
 // This file is licensed under the AGPL-3.0-or-later.
 
-use crate::solana::balance::{index_sol_balance, index_token_balance};
+use crate::solana::balance::index_token_balance;
 use crate::solana::indexer::IndexerRepo;
 use crate::solana::state::State;
 use crate::solana::{jupiter, pumpfun};
@@ -11,7 +11,7 @@ use solana::jupiter::parse::JupiterParser;
 use solana::model::{Block, TransactionStatus};
 use solana::parse::Parser;
 use solana::pumpfun::PumpFunParser;
-use solana::repo::{SolBalanceToInsert, TokenBalanceToInsert};
+use solana::repo::TokenBalanceToInsert;
 use std::collections::{HashMap, HashSet};
 use std::str::FromStr;
 use std::time::Instant;
@@ -186,7 +186,7 @@ pub async fn index_block(state: State, block: Block) {
 
     let tokens: HashMap<Mint, TokenId> = tokens.into_iter().map(|m| (m.mint, m.id)).collect();
 
-    let mut sol_balances: Vec<SolBalanceToInsert> = vec![];
+    // let mut sol_balances: Vec<SolBalanceToInsert> = vec![];
     let mut token_balances: Vec<TokenBalanceToInsert> = vec![];
     for transaction in block.transactions {
         if transaction.status == TransactionStatus::Success {
@@ -201,15 +201,15 @@ pub async fn index_block(state: State, block: Block) {
                 })
             }
 
-            for sol in transaction.balance.sol {
-                sol_balances.push(SolBalanceToInsert {
-                    slot: block.slot,
-                    timestamp: block.timestamp.0,
-                    address: addresses[&sol.address],
-                    pre: sol.pre,
-                    post: sol.post,
-                })
-            }
+            // for sol in transaction.balance.sol {
+            //     sol_balances.push(SolBalanceToInsert {
+            //         slot: block.slot,
+            //         timestamp: block.timestamp.0,
+            //         address: addresses[&sol.address],
+            //         pre: sol.pre,
+            //         post: sol.post,
+            //     })
+            // }
         }
     }
 
@@ -227,7 +227,7 @@ pub async fn index_block(state: State, block: Block) {
     pumpfun::index_swap(&mut tx, state.clone(), pumpfun_slot_swaps).await;
     jupiter::index_swap(&mut tx, state.clone(), jupiter_slot_swaps).await;
     index_token_balance(&mut tx, state.clone(), token_balances).await;
-    index_sol_balance(&mut tx, state.clone(), sol_balances).await;
+    // index_sol_balance(&mut tx, state.clone(), sol_balances).await;
     let indexing_done = Instant::now();
 
     debug!(
